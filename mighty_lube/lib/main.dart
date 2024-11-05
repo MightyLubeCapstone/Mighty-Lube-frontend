@@ -67,136 +67,146 @@ class LoginPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Center(
-                      child: Text(
-                        'Welcome Back!',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Center(
-                      child: Text(
-                        'Login to your account',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Username:',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Password:',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
-                          );
-                        },
-                        child: const Text(
-                          'Forgot Password?',
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Center(
+                        child: Text(
+                          'Welcome Back!',
                           style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 14,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            letterSpacing: 1.2,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        gradient: const LinearGradient(
-                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          // Add login functionality here
-                        },
-                        child: const Text(
-                          'Login',
+                      const SizedBox(height: 10),
+                      const Center(
+                        child: Text(
+                          'Login to your account',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        gradient: const LinearGradient(
-                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Username:',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 15),
+                          filled: true,
+                          fillColor: Colors.grey[100],
                         ),
                       ),
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const CreateAccountPage()),
-                          );
-                        },
-                        child: const Text(
-                          'Create Account',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Password:',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 15),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgotPasswordPage()),
+                            );
+                          },
+                          child: const Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            // Add login functionality here
+                          },
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CreateAccountPage()),
+                            );
+                          },
+                          child: const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -261,7 +271,8 @@ class ForgotPasswordPage extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Username or Email:',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -270,7 +281,8 @@ class ForgotPasswordPage extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 15),
                         filled: true,
                         fillColor: Colors.grey[100],
                       ),
@@ -284,7 +296,10 @@ class ForgotPasswordPage extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               gradient: const LinearGradient(
-                                colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                                colors: [
+                                  Colors.blueAccent,
+                                  Colors.lightBlueAccent
+                                ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -310,7 +325,10 @@ class ForgotPasswordPage extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               gradient: const LinearGradient(
-                                colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                                colors: [
+                                  Colors.blueAccent,
+                                  Colors.lightBlueAccent
+                                ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -344,7 +362,7 @@ class ForgotPasswordPage extends StatelessWidget {
 }
 
 class CreateAccountPage extends StatelessWidget {
-const CreateAccountPage({super.key});
+  const CreateAccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -496,8 +514,10 @@ const CreateAccountPage({super.key});
                           const Text('Country:'),
                           DropdownButtonFormField<String>(
                             items: const [
-                              DropdownMenuItem(value: 'USA', child: Text('USA')),
-                              DropdownMenuItem(value: 'Canada', child: Text('Canada')),
+                              DropdownMenuItem(
+                                  value: 'USA', child: Text('USA')),
+                              DropdownMenuItem(
+                                  value: 'Canada', child: Text('Canada')),
                               DropdownMenuItem(value: 'UK', child: Text('UK')),
                             ],
                             onChanged: (value) {},
@@ -517,7 +537,10 @@ const CreateAccountPage({super.key});
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               gradient: const LinearGradient(
-                                colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                                colors: [
+                                  Colors.blueAccent,
+                                  Colors.lightBlueAccent
+                                ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
