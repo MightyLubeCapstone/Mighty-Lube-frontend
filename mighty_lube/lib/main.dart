@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/api_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'LoginPage/dashboard.dart';
+import 'LoginPage/createAccount.dart';
+import 'LoginPage/forgotPassword.dart';
 
 void main() {
   runApp(const MainApp());
@@ -8,10 +13,23 @@ void main() {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
+  Future<bool> checkLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: LoginPage(),
+    return MaterialApp(
+      // Set the initial route to any of the pages by changing the value here
+      initialRoute:
+          '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/createAccount': (context) => CreateAccountPage(),
+        '/forgotPassword': (context) => const ForgotPasswordPage(),
+        '/dashboard': (context) => const DashboardPage(),
+      },
       debugShowCheckedModeBanner: false,
     );
   }
@@ -38,8 +56,50 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> tryLogin() async {
+    final username = usernameController.text;
+    final password = passwordController.text;
+
+    try {
+      bool loginSuccess = await ApiState().loginUser(username, password);
+
+      if (!mounted) return;
+
+      if (loginSuccess) {
+        Navigator.pushNamed(context, '/dashboard');
+      } else {
+        showError(context, "An error occured.");
+      }
+    } catch (e) {
+      print(e);
+      showError(context, "An error occured.");
+    }
+  }
+
+  void showError(BuildContext context, String message) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                title: const Text("Login Error"),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  )
+                ]));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +161,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       TextField(
+                        controller: usernameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -119,6 +180,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       TextField(
+                        controller: passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -134,12 +196,7 @@ class LoginPage extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ForgotPasswordPage()),
-                            );
+                            Navigator.pushNamed(context, '/forgotPassword');
                           },
                           child: const Text(
                             'Forgot Password?',
@@ -151,21 +208,20 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: const LinearGradient(
-                            colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                      ElevatedButton(
+                        onPressed: () {
+                          tryLogin;
+                          Navigator.pushNamed(context, '/dashboard');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: TextButton(
-                          onPressed: () {
-                            // Add login functionality here
-                          },
-                          child: const Text(
+                        child: const Center(
+                          child: Text(
                             'Login',
                             style: TextStyle(
                               fontSize: 16,
@@ -176,30 +232,16 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: const LinearGradient(
-                            colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
+                      Center(
                         child: TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CreateAccountPage()),
-                            );
+                            Navigator.pushNamed(context, '/createAccount');
                           },
                           child: const Text(
                             'Create Account',
                             style: TextStyle(
+                              color: Colors.blueAccent,
                               fontSize: 16,
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -209,372 +251,6 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const HeaderLogo(),
-          const SizedBox(height: 10),
-          Expanded(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 5,
-                      blurRadius: 15,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Forgot Password',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Please enter your Username or Email. We will send you an email to reset your password if an account exists.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Username or Email:',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 15),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Colors.blueAccent,
-                                  Colors.lightBlueAccent
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Colors.blueAccent,
-                                  Colors.lightBlueAccent
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                // Add submit functionality here
-                              },
-                              child: const Text(
-                                'Submit',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CreateAccountPage extends StatelessWidget {
-  const CreateAccountPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
-      body: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const HeaderLogo(), // Consistent header logo
-              const SizedBox(height: 10),
-              Expanded(
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 5,
-                          blurRadius: 15,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                            child: Text(
-                              'Register Page',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const Text('Company Name:*'),
-                          TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Company Name',
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text('Name:*'),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                    hintText: 'First Name',
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                    hintText: 'Last Name',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          const Text('Phone Number:'),
-                          TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Phone Number',
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text('Email Address:*'),
-                          TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Email Address',
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text('Username:*'),
-                          TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Username',
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text('Password:*'),
-                          TextField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Enter Password',
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Confirm Password',
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text('Country:'),
-                          DropdownButtonFormField<String>(
-                            items: const [
-                              DropdownMenuItem(
-                                  value: 'USA', child: Text('USA')),
-                              DropdownMenuItem(
-                                  value: 'Canada', child: Text('Canada')),
-                              DropdownMenuItem(value: 'UK', child: Text('UK')),
-                            ],
-                            onChanged: (value) {},
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                              hintText: 'Select Country',
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-                          // Gradient Register Button
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Colors.blueAccent,
-                                  Colors.lightBlueAccent
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                'Register',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: 40,
-            left: 10,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             ),
           ),
         ],
