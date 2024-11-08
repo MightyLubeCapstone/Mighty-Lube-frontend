@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'LoginPage/dashboard.dart';
+import 'dashboard/dashboard.dart';
 import 'LoginPage/createAccount.dart';
 import 'LoginPage/forgotPassword.dart';
 
