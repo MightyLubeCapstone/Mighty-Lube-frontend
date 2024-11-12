@@ -27,7 +27,7 @@ class HeaderLogo extends StatelessWidget {
 }
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +79,11 @@ class DashboardPage extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              decoration: const BoxDecoration(
+            const DrawerHeader(
+              decoration: BoxDecoration(
                 color: Color(0xFF579AF6),
               ),
-              child: const HeaderLogo(), // Header logo in the drawer
+              child: HeaderLogo(), // Header logo in the drawer
             ),
             ListTile(
               leading: const Icon(Icons.settings),
@@ -126,7 +126,7 @@ class DashboardPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Column(
+      body: const Column(
         children: [
           Expanded(
             child: Center(
