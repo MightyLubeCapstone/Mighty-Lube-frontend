@@ -1,8 +1,22 @@
+// just flutter pages
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dashboard/dashboard.dart';
+
+// login in pages 
 import 'LoginPage/createAccount.dart';
 import 'LoginPage/forgotPassword.dart';
+
+// dashboard pages 
+import 'dashboard/dashboard.dart';
+import 'dashboard/configurations.dart';
+import 'dashboard/drafts.dart';
+import 'dashboard/profile.dart';
+
+// protien pages
+import 'protien/FGLM.dart';
+import 'protien/FGCO.dart';
+
+
 
 void main() {
   runApp(const MainApp());
@@ -15,12 +29,24 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
-      initialRoute: '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+      initialRoute: '/dashboard', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+
       routes: {
+        // login pages 
         '/login': (context) => const LoginPage(),
         '/createAccount': (context) => const CreateAccountPage(),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
+
+        // dashboard pages 
         '/dashboard': (context) => const DashboardPage(),
+        '/configurations': (context) => const ConfigurationsPage(),
+        '/drafts': (context) => const DraftsPage(),
+        '/profile': (context) => const ProfilePage(),
+
+        // protien protien pages
+        '/FGLM': (context) => const FGLMPage(),
+        '/FGCO': (context) => const FGCOPage(),
+
       },
       debugShowCheckedModeBanner: false,
     );

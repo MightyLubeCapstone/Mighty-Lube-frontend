@@ -47,16 +47,6 @@ class DashboardPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.account_circle, color: Colors.white),
-                      onPressed: () {
-                        // Navigate to Profile Page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ProfilePage()),
-                        );
-                      },
-                    ),
-                    IconButton(
                       icon: const Icon(Icons.description, color: Colors.white),
                       onPressed: () {
                         // Add Application functionality
@@ -90,7 +80,10 @@ class DashboardPage extends StatelessWidget {
               title: const Text('Configurations'),
               onTap: () {
                 // Handle Configurations tap
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
               },
             ),
             ListTile(
@@ -98,7 +91,10 @@ class DashboardPage extends StatelessWidget {
               title: const Text('Drafts'),
               onTap: () {
                 // Handle Drafts tap
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
               },
             ),
             ListTile(
@@ -131,7 +127,7 @@ class DashboardPage extends StatelessWidget {
           Expanded(
             child: Center(
               child: Text(
-                'Welcome to the Dashboard',
+                'Welcome to the Dashboard!',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),

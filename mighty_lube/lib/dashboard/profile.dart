@@ -8,7 +8,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Profile',
+          'Profile:',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -23,7 +23,7 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionHeader('Personal Details'),
+              _buildSectionHeader('Personal Details:'),
               const SizedBox(height: 10),
               _buildProfileCard(
                 context,
@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              _buildSectionHeader('Company Information'),
+              _buildSectionHeader('Company Information:'),
               const SizedBox(height: 10),
               _buildProfileCard(
                 context,
@@ -55,7 +55,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              _buildSectionHeader('Password Change'),
+              _buildSectionHeader('Password Change:'),
               const SizedBox(height: 10),
               _buildProfileCard(
                 context,
