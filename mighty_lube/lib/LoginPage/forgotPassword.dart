@@ -77,7 +77,8 @@ class ForgotPasswordPage extends StatelessWidget {
                     const SizedBox(height: 20),
                     const Text(
                       'Username or Email:',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -85,7 +86,8 @@ class ForgotPasswordPage extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 15),
                         filled: true,
                         fillColor: Colors.grey[100],
                         hintText: 'Enter Username or Email',

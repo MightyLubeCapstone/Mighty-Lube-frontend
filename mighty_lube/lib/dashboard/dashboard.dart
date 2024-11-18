@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mighty_lube/main.dart';
-import '../dashboard/profile.dart'; 
-
-
+import 'package:mighty_lube/app_state.dart';
+import '../dashboard/profile.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -33,7 +31,8 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100), // Increased height for the AppBar
+        preferredSize:
+            const Size.fromHeight(100), // Increased height for the AppBar
         child: AppBar(
           backgroundColor: const Color(0xFF579AF6),
           elevation: 0,
@@ -47,12 +46,14 @@ class DashboardPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.account_circle, color: Colors.white),
+                      icon:
+                          const Icon(Icons.account_circle, color: Colors.white),
                       onPressed: () {
                         // Navigate to Profile Page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ProfilePage()),
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
                         );
                       },
                     ),
@@ -63,7 +64,8 @@ class DashboardPage extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         // Add Cart functionality
                       },
@@ -115,12 +117,10 @@ class DashboardPage extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
-              onTap: () {
-                // Navigate back to the login page
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
+              onTap: () async {
+                await ApiState().logoutUser();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (route) => false);
               },
             ),
           ],

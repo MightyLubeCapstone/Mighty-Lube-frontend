@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dashboard/dashboard.dart';
 import 'LoginPage/createAccount.dart';
 import 'LoginPage/forgotPassword.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/app_state.dart';
 
 void main() {
   runApp(const MainApp());
@@ -19,8 +19,8 @@ class MainApp extends StatelessWidget {
       initialRoute:
           '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
       routes: {
-        '/login': (context) => const LoginPage(),
-        '/createAccount': (context) => const CreateAccountPage(),
+        '/login': (context) => LoginPage(),
+        '/createAccount': (context) => CreateAccountPage(),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
         '/dashboard': (context) => const DashboardPage(),
       },
@@ -50,8 +50,53 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoggedIn = false;
+
+  Future<void> tryLogin() async {
+    final username = usernameController.text;
+    final password = passwordController.text;
+
+    if (username.isNotEmpty && password.isNotEmpty) {
+      try {
+        bool loginSuccess = await ApiState().loginUser(username, password);
+        //if (!mounted) return;
+        print('$loginSuccess');
+        if (loginSuccess) {
+          isLoggedIn = true;
+          Navigator.pushNamed(context, '/dashboard');
+        } else {
+          isLoggedIn = false;
+          showError(context, 'Login failed');
+        }
+      } catch (e) {
+        showError(context, 'Failed to login');
+      }
+    } else {
+      showError(context, 'Please enter a username and password');
+    }
+  }
+
+  void showError(BuildContext context, String message) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                title: const Text("Login Error"),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  )
+                ]));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +158,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       TextField(
+                        controller: usernameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -131,6 +177,8 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       TextField(
+                        controller: passwordController,
+                        obscureText: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -159,8 +207,7 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          // Add login functionality here
-                          Navigator.pushNamed(context, '/dashboard');
+                          tryLogin();
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 15),
