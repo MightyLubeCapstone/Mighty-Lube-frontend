@@ -49,7 +49,7 @@ class ConfigurationSection extends StatelessWidget {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
               builder: (context) => FractionallySizedBox(
-                heightFactor: 0.9, // Ensures 90% of the screen is used
+                heightFactor: 0.90, // Ensures 90% of the screen is used
                 child: Padding(
                   padding: EdgeInsets.only(
                     left: 20,

@@ -28,7 +28,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/FGLM', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
@@ -58,13 +58,13 @@ class HeaderLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 150,
+      height: 180,
       color: const Color.fromARGB(255, 87, 154, 246),
       child: Center(
         child: SvgPicture.asset(
           'assets/WhiteML_Logo-w-tag-vector.svg',
-          width: 130,
-          height: 130,
+          width: 100,
+          height: 150,
           color: const Color.fromARGB(255, 249, 249, 250),
         ),
       ),

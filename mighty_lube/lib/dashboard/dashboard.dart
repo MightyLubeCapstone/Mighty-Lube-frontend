@@ -42,7 +42,7 @@ class DashboardPage extends StatelessWidget {
             children: [
               const HeaderLogo(), // Full header logo
               Positioned(
-                top: 40, // Adjust position as needed
+                top: 50, // Adjust position as needed
                 right: 10,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

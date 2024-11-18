@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/dashboard/profile.dart';
 import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'related_products_page.dart'; // Related products section
@@ -44,26 +45,24 @@ class _FGLMPageState extends State<FGLMPage> {
               Center(
                 child: SvgPicture.asset(
                   'assets/WhiteML_Logo-w-tag-vector.svg',
-                  width: 175, // Increased width for a larger logo
-                  height: 175, // Adjust height proportionally
+                  width: 100, // Increased width for a larger logo
+                  height: 150, // Adjust height proportionally
                   color: Colors.white,
                 ),
               ),
               // Profile and Shopping Cart Icons
               Positioned(
-                right: 16,
+                right: 10,
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.account_circle,
-                          color: Colors.white, size: 28),
+                      icon: const Icon(Icons.account_circle,color: Colors.white),
                       onPressed: () {
-                        // Navigate to profile page
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfilePage()),);
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.shopping_cart,
-                          color: Colors.white, size: 28),
+                      icon: const Icon(Icons.shopping_cart,color: Colors.white),
                       onPressed: () {
                         // Navigate to shopping cart
                       },
@@ -76,13 +75,15 @@ class _FGLMPageState extends State<FGLMPage> {
         ),
       ),
       body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0), // Add padding to the top and bottom
+      child: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFFF3F4F6),
+        backgroundColor: const Color.fromARGB(202, 215, 217, 223),
         selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: const Color.fromARGB(255, 68, 66, 66),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -102,6 +103,8 @@ class _FGLMPageState extends State<FGLMPage> {
           ),
         ],
       ),
+    ),
     );
   }
 }
+
