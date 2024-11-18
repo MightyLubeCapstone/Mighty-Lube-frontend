@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/dashboard/configurations.dart';
 import 'package:mighty_lube/dashboard/drafts.dart';
 import 'package:mighty_lube/main.dart';
+import '../app_state.dart';
 import '../dashboard/profile.dart';
 
 class HeaderLogo extends StatelessWidget {
@@ -114,12 +115,10 @@ class DashboardPage extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
-              onTap: () {
-                // Navigate back to the login page
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
+              onTap: () async {
+                await ApiState().logoutUser();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (route) => false);
               },
             ),
           ],

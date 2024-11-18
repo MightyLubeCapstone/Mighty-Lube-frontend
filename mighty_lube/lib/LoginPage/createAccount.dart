@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/app_state.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -22,8 +23,102 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class CreateAccountPage extends StatelessWidget {
+class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
+
+  @override
+  State<CreateAccountPage> createState() => _CreateAccountPageState();
+}
+
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  final TextEditingController companyController = TextEditingController();
+
+  final TextEditingController firstNameController = TextEditingController();
+
+  final TextEditingController lastNameController = TextEditingController();
+
+  final TextEditingController phoneController = TextEditingController();
+
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController usernameController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  String? countrytype;
+
+  Future<void> createAccount(BuildContext context) async {
+    final companyName = companyController.text;
+    final firstName = firstNameController.text;
+    final lastName = lastNameController.text;
+    final phoneNumber = phoneController.text;
+    final email = emailController.text;
+    final username = usernameController.text;
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    if (password != confirmPassword) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                  title: const Text('Error'),
+                  content: const Text('Passwords do not match'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Ok'),
+                    )
+                  ]));
+      return;
+    }
+
+    try {
+      bool success = await ApiState().makeAccount(username, password, firstName,
+          lastName, email, phoneNumber, companyName, countrytype ?? "");
+
+      print(success);
+      print(firstName);
+      print(lastName);
+      print(phoneNumber);
+      print(email);
+      print(username);
+      print(password);
+      print(countrytype);
+
+      if (success) {
+        Navigator.pushNamed(context, '/dashboard');
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                    title: const Text('Error'),
+                    content:
+                        const Text(' Error 1: '), //testing error, will change
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Ok'),
+                      )
+                    ]));
+      }
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                  title: const Text('Error'),
+                  content:
+                      const Text(' Error 2 :'), //testing error, will change
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Ok'),
+                    )
+                  ]));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,43 +161,55 @@ class CreateAccountPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    buildTextField('Company Name:*', 'Company Name'),
+                    buildTextField(
+                        'Company Name:*', 'Company Name', companyController),
                     const SizedBox(height: 15),
                     const Text('Name:*'),
                     const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
-                          child: buildTextField('', 'First Name'),
+                          child: buildTextField(
+                              '', 'First Name', firstNameController),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: buildTextField('', 'Last Name'),
+                          child: buildTextField(
+                              '', 'Last Name', lastNameController),
                         ),
                       ],
                     ),
                     const SizedBox(height: 15),
-                    buildTextField('Phone Number:', 'Phone Number'),
+                    buildTextField(
+                        'Phone Number:', 'Phone Number', phoneController),
                     const SizedBox(height: 15),
-                    buildTextField('Email Address:*', 'Email Address'),
+                    buildTextField(
+                        'Email Address:*', 'Email Address', emailController),
                     const SizedBox(height: 15),
-                    buildTextField('Username:*', 'Username'),
+                    buildTextField(
+                        'Username:*', 'Username', usernameController),
                     const SizedBox(height: 15),
-                    buildTextField('Password:*', 'Enter Password',
+                    buildTextField(
+                        'Password:*', 'Enter Password', passwordController,
                         obscureText: true),
                     const SizedBox(height: 15),
-                    buildTextField('', 'Confirm Password', obscureText: true),
+                    buildTextField(
+                        '', 'Confirm Password', confirmPasswordController,
+                        obscureText: true),
                     const SizedBox(height: 15),
                     const Text('Country:'),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
+                      value: countrytype,
                       items: const [
                         DropdownMenuItem(value: 'USA', child: Text('USA')),
                         DropdownMenuItem(
                             value: 'Canada', child: Text('Canada')),
                         DropdownMenuItem(value: 'UK', child: Text('UK')),
                       ],
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        countrytype = value;
+                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -116,7 +223,8 @@ class CreateAccountPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     buildGradientButton('Register', () {
-                      // Register functionality
+                      createAccount(
+                          context); // Call createAccount method on button press
                     }),
                     const SizedBox(height: 10),
                     buildGrayButton('Cancel', () {
@@ -133,13 +241,16 @@ class CreateAccountPage extends StatelessWidget {
   }
 
   // Helper method to create text fields with consistent styling
-  Widget buildTextField(String label, String hint, {bool obscureText = false}) {
+  Widget buildTextField(
+      String label, String hint, TextEditingController controller,
+      {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label.isNotEmpty) Text(label),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
             border: OutlineInputBorder(
