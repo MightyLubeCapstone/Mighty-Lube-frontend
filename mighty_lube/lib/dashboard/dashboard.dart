@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/dashboard/configurations.dart';
+import 'package:mighty_lube/dashboard/drafts.dart';
 import 'package:mighty_lube/main.dart';
-import '../dashboard/profile.dart'; 
-
-
+import '../dashboard/profile.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -33,7 +33,8 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100), // Increased height for the AppBar
+        preferredSize:
+            const Size.fromHeight(100), // Increased height for the AppBar
         child: AppBar(
           backgroundColor: const Color(0xFF579AF6),
           elevation: 0,
@@ -53,7 +54,8 @@ class DashboardPage extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         // Add Cart functionality
                       },
@@ -82,7 +84,8 @@ class DashboardPage extends StatelessWidget {
                 // Handle Configurations tap
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  MaterialPageRoute(
+                      builder: (context) => const ConfigurationsPage()),
                 );
               },
             ),
@@ -93,7 +96,7 @@ class DashboardPage extends StatelessWidget {
                 // Handle Drafts tap
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  MaterialPageRoute(builder: (context) => const DraftsPage()),
                 );
               },
             ),

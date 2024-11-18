@@ -17,8 +17,6 @@ class DraftsPage extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFF579AF6),
       ),
-      
     );
   }
-
 }

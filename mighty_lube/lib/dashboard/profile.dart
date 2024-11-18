@@ -34,8 +34,8 @@ class ProfilePage extends StatelessWidget {
                   buildTextFieldWithIcon(
                       Icons.person, 'Last Name:', 'Enter last name', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(
-                      Icons.account_circle, 'Display Name:', 'Enter display name', context),
+                  buildTextFieldWithIcon(Icons.account_circle, 'Display Name:',
+                      'Enter display name', context),
                 ],
               ),
               const SizedBox(height: 20),
@@ -44,14 +44,14 @@ class ProfilePage extends StatelessWidget {
               _buildProfileCard(
                 context,
                 children: [
-                  buildTextFieldWithIcon(
-                      Icons.business, 'Company Name:', 'Enter company name', context),
+                  buildTextFieldWithIcon(Icons.business, 'Company Name:',
+                      'Enter company name', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(
-                      Icons.phone, 'Phone Number:', 'Enter phone number', context),
+                  buildTextFieldWithIcon(Icons.phone, 'Phone Number:',
+                      'Enter phone number', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(
-                      Icons.email, 'Email Address:', 'Enter email address', context),
+                  buildTextFieldWithIcon(Icons.email, 'Email Address:',
+                      'Enter email address', context),
                 ],
               ),
               const SizedBox(height: 20),
@@ -60,16 +60,16 @@ class ProfilePage extends StatelessWidget {
               _buildProfileCard(
                 context,
                 children: [
-                  buildTextFieldWithIcon(
-                      Icons.lock, 'Current Password:', 'Enter current password', context,
+                  buildTextFieldWithIcon(Icons.lock, 'Current Password:',
+                      'Enter current password', context,
                       obscureText: true),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(
-                      Icons.lock_outline, 'New Password:', 'Enter new password', context,
+                  buildTextFieldWithIcon(Icons.lock_outline, 'New Password:',
+                      'Enter new password', context,
                       obscureText: true),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(
-                      Icons.lock_outline, 'Confirm Password:', 'Confirm new password', context,
+                  buildTextFieldWithIcon(Icons.lock_outline,
+                      'Confirm Password:', 'Confirm new password', context,
                       obscureText: true),
                 ],
               ),
@@ -126,12 +126,13 @@ class ProfilePage extends StatelessWidget {
       style: const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Color.fromARGB(255, 0, 0, 0), 
+        color: Color.fromARGB(255, 0, 0, 0),
       ),
     );
   }
 
-  Widget _buildProfileCard(BuildContext context, {required List<Widget> children}) {
+  Widget _buildProfileCard(BuildContext context,
+      {required List<Widget> children}) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -164,13 +165,15 @@ class ProfilePage extends StatelessWidget {
         TextField(
           obscureText: obscureText,
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.black), // Add color for consistency
+            prefixIcon:
+                Icon(icon, color: Colors.black), // Add color for consistency
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 15),
             filled: true,
-            fillColor: const Color.fromARGB(170, 255, 255, 255), // Match the input box color in LoginPage
+            fillColor: const Color.fromARGB(
+                170, 255, 255, 255), // Match the input box color in LoginPage
             hintText: hint,
             hintStyle: const TextStyle(
               color: Colors.grey, // Match hint text color in LoginPage
@@ -181,5 +184,3 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
-
-

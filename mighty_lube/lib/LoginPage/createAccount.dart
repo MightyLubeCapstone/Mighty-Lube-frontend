@@ -88,7 +88,8 @@ class CreateAccountPage extends StatelessWidget {
                     const SizedBox(height: 15),
                     buildTextField('Username:*', 'Username'),
                     const SizedBox(height: 15),
-                    buildTextField('Password:*', 'Enter Password', obscureText: true),
+                    buildTextField('Password:*', 'Enter Password',
+                        obscureText: true),
                     const SizedBox(height: 15),
                     buildTextField('', 'Confirm Password', obscureText: true),
                     const SizedBox(height: 15),
@@ -97,7 +98,8 @@ class CreateAccountPage extends StatelessWidget {
                     DropdownButtonFormField<String>(
                       items: const [
                         DropdownMenuItem(value: 'USA', child: Text('USA')),
-                        DropdownMenuItem(value: 'Canada', child: Text('Canada')),
+                        DropdownMenuItem(
+                            value: 'Canada', child: Text('Canada')),
                         DropdownMenuItem(value: 'UK', child: Text('UK')),
                       ],
                       onChanged: (value) {},
@@ -108,7 +110,8 @@ class CreateAccountPage extends StatelessWidget {
                         filled: true,
                         fillColor: Colors.grey[100],
                         hintText: 'Select Country',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 20),
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -142,7 +145,8 @@ class CreateAccountPage extends StatelessWidget {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             filled: true,
             fillColor: Colors.grey[100],
             hintText: hint,
@@ -200,4 +204,3 @@ class CreateAccountPage extends StatelessWidget {
     );
   }
 }
-

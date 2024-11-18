@@ -2,21 +2,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-// login in pages 
+// login in pages
 import 'LoginPage/createAccount.dart';
 import 'LoginPage/forgotPassword.dart';
 
-// dashboard pages 
+// dashboard pages
 import 'dashboard/dashboard.dart';
 import 'dashboard/configurations.dart';
 import 'dashboard/drafts.dart';
 import 'dashboard/profile.dart';
 
 // protien pages
-import 'protien/FGLM.dart';
-import 'protien/FGCO.dart';
-
-
+import 'protien/FGLM/FGLM.dart';
+import 'protien/FGCO/FGCO.dart';
 
 void main() {
   runApp(const MainApp());
@@ -29,15 +27,16 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
-      initialRoute: '/dashboard', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+      initialRoute:
+          '/FGLM', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
-        // login pages 
+        // login pages
         '/login': (context) => const LoginPage(),
         '/createAccount': (context) => const CreateAccountPage(),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
 
-        // dashboard pages 
+        // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
         '/configurations': (context) => const ConfigurationsPage(),
         '/drafts': (context) => const DraftsPage(),
@@ -46,7 +45,6 @@ class MainApp extends StatelessWidget {
         // protien protien pages
         '/FGLM': (context) => const FGLMPage(),
         '/FGCO': (context) => const FGCOPage(),
-
       },
       debugShowCheckedModeBanner: false,
     );
@@ -131,7 +129,8 @@ class LoginPage extends StatelessWidget {
                     const SizedBox(height: 20),
                     const Text(
                       'Username:',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -139,7 +138,8 @@ class LoginPage extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 15),
                         filled: true,
                         fillColor: Colors.grey[100],
                       ),
@@ -147,7 +147,8 @@ class LoginPage extends StatelessWidget {
                     const SizedBox(height: 20),
                     const Text(
                       'Password:',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -156,7 +157,8 @@ class LoginPage extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 15),
                         filled: true,
                         fillColor: Colors.grey[100],
                       ),
