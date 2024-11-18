@@ -1,9 +1,20 @@
+// just flutter pages
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dashboard/dashboard.dart';
+
+// login in pages
 import 'LoginPage/createAccount.dart';
 import 'LoginPage/forgotPassword.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+// dashboard pages
+import 'dashboard/dashboard.dart';
+import 'dashboard/configurations.dart';
+import 'dashboard/drafts.dart';
+import 'dashboard/profile.dart';
+
+// protien pages
+import 'protien/FGLM/FGLM.dart';
+import 'protien/FGCO/FGCO.dart';
 
 void main() {
   runApp(const MainApp());
@@ -18,11 +29,22 @@ class MainApp extends StatelessWidget {
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
           '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+
       routes: {
+        // login pages
         '/login': (context) => const LoginPage(),
         '/createAccount': (context) => const CreateAccountPage(),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
+
+        // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
+        '/configurations': (context) => const ConfigurationsPage(),
+        '/drafts': (context) => const DraftsPage(),
+        '/profile': (context) => const ProfilePage(),
+
+        // protien protien pages
+        '/FGLM': (context) => const FGLMPage(),
+        '/FGCO': (context) => const FGCOPage(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -79,125 +101,134 @@ class LoginPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Center(
-                        child: Text(
-                          'Welcome Back!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Center(
-                        child: Text(
-                          'Login to your account',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Username:',
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Text(
+                        'Welcome Back!',
                         style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 15),
-                          filled: true,
-                          fillColor: Colors.grey[100],
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          letterSpacing: 1.2,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Password:',
+                    ),
+                    const SizedBox(height: 10),
+                    const Center(
+                      child: Text(
+                        'Login to your account',
                         style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 15),
-                          filled: true,
-                          fillColor: Colors.grey[100],
+                          fontSize: 16,
+                          color: Colors.grey,
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/forgotPassword');
-                          },
-                          child: const Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                              fontSize: 14,
-                            ),
-                          ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Username:',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 15),
+                        filled: true,
+                        fillColor: Colors.grey[100],
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Password:',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 15),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
                         onPressed: () {
-                          // Add login functionality here
+                          Navigator.pushNamed(context, '/forgotPassword');
+                        },
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: const LinearGradient(
+                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
                           Navigator.pushNamed(context, '/dashboard');
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/createAccount');
-                          },
-                          child: const Text(
-                            'Create Account',
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: const LinearGradient(
+                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/createAccount');
+                        },
+                        child: const Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
