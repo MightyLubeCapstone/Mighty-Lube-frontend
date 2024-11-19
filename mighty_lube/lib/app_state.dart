@@ -18,12 +18,9 @@ class ApiState extends ChangeNotifier {
     String country,
   ) async {
     try {
-      print('making acc');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       final response =
           await http.post(Uri.parse('$baseUrl/api/users'), headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         'firstName': firstName,
         'lastName': lastName,
         'username': username,
@@ -34,21 +31,14 @@ class ApiState extends ChangeNotifier {
         'country': country,
       });
 
-      print({prefs.getString('sessionID')});
-      print(response.statusCode);
-      print(username);
-      print(password);
-
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
-        await prefs.setBool('isLoggedIn', true);
+        await prefs.setBool('isLoggedIn', true); // we'll talk about this one
 
         return true;
       } else {
-        print(response.statusCode);
-        print(response.body);
         print('Account creation failed: ${response.body}');
         return false;
       }
@@ -77,11 +67,8 @@ class ApiState extends ChangeNotifier {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
         await prefs.setBool('isLoggedIn', true);
-        print('Logged in');
         return true;
       } else {
-        print('not working');
-        print(response.statusCode);
         print(response.body);
         return false;
       }
@@ -97,17 +84,26 @@ class ApiState extends ChangeNotifier {
       final url = Uri.parse('$baseUrl/api/sessions');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('sessionID');
-      final response = await http.delete(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-      );
-      await prefs.remove('sessionID');
-      await prefs.setBool('isLoggedIn', false);
+      if (token == null) {
+        // send back to homepage with an error message
+      } else {
+        final response = await http.delete(
+          url,
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+        if (response.statusCode == 200) {
+          // no error
+        } else {
+          // error message, either way still going to send back to login screen
+        }
+        await prefs.remove('sessionID');
+        await prefs.setBool('isLoggedIn', false); // will talk about this too
+      }
     } catch (error) {
-      print("Error logging out: $error");
-      error.toString();
+      print("Error logging out: ${error.toString()}");
     } finally {
       print('logged out');
     }

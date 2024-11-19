@@ -31,7 +31,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/FGLM', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
@@ -87,15 +87,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool isLoggedIn = false;
 
-  Future<void> tryLogin() async {
+  Future<void> login() async {
     final username = usernameController.text;
     final password = passwordController.text;
 
     if (username.isNotEmpty && password.isNotEmpty) {
       try {
         bool loginSuccess = await ApiState().loginUser(username, password);
-        //if (!mounted) return;
-        print('$loginSuccess');
         if (loginSuccess) {
           isLoggedIn = true;
           Navigator.pushNamed(context, '/dashboard');
@@ -243,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          tryLogin();
+                          login(); // since it could take a bit, look into loading icons
                         },
                         child: const Text(
                           'Login',
