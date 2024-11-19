@@ -18,6 +18,7 @@ class ApiState extends ChangeNotifier {
     String country,
   ) async {
     try {
+      print('making acc');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final response =
           await http.post(Uri.parse('$baseUrl/api/users'), headers: {
@@ -32,6 +33,8 @@ class ApiState extends ChangeNotifier {
         'companyName': companyName,
         'country': country,
       });
+
+      print({prefs.getString('sessionID')});
       print(response.statusCode);
       print(username);
       print(password);
@@ -39,8 +42,8 @@ class ApiState extends ChangeNotifier {
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        //await prefs.setString('sessionID', responseData['sessionID']);
-        //await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('sessionID', responseData['sessionID']);
+        await prefs.setBool('isLoggedIn', true);
 
         return true;
       } else {
@@ -100,14 +103,13 @@ class ApiState extends ChangeNotifier {
           'Content-Type': 'application/json',
         },
       );
+      await prefs.remove('sessionID');
+      await prefs.setBool('isLoggedIn', false);
     } catch (error) {
       print("Error logging out: $error");
       error.toString();
     } finally {
-      // print(token);
       print('logged out');
-      // await prefs.remove('sessionID');
-      // await prefs.setBool('isLoggedIn', false);
     }
   }
 }
