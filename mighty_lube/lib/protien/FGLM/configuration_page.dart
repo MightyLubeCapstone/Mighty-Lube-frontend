@@ -137,7 +137,6 @@ class ConfigurationSection extends StatelessWidget {
           buildTextField('Chain Pin Type *'),
         ),
         buildSectionDivider(),
-
         buildSectionTitle('Conveyor Dimensions & Speed'),
         buildTwoFieldRow(
           buildTextField('Conveyor Length'),
@@ -145,17 +144,16 @@ class ConfigurationSection extends StatelessWidget {
         ),
         buildTwoFieldRow(
           buildTextField('Conveyor Speed (Min/Max)'),
-          buildDropdownField('Conveyor Speed Unit', ['Feet / minute', 'Meters / minute']),
+          buildDropdownField(
+              'Conveyor Speed Unit', ['Feet / minute', 'Meters / minute']),
         ),
         buildSectionDivider(),
-
         buildSectionTitle('Conveyor Movement Details'),
         buildTwoFieldRow(
           buildTextField('Indexing or Variable Speed Conditions'),
           buildTextField('Direction of Travel'),
         ),
         buildSectionDivider(),
-
         buildSectionTitle('Conveyor Material & Style'),
         buildTwoFieldRow(
           buildTextField('What Type of Metal *'),
@@ -166,16 +164,15 @@ class ConfigurationSection extends StatelessWidget {
           buildTextField('Type of Trolley *'),
         ),
         buildSectionDivider(),
-
         buildSectionTitle('Environmental Details'),
         buildTextField('Application Environment *'),
         buildTextField('Temperature of Surrounding Area'),
         buildTwoFieldRow(
           buildTextField('Is the Conveyor Loaded or Unloaded? *'),
-          buildTextField('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *'),
+          buildTextField(
+              'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *'),
         ),
         buildSectionDivider(),
-
         buildSectionTitle('Attachments'),
         buildTextField('I Have A Plant Layout To Attach'),
         buildTextField('I Have The Required Pictures Of Each Chain To Attach'),

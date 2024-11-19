@@ -107,6 +107,3 @@ class RelatedProductsSection extends StatelessWidget {
     );
   }
 }
-
-
-

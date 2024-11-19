@@ -16,6 +16,9 @@ import 'dashboard/profile.dart';
 import 'protien/FGLM/FGLM.dart';
 import 'protien/FGCO/FGCO.dart';
 
+// api imports
+import 'app_state.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -72,8 +75,55 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoggedIn = false;
+
+  Future<void> tryLogin() async {
+    final username = usernameController.text;
+    final password = passwordController.text;
+
+    if (username.isNotEmpty && password.isNotEmpty) {
+      try {
+        bool loginSuccess = await ApiState().loginUser(username, password);
+        //if (!mounted) return;
+        print('$loginSuccess');
+        if (loginSuccess) {
+          isLoggedIn = true;
+          Navigator.pushNamed(context, '/dashboard');
+        } else {
+          isLoggedIn = false;
+          showError(context, 'Login failed');
+        }
+      } catch (e) {
+        showError(context, 'Failed to login');
+      }
+    } else {
+      showError(context, 'Please enter a username and password');
+    }
+  }
+
+  void showError(BuildContext context, String message) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                title: const Text("Login Error"),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  )
+                ]));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +184,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     TextField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -152,6 +203,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     TextField(
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -191,7 +243,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/dashboard');
+                          tryLogin();
                         },
                         child: const Text(
                           'Login',
