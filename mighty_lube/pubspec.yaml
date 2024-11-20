@@ -7,6 +7,7 @@ environment:
   sdk: ^3.5.2
 
 dependencies:
+  dropdown_search: ^5.0.2
   flutter:
     sdk: flutter
 
@@ -22,3 +23,4 @@ flutter:
     - assets/ML_Logo-w-tag-vector.svg
     - assets/WhiteML_Logo-w-tag-vector.svg
     - assets/FGLM.png
+    - assets/countries.json

@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -22,8 +25,30 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class CreateAccountPage extends StatelessWidget {
+class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
+
+  @override
+  _CreateAccountPageState createState() => _CreateAccountPageState();
+}
+
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  List<String> _countries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCountries();
+  }
+
+  // Load countries dynamically from a JSON file
+  Future<void> _loadCountries() async {
+    final String response = await rootBundle.loadString('assets/countries.json');
+    final List<dynamic> data = json.decode(response);
+    setState(() {
+      _countries = data.cast<String>();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,31 +113,60 @@ class CreateAccountPage extends StatelessWidget {
                     const SizedBox(height: 15),
                     buildTextField('Username:*', 'Username'),
                     const SizedBox(height: 15),
-                    buildTextField('Password:*', 'Enter Password',
-                        obscureText: true),
+                    buildTextField('Password:*', 'Enter Password',obscureText: true),
                     const SizedBox(height: 15),
                     buildTextField('', 'Confirm Password', obscureText: true),
                     const SizedBox(height: 15),
                     const Text('Country:'),
                     const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
-                      items: const [
-                        DropdownMenuItem(value: 'USA', child: Text('USA')),
-                        DropdownMenuItem(
-                            value: 'Canada', child: Text('Canada')),
-                        DropdownMenuItem(value: 'UK', child: Text('UK')),
-                      ],
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    DropdownSearch<String>(
+                      items: _countries,
+                      selectedItem: null,
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: 'Country',
+                          hintText: 'Type or select a country',
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF4D86F5),
+                              width: 2,
+                            ),
+                          ),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        hintText: 'Select Country',
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 20),
                       ),
+                      popupProps: PopupProps.dialog(
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            hintText: 'Search countries...',
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                        fit: FlexFit.tight,
+                        dialogProps: DialogProps(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        print('Selected country: $value');
+                      },
                     ),
                     const SizedBox(height: 30),
                     buildGradientButton('Register', () {
@@ -204,3 +258,4 @@ class CreateAccountPage extends StatelessWidget {
     );
   }
 }
+

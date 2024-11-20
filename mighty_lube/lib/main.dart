@@ -13,8 +13,8 @@ import 'dashboard/drafts.dart';
 import 'dashboard/profile.dart';
 
 // protien pages
-import 'protien/FGLM/FGLM.dart';
-import 'protien/FGCO/FGCO.dart';
+import 'protien/FGLM/UI/FGLM.dart';
+import 'protien/FGCO/UI/FGCO.dart';
 
 void main() {
   runApp(const MainApp());
@@ -28,7 +28,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/FGLM', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
