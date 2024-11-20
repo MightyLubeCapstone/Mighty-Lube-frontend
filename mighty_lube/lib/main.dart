@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 // login in pages
-import 'LoginPage/createAccount.dart';
-import 'LoginPage/forgotPassword.dart';
+import 'LoginPage/UI/createAccount.dart';
+import 'LoginPage/UI/forgotPassword.dart';
 
 // dashboard pages
-import 'dashboard/dashboard.dart';
-import 'dashboard/configurations.dart';
-import 'dashboard/drafts.dart';
-import 'dashboard/profile.dart';
+import 'dashboard/UI/dashboard.dart';
+import 'dashboard/UI/configurations.dart';
+import 'dashboard/UI/drafts.dart';
+import 'dashboard/UI/profile.dart';
 
 // protien pages
-import 'protien/FGLM/FGLM.dart';
-import 'protien/FGCO/FGCO.dart';
+import 'protien/FGLM/UI/FGLM.dart';
+import 'protien/FGCO/UI/FGCO.dart';
 
 // api imports
-import 'app_state.dart';
+import 'LoginPage/API/app_state.dart';
 
 void main() {
   runApp(const MainApp());
