@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mighty_lube/dashboard/profile.dart';
+import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'related_products_page.dart'; // Related products section

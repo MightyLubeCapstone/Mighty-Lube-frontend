@@ -9,11 +9,11 @@ class ImageSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Title Section
-        Padding(
-          padding: const EdgeInsets.all(20.0),
+        const Padding(
+          padding: EdgeInsets.all(20.0),
           child: Text(
             'Food Grade Lubrication and Monitor',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.black,
