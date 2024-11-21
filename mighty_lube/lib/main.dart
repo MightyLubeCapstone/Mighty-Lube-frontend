@@ -16,9 +16,13 @@ import 'dashboard/UI/profile.dart';
 // protien pages
 import 'protien/FGLM/UI/FGLM.dart';
 import 'protien/FGCO/UI/FGCO.dart';
+import 'protien/protienHome.dart';
 
 // application pages
 import 'application/UI/applicationHome.dart';
+
+// industrial pages
+import 'industrial/industrialHome.dart';
 
 // api imports
 import 'loginPage/API/app_state.dart';
@@ -50,11 +54,15 @@ class MainApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
 
         // protien pages
+        '/protienHome': (context) => const ProteinHome(),
         '/FGLM': (context) => const FGLMPage(),
         '/FGCO': (context) => const FGCOPage(),
 
         // application pages
         '/application': (context) => const ApplicationPage(),
+
+        // industrial pages
+        '/idustrial': (context) => const ApplicationPage(),
       },
       debugShowCheckedModeBanner: false,
     );
