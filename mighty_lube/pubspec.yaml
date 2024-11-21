@@ -12,6 +12,7 @@ dependencies:
   http: ^1.2.2
   provider: ^6.1.2
   shared_preferences: ^2.3.2
+  dropdown_search: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +26,4 @@ flutter:
     - assets/ML_Logo-w-tag-vector.svg
     - assets/WhiteML_Logo-w-tag-vector.svg
     - assets/FGLM.png
+    - assets/countries.json
