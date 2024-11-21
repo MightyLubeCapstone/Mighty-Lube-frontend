@@ -157,8 +157,8 @@ class ProfilePage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w500, // Match the weight in LoginPage
-            color: Colors.black, // Match the text color in LoginPage
+            fontWeight: FontWeight.w500, 
+            color: Colors.black, 
           ),
         ),
         const SizedBox(height: 8),
@@ -166,17 +166,16 @@ class ProfilePage extends StatelessWidget {
           obscureText: obscureText,
           decoration: InputDecoration(
             prefixIcon:
-                Icon(icon, color: Colors.black), // Add color for consistency
+                Icon(icon, color: Colors.black), 
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 15),
             filled: true,
-            fillColor: const Color.fromARGB(
-                170, 255, 255, 255), // Match the input box color in LoginPage
+            fillColor: const Color.fromARGB(132, 255, 255, 255), 
             hintText: hint,
             hintStyle: const TextStyle(
-              color: Colors.grey, // Match hint text color in LoginPage
+              color: Colors.grey, 
             ),
           ),
         ),
