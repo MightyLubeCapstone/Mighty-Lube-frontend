@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
+import 'package:mighty_lube/protien/protienHome.dart';
 
 
 class HeaderLogo extends StatelessWidget {
@@ -118,7 +119,7 @@ class ApplicationPage extends StatelessWidget {
                     imagePath: 'assets/Protein.png',
                     onTap: () {
                       // Navigate to Protein page
-                       Navigator.push(context,MaterialPageRoute(builder: (context) => const DashboardPage()),);
+                       Navigator.push(context,MaterialPageRoute(builder: (context) => const ProteinHome()),);
                       print('Navigated to Protein');
                     },
                   ),
