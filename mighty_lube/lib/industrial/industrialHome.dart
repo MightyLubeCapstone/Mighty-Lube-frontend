@@ -173,10 +173,10 @@ Widget _buildClickableImageCard({
                 imagePath,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'Image not found',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,
                         fontStyle: FontStyle.italic,

@@ -1,6 +1,5 @@
 // just flutter pages
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 // login in pages
 import 'loginPage/UI/createAccount.dart';
@@ -25,7 +24,6 @@ import 'application/UI/applicationHome.dart';
 import 'industrial/industrialHome.dart';
 
 // api imports
-import 'loginPage/API/app_state.dart';
 
 void main() {
   runApp(const MainApp());
@@ -39,7 +37,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/idustrial', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/FGLM', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages

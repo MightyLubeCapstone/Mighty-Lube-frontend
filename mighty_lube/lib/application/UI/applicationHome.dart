@@ -79,13 +79,13 @@ class ApplicationPage extends StatelessWidget {
                     // Navigate to Home
                     Navigator.push(context,MaterialPageRoute(builder: (context) => const DashboardPage()),);
                   },
-                  child: Row(
+                  child: const Row(
                   children: [
                     Icon(
                       Icons.home,
                       color: Colors.blue, // Blue color for the icon
                     ),
-                    const SizedBox(width: 4), // Space between icon and arrow
+                    SizedBox(width: 4), // Space between icon and arrow
                   ],
                 ),
                 ),
@@ -164,10 +164,10 @@ class ApplicationPage extends StatelessWidget {
                 imagePath,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'Image not found',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,
                         fontStyle: FontStyle.italic,
