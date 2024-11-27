@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/dashboard/UI/drafts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../LoginPage/API/app_state.dart';
 import 'profile.dart';
 
@@ -28,6 +29,27 @@ class HeaderLogo extends StatelessWidget {
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
+
+  Future<String> getUsername() async {
+    //not working
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? username = prefs.getString('username');
+      print(username);
+      final userInfo = await ApiState().getUser(username!);
+      print(userInfo);
+
+      String firstName = userInfo['firstName'] ?? '';
+      String lastName = userInfo['lastName'] ?? '';
+      print(firstName);
+      print(lastName);
+
+      return '$firstName $lastName';
+    } catch (e) {
+      print(e);
+      return 'Error fetching name';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,13 +145,24 @@ class DashboardPage extends StatelessWidget {
           ],
         ),
       ),
-      body: const Column(
+      body: Column(
         children: [
           Expanded(
             child: Center(
-              child: Text(
-                'Welcome to the Dashboard!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              child: FutureBuilder<String>(
+                future: getUsername(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    print(snapshot);
+                    return Text(
+                      'Welcome to the Dashboard, ${snapshot.data}!',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
             ),
           ),
