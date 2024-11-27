@@ -1,9 +1,11 @@
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mighty_lube/LoginPage/API/app_state.dart';
 import 'package:password_strength_checker/password_strength_checker.dart';
 import 'dart:async';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:mighty_lube/loginPage/API/app_state.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -43,6 +45,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
+  List<String> _countries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCountries();
+  }
+  // Load countries dynamically from a JSON file
+  Future<void> _loadCountries() async {
+    final String response = await rootBundle.loadString('assets/countries.json');
+    final List<dynamic> data = json.decode(response);
+    setState(() {
+      _countries = data.cast<String>();
+    });
+  }
 
   String? countrytype;
   String? _errorPassword;
@@ -298,27 +316,82 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     const SizedBox(height: 15),
                     const Text('Country:'),
                     const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
-                      value: countrytype,
-                      items: const [
-                        DropdownMenuItem(value: 'USA', child: Text('USA')),
-                        DropdownMenuItem(
-                            value: 'Canada', child: Text('Canada')),
-                        DropdownMenuItem(value: 'UK', child: Text('UK')),
-                      ],
-                      onChanged: (value) {
-                        countrytype = value;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      DropdownSearch<String>(
+                      items: _countries, // List of countries
+                      selectedItem: countrytype,
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200], // Softer background color
+                          hintText: 'Select Country',
+                          hintStyle: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey, // Subtle hint text
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        hintText: 'Select Country',
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 20),
                       ),
+                      popupProps: PopupProps.dialog(
+                        showSearchBox: true,
+                        dialogProps: DialogProps(
+                          backgroundColor: Colors.white,
+                          elevation: 8,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            labelText: 'Search Country', // Label for the search box
+                            labelStyle: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey, // Text color for the label
+                            ),
+                            hintText: 'Type to search...', // Placeholder text
+                            hintStyle: TextStyle(
+                              color: Colors.grey, // Lighter color for the placeholder
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          ),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black, // Text color for user input
+                          ),
+                        ),
+                        itemBuilder: (context, item, isSelected) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            child: Text(
+                              item,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: isSelected ? Colors.blue : Colors.black, // Highlight selected item
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      dropdownBuilder: (context, selectedItem) {
+                        return Text(
+                          selectedItem ?? "Select Country",
+                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                        );
+                      },
+                      filterFn: (item, filter) {
+                        return item.toLowerCase().startsWith(filter.toLowerCase());
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          countrytype = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 30),
                     buildGradientButton('Register', () {
@@ -378,7 +451,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         gradient: const LinearGradient(
-          colors: [Color(0xFF73A1F9), Color(0xFF4D86F5)],
+          colors: [Colors.blueAccent, Colors.lightBlueAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
