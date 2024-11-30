@@ -5,6 +5,7 @@ import 'package:mighty_lube/LoginPage/UI/loginPage.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/dashboard/UI/drafts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../loginPage/API/app_state.dart';
 import 'profile.dart';
 
@@ -31,6 +32,27 @@ class HeaderLogo extends StatelessWidget {
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
+
+  Future<String> getUsername() async {
+    //not working
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? username = prefs.getString('username');
+      print(username);
+      final userInfo = await ApiState().getUser(username!);
+      print(userInfo);
+
+      String firstName = userInfo['firstName'] ?? '';
+      String lastName = userInfo['lastName'] ?? '';
+      print(firstName);
+      print(lastName);
+
+      return '$firstName $lastName';
+    } catch (e) {
+      print(e);
+      return 'Error fetching name';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
