@@ -97,10 +97,6 @@ class _FGLMPageState extends State<FGLMPage> {
             icon: Icon(Icons.list),
             label: 'Configuration',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Others',
-          ),
         ],
       ),
     ),

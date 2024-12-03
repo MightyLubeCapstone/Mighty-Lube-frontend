@@ -4,7 +4,6 @@ import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 
-
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
 
@@ -32,40 +31,43 @@ class ApplicationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: PreferredSize(
-      preferredSize: const Size.fromHeight(100),
-      child: AppBar(
-        automaticallyImplyLeading: false, // Removes the back button
-        backgroundColor: const Color(0xFF579AF6),
-        elevation: 0,
-        flexibleSpace: Stack(
-          children: [
-            const HeaderLogo(), // Full header logo
-            Positioned(
-              top: 50, // Adjust position as needed
-              right: 10,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.account_circle,color: Colors.white),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: AppBar(
+          automaticallyImplyLeading: false, // Removes the back button
+          backgroundColor: const Color(0xFF579AF6),
+          elevation: 0,
+          flexibleSpace: Stack(
+            children: [
+              const HeaderLogo(), // Full header logo
+              Positioned(
+                top: 50, // Adjust position as needed
+                right: 10,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.account_circle, color: Colors.white),
                       onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfilePage()),);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ProfilePage()),
+                        );
                       },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart, color: Colors.white),
-                    onPressed: () {
-                      // Add Cart functionality
-                    },
-                  ),
-                ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                      onPressed: () {
+                        // Add Cart functionality
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(
@@ -77,29 +79,44 @@ class ApplicationPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     // Navigate to Home
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => const DashboardPage()),);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
+                    );
                   },
                   child: const Row(
-                  children: [
-                    Icon(
-                      Icons.home,
-                      color: Colors.blue, // Blue color for the icon
-                    ),
-                    SizedBox(width: 4), // Space between icon and arrow
-                  ],
-                ),
+                    children: [
+                      Icon(
+                        Icons.home,
+                        color: Colors.blue, // Blue color for the icon
+                      ),
+                      SizedBox(width: 4), // Space between icon and arrow
+                    ],
+                  ),
                 ),
                 const Text(' > '),
-                const Text(
-                  'Application',
-                  style: TextStyle(color: Colors.black54),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to the Application page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Application',
+                    style: TextStyle(
+                      color: Colors.blue, // Blue color for clickable text
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
 
             // Vertical list of images with text
-             Expanded(
+            Expanded(
               child: ListView(
                 children: [
                   _buildClickableImageCard(
@@ -108,9 +125,10 @@ class ApplicationPage extends StatelessWidget {
                     imagePath: 'assets/Industrial.png',
                     onTap: () {
                       // Navigate to Industrial page
-                      // Replace the placeholder with your navigation code
-                       Navigator.push(context,MaterialPageRoute(builder: (context) => const DashboardPage()),);
-                      print('Navigated to Industrial');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DashboardPage()),
+                      );
                     },
                   ),
                   _buildClickableImageCard(
@@ -119,8 +137,10 @@ class ApplicationPage extends StatelessWidget {
                     imagePath: 'assets/Protein.png',
                     onTap: () {
                       // Navigate to Protein page
-                       Navigator.push(context,MaterialPageRoute(builder: (context) => const ProteinHome()),);
-                      print('Navigated to Protein');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProteinHome()),
+                      );
                     },
                   ),
                   _buildClickableImageCard(
@@ -129,8 +149,10 @@ class ApplicationPage extends StatelessWidget {
                     imagePath: 'assets/Technician.png',
                     onTap: () {
                       // Navigate to Technician page
-                       Navigator.push(context,MaterialPageRoute(builder: (context) => const DashboardPage()),);
-                      print('Navigated to Technician');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DashboardPage()),
+                      );
                     },
                   ),
                 ],
@@ -142,8 +164,7 @@ class ApplicationPage extends StatelessWidget {
     );
   }
 
-
-   Widget _buildClickableImageCard({
+  Widget _buildClickableImageCard({
     required BuildContext context,
     required String title,
     required String imagePath,

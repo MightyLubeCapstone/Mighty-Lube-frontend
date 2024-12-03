@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/protien/FGCO/UI/FGCO.dart';
@@ -25,7 +26,6 @@ class HeaderLogo extends StatelessWidget {
     );
   }
 }
-
 
 class ProteinHome extends StatelessWidget {
   const ProteinHome({super.key});
@@ -76,18 +76,18 @@ class ProteinHome extends StatelessWidget {
                   const Text(
                     'Protein',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 0),
-                  // Breadcrumb navigation with home icon
+                  const SizedBox(height: 4),
+                  // Breadcrumb navigation with clickable segments
                   Row(
                     children: [
                       GestureDetector(
                         onTap: () {
-                         Navigator.push(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const DashboardPage()),
                           );
@@ -98,14 +98,36 @@ class ProteinHome extends StatelessWidget {
                         ),
                       ),
                       const Text(' > ', style: TextStyle(color: Colors.black54)),
-                      const Text(
-                        'Application',
-                        style: TextStyle(color: Colors.black54),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ApplicationPage()), // Replace with Application page navigation
+                          );
+                        },
+                        child: const Text(
+                          'Application',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                       const Text(' > ', style: TextStyle(color: Colors.black54)),
-                      const Text(
-                        'Protein',
-                        style: TextStyle(color: Colors.black),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ProteinHome()), // Replace with current Protein page navigation if needed
+                          );
+                        },
+                        child: const Text(
+                          'Protein',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -129,10 +151,10 @@ class ProteinHome extends StatelessWidget {
                     title: 'Food Grade Cleaner OP-8SS',
                     imagePath: 'assets/FGCO.png',
                     onTap: () {
-                      // Navigate to Industrial page
-                      // Replace the placeholder with your navigation code
-                       Navigator.push(context,MaterialPageRoute(builder: (context) => const FGCOPage()),);
-                      print('Navigated to Industrial');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const FGCOPage()),
+                      );
                     },
                   ),
                   _buildClickableImageCard(
@@ -140,9 +162,10 @@ class ProteinHome extends StatelessWidget {
                     title: 'Food Grade Lubrication and Monitor',
                     imagePath: 'assets/FGLM.png',
                     onTap: () {
-                      // Navigate to Protein page
-                       Navigator.push(context,MaterialPageRoute(builder: (context) => const FGLMPage()),);
-                      print('Navigated to Protein');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const FGLMPage()),
+                      );
                     },
                   ),
                 ],
@@ -153,7 +176,6 @@ class ProteinHome extends StatelessWidget {
       ),
     );
   }
-
 
   // Reusable widget for image cards
   Widget _buildClickableImageCard({
