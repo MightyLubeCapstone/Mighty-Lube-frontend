@@ -1,7 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/LoginPage/API/app_state.dart';
 
-class ConfigurationSection extends StatelessWidget {
+class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
+
+  @override
+  State<ConfigurationSection> createState() => _ConfigurationSectionState();
+}
+
+class _ConfigurationSectionState extends State<ConfigurationSection> {
+  final Map<String, TextEditingController> controllers = {
+    'conveyorName': TextEditingController(),
+    'conveyorChainSize': TextEditingController(),
+    'chainManufacturer': TextEditingController(),
+    'wheelManufacturer': TextEditingController(),
+    'chainPinType': TextEditingController(),
+    'conveyorLength': TextEditingController(),
+    'conveyorLengthUnit': TextEditingController(),
+    'conveyorSpeed': TextEditingController(),
+    'conveyorSpeedUnit': TextEditingController(),
+    'indexing': TextEditingController(),
+    'directionOfTravel': TextEditingController(),
+    'metalType': TextEditingController(),
+    'conveyorStyle': TextEditingController(),
+    'trolleyColor': TextEditingController(),
+    'trolleyType': TextEditingController(),
+    'applicationEnvironment': TextEditingController(),
+    'temperature': TextEditingController(),
+    'loaded': TextEditingController(),
+    'swing': TextEditingController(),
+    'plantLayout': TextEditingController(),
+    'chainPictures': TextEditingController(),
+  };
+
+  String? conveyorLengthUnit;
+  String? conveyorSpeedUnit;
+  Map<String, dynamic> formData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    controllers.forEach((key, controller) {
+      controller.addListener(() {
+        formData[key] = controller.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    controllers.values.forEach((controller) => controller.dispose());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +66,59 @@ class ConfigurationSection extends StatelessWidget {
         buildGradientButton(context, 'Measurement'),
       ],
     );
+  }
+
+  void getFglm() async {
+    final fglmData = await ApiState().getFglm();
+
+    if (fglmData != null) {
+      print(fglmData);
+    } else {
+      print('Failed to get FGLM data');
+    }
+  }
+
+  void fglmForm() async {
+    final fglmData = {
+      'conveyorName': controllers['conveyorName']?.text,
+      'conveyorChainSize': controllers['conveyorChainSize']?.text,
+      'chainManufacturer': controllers['chainManufacturer']?.text,
+      'wheelManufacturer': controllers['wheelManufacturer']?.text,
+      'chainPinType': controllers['chainPinType']?.text,
+      'conveyorLength': controllers['conveyorLength']?.text,
+      'conveyorLengthUnit': conveyorLengthUnit,
+      'conveyorSpeed': controllers['conveyorSpeed']?.text,
+      'conveyorSpeedUnit': conveyorSpeedUnit,
+      'indexing': controllers['indexing']?.text,
+      'directionOfTravel': controllers['directionOfTravel']?.text,
+      'metalType': controllers['metalType']?.text,
+      'conveyorStyle': controllers['conveyorStyle']?.text,
+      'trolleyColor': controllers['trolleyColor']?.text,
+      'trolleyType': controllers['trolleyType']?.text,
+      'applicationEnvironment': controllers['applicationEnvironment']?.text,
+      'temperature': controllers['temperature']?.text,
+      'loaded': controllers['loaded']?.text,
+      'swing': controllers['swing']?.text,
+      'plantLayout': controllers['plantLayout']?.text,
+      'chainPictures': controllers['chainPictures']?.text,
+    };
+    final success = await ApiState().addFglm(fglmData);
+
+    if (success) {
+      print('Successfully added FGLM data');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Successfully added data'),
+        ),
+      );
+    } else {
+      print('Failed to add FGLM data');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to add data'),
+        ),
+      );
+    }
   }
 
   // Create gradient buttons
@@ -129,53 +232,67 @@ class ConfigurationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle('Conveyor Details'),
-        buildTextField('Name of Conveyor System'),
-        buildTextField('Conveyor Chain Size'),
-        buildTextField('Protein: Chain Manufacturer'),
+        buildTextField('Name of Conveyor System', 'conveyorName'),
+        buildTextField('Conveyor Chain Size', 'conveyorChainSize'),
+        buildTextField('Protein: Chain Manufacturer', 'chainManufacturer'),
         buildTwoFieldRow(
-          buildTextField('Wheel Manufacturer'),
-          buildTextField('Chain Pin Type *'),
+          buildTextField('Wheel Manufacturer', 'wheelManufacturer'),
+          buildTextField('Chain Pin Type *', 'chainPinType'),
         ),
         buildSectionDivider(),
         buildSectionTitle('Conveyor Dimensions & Speed'),
         buildTwoFieldRow(
-          buildTextField('Conveyor Length'),
-          buildDropdownField('Conveyor Length Unit', ['Feet', 'Meters']),
+          buildTextField('Conveyor Length', 'conveyorLength'),
+          buildDropdownField('Conveyor Length Unit', ['Feet', 'Meters'],
+              (value) {
+            setState(() {
+              conveyorLengthUnit = value;
+              formData['conveyorLengthUnit'] = value;
+            });
+          }),
         ),
         buildTwoFieldRow(
-          buildTextField('Conveyor Speed (Min/Max)'),
+          buildTextField('Conveyor Speed (Min/Max)', 'conveyorSpeed'),
           buildDropdownField(
-              'Conveyor Speed Unit', ['Feet / minute', 'Meters / minute']),
+              'Conveyor Speed Unit', ['Feet / minute', 'Meters / minute'],
+              (value) {
+            setState(() {
+              conveyorSpeedUnit = value;
+              formData['conveyorSpeedUnit'] = value;
+            });
+          }),
         ),
         buildSectionDivider(),
         buildSectionTitle('Conveyor Movement Details'),
         buildTwoFieldRow(
-          buildTextField('Indexing or Variable Speed Conditions'),
-          buildTextField('Direction of Travel'),
+          buildTextField('Indexing or Variable Speed Conditions', 'indexing'),
+          buildTextField('Direction of Travel', 'directionOfTravel'),
         ),
         buildSectionDivider(),
         buildSectionTitle('Conveyor Material & Style'),
         buildTwoFieldRow(
-          buildTextField('What Type of Metal *'),
-          buildTextField('Style of Conveyor *'),
+          buildTextField('What Type of Metal *', 'metalType'),
+          buildTextField('Style of Conveyor *', 'conveyorStyle'),
         ),
         buildTwoFieldRow(
-          buildTextField('Color of Trolley *'),
-          buildTextField('Type of Trolley *'),
+          buildTextField('Color of Trolley *', 'trolleyColor'),
+          buildTextField('Type of Trolley *', 'trolleyType'),
         ),
         buildSectionDivider(),
         buildSectionTitle('Environmental Details'),
-        buildTextField('Application Environment *'),
-        buildTextField('Temperature of Surrounding Area'),
+        buildTextField('Application Environment *', 'applicationEnvironment'),
+        buildTextField('Temperature of Surrounding Area', 'temperature'),
         buildTwoFieldRow(
-          buildTextField('Is the Conveyor Loaded or Unloaded? *'),
+          buildTextField('Is the Conveyor Loaded or Unloaded? *', 'loaded'),
           buildTextField(
-              'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *'),
+              'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
+              'swing'),
         ),
         buildSectionDivider(),
         buildSectionTitle('Attachments'),
-        buildTextField('I Have A Plant Layout To Attach'),
-        buildTextField('I Have The Required Pictures Of Each Chain To Attach'),
+        buildTextField('I Have A Plant Layout To Attach', 'plantLayout'),
+        buildTextField('I Have The Required Pictures Of Each Chain To Attach',
+            'chainPictures'),
       ],
     );
   }
@@ -205,10 +322,11 @@ class ConfigurationSection extends StatelessWidget {
   }
 
   // Helper to build a single text field
-  Widget buildTextField(String hint) {
+  Widget buildTextField(String hint, String key) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
+        controller: controllers[key],
         decoration: InputDecoration(
           labelText: hint,
           border: OutlineInputBorder(
@@ -231,7 +349,8 @@ class ConfigurationSection extends StatelessWidget {
   }
 
   // Helper to build a dropdown field
-  Widget buildDropdownField(String label, List<String> options) {
+  Widget buildDropdownField(
+      String label, List<String> options, ValueChanged<String?> onChanged) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -241,13 +360,14 @@ class ConfigurationSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        value: formData[label],
         items: options
             .map((option) => DropdownMenuItem<String>(
                   value: option,
                   child: Text(option),
                 ))
             .toList(),
-        onChanged: (value) {},
+        onChanged: onChanged,
       ),
     );
   }

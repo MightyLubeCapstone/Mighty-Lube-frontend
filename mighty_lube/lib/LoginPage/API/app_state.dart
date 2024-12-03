@@ -66,6 +66,8 @@ class ApiState extends ChangeNotifier {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
         await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('currentUsername', username);
+
         return true;
       } else {
         print(response.body);
@@ -140,29 +142,23 @@ class ApiState extends ChangeNotifier {
 
   Future<Map<String, String>> getUser(String username) async {
     try {
-      final url = Uri.parse('$baseUrl/api/users/userinfo');
+      final url = Uri.parse('$baseUrl/api/users/userinfo?username=$username');
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      username = prefs.getString('currentUsername') ?? username;
 
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         'username': username,
       });
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         print(responseData);
-        if (responseData.containsKey['firstName'] &&
-            responseData.containsKey['lastName']) {
-          return {
-            'firstName': responseData['firstName'],
-            'lastName': responseData['lastName'],
-          };
-        } else {
-          return {
-            'firstName': 'Error',
-            'lastName': 'Error',
-          };
-        }
+        return {
+          'firstName': responseData['firstName'],
+          'lastName': responseData['lastName'],
+        };
       } else {
         print('Failed to get user');
         return {'error': 'Error fetching user'};
@@ -170,6 +166,89 @@ class ApiState extends ChangeNotifier {
     } catch (error) {
       print("Error getting user: $error");
       return {'error': 'Server error'};
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserInfo(String username) async {
+    try {
+      final url = Uri.parse('$baseUrl/api/users/userinfo');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      username = prefs.getString('currentUsername') ?? username;
+
+      final token = prefs.getString('sessionID');
+      if (token == null) {
+        print('No session ID found');
+        return null;
+      }
+
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'username': username,
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print(responseData);
+        return responseData;
+      } else {
+        print('Failed to get user info');
+        return null;
+      }
+    } catch (error) {
+      print("Error getting user info: $error");
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> getFglm() async {
+    try {
+      final url = Uri.parse('$baseUrl/api/fglm');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['fglmEntries'] is List) {
+          return List<Map<String, dynamic>>.from(responseData['fglmEntries']);
+        } else {
+          print('response here : $responseData');
+          return null;
+        }
+      }
+    } catch (error) {
+      print("Error getting FGLM: $error");
+      return null;
+    }
+    return null;
+  }
+
+  Future<bool> addFglm(Map<String, dynamic> fglmData) async {
+    try {
+      final url = Uri.parse('$baseUrl/api/fglm');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      final response = await http.post(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
+        'fglmData': jsonEncode(fglmData),
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print(responseData);
+        return true;
+      } else {
+        print('Failed to add FGLM ${response.body}');
+        return false;
+      }
+    } catch (error) {
+      print("Error adding FGLM: $error");
+      return false;
     }
   }
 }

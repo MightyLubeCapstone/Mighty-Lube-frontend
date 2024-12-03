@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/loginPage/API/app_state.dart';
@@ -37,10 +36,17 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoggedIn = false;
+  bool usererror = false;
+  bool passerror = false;
 
   Future<void> login() async {
     final username = usernameController.text;
     final password = passwordController.text;
+
+    setState(() {
+      usererror = false;
+      passerror = false;
+    });
 
     if (username.isNotEmpty && password.isNotEmpty) {
       try {
@@ -49,13 +55,18 @@ class _LoginPageState extends State<LoginPage> {
           isLoggedIn = true;
           Navigator.pushNamed(context, '/dashboard');
         } else {
-          isLoggedIn = false;
-          showError(context, 'Login failed');
+          usererror = true;
+          passerror = true;
+          showError(context, 'Incorrect username or password');
         }
       } catch (e) {
         showError(context, 'Failed to login');
       }
     } else {
+      setState(() {
+        if (username.isEmpty) usererror = true;
+        if (password.isEmpty) passerror = true;
+      });
       showError(context, 'Please enter a username and password');
     }
   }
@@ -137,6 +148,8 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: usererror ? Colors.red : Colors.grey),
                         ),
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 15),
@@ -157,6 +170,8 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: passerror ? Colors.red : Colors.grey),
                         ),
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 15),

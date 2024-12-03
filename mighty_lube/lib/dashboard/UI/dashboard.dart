@@ -6,7 +6,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/dashboard/UI/drafts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../loginPage/API/app_state.dart';
+import 'package:mighty_lube/LoginPage/API/app_state.dart';
 import 'profile.dart';
 
 class HeaderLogo extends StatelessWidget {
@@ -34,20 +34,15 @@ class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   Future<String> getUsername() async {
-    //not working
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? username = prefs.getString('username');
-      print(username);
-      final userInfo = await ApiState().getUser(username!);
-      print(userInfo);
+      String? username = prefs.getString('currentUsername');
 
-      String firstName = userInfo['firstName'] ?? '';
-      String lastName = userInfo['lastName'] ?? '';
-      print(firstName);
-      print(lastName);
+      if (username == null || username.isEmpty) {
+        throw Exception('Username not found');
+      }
 
-      return '$firstName $lastName';
+      return username;
     } catch (e) {
       print(e);
       return 'Error fetching name';
@@ -129,11 +124,12 @@ class DashboardPage extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.account_circle),
               title: const Text('Account Details'),
-              onTap: () {
+              onTap: () async {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfilePage(),
+                    ));
               },
             ),
             ListTile(
@@ -153,29 +149,45 @@ class DashboardPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(
-                    text: 'Hello [User] ',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const TextSpan(
-                    text: '(not User? ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  TextSpan(
-                    text: '(Log out)',
-                    style: const TextStyle(fontSize: 16, color: Colors.blue),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // Navigate to log out
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const LoginPage()),);
-                      },
-                  ),
-                ],
-              ),
-            ),
+            child: FutureBuilder<String>(
+                future: getUsername(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Text('Loading...');
+                  } else if (snapshot.hasError) {
+                    return const Text('Error fetching name');
+                  } else {
+                    return Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Hello ${snapshot.data}, ',
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(
+                            text: '(not ${snapshot.data}? ',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          TextSpan(
+                            text: '(Log out)',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.blue),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // Navigate to log out
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginPage()),
+                                );
+                              },
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -189,17 +201,20 @@ class DashboardPage extends StatelessWidget {
                     style: const TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const ConfigurationsPage()),);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ConfigurationsPage()),
+                        );
                       },
                   ),
                   const TextSpan(
                     text: ', manage your ',
                   ),
 
-
-                // LEAVE THIS SPACING ALONE!!
-                // I FOUND A SPECIAL LEVEL UP PAGE THAT I'M NOT GONNA TOUCH RN
-                // ANTHONY DIDN"T SAY ANYTHING ABOUT THIS SO MAYBE IT'S NOT SUPPOSED TO BE HERE?
+                  // LEAVE THIS SPACING ALONE!!
+                  // I FOUND A SPECIAL LEVEL UP PAGE THAT I'M NOT GONNA TOUCH RN
+                  // ANTHONY DIDN"T SAY ANYTHING ABOUT THIS SO MAYBE IT'S NOT SUPPOSED TO BE HERE?
                   TextSpan(
                     text: 'billing address',
                     style: const TextStyle(color: Colors.blue),
@@ -210,9 +225,6 @@ class DashboardPage extends StatelessWidget {
                       },
                   ),
 
-
-
-
                   const TextSpan(
                     text: ', and ',
                   ),
@@ -220,11 +232,12 @@ class DashboardPage extends StatelessWidget {
                     text: 'edit your password and account details.',
                     style: const TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () {
+                      ..onTap = () async {
                         // Navigate to account details
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ProfilePage()),
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
                         );
                       },
                   ),

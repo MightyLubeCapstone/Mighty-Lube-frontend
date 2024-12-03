@@ -31,40 +31,46 @@ class ApplicationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: PreferredSize(
-      preferredSize: const Size.fromHeight(100),
-      child: AppBar(
-        automaticallyImplyLeading: false, // Removes the back button
-        backgroundColor: const Color(0xFF579AF6),
-        elevation: 0,
-        flexibleSpace: Stack(
-          children: [
-            const HeaderLogo(), // Full header logo
-            Positioned(
-              top: 50, // Adjust position as needed
-              right: 10,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.account_circle,color: Colors.white),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: AppBar(
+          automaticallyImplyLeading: false, // Removes the back button
+          backgroundColor: const Color(0xFF579AF6),
+          elevation: 0,
+          flexibleSpace: Stack(
+            children: [
+              const HeaderLogo(), // Full header logo
+              Positioned(
+                top: 50, // Adjust position as needed
+                right: 10,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon:
+                          const Icon(Icons.account_circle, color: Colors.white),
                       onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfilePage()),);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
                       },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart, color: Colors.white),
-                    onPressed: () {
-                      // Add Cart functionality
-                    },
-                  ),
-                ],
+                    ),
+                    IconButton(
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
+                      onPressed: () {
+                        // Add Cart functionality
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(
@@ -76,17 +82,21 @@ class ApplicationPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     // Navigate to Home
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => const DashboardPage()),);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardPage()),
+                    );
                   },
                   child: Row(
-                  children: [
-                    Icon(
-                      Icons.home,
-                      color: Colors.blue, // Blue color for the icon
-                    ),
-                    const SizedBox(width: 4), // Space between icon and arrow
-                  ],
-                ),
+                    children: [
+                      Icon(
+                        Icons.home,
+                        color: Colors.blue, // Blue color for the icon
+                      ),
+                      const SizedBox(width: 4), // Space between icon and arrow
+                    ],
+                  ),
                 ),
                 const Text(' > '),
                 const Text(
@@ -99,23 +109,23 @@ class ApplicationPage extends StatelessWidget {
 
             // Vertical list of images with text
             Expanded(
-            child: ListView(
-              children: [
-                _buildImageCard(
-                  title: 'Industrial (77)',
-                  imagePath: 'assets/Industrial.png',
-                ),
-                _buildImageCard(
-                  title: 'Protein (2)',
-                  imagePath: 'assets/Protein.png',
-                ),
-                _buildImageCard(
-                  title: 'Technician (1)',
-                  imagePath: 'assets/Technician.png',
-                ),
-              ],
+              child: ListView(
+                children: [
+                  _buildImageCard(
+                    title: 'Industrial (77)',
+                    imagePath: 'assets/Industrial.png',
+                  ),
+                  _buildImageCard(
+                    title: 'Protein (2)',
+                    imagePath: 'assets/Protein.png',
+                  ),
+                  _buildImageCard(
+                    title: 'Technician (1)',
+                    imagePath: 'assets/Technician.png',
+                  ),
+                ],
+              ),
             ),
-          ),
           ],
         ),
       ),
@@ -124,44 +134,43 @@ class ApplicationPage extends StatelessWidget {
 
   // Reusable widget for image cards
   Widget _buildImageCard({required String title, required String imagePath}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 250,
-          width: double.infinity,
-          color: Colors.black12, // Fallback background color
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Center(
-                child: Text(
-                  'Image not found',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 250,
+            width: double.infinity,
+            color: Colors.black12, // Fallback background color
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Center(
+                  child: Text(
+                    'Image not found',
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
+        ],
+      ),
+    );
+  }
 }
