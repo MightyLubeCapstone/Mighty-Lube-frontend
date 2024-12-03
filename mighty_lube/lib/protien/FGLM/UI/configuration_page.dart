@@ -58,16 +58,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return ListView(
       padding: const EdgeInsets.all(20.0),
       children: [
-        buildGradientButton(context, 'General Information'),
-        buildGradientButton(context, 'Customer Power Utilities'),
-        buildGradientButton(context, 'Monitoring Features Requested'),
-        buildGradientButton(context, 'Conveyor Specifications'),
-        buildGradientButton(context, 'Wire'),
-        buildGradientButton(context, 'Measurement'),
+        buildGradientButton(context, 'General Information', buildGeneralInformationContent()),
+        buildGradientButton(context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent()),
+        buildGradientButton(context, 'New/Adding Monitoring System', buildNewMonitoringSystemContent()),
+        buildGradientButton(context, 'Monitoring Features Requested', buildMonitoringFeaturesContent()),
+        buildGradientButton(context, 'Conveyor Specifications', buildConveyorSpecificationsContent()),
+        buildGradientButton(context, 'Wire', buildWireContent()),
       ],
     );
   }
-
   void getFglm() async {
     final fglmData = await ApiState().getFglm();
 
@@ -122,7 +121,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   // Create gradient buttons
-  Widget buildGradientButton(BuildContext context, String title) {
+  Widget buildGradientButton(BuildContext context, String title, Widget content) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
@@ -143,68 +142,65 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ),
       child: TextButton(
         onPressed: () {
-          if (title == 'General Information') {
-            // Show detailed form for General Information
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => FractionallySizedBox(
-                heightFactor: 0.90, // Ensures 90% of the screen is used
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        Center(
-                          child: Container(
-                            width: 50,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) => FractionallySizedBox(
+              heightFactor: 0.90,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: 50,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'General Information',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      content,
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        buildFormSections(), // Form sections with dividers
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Save'),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Save'),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
               ),
-            );
-          }
+            ),
+          );
         },
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
@@ -226,8 +222,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Build form sections with dividers
-  Widget buildFormSections() {
+  Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -280,7 +275,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         buildSectionDivider(),
         buildSectionTitle('Environmental Details'),
-        buildTextField('Application Environment *', 'applicationEnvironment'),
         buildTextField('Temperature of Surrounding Area', 'temperature'),
         buildTwoFieldRow(
           buildTextField('Is the Conveyor Loaded or Unloaded? *', 'loaded'),
@@ -297,7 +291,69 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Helper to build a section title
+  Widget buildCustomerPowerUtilitiesContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildTextField('Operating Voltage - Single Phase: (Volts/hz)'),
+      ],
+    );
+  }
+
+  Widget buildNewMonitoringSystemContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildTextField('Connecting to Existing Monitoring'),
+        buildTextField('Add New Monitoring System'),
+      ],
+    );
+  }
+
+  Widget buildMonitoringFeaturesContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildTextField('Drive Motor Amp'),
+        buildTextField('Drive Take-up – Air'),
+        buildTextField('Take-Up Distance'),
+        buildTextField('Bent or Missing Trolley Detect'),
+        buildTextField('Lubrication from the Side of Chain'),
+        buildTextField('Lubrication from the Top'),
+      ],
+    );
+  }
+
+  Widget buildConveyorSpecificationsContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildTextField('Lubrication from the Side of Chain'),
+        buildTextField('Lubrication from the Top of Chain'),
+        buildTextField('Time Lubrication'),
+        buildTextField('Reservoir Size'),
+        buildTextField('Is the Conveyor Chain Clean?'),
+        buildTextField('Reservoir Size Quantity'),
+        buildTextField('Time Delay Lubrication'),
+      ],
+    );
+  }
+
+  Widget buildWireContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildTextField('Measurement Unit'),
+        buildTextField('4 Conductor'),
+        buildTextField('7 Conductor'),
+        buildTextField('2 Conductor'),
+        buildTextField('Is the Conveyor Chain Clean?'),
+        buildTextField('Reservoir Size Quantity'),
+        buildTextField('Time Delay Lubrication'),
+      ],
+    );
+  }
+
   Widget buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -312,7 +368,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Helper to build a section divider
   Widget buildSectionDivider() {
     return const Divider(
       color: Colors.grey,
@@ -320,7 +375,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       height: 30,
     );
   }
-
   // Helper to build a single text field
   Widget buildTextField(String hint, String key) {
     return Padding(
@@ -337,7 +391,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Helper to build a row with two fields
   Widget buildTwoFieldRow(Widget first, Widget second) {
     return Row(
       children: [
@@ -347,7 +400,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-
   // Helper to build a dropdown field
   Widget buildDropdownField(
       String label, List<String> options, ValueChanged<String?> onChanged) {

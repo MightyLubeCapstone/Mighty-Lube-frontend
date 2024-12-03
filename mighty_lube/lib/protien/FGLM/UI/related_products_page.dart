@@ -1,7 +1,41 @@
 import 'package:flutter/material.dart';
 
-class RelatedProductsSection extends StatelessWidget {
+class RelatedProductsSection extends StatefulWidget {
   const RelatedProductsSection({super.key});
+
+  @override
+  State<RelatedProductsSection> createState() => _RelatedProductsSectionState();
+}
+
+class _RelatedProductsSectionState extends State<RelatedProductsSection> {
+  // List of image URLs and their respective titles
+  final List<Map<String, String>> products = [
+    {
+      'title': 'Greaser Power Chain',
+      'image': 'assets/greaser_power_chain.png', // Replace with your image paths
+    },
+    {
+      'title': 'OP-52/OP-53',
+      'image': 'assets/op52_op53.png',
+    },
+    {
+      'title': 'Multi Line Monitoring + Lubrication',
+      'image': 'assets/multi_line.png',
+    },
+    {
+      'title': 'Power Brush Cleaning System',
+      'image': 'assets/power_brush.png',
+    },
+  ];
+
+  // Current selected product
+  late Map<String, String> selectedProduct;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedProduct = products[0]; // Default to the first product
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +47,7 @@ class RelatedProductsSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Container(
-            width: 360, // Adjust width for better alignment
+            width: 360,
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -29,7 +63,6 @@ class RelatedProductsSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Title
                 const Padding(
                   padding: EdgeInsets.only(bottom: 18.0),
                   child: Text(
@@ -43,19 +76,49 @@ class RelatedProductsSection extends StatelessWidget {
                   ),
                 ),
 
-                // Buttons
-                buildProductButton(context, 'Greaser Power Chain'),
-                const SizedBox(height: 15),
-                buildProductButton(context, 'OP-52/OP-53'),
-                const SizedBox(height: 20),
-                buildProductButton(
-                  context,
-                  'Multi Line (Permanent) All IN ONE Monitoring + Lubrication',
+                // Display selected image
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to a new page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailPage(
+                          product: selectedProduct,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 2),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Image.asset(
+                      selectedProduct['image']!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
-                buildProductButton(
-                  context,
-                  'OP-8 Power Brush Cleaning System Conveyor Chain & Trolley Wheel Cleaner',
+
+                // Dropdown menu
+                DropdownButton<Map<String, String>>(
+                  value: selectedProduct,
+                  isExpanded: true,
+                  items: products.map((product) {
+                    return DropdownMenuItem(
+                      value: product,
+                      child: Text(product['title']!),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedProduct = value!;
+                    });
+                  },
                 ),
               ],
             ),
@@ -64,44 +127,34 @@ class RelatedProductsSection extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget buildProductButton(BuildContext context, String title) {
-    return Container(
-      width: 310, // Reduced width for better visual spacing
-      height: 70,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF83C9F9), Color(0xFF5CA8F5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+// Product detail page
+class ProductDetailPage extends StatelessWidget {
+  final Map<String, String> product;
+
+  const ProductDetailPage({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(product['title']!),
       ),
-      child: TextButton(
-        onPressed: () {
-          // Add navigation or functionality here
-        },
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              product['title']!,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Image.asset(
+              product['image']!,
+              fit: BoxFit.cover,
+            ),
+          ],
         ),
       ),
     );
