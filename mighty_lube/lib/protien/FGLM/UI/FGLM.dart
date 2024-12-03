@@ -105,6 +105,6 @@ class _FGLMPageState extends State<FGLMPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
