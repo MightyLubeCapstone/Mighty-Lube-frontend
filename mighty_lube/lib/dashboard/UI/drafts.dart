@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 
 class HeaderLogo extends StatelessWidget {
@@ -29,43 +30,9 @@ class DraftsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: AppBar(
-          backgroundColor: const Color(0xFF579AF6),
-          elevation: 0,
-          flexibleSpace: Stack(
-            children: [
-              const HeaderLogo(),
-              Positioned(
-                top: 50,
-                right: 10,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.description, color: Colors.white),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ApplicationPage()),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon:
-                          const Icon(Icons.shopping_cart, color: Colors.white),
-                      onPressed: () {
-                        // Add Cart functionality
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+      appBar: const CustomAppBar(
+        link: ApplicationPage(),
+        customIcon: Icons.description,
       ),
       body: Center(
         child: Padding(

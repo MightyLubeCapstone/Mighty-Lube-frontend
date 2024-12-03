@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
@@ -31,43 +32,7 @@ class ApplicationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: AppBar(
-          automaticallyImplyLeading: false, // Removes the back button
-          backgroundColor: const Color(0xFF579AF6),
-          elevation: 0,
-          flexibleSpace: Stack(
-            children: [
-              const HeaderLogo(), // Full header logo
-              Positioned(
-                top: 50, // Adjust position as needed
-                right: 10,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.account_circle, color: Colors.white),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ProfilePage()),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
-                      onPressed: () {
-                        // Add Cart functionality
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(link: ProfilePage(), customIcon: Icons.account_circle,),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(
@@ -81,7 +46,8 @@ class ApplicationPage extends StatelessWidget {
                     // Navigate to Home
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -100,7 +66,8 @@ class ApplicationPage extends StatelessWidget {
                     // Navigate to the Application page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -127,7 +94,8 @@ class ApplicationPage extends StatelessWidget {
                       // Navigate to Industrial page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const DashboardPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const DashboardPage()),
                       );
                     },
                   ),
@@ -139,7 +107,8 @@ class ApplicationPage extends StatelessWidget {
                       // Navigate to Protein page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ProteinHome()),
+                        MaterialPageRoute(
+                            builder: (context) => const ProteinHome()),
                       );
                     },
                   ),
@@ -151,7 +120,8 @@ class ApplicationPage extends StatelessWidget {
                       // Navigate to Technician page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const DashboardPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const DashboardPage()),
                       );
                     },
                   ),
