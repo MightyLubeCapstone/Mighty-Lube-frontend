@@ -28,6 +28,13 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
+class PWDRequirements {
+  final String name;
+  final bool Function(String) check;
+
+  PWDRequirements(this.name, this.check);
+}
+
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
 
@@ -53,9 +60,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     super.initState();
     _loadCountries();
   }
+
   // Load countries dynamically from a JSON file
   Future<void> _loadCountries() async {
-    final String response = await rootBundle.loadString('assets/countries.json');
+    final String response =
+        await rootBundle.loadString('assets/countries.json');
     final List<dynamic> data = json.decode(response);
     setState(() {
       _countries = data.cast<String>();
@@ -66,7 +75,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String? _errorPassword;
   String? _errorConfirmPassword;
   String? _errorUser;
+  String? _errorEmail;
   Timer? _delay;
+
+  List<PWDRequirements> requirements = [
+    PWDRequirements(
+        'Password must be at least 8 characters', (input) => input.length >= 8),
+    PWDRequirements('Password must contain at least one uppercase letter',
+        (input) => RegExp(r'[A-Z]').hasMatch(input)),
+    PWDRequirements('Password must contain at least one lowercase letter',
+        (input) => RegExp(r'[a-z]').hasMatch(input)),
+    PWDRequirements('Password must contain at least one number',
+        (input) => RegExp(r'[0-9]').hasMatch(input)),
+    PWDRequirements('Password must contain at least one special character',
+        (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input)),
+  ];
+  List<PWDRequirements> _remains = [];
 
   Future<bool> _validateInputs() async {
     _validatePassword(passwordController.text);
@@ -88,7 +112,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void _validatePassword(String password) {
     setState(() {
       _errorPassword = null;
-
+      _remains = requirements.where((req) => !req.check(password)).toList();
       if (RegExp(r'.{8,}').hasMatch(password) == false) {
         _errorPassword = 'Password must be at least 8 characters';
       } else if (RegExp(r'[A-Z]').hasMatch(password) == false) {
@@ -141,6 +165,20 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     }
     _delay = Timer(const Duration(milliseconds: 500), () {
       _validateUser(username);
+    });
+  }
+
+  void _validateEmail(String email) {
+    setState(() {
+      if (email == null || email.isEmpty) {
+        _errorEmail = 'Email is Required';
+      } else if (!RegExp(r'[^@]+@[^@]+\.[^@]+$').hasMatch(email)) {
+        _errorEmail = 'Email must include an @ and a domain(.com, .org, etc)';
+      } else {
+        _errorEmail = null;
+      }
+
+      return null;
     });
   }
 
@@ -275,7 +313,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     const SizedBox(height: 15),
                     buildTextField(
                         'Email Address:*', 'Email Address', emailController,
-                        borderColor: Colors.grey),
+                        borderColor: Colors.grey, onChanged: (value) {
+                      _validateEmail(value);
+                    }, errorText: _errorEmail != null ? '' : null),
+                    if (_errorEmail != null)
+                      Text(
+                        _errorEmail!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     const SizedBox(height: 15),
                     buildTextField('Username:*', 'Username', usernameController,
                         borderColor: Colors.grey, onChanged: (value) {
@@ -294,11 +339,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       passNotifier.value =
                           PasswordStrength.calculate(text: value);
                     }, errorText: _errorPassword != null ? '' : null),
-                    if (_errorPassword != null)
-                      Text(
-                        _errorPassword!,
-                        style: const TextStyle(color: Colors.red),
-                      ),
                     const SizedBox(height: 15),
                     buildTextField('Confirm Password:* ', 'Confirm Password',
                         confirmPasswordController,
@@ -312,11 +352,32 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         style: const TextStyle(color: Colors.red),
                       ),
                     const SizedBox(height: 15),
+                    if (_remains.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Password must meet the following requirements:',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          for (var req in _remains)
+                            Text(
+                              '- ${req.name}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                        ],
+                      ),
+                    const SizedBox(height: 8),
                     PasswordStrengthChecker(strength: passNotifier),
                     const SizedBox(height: 15),
                     const Text('Country:'),
                     const SizedBox(height: 8),
-                      DropdownSearch<String>(
+                    DropdownSearch<String>(
                       items: _countries, // List of countries
                       selectedItem: countrytype,
                       dropdownDecoratorProps: DropDownDecoratorProps(
@@ -325,13 +386,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           filled: true,
-                          fillColor: Colors.grey[200], // Softer background color
+                          fillColor:
+                              Colors.grey[200], // Softer background color
                           hintText: 'Select Country',
                           hintStyle: const TextStyle(
                             fontSize: 16,
                             color: Colors.grey, // Subtle hint text
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 20),
                         ),
                       ),
                       popupProps: PopupProps.dialog(
@@ -345,7 +408,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         ),
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
-                            labelText: 'Search Country', // Label for the search box
+                            labelText:
+                                'Search Country', // Label for the search box
                             labelStyle: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey, // Text color for the label
@@ -357,7 +421,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
                           ),
                           style: const TextStyle(
                             fontSize: 16,
@@ -366,13 +431,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         ),
                         itemBuilder: (context, item, isSelected) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             child: Text(
                               item,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: isSelected ? Colors.blue : Colors.black, // Highlight selected item
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                color: isSelected
+                                    ? Colors.blue
+                                    : Colors.black, // Highlight selected item
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                               ),
                             ),
                           );
@@ -381,11 +451,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       dropdownBuilder: (context, selectedItem) {
                         return Text(
                           selectedItem ?? "Select Country",
-                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
                         );
                       },
                       filterFn: (item, filter) {
-                        return item.toLowerCase().startsWith(filter.toLowerCase());
+                        return item
+                            .toLowerCase()
+                            .startsWith(filter.toLowerCase());
                       },
                       onChanged: (value) {
                         setState(() {

@@ -1,7 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/LoginPage/API/app_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  String? _username;
+
+  Future<void> _loadData() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final username = prefs.getString('currentUsername');
+      print(username);
+
+      setState(() {
+        _username = username;
+      });
+
+      final data = await ApiState().getUserInfo(username!);
+
+      if (data != null) {
+        setState(() {
+          _firstNameController.text = data['firstName'] ?? '';
+          _lastNameController.text = data['lastName'] ?? '';
+        });
+      }
+    } catch (e) {
+      print(e);
+      print('Failed to load data');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +69,14 @@ class ProfilePage extends StatelessWidget {
               _buildProfileCard(
                 context,
                 children: [
-                  buildTextFieldWithIcon(
-                      Icons.person, 'First Name:', 'Enter first name', context),
+                  buildTextFieldWithIcon(Icons.person, 'First Name:',
+                      'Current: ${_firstNameController.text}', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(
-                      Icons.person, 'Last Name:', 'Enter last name', context),
+                  buildTextFieldWithIcon(Icons.person, 'Last Name:',
+                      'Current: ${_lastNameController.text}', context),
                   const SizedBox(height: 15),
                   buildTextFieldWithIcon(Icons.account_circle, 'Display Name:',
-                      'Enter display name', context),
+                      _username ?? 'Loading...', context),
                 ],
               ),
               const SizedBox(height: 20),
@@ -157,25 +198,24 @@ class ProfilePage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w500, 
-            color: Colors.black, 
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 8),
         TextField(
           obscureText: obscureText,
           decoration: InputDecoration(
-            prefixIcon:
-                Icon(icon, color: Colors.black), 
+            prefixIcon: Icon(icon, color: Colors.black),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 15),
             filled: true,
-            fillColor: const Color.fromARGB(132, 255, 255, 255), 
+            fillColor: const Color.fromARGB(132, 255, 255, 255),
             hintText: hint,
             hintStyle: const TextStyle(
-              color: Colors.grey, 
+              color: Colors.grey,
             ),
           ),
         ),

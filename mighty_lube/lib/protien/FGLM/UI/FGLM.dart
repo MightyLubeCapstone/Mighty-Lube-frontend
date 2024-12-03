@@ -56,13 +56,19 @@ class _FGLMPageState extends State<FGLMPage> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.account_circle,color: Colors.white),
+                      icon:
+                          const Icon(Icons.account_circle, color: Colors.white),
                       onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfilePage()),);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.shopping_cart,color: Colors.white),
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         // Navigate to shopping cart
                       },
@@ -99,8 +105,6 @@ class _FGLMPageState extends State<FGLMPage> {
           ),
         ],
       ),
-    ),
     );
   }
 }
-

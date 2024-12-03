@@ -50,7 +50,8 @@ class ConfigurationsPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const ApplicationPage()),
                         );
                       },
                     ),
@@ -67,9 +68,9 @@ class ConfigurationsPage extends StatelessWidget {
             ],
           ),
         ),
-      ), 
+      ),
       body: Column(
-          children: [
+        children: [
           // Header Section
           //const HeaderLogo(),
 
@@ -87,9 +88,10 @@ class ConfigurationsPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ApplicationPage()),
-                        );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ApplicationPage()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF579AF6),

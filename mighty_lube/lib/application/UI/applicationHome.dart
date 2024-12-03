@@ -90,7 +90,7 @@ class ApplicationPage extends StatelessWidget {
                         Icons.home,
                         color: Colors.blue, // Blue color for the icon
                       ),
-                      SizedBox(width: 4), // Space between icon and arrow
+                      const SizedBox(width: 4), // Space between icon and arrow
                     ],
                   ),
                 ),
