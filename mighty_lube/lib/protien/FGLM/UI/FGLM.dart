@@ -91,15 +91,11 @@ class _FGLMPageState extends State<FGLMPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.image),
-            label: 'Image',
+            label: 'Product',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Configuration',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Others',
           ),
         ],
       ),

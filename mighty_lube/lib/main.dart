@@ -1,6 +1,5 @@
 // just flutter pages
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 // login in pages
 import 'loginPage/UI/createAccount.dart';
@@ -16,12 +15,15 @@ import 'dashboard/UI/profile.dart';
 // protien pages
 import 'protien/FGLM/UI/FGLM.dart';
 import 'protien/FGCO/UI/FGCO.dart';
+import 'protien/protienHome.dart';
 
 // application pages
 import 'application/UI/applicationHome.dart';
 
+// industrial pages
+import 'industrial/industrialHome.dart';
+
 // api imports
-import 'loginPage/API/app_state.dart';
 
 void main() {
   runApp(const MainApp());
@@ -35,7 +37,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/dashboard', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/dasboard', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
@@ -50,11 +52,15 @@ class MainApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
 
         // protien pages
+        '/protienHome': (context) => const ProteinHome(),
         '/FGLM': (context) => const FGLMPage(),
         '/FGCO': (context) => const FGCOPage(),
 
         // application pages
         '/application': (context) => const ApplicationPage(),
+
+        // industrial pages
+        '/idustrial': (context) => const IndustrialHome(),
       },
       debugShowCheckedModeBanner: false,
     );
