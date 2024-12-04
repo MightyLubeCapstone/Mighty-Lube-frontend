@@ -12,7 +12,8 @@ class HomeSection extends StatelessWidget {
       children: [
         buildBreadcrumbNavigation(context),
         const Padding(
-          padding: EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 20.0), // Adjusted top padding
+          padding: EdgeInsets.fromLTRB(
+              15.0, 30.0, 15.0, 20.0), // Adjusted top padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -52,7 +53,8 @@ class HomeSection extends StatelessWidget {
               // Navigate to the home page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                MaterialPageRoute(
+                    builder: (context) => const ApplicationPage()),
               );
             },
           ),

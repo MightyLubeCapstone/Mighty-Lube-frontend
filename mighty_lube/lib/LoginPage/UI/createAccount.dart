@@ -416,7 +416,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             ),
                             hintText: 'Type to search...', // Placeholder text
                             hintStyle: const TextStyle(
-                              color: Colors.grey, // Lighter color for the placeholder
+                              color: Colors
+                                  .grey, // Lighter color for the placeholder
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),

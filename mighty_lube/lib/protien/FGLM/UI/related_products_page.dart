@@ -12,7 +12,8 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
   final List<Map<String, String>> products = [
     {
       'title': 'Greaser Power Chain',
-      'image': 'assets/greaser_power_chain.png', // Replace with your image paths
+      'image':
+          'assets/greaser_power_chain.png', // Replace with your image paths
     },
     {
       'title': 'OP-52/OP-53',

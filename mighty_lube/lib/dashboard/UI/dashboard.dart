@@ -34,7 +34,7 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       appBar: const CustomAppBar(
         link: ApplicationPage(),
-        customIcon: Icons.description ,
+        customIcon: Icons.description,
       ),
       drawer: const CustomDrawer(),
       body: Column(

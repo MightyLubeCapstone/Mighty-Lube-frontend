@@ -23,7 +23,6 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-
 class ConfigurationsPage extends StatelessWidget {
   const ConfigurationsPage({super.key});
 
@@ -111,7 +110,6 @@ class ConfigurationsPage extends StatelessWidget {
             ),
           ),
         ],
-
       ),
     );
   }

@@ -14,9 +14,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   String? conveyorLengthUnit = FormAPI().conveyorLengthUnit;
   String? conveyorSpeedUnit = FormAPI().conveyorSpeedUnit;
 
-  void formCall() {
-  final success = FormAPI().fglmForm();
-  if (success) {
+  void formCall() async {
+    final success = await FormAPI().fglmForm();
+    if (success) {
       print('Successfully added FGLM data');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

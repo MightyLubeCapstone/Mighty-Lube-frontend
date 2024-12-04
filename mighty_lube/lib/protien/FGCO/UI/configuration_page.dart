@@ -21,8 +21,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              buildGradientButton(context, 'General Information', buildGeneralInformationContent()),
-              buildGradientButton(context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent()),
+              buildGradientButton(context, 'General Information',
+                  buildGeneralInformationContent()),
+              buildGradientButton(context, 'Customer Power Utilities',
+                  buildCustomerPowerUtilitiesContent()),
             ],
           ),
         ),
@@ -35,7 +37,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Widget buildGradientButton(BuildContext context, String title, Widget content) {
+  Widget buildGradientButton(
+      BuildContext context, String title, Widget content) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
@@ -144,11 +147,28 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle('Conveyor Details'),
-        buildDropdownField('Conveyor Chain Size', ['X348 Chain (3”)', 'X458 Chain (4”)', 'OX678 Chain (6”)', 'Other']),
-        buildDropdownField('Protein: Chain Manufacturer', ['Green Line', 'Frost', 'M&M', 'Stork', 'Meyn', 'Linco', 'DC', 'Merel', 'D&F', 'Other']),
+        buildDropdownField('Conveyor Chain Size', [
+          'X348 Chain (3”)',
+          'X458 Chain (4”)',
+          'OX678 Chain (6”)',
+          'Other'
+        ]),
+        buildDropdownField('Protein: Chain Manufacturer', [
+          'Green Line',
+          'Frost',
+          'M&M',
+          'Stork',
+          'Meyn',
+          'Linco',
+          'DC',
+          'Merel',
+          'D&F',
+          'Other'
+        ]),
         buildSectionDivider(),
         buildSectionTitle('Environmental Details'),
-        buildDropdownField('Is the Conveyor "__" at Planned Install Location', ['Loaded', 'Unloaded']),
+        buildDropdownField('Is the Conveyor "__" at Planned Install Location',
+            ['Loaded', 'Unloaded']),
         buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
@@ -158,7 +178,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)', ['Option 1', 'Option 2', 'Option 3']),
+        buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
+            ['Option 1', 'Option 2', 'Option 3']),
         buildDropdownField(
           'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'],
@@ -221,7 +242,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               if (itemCount > 1) itemCount--;
             });
           },
-          icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
+          icon: const Icon(Icons.remove_circle_outline,
+              color: Colors.blue, size: 30),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -236,7 +258,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               itemCount++;
             });
           },
-          icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
+          icon: const Icon(Icons.add_circle_outline,
+              color: Colors.blue, size: 30),
         ),
       ],
     );
@@ -284,7 +307,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 }
 
-
 Widget buildBreadcrumbNavigation(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
@@ -305,9 +327,9 @@ Widget buildBreadcrumbNavigation(BuildContext context) {
           onTap: () {
             // Navigate to the Protein page
             Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
-              );  // Replace with navigation to your Protein page
+              context,
+              MaterialPageRoute(builder: (context) => const ProteinHome()),
+            ); // Replace with navigation to your Protein page
           },
           child: const Text(
             'Protein',

@@ -6,7 +6,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final IconData customIcon;
 
-  const CustomAppBar({super.key, required this.link, this.height = 100, required this.customIcon});
+  const CustomAppBar(
+      {super.key,
+      required this.link,
+      this.height = 100,
+      required this.customIcon});
 
   @override
   Widget build(BuildContext context) {

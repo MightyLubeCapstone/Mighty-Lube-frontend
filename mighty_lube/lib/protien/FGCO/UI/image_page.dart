@@ -60,7 +60,8 @@ class ImageSection extends StatelessWidget {
               // Navigate to the home page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                MaterialPageRoute(
+                    builder: (context) => const ApplicationPage()),
               );
             },
           ),
@@ -94,4 +95,3 @@ class ImageSection extends StatelessWidget {
     );
   }
 }
-

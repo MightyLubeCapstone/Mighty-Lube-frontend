@@ -54,13 +54,19 @@ class FGCOPageState extends State<FGCOPage> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.account_circle,color: Colors.white),
+                      icon:
+                          const Icon(Icons.account_circle, color: Colors.white),
                       onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfilePage()),);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.shopping_cart,color: Colors.white),
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         // Navigate to shopping cart
                       },
@@ -74,30 +80,31 @@ class FGCOPageState extends State<FGCOPage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0), // Add padding to the top and bottom
-      child: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color.fromARGB(202, 215, 217, 223),
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: const Color.fromARGB(255, 68, 66, 66),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.image),
-            label: 'Product',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Configuration',
-          ),
-        ],
+        padding: const EdgeInsets.symmetric(
+            vertical: 5.0), // Add padding to the top and bottom
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: const Color.fromARGB(202, 215, 217, 223),
+          selectedItemColor: Colors.blueAccent,
+          unselectedItemColor: const Color.fromARGB(255, 68, 66, 66),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.image),
+              label: 'Product',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'Configuration',
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

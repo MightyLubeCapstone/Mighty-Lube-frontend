@@ -5,7 +5,7 @@ class FormAPI {
   String? conveyorLengthUnit;
   String? conveyorSpeedUnit;
   Map<String, dynamic> formData = {};
-  
+
   final Map<String, TextEditingController> controllers = {
     'conveyorName': TextEditingController(),
     'conveyorChainSize': TextEditingController(),
