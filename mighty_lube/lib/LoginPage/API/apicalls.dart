@@ -142,7 +142,7 @@ class ApiState extends ChangeNotifier {
 
   Future<Map<String, String>> getUser(String username) async {
     try {
-      final url = Uri.parse('$baseUrl/api/users/userinfo?username=$username');
+      final url = Uri.parse('$baseUrl/api/users/userinfo');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       username = prefs.getString('currentUsername') ?? username;
 

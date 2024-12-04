@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/API/app_state.dart';
+import 'package:mighty_lube/protien/FGLM/API/flgm_api.dart';
 
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
@@ -9,33 +9,29 @@ class ConfigurationSection extends StatefulWidget {
 }
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
-  final Map<String, TextEditingController> controllers = {
-    'conveyorName': TextEditingController(),
-    'conveyorChainSize': TextEditingController(),
-    'chainManufacturer': TextEditingController(),
-    'wheelManufacturer': TextEditingController(),
-    'chainPinType': TextEditingController(),
-    'conveyorLength': TextEditingController(),
-    'conveyorLengthUnit': TextEditingController(),
-    'conveyorSpeed': TextEditingController(),
-    'conveyorSpeedUnit': TextEditingController(),
-    'indexing': TextEditingController(),
-    'directionOfTravel': TextEditingController(),
-    'metalType': TextEditingController(),
-    'conveyorStyle': TextEditingController(),
-    'trolleyColor': TextEditingController(),
-    'trolleyType': TextEditingController(),
-    'applicationEnvironment': TextEditingController(),
-    'temperature': TextEditingController(),
-    'loaded': TextEditingController(),
-    'swing': TextEditingController(),
-    'plantLayout': TextEditingController(),
-    'chainPictures': TextEditingController(),
-  };
+  final controllers = FormAPI().controllers;
+  final formData = FormAPI().formData;
+  String? conveyorLengthUnit = FormAPI().conveyorLengthUnit;
+  String? conveyorSpeedUnit = FormAPI().conveyorSpeedUnit;
 
-  String? conveyorLengthUnit;
-  String? conveyorSpeedUnit;
-  Map<String, dynamic> formData = {};
+  void formCall() {
+  final success = FormAPI().fglmForm();
+  if (success) {
+      print('Successfully added FGLM data');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Successfully added data'),
+        ),
+      );
+    } else {
+      print('Failed to add FGLM data');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to add data'),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -66,59 +62,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         buildGradientButton(context, 'Measurement'),
       ],
     );
-  }
-
-  void getFglm() async {
-    final fglmData = await ApiState().getFglm();
-
-    if (fglmData != null) {
-      print(fglmData);
-    } else {
-      print('Failed to get FGLM data');
-    }
-  }
-
-  void fglmForm() async {
-    final fglmData = {
-      'conveyorName': controllers['conveyorName']?.text,
-      'conveyorChainSize': controllers['conveyorChainSize']?.text,
-      'chainManufacturer': controllers['chainManufacturer']?.text,
-      'wheelManufacturer': controllers['wheelManufacturer']?.text,
-      'chainPinType': controllers['chainPinType']?.text,
-      'conveyorLength': controllers['conveyorLength']?.text,
-      'conveyorLengthUnit': conveyorLengthUnit,
-      'conveyorSpeed': controllers['conveyorSpeed']?.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'indexing': controllers['indexing']?.text,
-      'directionOfTravel': controllers['directionOfTravel']?.text,
-      'metalType': controllers['metalType']?.text,
-      'conveyorStyle': controllers['conveyorStyle']?.text,
-      'trolleyColor': controllers['trolleyColor']?.text,
-      'trolleyType': controllers['trolleyType']?.text,
-      'applicationEnvironment': controllers['applicationEnvironment']?.text,
-      'temperature': controllers['temperature']?.text,
-      'loaded': controllers['loaded']?.text,
-      'swing': controllers['swing']?.text,
-      'plantLayout': controllers['plantLayout']?.text,
-      'chainPictures': controllers['chainPictures']?.text,
-    };
-    final success = await ApiState().addFglm(fglmData);
-
-    if (success) {
-      print('Successfully added FGLM data');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Successfully added data'),
-        ),
-      );
-    } else {
-      print('Failed to add FGLM data');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to add data'),
-        ),
-      );
-    }
   }
 
   // Create gradient buttons
