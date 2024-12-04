@@ -24,7 +24,6 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-
 class IndustrialHome extends StatelessWidget {
   const IndustrialHome({super.key});
 
@@ -32,7 +31,8 @@ class IndustrialHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(180), // Adjusted for larger header logo
+        preferredSize:
+            const Size.fromHeight(180), // Adjusted for larger header logo
         child: Column(
           children: [
             // Header with logo and icons
@@ -46,16 +46,19 @@ class IndustrialHome extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.account_circle, color: Colors.white),
+                        icon: const Icon(Icons.account_circle,
+                            color: Colors.white),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const ProfilePage()),
+                            MaterialPageRoute(
+                                builder: (context) => const ProfilePage()),
                           );
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                        icon: const Icon(Icons.shopping_cart,
+                            color: Colors.white),
                         onPressed: () {
                           // Add Cart functionality
                         },
@@ -70,7 +73,6 @@ class IndustrialHome extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                
                   const Text(
                     'Industrial',
                     style: TextStyle(
@@ -85,9 +87,10 @@ class IndustrialHome extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                         Navigator.push(
+                          Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const DashboardPage()),
+                            MaterialPageRoute(
+                                builder: (context) => const DashboardPage()),
                           );
                         },
                         child: const Icon(
@@ -95,12 +98,14 @@ class IndustrialHome extends StatelessWidget {
                           color: Colors.blue,
                         ),
                       ),
-                      const Text(' > ', style: TextStyle(color: Colors.black54)),
+                      const Text(' > ',
+                          style: TextStyle(color: Colors.black54)),
                       const Text(
                         'Application',
                         style: TextStyle(color: Colors.black54),
                       ),
-                      const Text(' > ', style: TextStyle(color: Colors.black54)),
+                      const Text(' > ',
+                          style: TextStyle(color: Colors.black54)),
                       const Text(
                         'Industrial',
                         style: TextStyle(color: Colors.black),
@@ -130,7 +135,6 @@ class IndustrialHome extends StatelessWidget {
                       // Navigate to Industrial page
                       // Replace the placeholder with your navigation code
                       // Navigator.push(context,MaterialPageRoute(builder: (context) => const FGCOPage()),);
-                    
                     },
                   ),
                   _buildClickableImageCard(
@@ -138,8 +142,7 @@ class IndustrialHome extends StatelessWidget {
                     title: 'Food Grade Lubrication and Monitor',
                     imagePath: 'assets/',
                     onTap: () {
-                       //Navigator.push(context,MaterialPageRoute(builder: (context) => const FGLMPage()),);
-                
+                      //Navigator.push(context,MaterialPageRoute(builder: (context) => const FGLMPage()),);
                     },
                   ),
                 ],
@@ -151,8 +154,7 @@ class IndustrialHome extends StatelessWidget {
     );
   }
 
-
-Widget _buildClickableImageCard({
+  Widget _buildClickableImageCard({
     required BuildContext context,
     required String title,
     required String imagePath,

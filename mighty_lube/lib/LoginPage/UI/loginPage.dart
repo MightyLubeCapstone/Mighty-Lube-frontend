@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/loginPage/API/app_state.dart';
 
-
-
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
 

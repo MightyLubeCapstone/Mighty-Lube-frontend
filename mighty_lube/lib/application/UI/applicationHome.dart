@@ -32,7 +32,10 @@ class ApplicationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(link: ProfilePage(), customIcon: Icons.account_circle,),
+      appBar: const CustomAppBar(
+        link: ProfilePage(),
+        customIcon: Icons.account_circle,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(

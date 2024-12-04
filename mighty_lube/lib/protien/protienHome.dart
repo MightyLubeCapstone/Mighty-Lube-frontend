@@ -34,7 +34,8 @@ class ProteinHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(180), // Adjusted for larger header logo
+        preferredSize:
+            const Size.fromHeight(180), // Adjusted for larger header logo
         child: Column(
           children: [
             // Header with logo and icons
@@ -48,16 +49,19 @@ class ProteinHome extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.account_circle, color: Colors.white),
+                        icon: const Icon(Icons.account_circle,
+                            color: Colors.white),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const ProfilePage()),
+                            MaterialPageRoute(
+                                builder: (context) => const ProfilePage()),
                           );
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                        icon: const Icon(Icons.shopping_cart,
+                            color: Colors.white),
                         onPressed: () {
                           // Add Cart functionality
                         },
@@ -89,7 +93,8 @@ class ProteinHome extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const DashboardPage()),
+                            MaterialPageRoute(
+                                builder: (context) => const DashboardPage()),
                           );
                         },
                         child: const Icon(
@@ -97,12 +102,15 @@ class ProteinHome extends StatelessWidget {
                           color: Colors.blue,
                         ),
                       ),
-                      const Text(' > ', style: TextStyle(color: Colors.black54)),
+                      const Text(' > ',
+                          style: TextStyle(color: Colors.black54)),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const ApplicationPage()), // Replace with Application page navigation
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ApplicationPage()), // Replace with Application page navigation
                           );
                         },
                         child: const Text(
@@ -113,12 +121,15 @@ class ProteinHome extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Text(' > ', style: TextStyle(color: Colors.black54)),
+                      const Text(' > ',
+                          style: TextStyle(color: Colors.black54)),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const ProteinHome()), // Replace with current Protein page navigation if needed
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ProteinHome()), // Replace with current Protein page navigation if needed
                           );
                         },
                         child: const Text(
@@ -153,7 +164,8 @@ class ProteinHome extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const FGCOPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const FGCOPage()),
                       );
                     },
                   ),
@@ -164,7 +176,8 @@ class ProteinHome extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const FGLMPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const FGLMPage()),
                       );
                     },
                   ),
