@@ -21,7 +21,7 @@ import 'protien/protienHome.dart';
 import 'application/UI/applicationHome.dart';
 
 // industrial pages
-import 'industrial/industrialHome.dart';
+import 'Industrial/industrialHome.dart';
 
 // api imports
 
