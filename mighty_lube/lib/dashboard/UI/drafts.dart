@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/drawer.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -34,6 +35,7 @@ class DraftsPage extends StatelessWidget {
         link: ApplicationPage(),
         customIcon: Icons.description,
       ),
+      drawer: const CustomDrawer(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
+import 'package:mighty_lube/drawer.dart';
 import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
@@ -32,52 +34,12 @@ class FGCOPageState extends State<FGCOPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
-        child: Container(
-          color: const Color(0xFF579AF6),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Centered Logo
-              Center(
-                child: SvgPicture.asset(
-                  'assets/WhiteML_Logo-w-tag-vector.svg',
-                  width: 100, // Increased width for a larger logo
-                  height: 150, // Adjust height proportionally
-                  color: Colors.white,
-                ),
-              ),
-              // Profile and Shopping Cart Icons
-              Positioned(
-                right: 10,
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon:
-                          const Icon(Icons.account_circle, color: Colors.white),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon:
-                          const Icon(Icons.shopping_cart, color: Colors.white),
-                      onPressed: () {
-                        // Navigate to shopping cart
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+      appBar: const CustomAppBar(
+        link: ProfilePage(),
+        customIcon: Icons.description,
       ),
+      drawer: const CustomDrawer(),
+
       body: _pages[_selectedIndex],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(

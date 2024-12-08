@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'package:mighty_lube/app_bar.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -47,17 +50,11 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Profile:',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white, // Consistent with the LoginPage header
-          ),
-        ),
-        backgroundColor: const Color(0xFF579AF6),
+      appBar: const CustomAppBar(
+        link: ApplicationPage(),
+        customIcon: Icons.description,
       ),
+      drawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: SingleChildScrollView(

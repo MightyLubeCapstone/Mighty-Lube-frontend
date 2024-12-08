@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
+import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/protien/FGCO/UI/FGCO.dart';
 import 'package:mighty_lube/protien/FGLM/UI/FGLM.dart';
 
@@ -33,121 +35,11 @@ class ProteinHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(180), // Adjusted for larger header logo
-        child: Column(
-          children: [
-            // Header with logo and icons
-            Stack(
-              children: [
-                const HeaderLogo(),
-                Positioned(
-                  top: 60, // Adjust position for icons
-                  right: 10,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.account_circle,
-                            color: Colors.white),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ProfilePage()),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.shopping_cart,
-                            color: Colors.white),
-                        onPressed: () {
-                          // Add Cart functionality
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Protein Title
-                  const Text(
-                    'Protein',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Breadcrumb navigation with clickable segments
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const DashboardPage()),
-                          );
-                        },
-                        child: const Icon(
-                          Icons.home,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      const Text(' > ',
-                          style: TextStyle(color: Colors.black54)),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ApplicationPage()), // Replace with Application page navigation
-                          );
-                        },
-                        child: const Text(
-                          'Application',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const Text(' > ',
-                          style: TextStyle(color: Colors.black54)),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ProteinHome()), // Replace with current Protein page navigation if needed
-                          );
-                        },
-                        child: const Text(
-                          'Protein',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      appBar: const CustomAppBar(
+        link: ProfilePage(),
+        customIcon: Icons.description,
       ),
+      drawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(

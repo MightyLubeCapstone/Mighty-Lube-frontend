@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
+import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 
 class HeaderLogo extends StatelessWidget {
@@ -33,9 +34,10 @@ class ApplicationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        link: ProfilePage(),
-        customIcon: Icons.account_circle,
+        link: ApplicationPage(),
+        customIcon: Icons.description,
       ),
+      drawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(
