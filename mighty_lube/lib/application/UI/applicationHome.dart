@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
-import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 
@@ -61,7 +60,7 @@ class ApplicationPage extends StatelessWidget {
                         Icons.home,
                         color: Colors.blue, // Blue color for the icon
                       ),
-                      const SizedBox(width: 4), // Space between icon and arrow
+                      SizedBox(width: 4), // Space between icon and arrow
                     ],
                   ),
                 ),

@@ -4,10 +4,8 @@ import 'package:mighty_lube/LoginPage/UI/loginPage.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
-import 'package:mighty_lube/dashboard/UI/drafts.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
 import 'profile.dart';
 
 class DashboardPage extends StatelessWidget {

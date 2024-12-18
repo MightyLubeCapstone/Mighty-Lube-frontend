@@ -171,7 +171,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   void _validateEmail(String email) {
     setState(() {
-      if (email == null || email.isEmpty) {
+      if (email.isEmpty) {
         _errorEmail = 'Email is Required';
       } else if (!RegExp(r'[^@]+@[^@]+\.[^@]+$').hasMatch(email)) {
         _errorEmail = 'Email must include an @ and a domain(.com, .org, etc)';
@@ -179,7 +179,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         _errorEmail = null;
       }
 
-      return null;
+      return;
     });
   }
 

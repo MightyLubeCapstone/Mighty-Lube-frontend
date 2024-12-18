@@ -18,7 +18,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Food Grade Cleaner OP-8SS:',
+                'Caterpillar Drive Lubricators:',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -26,9 +26,9 @@ class HomeSection extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 25), // Space between the title and description
-              Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+              Text( // this is what it is supposed to say so leave these - Addison!
+                'These units are mounted at the conveyor drives and are a recommended addition to the conveyor lubrication system. '
+                'They lubricate caterpillar drive chain and dogs and are operated by controller on the conveyor lubricator.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
