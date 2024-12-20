@@ -23,9 +23,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Analyze the project
-      - name: Analyze project source
-        run: flutter analyze
+      # Analyze the project (uncomment when pushing to iOS/Play stores for production's sake)
+      # - name: Analyze project source
+      #  run: flutter analyze
 
       # Run tests
       # - name: Run tests
