@@ -1,0 +1,49 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v4
+
+      # Set up Flutter (ensure you use a stable version or specify a version)
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Run Flutter format to verify code style
+      - name: Verify formatting
+        run: flutter format --set-exit-if-changed .
+
+      # Analyze the codebase
+      - name: Analyze project source
+        run: flutter analyze
+
+      # Run tests to verify the code is working as expected
+      # - name: Run tests
+      #  run: flutter test
+
+      # Build the Flutter app (debug version)
+      - name: Build Flutter app (Debug)
+        run: flutter build apk --debug
+
+      # Build the Flutter app (release version) (uncomment this whenever we start pushing to Play/iOS stores)
+      # - name: Build Flutter app (Release)
+      # run: flutter build apk --release
+
+      # (Optional) Build for iOS (only applicable if macOS runners are used)
+      # - name: Build Flutter app for iOS
+      #   if: runner.os == 'macOS'
+      #  run: flutter build ios --release
