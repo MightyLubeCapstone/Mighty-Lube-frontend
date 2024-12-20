@@ -203,7 +203,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final email = emailController.text;
     final username = usernameController.text;
     final password = passwordController.text;
-    final confirmPassword = confirmPasswordController.text;
+    //final confirmPassword = confirmPasswordController.text;
 
     try {
       bool success = await ApiState().makeAccount(username, password, firstName,
