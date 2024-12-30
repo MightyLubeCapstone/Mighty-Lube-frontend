@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 
 class HeaderLogo extends StatelessWidget {
@@ -99,7 +100,7 @@ class ApplicationPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const DashboardPage()),
+                            builder: (context) => const IndustrialHome()),
                       );
                     },
                   ),

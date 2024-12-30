@@ -106,7 +106,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Chain On Edge Drag Line (3)
                     context: context,
                     title: 'Chain On Edge Drag Line (3)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
@@ -119,7 +119,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Enclosed Track Inverted Power Only and PF (8)
                     context: context,
                     title: 'Enclosed Track Inverted Power Only and PF (8)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
@@ -132,7 +132,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Enclosed Track Overhead Power Only and P&F (10)
                     context: context,
                     title: 'Enclosed Track Overhead Power Only and P&F (10)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
@@ -145,7 +145,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Flat Top (4)
                     context: context,
                     title: 'Flat Top (4)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
@@ -171,7 +171,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Free Rail Overhead Or Inverted (6)
                     context: context,
                     title: 'Free Rail Overhead Or Inverted (6)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
@@ -210,7 +210,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Over Head Power Rail L-Beam (20)
                     context: context,
                     title: 'Over Head Power Rail L-Beam (20)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
@@ -223,7 +223,7 @@ class IndustrialHome extends StatelessWidget {
                   _buildClickableImageCard( //Power and Free Overhead or Inverted (17)
                     context: context,
                     title: 'Power and Free Overhead or Inverted (17)',
-                    imagePath: '/Users/addison/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
+                    imagePath: '/Users/addison/GitHub/Mighty-Lube-frontend/mighty_lube/assets/industrial/Title.png',
                     onTap: () {
                       //Will need to be changed later
                       Navigator.push(
