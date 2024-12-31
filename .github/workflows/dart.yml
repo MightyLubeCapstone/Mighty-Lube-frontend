@@ -22,7 +22,7 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          cd mighty-lube
+          cd mighty_lube
           flutter pub get
 
       # Analyze the project (uncomment when pushing to iOS/Play stores for production's sake)
@@ -36,5 +36,5 @@ jobs:
       # Build the Flutter app
       - name: Build Flutter app (Debug)
         run: |
-          cd mighty-lube
+          cd mighty_lube
           flutter build apk --debug
