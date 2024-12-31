@@ -1,0 +1,40 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.4' # Use a specific version
+          architecture: x64         # Explicit architecture if needed
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd mighty-lube
+          flutter pub get
+
+      # Analyze the project (uncomment when pushing to iOS/Play stores for production's sake)
+      # - name: Analyze project source
+      #  run: flutter analyze
+
+      # Run tests
+      # - name: Run tests
+      #  run: flutter test
+
+      # Build the Flutter app
+      - name: Build Flutter app (Debug)
+        run: |
+          cd mighty-lube
+          flutter build apk --debug
