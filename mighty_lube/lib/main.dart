@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // login in pages
-import 'loginPage/UI/createAccount.dart';
-import 'loginPage/UI/forgotPassword.dart';
-import 'loginPage/UI/loginPage.dart';
+import 'LoginPage/UI/createAccount.dart';
+import 'LoginPage/UI/forgotPassword.dart';
+import 'LoginPage/UI/loginPage.dart';
 
 // dashboard pages
 import 'dashboard/UI/dashboard.dart';
