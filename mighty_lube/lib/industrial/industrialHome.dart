@@ -177,7 +177,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     _buildClickableImageCard(
                       context: context,
                       title: 'Flat Top (4)',
-                      imagePath: 'assets/industrial/Title.png',
+                      imagePath: 'assets/industrial/Flat Top (4)/flat-top.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -190,7 +190,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     _buildClickableImageCard(
                       context: context,
                       title: 'Free Carrier (2)',
-                      imagePath: 'assets/industrial/Title.png',
+                      imagePath: 'assets/industrial/Free Carrier (2)/Title.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -203,7 +203,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     _buildClickableImageCard(
                       context: context,
                       title: 'Free Rail Overhead Or Inverted (6)',
-                      imagePath: 'assets/industrial/Title.png',
+                      imagePath: 'assets/industrial/FreeRail.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -216,7 +216,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     _buildClickableImageCard(
                       context: context,
                       title: 'In Floor Tow Line (2)',
-                      imagePath: 'assets/industrial/Title.png',
+                      imagePath: 'assets/industrial/inFloor.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -229,7 +229,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     _buildClickableImageCard(
                       context: context,
                       title: 'In-Board Roller Chain (3)',
-                      imagePath: 'assets/industrial/Title.png',
+                      imagePath: 'assets/industrial/inBoard.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -242,7 +242,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     _buildClickableImageCard(
                       context: context,
                       title: 'Over Head Power Rail L-Beam (20)',
-                      imagePath: 'assets/industrial/Title.png',
+                      imagePath: 'assets/industrial/OverHeadPower.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -279,22 +279,61 @@ class _IndustrialHomeState extends State<IndustrialHome> {
   }
 
   Widget _buildClickableImageCard({
-    required BuildContext context,
-    required String title,
-    required String imagePath,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 250,
-              width: double.infinity,
-              color: Colors.black12,
+  required BuildContext context,
+  required String title,
+  required String imagePath,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
+              ),
+            ),
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          // Image
+          Container(
+            height: 250,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color.fromARGB(28, 50, 51, 52), width: 3.0), // More noticeable border
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(25, 54, 53, 53).withOpacity(0.3), // More prominent shadow
+                  blurRadius: 10.0,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
               child: Image.asset(
                 imagePath,
                 fit: BoxFit.cover,
@@ -313,17 +352,12 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                 },
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 }
