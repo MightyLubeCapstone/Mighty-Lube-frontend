@@ -34,3 +34,13 @@ flutter:
     - assets/Industrial.png
     - assets/Protein.png
     - assets/Technician.png
+
+    - assets/industrial/Title.png
+    - assets/industrial/CC5 Chain (2)/CC5 Chain (2).png
+    - assets/industrial/Free Carrier (2)/Title.png
+    - assets/industrial/Flat Top (4)/flat-top.png
+    - assets/industrial/FreeRail.png
+    - assets/industrial/inFloor.png
+    - assets/industrial/inBoard.png
+    - assets/industrial/OverHeadPower.png
+    
