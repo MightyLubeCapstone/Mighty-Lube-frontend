@@ -4,9 +4,9 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/MLCC5CL/UI/MLCC5CL.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/OP40E/UI/OP40E.dart';
-import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -60,7 +60,7 @@ class ProductsHomeState extends State<ProductsHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Row(
@@ -79,11 +79,11 @@ class ProductsHomeState extends State<ProductsHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                          builder: (context) => const CLSHome()),
                     );
                   },
                   child: const Text(
-                    'Industrial',
+                    'CLS',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -92,30 +92,8 @@ class ProductsHomeState extends State<ProductsHome> {
                 ),
                 const Spacer(),
                 // Search Box
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      ),
-                      suffixIcon: const Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
-                    },
-                  ),
-                ),
               ],
             ),
-            const SizedBox(height: 20),
 
             // Vertical list of images with text, filtered by search query
             Expanded(

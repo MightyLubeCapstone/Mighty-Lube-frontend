@@ -5,6 +5,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/products.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -77,7 +78,7 @@ class CLSHomeState extends State<CLSHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                          builder: (context) => const IndustrialHome()),
                     );
                   },
                   child: const Text(
@@ -90,27 +91,6 @@ class CLSHomeState extends State<CLSHome> {
                 ),
                 const Spacer(),
                 // Search Box
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      ),
-                      suffixIcon: const Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
-                    },
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 20),
