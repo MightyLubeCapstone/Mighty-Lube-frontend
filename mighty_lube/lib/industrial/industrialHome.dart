@@ -294,9 +294,9 @@ class _IndustrialHomeState extends State<IndustrialHome> {
           // Title
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12.0),
                 topRight: Radius.circular(12.0),
               ),
