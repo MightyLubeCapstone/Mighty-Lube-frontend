@@ -4,7 +4,7 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
+import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/products.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -27,14 +27,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class IndustrialHome extends StatefulWidget {
-  const IndustrialHome({super.key});
+class CLSHome extends StatefulWidget {
+  const CLSHome({super.key});
 
   @override
-  State<IndustrialHome> createState() => _IndustrialHomeState();
+  State<CLSHome> createState() => CLSHomeState();
 }
 
-class _IndustrialHomeState extends State<IndustrialHome> {
+class CLSHomeState extends State<CLSHome> {
   String searchQuery = '';
 
   @override
@@ -119,149 +119,16 @@ class _IndustrialHomeState extends State<IndustrialHome> {
             Expanded(
               child: ListView(
                 children: [
-                  if (_filterCard('CC5 Chain (2)'))
                     _buildClickableImageCard(
                       context: context,
-                      title: 'CC5 Chain (2)',
+                      title: 'Conveyor Lubrication Systems (2)',
                       imagePath:
-                          'assets/industrial/CC5 Chain (2)/CC5 Chain (2).png',
+                          'assets/industrial/CC5 Chain (2)/CLS (2)/CLS.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CLSHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Chain On Edge Drag Line (3)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Chain On Edge Drag Line (3)',
-                      imagePath: 'assets/industrial/Title.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Enclosed Track Inverted Power Only and PF (8)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title:
-                          'Enclosed Track Inverted Power Only and PF (8)',
-                      imagePath: 'assets/industrial/Title.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Enclosed Track Overhead Power Only and P&F (10)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title:
-                          'Enclosed Track Overhead Power Only and P&F (10)',
-                      imagePath: 'assets/industrial/Title.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Flat Top (4)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Flat Top (4)',
-                      imagePath: 'assets/industrial/Flat Top (4)/flat-top.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Free Carrier (2)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Free Carrier (2)',
-                      imagePath: 'assets/industrial/Free Carrier (2)/Title.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Free Rail Overhead Or Inverted (6)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Free Rail Overhead Or Inverted (6)',
-                      imagePath: 'assets/industrial/FreeRail.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('In Floor Tow Line (2)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'In Floor Tow Line (2)',
-                      imagePath: 'assets/industrial/inFloor.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('In-Board Roller Chain (3)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'In-Board Roller Chain (3)',
-                      imagePath: 'assets/industrial/inBoard.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Over Head Power Rail L-Beam (20)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Over Head Power Rail L-Beam (20)',
-                      imagePath: 'assets/industrial/OverHeadPower.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
-                        );
-                      },
-                    ),
-                  if (_filterCard('Power and Free Overhead or Inverted (17)'))
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Power and Free Overhead or Inverted (17)',
-                      imagePath: 'assets/industrial/Title.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
+                              builder: (context) => const ProductsHome()),
                         );
                       },
                     ),
@@ -274,10 +141,6 @@ class _IndustrialHomeState extends State<IndustrialHome> {
     );
   }
 
-  // Helper function to filter cards based on the search query
-  bool _filterCard(String title) {
-    return title.toLowerCase().contains(searchQuery.toLowerCase());
-  }
 
   Widget _buildClickableImageCard({
   required BuildContext context,
