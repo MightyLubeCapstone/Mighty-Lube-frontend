@@ -5,6 +5,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
+import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -142,7 +143,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
+                              builder: (context) => const CLSCOEDL()),
                         );
                       },
                     ),
