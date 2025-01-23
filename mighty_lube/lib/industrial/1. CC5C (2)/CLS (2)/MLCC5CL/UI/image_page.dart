@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/products.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
