@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/products.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -13,12 +14,12 @@ class HeaderLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 180, // Larger logo area
+      height: 180,
       color: const Color.fromARGB(255, 87, 154, 246),
       child: Center(
         child: SvgPicture.asset(
           'assets/WhiteML_Logo-w-tag-vector.svg',
-          width: 100, // Logo width
+          width: 100,
           height: 150,
           color: const Color.fromARGB(255, 249, 249, 250),
         ),
@@ -27,8 +28,15 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ApplicationPage extends StatelessWidget {
-  const ApplicationPage({super.key});
+class CLSHome extends StatefulWidget {
+  const CLSHome({super.key});
+
+  @override
+  State<CLSHome> createState() => CLSHomeState();
+}
+
+class CLSHomeState extends State<CLSHome> {
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +51,11 @@ class ApplicationPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Breadcrumb Navigation
+            // Breadcrumb Navigation with Search Box
             Row(
               children: [
                 GestureDetector(
                   onTap: () {
-                    // Navigate to Home
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -59,77 +66,52 @@ class ApplicationPage extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.home,
-                        color: Colors.blue, // Blue color for the icon
+                        color: Colors.blue,
                       ),
-                      SizedBox(width: 4), // Space between icon and arrow
+                      SizedBox(width: 4),
                     ],
                   ),
                 ),
                 const Text(' > '),
                 GestureDetector(
                   onTap: () {
-                    // Navigate to the Application page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                          builder: (context) => const IndustrialHome()),
                     );
                   },
                   child: const Text(
-                    'Application',
+                    'Industrial',
                     style: TextStyle(
-                      color: Colors.blue, // Blue color for clickable text
+                      color: Colors.blue,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                const Spacer(),
+                // Search Box
               ],
             ),
             const SizedBox(height: 20),
 
-            // Vertical list of images with text
+            // Vertical list of images with text, filtered by search query
             Expanded(
               child: ListView(
                 children: [
-                  _buildClickableImageCard(
-                    context: context,
-                    title: 'Industrial (77)',
-                    imagePath: 'assets/Industrial.png',
-                    onTap: () {
-                      // Navigate to Industrial page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const IndustrialHome()),
-                      );
-                    },
-                  ),
-                  _buildClickableImageCard(
-                    context: context,
-                    title: 'Protein (2)',
-                    imagePath: 'assets/Protein.png',
-                    onTap: () {
-                      // Navigate to Protein page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ProteinHome()),
-                      );
-                    },
-                  ),
-                  _buildClickableImageCard(
-                    context: context,
-                    title: 'Technician (1)',
-                    imagePath: 'assets/Technician.png',
-                    onTap: () {
-                      // Navigate to Technician page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const DashboardPage()),
-                      );
-                    },
-                  ),
+                    _buildClickableImageCard(
+                      context: context,
+                      title: 'Conveyor Lubrication Systems (2)',
+                      imagePath:
+                          'assets/industrial/CC5 Chain (2)/CLS (2)/CLS.png',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProductsHome()),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -138,6 +120,7 @@ class ApplicationPage extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildClickableImageCard({
   required BuildContext context,
@@ -219,5 +202,6 @@ class ApplicationPage extends StatelessWidget {
     ),
   );
 }
+
 
 }

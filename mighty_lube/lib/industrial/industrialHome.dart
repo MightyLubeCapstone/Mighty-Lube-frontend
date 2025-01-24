@@ -4,6 +4,8 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
+import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -128,7 +130,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
+                              builder: (context) => const CLSHome()),
                         );
                       },
                     ),
@@ -141,7 +143,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
+                              builder: (context) => const CLSCOEDL()),
                         );
                       },
                     ),
@@ -294,9 +296,9 @@ class _IndustrialHomeState extends State<IndustrialHome> {
           // Title
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12.0),
                 topRight: Radius.circular(12.0),
               ),
