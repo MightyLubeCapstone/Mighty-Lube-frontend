@@ -38,8 +38,3 @@ jobs:
         run: |
           cd mighty_lube
           flutter build apk --debug
-
-      - name: Build Flutter app for iOS (Debug)
-        run: |
-          cd mighty_lube
-          flutter build ipa
