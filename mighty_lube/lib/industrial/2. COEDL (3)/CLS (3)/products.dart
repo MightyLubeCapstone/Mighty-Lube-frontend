@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
-import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/MLCC5CL/UI/MLCC5CL.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/OP40E/UI/OP40E.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
