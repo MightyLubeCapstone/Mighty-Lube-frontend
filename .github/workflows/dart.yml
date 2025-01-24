@@ -34,7 +34,12 @@ jobs:
       #  run: flutter test
 
       # Build the Flutter app
-      - name: Build Flutter app (Debug)
+      - name: Build Flutter app for Android (Debug)
         run: |
           cd mighty_lube
           flutter build apk --debug
+
+      - name: Build Flutter app for iOS (Debug)
+        run: |
+          cd mighty_lube
+          flutter build ipa --debug
