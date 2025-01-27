@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
@@ -38,7 +38,7 @@ class ImageSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
-                  'assets/FGCO.png', // Path to your image
+                  'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png', // Path to your image
                   fit: BoxFit.cover,
                 ),
               ),
@@ -78,11 +78,11 @@ class ImageSection extends StatelessWidget {
               // Navigate to the Protein page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
+                MaterialPageRoute(builder: (context) => const ProductsCOEDL()),
               ); // Replace with navigation to your Protein page
             },
             child: const Text(
-              'Protein',
+              'Products',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
