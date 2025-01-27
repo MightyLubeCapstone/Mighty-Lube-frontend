@@ -6,14 +6,14 @@ import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
 
-class OP40EPage extends StatefulWidget {
-  const OP40EPage({super.key});
+class OP40EPage2 extends StatefulWidget {
+  const OP40EPage2({super.key});
 
   @override
-  State<OP40EPage> createState() => OP40EPageState();
+  State<OP40EPage2> createState() => OP40EPage2State();
 }
 
-class OP40EPageState extends State<OP40EPage> {
+class OP40EPage2State extends State<OP40EPage2> {
   int _selectedIndex = 0;
 
   // Pages for bottom navigation

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
 
+
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
 
