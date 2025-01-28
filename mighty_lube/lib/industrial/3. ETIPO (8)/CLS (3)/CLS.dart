@@ -6,6 +6,7 @@ import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/9000INVL/UI/9000INVL.dart';
 import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/OP41A/UI/OP41A.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/OP48E/UI/OP48E.dart';
 import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/subfolders.dart';
 
 
@@ -136,7 +137,7 @@ class CLSETIPOState extends State<CLSETIPO> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const OP41APage()),
+                              builder: (context) => const OP48EPage()),
                         );
                       },
                     ),
