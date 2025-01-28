@@ -6,7 +6,6 @@ import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/CDL/UI/CDL.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/OP40E/UI/OP40E.dart';
-import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CGS%20(1)/OPCO300/UI/OPCO300.dart';
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/subfolders.dart';
 
 
