@@ -3,10 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/6.%20FC%20(2)/FR314/UI/FR314.dart';
+import 'package:mighty_lube/industrial/6.%20FC%20(2)/FR317/UI/FR317.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +28,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsCOEDL extends StatefulWidget {
-  const ProductsCOEDL({super.key});
+class FCProducts extends StatefulWidget {
+  const FCProducts({super.key});
 
   @override
-  State<ProductsCOEDL> createState() => ProductsCOEDLState();
+  State<FCProducts> createState() => FCProductsState();
 }
 
-class ProductsCOEDLState extends State<ProductsCOEDL> {
+class FCProductsState extends State<FCProducts> {
   String searchQuery = '';
 
   @override
@@ -79,11 +78,11 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const IndustrialHome()),
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Industrial',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -101,40 +100,27 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Caterillar Drive Lubricators',
+                      title: 'Free Rail 314 “Load” wheel Greaser',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+                          'assets/industrial/Free Carrier (2)/FR314.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
+                              builder: (context) => const FR314Page()),
                         );
                       },
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Mighty Lube Chain on Edge Lubricator',
+                      title: 'Free Rail 317 “Guide” wheel Greaser',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
+                          'assets/industrial/Free Carrier (2)/FR317.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MLCELPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-40E',
-                      imagePath:
-                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP40EPage2()),
+                              builder: (context) => const FR317Page()),
                         );
                       },
                     ),

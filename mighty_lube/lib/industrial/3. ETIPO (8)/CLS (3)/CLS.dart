@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/9000INVL/UI/9000INVL.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/OP41A/UI/OP41A.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/OP48E/UI/OP48E.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/subfolders.dart';
+
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +31,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsCOEDL extends StatefulWidget {
-  const ProductsCOEDL({super.key});
+class CLSETIPO extends StatefulWidget {
+  const CLSETIPO({super.key});
 
   @override
-  State<ProductsCOEDL> createState() => ProductsCOEDLState();
+  State<CLSETIPO> createState() => CLSETIPOState();
 }
 
-class ProductsCOEDLState extends State<ProductsCOEDL> {
+class CLSETIPOState extends State<CLSETIPO> {
   String searchQuery = '';
 
   @override
@@ -60,7 +62,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                          builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -79,7 +81,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const ETIPONav()),
                     );
                   },
                   child: const Text(
@@ -94,6 +96,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 // Search Box
               ],
             ),
+            const SizedBox(height: 20),
 
             // Vertical list of images with text, filtered by search query
             Expanded(
@@ -101,40 +104,40 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Caterillar Drive Lubricators',
+                      title: '9000INVL (Inverted) Series Enclosed Track Conveyor Lubricators:',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/9000INVL.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
+                              builder: (context) => const INVLPage()),
                         );
                       },
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Mighty Lube Chain on Edge Lubricator',
+                      title: 'OP-41A Conveyor Lubricators:',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
+                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-41A.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MLCELPage()),
+                              builder: (context) => const OP41APage()),
                         );
                       },
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'OP-40E',
+                      title: 'OP-48E Conveyor Lubricators:',
                       imagePath:
-                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
+                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-48E.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const OP40EPage2()),
+                              builder: (context) => const OP48EPage()),
                         );
                       },
                     ),

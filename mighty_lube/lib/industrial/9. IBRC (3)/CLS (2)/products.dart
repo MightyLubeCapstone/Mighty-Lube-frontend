@@ -3,10 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS.dart';
+import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/MLRFC/UI/MLRFC.dart';
+import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/OP40E/UI/OP40E.dart';
+
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +29,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsCOEDL extends StatefulWidget {
-  const ProductsCOEDL({super.key});
+class IBRCCLSProducts extends StatefulWidget {
+  const IBRCCLSProducts({super.key});
 
   @override
-  State<ProductsCOEDL> createState() => ProductsCOEDLState();
+  State<IBRCCLSProducts> createState() => IBRCCLSProductsState();
 }
 
-class ProductsCOEDLState extends State<ProductsCOEDL> {
+class IBRCCLSProductsState extends State<IBRCCLSProducts> {
   String searchQuery = '';
 
   @override
@@ -79,7 +79,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const CLSIFTL()),
                     );
                   },
                   child: const Text(
@@ -101,27 +101,14 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Caterillar Drive Lubricators',
+                      title: 'Mighty Lube In Floor Tow Line',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+                          'assets/industrial/IBRC(3)/MLRFC.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Mighty Lube Chain on Edge Lubricator',
-                      imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MLCELPage()),
+                              builder: (context) => const MLRFCPage()),
                         );
                       },
                     ),
@@ -134,7 +121,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const OP40EPage2()),
+                              builder: (context) => const OP40EPage()),
                         );
                       },
                     ),

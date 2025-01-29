@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/products.dart';
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
@@ -78,11 +78,11 @@ class ImageSection extends StatelessWidget {
               // Navigate to the Protein page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
+                MaterialPageRoute(builder: (context) => const ProductsHome()),
               ); // Replace with navigation to your Protein page
             },
             child: const Text(
-              'Protein',
+              'Products',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

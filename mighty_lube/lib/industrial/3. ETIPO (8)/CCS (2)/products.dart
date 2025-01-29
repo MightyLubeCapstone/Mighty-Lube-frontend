@@ -4,9 +4,9 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/CCS.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +29,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsCOEDL extends StatefulWidget {
-  const ProductsCOEDL({super.key});
+class ProductsETIPO extends StatefulWidget {
+  const ProductsETIPO({super.key});
 
   @override
-  State<ProductsCOEDL> createState() => ProductsCOEDLState();
+  State<ProductsETIPO> createState() => ProductsETIPOState();
 }
 
-class ProductsCOEDLState extends State<ProductsCOEDL> {
+class ProductsETIPOState extends State<ProductsETIPO> {
   String searchQuery = '';
 
   @override
@@ -79,11 +79,11 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const CCSETIPO()),
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'CCS',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

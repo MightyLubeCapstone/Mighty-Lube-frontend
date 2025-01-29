@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/5.%20FT(4)/CGS%20(1)/products.dart';
+import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +29,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsCOEDL extends StatefulWidget {
-  const ProductsCOEDL({super.key});
+class FTNav extends StatefulWidget {
+  const FTNav({super.key});
 
   @override
-  State<ProductsCOEDL> createState() => ProductsCOEDLState();
+  State<FTNav> createState() => FTNavState();
 }
 
-class ProductsCOEDLState extends State<ProductsCOEDL> {
+class FTNavState extends State<FTNav> {
   String searchQuery = '';
 
   @override
@@ -60,7 +60,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                          builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -79,11 +79,11 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const IndustrialHome()),
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Industrial',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -94,6 +94,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 // Search Box
               ],
             ),
+            const SizedBox(height: 20),
 
             // Vertical list of images with text, filtered by search query
             Expanded(
@@ -101,40 +102,27 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Caterillar Drive Lubricators',
+                      title: 'Conveyor Greaser Systems (1)',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+                          'assets/industrial/Flat Top (4)/Conveyor Greaser Systems (1)/OPCP 300.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
+                              builder: (context) => const CGSProducts()),
                         );
                       },
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Mighty Lube Chain on Edge Lubricator',
+                      title: 'Conveyor Lubrication Systems (3)',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
+                          'assets/industrial/Title.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MLCELPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-40E',
-                      imagePath:
-                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP40EPage2()),
+                              builder: (context) => const CLSProducts()),
                         );
                       },
                     ),
