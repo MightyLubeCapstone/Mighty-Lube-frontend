@@ -18,7 +18,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Food Grade Cleaner OP-8SS:',
+                'E-Series:',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -26,9 +26,9 @@ class HomeSection extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 25), // Space between the title and description
-              Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+              Text( //LEAVE THIS ALONE IT'S WHAT IT'S SUPPOSED TO BE
+                'The ChainMaster E-Series Automatic Conveyor Lubrication System is an all-electric oiler designed to deliver metered amounts of lubricant in solid shot'
+                'form to conveyor wear points. The lubricant shots are discharged from nozzles which are rigidly mounted close to the moving wear points.  ',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

@@ -18,7 +18,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Food Grade Cleaner OP-8SS:',
+                'OP-139A:',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -27,8 +27,7 @@ class HomeSection extends StatelessWidget {
               ),
               SizedBox(height: 25), // Space between the title and description
               Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+                'The OP-139A oiler is a simple, yet effective and clean precision lubrication system for all types of conveyors. ',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
