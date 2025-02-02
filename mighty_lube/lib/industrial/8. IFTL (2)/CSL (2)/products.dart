@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/products.dart';
-import 'package:mighty_lube/industrial/industrialHome.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/MLIFTL/UI/MLIFTL.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/subfolder.dart';
+
 
 
 class HeaderLogo extends StatelessWidget {
@@ -29,14 +30,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class CLSIFTL extends StatefulWidget {
-  const CLSIFTL({super.key});
+class IFTLProducts extends StatefulWidget {
+  const IFTLProducts({super.key});
 
   @override
-  State<CLSIFTL> createState() => CLSIFTLState();
+  State<IFTLProducts> createState() => IFTLProductsState();
 }
 
-class CLSIFTLState extends State<CLSIFTL> {
+class IFTLProductsState extends State<IFTLProducts> {
   String searchQuery = '';
 
   @override
@@ -60,7 +61,7 @@ class CLSIFTLState extends State<CLSIFTL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Row(
@@ -79,11 +80,11 @@ class CLSIFTLState extends State<CLSIFTL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const IndustrialHome()),
+                          builder: (context) => const IFTLNav()),
                     );
                   },
                   child: const Text(
-                    'Industrial',
+                    'CLS',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -94,7 +95,6 @@ class CLSIFTLState extends State<CLSIFTL> {
                 // Search Box
               ],
             ),
-            const SizedBox(height: 20),
 
             // Vertical list of images with text, filtered by search query
             Expanded(
@@ -102,14 +102,27 @@ class CLSIFTLState extends State<CLSIFTL> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Conveyor Lubrication Systems (2)',
+                      title: 'Mighty Lube In Floor Tow Line',
                       imagePath:
                           'assets/industrial/Title.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const IFTLProducts()),
+                              builder: (context) => const MLIFTLPage()),
+                        );
+                      },
+                    ),
+                    _buildClickableImageCard(
+                      context: context,
+                      title: 'OP-40E',
+                      imagePath:
+                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const OP40EPage()),
                         );
                       },
                     ),

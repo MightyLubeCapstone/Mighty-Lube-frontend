@@ -4,11 +4,8 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/9000INVL/UI/9000INVL.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/OP41A/UI/OP41A.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/OP48E/UI/OP48E.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/subfolders.dart';
-
+import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -31,14 +28,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class CLSETIPO extends StatefulWidget {
-  const CLSETIPO({super.key});
+class COEDLNav extends StatefulWidget {
+  const COEDLNav({super.key});
 
   @override
-  State<CLSETIPO> createState() => CLSETIPOState();
+  State<COEDLNav> createState() => COEDLNavState();
 }
 
-class CLSETIPOState extends State<CLSETIPO> {
+class COEDLNavState extends State<COEDLNav> {
   String searchQuery = '';
 
   @override
@@ -81,11 +78,11 @@ class CLSETIPOState extends State<CLSETIPO> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ETIPONav()),
+                          builder: (context) => const IndustrialHome()),
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Industrial',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -104,40 +101,14 @@ class CLSETIPOState extends State<CLSETIPO> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: '9000INVL (Inverted) Series Enclosed Track Conveyor Lubricators:',
+                      title: 'Conveyor Lubrication Systems (3)',
                       imagePath:
-                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/9000INVL.png',
+                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/Title.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const INVLPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-41A Conveyor Lubricators:',
-                      imagePath:
-                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-41A.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP41APage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-48E Conveyor Lubricators:',
-                      imagePath:
-                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-48E.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP48EPage()),
+                              builder: (context) => const ProductsCOEDL()),
                         );
                       },
                     ),

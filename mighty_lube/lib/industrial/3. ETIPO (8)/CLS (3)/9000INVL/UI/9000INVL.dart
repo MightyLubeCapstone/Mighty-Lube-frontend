@@ -6,14 +6,14 @@ import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
 
-class INVLPage extends StatefulWidget {
-  const INVLPage({super.key});
+class Page900INVL extends StatefulWidget {
+  const Page900INVL({super.key});
 
   @override
-  State<INVLPage> createState() => INVLPageState();
+  State<Page900INVL> createState() => Page900INVLState();
 }
 
-class INVLPageState extends State<INVLPage> {
+class Page900INVLState extends State<Page900INVL> {
   int _selectedIndex = 0;
 
   // Pages for bottom navigation

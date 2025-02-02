@@ -4,10 +4,12 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/CCS.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/CLS.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/products.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CLS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CMS%20(1)/products.dart';
+
 import 'package:mighty_lube/industrial/industrialHome.dart';
+
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -110,7 +112,7 @@ class ETIPONavState extends State<ETIPONav> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CCSETIPO()),
+                              builder: (context) => const CCSProducts()),
                         );
                       },
                     ),
@@ -123,7 +125,7 @@ class ETIPONavState extends State<ETIPONav> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CLSETIPO()),
+                              builder: (context) => const CLSProducts()),
                         );
                       },
                     ),
@@ -136,7 +138,7 @@ class ETIPONavState extends State<ETIPONav> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ProductsCOEDL()),
+                              builder: (context) => const CMSProducts()),
                         );
                       },
                     ),

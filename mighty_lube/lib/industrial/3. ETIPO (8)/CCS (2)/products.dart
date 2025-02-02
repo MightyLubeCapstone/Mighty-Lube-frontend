@@ -3,10 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/CCS.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/O8074/UI/O8074.dart';
+
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/OUN91/UI/OUN91.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/subfolders.dart';
+
+
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +31,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsETIPO extends StatefulWidget {
-  const ProductsETIPO({super.key});
+class CCSProducts extends StatefulWidget {
+  const CCSProducts({super.key});
 
   @override
-  State<ProductsETIPO> createState() => ProductsETIPOState();
+  State<CCSProducts> createState() => CCSProductsState();
 }
 
-class ProductsETIPOState extends State<ProductsETIPO> {
+class CCSProductsState extends State<CCSProducts> {
   String searchQuery = '';
 
   @override
@@ -79,7 +81,7 @@ class ProductsETIPOState extends State<ProductsETIPO> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CCSETIPO()),
+                          builder: (context) => const ETIPONav()),
                     );
                   },
                   child: const Text(
@@ -101,40 +103,27 @@ class ProductsETIPOState extends State<ProductsETIPO> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Caterillar Drive Lubricators',
+                      title: 'Overhead Non-Powered Mighty Lube Rail Cleaners UN91, RW91',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Cleaning Solutions (2)/UN91.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
+                              builder: (context) => const OUN91Page()),
                         );
                       },
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Mighty Lube Chain on Edge Lubricator',
+                      title: 'Overhead Non-Powered Mighty Lube Chain Cleaners 8074-B, 8075-',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
+                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Cleaning Solutions (2)/8074-B.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MLCELPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-40E',
-                      imagePath:
-                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP40EPage2()),
+                              builder: (context) => const O8074Page()),
                         );
                       },
                     ),

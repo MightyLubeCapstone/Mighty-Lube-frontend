@@ -3,10 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CMS%20(1)/MLAIO/UI/MLAIO.dart';
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/subfolders.dart';
+
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -29,14 +28,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class ProductsCOEDL extends StatefulWidget {
-  const ProductsCOEDL({super.key});
+class CMSProducts extends StatefulWidget {
+  const CMSProducts({super.key});
 
   @override
-  State<ProductsCOEDL> createState() => ProductsCOEDLState();
+  State<CMSProducts> createState() => CMSProductsState();
 }
 
-class ProductsCOEDLState extends State<ProductsCOEDL> {
+class CMSProductsState extends State<CMSProducts> {
   String searchQuery = '';
 
   @override
@@ -79,7 +78,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const ETIPONav()),
                     );
                   },
                   child: const Text(
@@ -101,40 +100,14 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Caterillar Drive Lubricators',
+                      title: 'Multi Line (Permanent) All IN ONE Monitoring + Lubrication',
                       imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+                          'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Monitor Systems (1)/Multi Line.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Mighty Lube Chain on Edge Lubricator',
-                      imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MLCELPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-40E',
-                      imagePath:
-                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP40EPage2()),
+                              builder: (context) => const MLAIOPage()),
                         );
                       },
                     ),

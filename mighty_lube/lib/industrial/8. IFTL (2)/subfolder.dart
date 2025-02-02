@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/MLIFTL/UI/MLIFTL.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/products.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 
 
 class HeaderLogo extends StatelessWidget {
@@ -29,14 +29,14 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class IFTLProducts extends StatefulWidget {
-  const IFTLProducts({super.key});
+class IFTLNav extends StatefulWidget {
+  const IFTLNav({super.key});
 
   @override
-  State<IFTLProducts> createState() => IFTLProductsState();
+  State<IFTLNav> createState() => IFTLNavState();
 }
 
-class IFTLProductsState extends State<IFTLProducts> {
+class IFTLNavState extends State<IFTLNav> {
   String searchQuery = '';
 
   @override
@@ -60,7 +60,7 @@ class IFTLProductsState extends State<IFTLProducts> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                          builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -79,11 +79,11 @@ class IFTLProductsState extends State<IFTLProducts> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSIFTL()),
+                          builder: (context) => const IndustrialHome()),
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Industrial',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -94,6 +94,7 @@ class IFTLProductsState extends State<IFTLProducts> {
                 // Search Box
               ],
             ),
+            const SizedBox(height: 20),
 
             // Vertical list of images with text, filtered by search query
             Expanded(
@@ -101,27 +102,14 @@ class IFTLProductsState extends State<IFTLProducts> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Mighty Lube In Floor Tow Line',
+                      title: 'Conveyor Lubrication Systems (2)',
                       imagePath:
                           'assets/industrial/Title.png',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MLIFTLPage()),
-                        );
-                      },
-                    ),
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'OP-40E',
-                      imagePath:
-                          'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OP40EPage()),
+                              builder: (context) => const IFTLProducts()),
                         );
                       },
                     ),
