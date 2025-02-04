@@ -7,6 +7,7 @@ import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/subfolder.dart';
 import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/subfolders.dart';
+import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/subfolders.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/subfolders.dart';
 import 'package:mighty_lube/industrial/6.%20FC%20(2)/products.dart';
 import 'package:mighty_lube/industrial/7.%20FROOI%20(6)/subfolders.dart';
@@ -177,7 +178,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const IndustrialHome()),
+                              builder: (context) => const ETOPONav()),
                         );
                       },
                     ),

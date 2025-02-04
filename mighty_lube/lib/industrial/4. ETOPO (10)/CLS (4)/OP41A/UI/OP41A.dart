@@ -5,14 +5,14 @@ import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
 
-class FGCOPage extends StatefulWidget {
-  const FGCOPage({super.key});
+class OP41APage extends StatefulWidget {
+  const OP41APage({super.key});
 
   @override
-  State<FGCOPage> createState() => FGCOPageState();
+  State<OP41APage> createState() => OP41APageState();
 }
 
-class FGCOPageState extends State<FGCOPage> {
+class OP41APageState extends State<OP41APage> {
   int _selectedIndex = 0;
 
   // Pages for bottom navigation
