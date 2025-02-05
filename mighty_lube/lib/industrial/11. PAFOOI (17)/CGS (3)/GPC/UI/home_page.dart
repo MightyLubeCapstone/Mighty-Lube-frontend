@@ -18,7 +18,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Food Grade Cleaner OP-8SS:',
+                'Greaser Power Chain:',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,

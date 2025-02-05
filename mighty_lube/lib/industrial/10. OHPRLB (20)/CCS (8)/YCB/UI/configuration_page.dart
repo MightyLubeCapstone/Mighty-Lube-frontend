@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/products.dart';
+
 
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
@@ -328,7 +329,7 @@ Widget buildBreadcrumbNavigation(BuildContext context) {
             // Navigate to the Protein page
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ProteinHome()),
+              MaterialPageRoute(builder: (context) => const CCSProducts()),
             ); // Replace with navigation to your Protein page
           },
           child: const Text(

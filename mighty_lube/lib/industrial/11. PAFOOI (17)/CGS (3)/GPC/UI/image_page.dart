@@ -14,7 +14,7 @@ class ImageSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'Food Grade Cleaner OP-8SS',
+            'Greaser Power Chain',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

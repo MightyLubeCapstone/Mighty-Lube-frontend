@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/products.dart';
+
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
@@ -14,7 +15,7 @@ class ImageSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'Food Grade Cleaner OP-8SS',
+            'Overhead Non-Powered Mighty Lube Brush Cleaners 300I 400I 600I',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -50,48 +51,40 @@ class ImageSection extends StatelessWidget {
   }
 
   Widget buildBreadcrumbNavigation(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.home, color: Colors.blue),
-            onPressed: () {
-              // Navigate to the home page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ApplicationPage()),
-              );
-            },
-          ),
-          const Text(
-            ' > ',
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.home, color: Colors.blue),
+          onPressed: () {
+            // Navigate to the home page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ApplicationPage()),
+            );
+          },
+        ),
+        const Text(' > '),
+        GestureDetector(
+          onTap: () {
+            // Navigate to the Protein page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CCSProducts()),
+            ); // Replace with navigation to your Protein page
+          },
+          child: const Text(
+            'Protein',
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.normal,
-              color: Colors.black54,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              // Navigate to the Protein page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
-              ); // Replace with navigation to your Protein page
-            },
-            child: const Text(
-              'Protein',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }
