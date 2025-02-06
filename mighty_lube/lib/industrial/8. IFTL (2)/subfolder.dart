@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/dashboard/UI/dashboard.dart';
+
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/products.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
@@ -60,7 +60,7 @@ class IFTLNavState extends State<IFTLNav> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Row(
