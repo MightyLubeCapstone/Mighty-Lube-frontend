@@ -106,9 +106,9 @@ class PAFOOINavState extends State<PAFOOINav> {
                 children: [
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Conveyor Cleaning Solutions (8)',
+                      title: 'Conveyor Cleaning Solutions (3)',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CCS/CCS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -119,9 +119,9 @@ class PAFOOINavState extends State<PAFOOINav> {
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'Conveyor Greaser Systems (1)',
+                      title: 'Conveyor Greaser Systems (3)',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CGS/CGS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -134,7 +134,7 @@ class PAFOOINavState extends State<PAFOOINav> {
                       context: context,
                       title: 'Conveyor Lubrication Systems (7)',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CLS/CLS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -147,7 +147,7 @@ class PAFOOINavState extends State<PAFOOINav> {
                       context: context,
                       title: 'Conveyor Monitor Systems (4)',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CMS/CMS.png',
                       onTap: () {
                         Navigator.push(
                           context,

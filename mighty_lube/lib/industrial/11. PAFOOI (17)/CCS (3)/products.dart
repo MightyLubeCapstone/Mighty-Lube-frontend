@@ -104,7 +104,7 @@ class CCSProductsState extends State<CCSProducts> {
                       context: context,
                       title: 'Overhead Non-Powered Mighty Lube Brush Cleaners 300I 400I 600I',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CCS/300I.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -117,7 +117,7 @@ class CCSProductsState extends State<CCSProducts> {
                       context: context,
                       title: 'OP-8 Power Brush Cleaning System Conveyor Chain & Trolley Wheel Cleaner',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CCS/OP8.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -130,7 +130,7 @@ class CCSProductsState extends State<CCSProducts> {
                       context: context,
                       title: 'OP-8NP Non-Power Brush Cleaning System I-Beam Conveyor Chain Cleaner',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CCS/OP8NP.png',
                       onTap: () {
                         Navigator.push(
                           context,

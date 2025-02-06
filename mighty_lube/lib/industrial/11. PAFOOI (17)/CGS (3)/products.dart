@@ -107,7 +107,7 @@ class CGSProductsState extends State<CGSProducts> {
                       context: context,
                       title: 'Free Rail 317 “Guide” wheel Greaser',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CGS/FR317.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -120,7 +120,7 @@ class CGSProductsState extends State<CGSProducts> {
                       context: context,
                       title: 'Free Rail 314 “Load” wheel Greaser',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CGS/FR314.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -133,7 +133,7 @@ class CGSProductsState extends State<CGSProducts> {
                       context: context,
                       title: 'Greaser Power Chain',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI/CGS/GPC.png',
                       onTap: () {
                         Navigator.push(
                           context,
