@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/dashboard/UI/dashboard.dart';
+
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CGS%20(1)/products.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/products.dart';
@@ -60,7 +60,7 @@ class FTNavState extends State<FTNav> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Row(
