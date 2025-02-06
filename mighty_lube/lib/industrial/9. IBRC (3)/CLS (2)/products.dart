@@ -3,9 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS.dart';
+
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/MLRFC/UI/MLRFC.dart';
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/subfolders.dart';
 
 
 class HeaderLogo extends StatelessWidget {
@@ -79,7 +80,7 @@ class IBRCCLSProductsState extends State<IBRCCLSProducts> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSIFTL()),
+                          builder: (context) => const IBRCNav()),
                     );
                   },
                   child: const Text(

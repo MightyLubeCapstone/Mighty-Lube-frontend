@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/industrial/7.%20FROOI%20(6)/CCS%20(1)/products.dart';
+
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
@@ -14,7 +15,7 @@ class ImageSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'Food Grade Cleaner OP-8SS',
+            'Overspray Eliminator Brush',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -78,7 +79,7 @@ class ImageSection extends StatelessWidget {
               // Navigate to the Protein page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
+                MaterialPageRoute(builder: (context) => const CCSProducts()),
               ); // Replace with navigation to your Protein page
             },
             child: const Text(

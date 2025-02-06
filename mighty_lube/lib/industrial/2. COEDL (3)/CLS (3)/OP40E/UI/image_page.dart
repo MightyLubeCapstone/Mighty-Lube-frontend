@@ -15,7 +15,7 @@ class ImageSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'Food Grade Cleaner OP-8SS',
+            'OP-40E',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -39,7 +39,7 @@ class ImageSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
-                  'assets/FGCO.png', // Path to your image
+                  'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png', // Path to your image
                   fit: BoxFit.cover,
                 ),
               ),

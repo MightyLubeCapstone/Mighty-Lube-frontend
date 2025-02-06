@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/products.dart';
+
 
 class HomeSection extends StatelessWidget {
   const HomeSection({super.key});
@@ -18,7 +19,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Food Grade Cleaner OP-8SS:',
+                '9000L Series Central System I-Beam Conveyor Lubricators:',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -43,48 +44,40 @@ class HomeSection extends StatelessWidget {
   }
 
   Widget buildBreadcrumbNavigation(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.home, color: Colors.blue),
-            onPressed: () {
-              // Navigate to the home page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ApplicationPage()),
-              );
-            },
-          ),
-          const Text(
-            ' > ',
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.home, color: Colors.blue),
+          onPressed: () {
+            // Navigate to the home page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ApplicationPage()),
+            );
+          },
+        ),
+        const Text(' > '),
+        GestureDetector(
+          onTap: () {
+            // Navigate to the Protein page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CLSProducts()),
+            ); // Replace with navigation to your Protein page
+          },
+          child: const Text(
+            'Products',
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.normal,
-              color: Colors.black54,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              // Navigate to the Protein page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
-              ); // Replace with navigation to your Protein page
-            },
-            child: const Text(
-              'Protein',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }

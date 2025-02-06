@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+
+import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CMS%20(1)/products.dart';
+
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
@@ -14,7 +16,7 @@ class ImageSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'Food Grade Cleaner OP-8SS',
+            'Multi Line (Permanent) All IN ONE Monitoring + Lubrication',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -38,7 +40,7 @@ class ImageSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
-                  'assets/FGCO.png', // Path to your image
+                  'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Monitor Systems (1)/Multi Line.png', // Path to your image
                   fit: BoxFit.cover,
                 ),
               ),
@@ -78,11 +80,11 @@ class ImageSection extends StatelessWidget {
               // Navigate to the Protein page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProteinHome()),
+                MaterialPageRoute(builder: (context) => const CMSProducts()),
               ); // Replace with navigation to your Protein page
             },
             child: const Text(
-              'Protein',
+              'Products',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

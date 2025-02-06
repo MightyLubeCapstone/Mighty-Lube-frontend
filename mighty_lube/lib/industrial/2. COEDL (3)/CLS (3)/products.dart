@@ -4,7 +4,7 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CDL/UI/CDL.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/CLS.dart';
+import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/subfolder.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
 import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart';
 
@@ -79,7 +79,7 @@ class ProductsCOEDLState extends State<ProductsCOEDL> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CLSCOEDL()),
+                          builder: (context) => const COEDLNav()),
                     );
                   },
                   child: const Text(
