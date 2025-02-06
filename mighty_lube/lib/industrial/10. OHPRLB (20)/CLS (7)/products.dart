@@ -111,7 +111,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: '2100L Series Self-Contained I-Beam Conveyor Lubricators',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/2100L.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -124,7 +124,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: '9000L Series Central System I-Beam Conveyor Lubricators',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/9000L.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -137,7 +137,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: 'Caterpillar Drive Lubricators',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/CDL.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -150,7 +150,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: 'E-Series',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/ES.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -163,7 +163,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: 'OP-4A',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/OP4A.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -176,7 +176,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: 'OP-52/OP-53',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/OP52.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -189,7 +189,7 @@ class CLSProductsState extends State<CLSProducts> {
                       context: context,
                       title: 'OP-139A',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/OP139A.png',
                       onTap: () {
                         Navigator.push(
                           context,

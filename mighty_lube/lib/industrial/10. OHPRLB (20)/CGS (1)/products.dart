@@ -104,7 +104,7 @@ class CGSProductsState extends State<CGSProducts> {
                       context: context,
                       title: 'Greaser Power Chain:',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CGS/CGS.png',
                       onTap: () {
                         Navigator.push(
                           context,

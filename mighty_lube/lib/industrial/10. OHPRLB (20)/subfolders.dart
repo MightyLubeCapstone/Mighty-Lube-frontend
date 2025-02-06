@@ -108,7 +108,7 @@ class OHPRLBNavState extends State<OHPRLBNav> {
                       context: context,
                       title: 'Conveyor Cleaning Solutions (8)',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CCS/CCS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -121,7 +121,7 @@ class OHPRLBNavState extends State<OHPRLBNav> {
                       context: context,
                       title: 'Conveyor Greaser Systems (1)',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CGS/CGS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -134,7 +134,7 @@ class OHPRLBNavState extends State<OHPRLBNav> {
                       context: context,
                       title: 'Conveyor Lubrication Systems (7)',
                       imagePath:
-                          '',
+                          'assets/industrial/OHPRLB(20)/CLS/CLS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -147,7 +147,7 @@ class OHPRLBNavState extends State<OHPRLBNav> {
                       context: context,
                       title: 'Conveyor Monitor Systems (4)',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI(17)/CMS/CMS.png',
                       onTap: () {
                         Navigator.push(
                           context,

@@ -108,7 +108,7 @@ class CMSProductsState extends State<CMSProducts> {
                       context: context,
                       title: 'Multi Line (Permanent) ALL IN ONE Monitoring + Lubrication',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI(17)/CMS/MLAIO.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -121,7 +121,7 @@ class CMSProductsState extends State<CMSProducts> {
                       context: context,
                       title: 'Portable (Multi-Line) Mighty Lube® Monitoring System',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI(17)/CMS/PMLMS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -130,11 +130,11 @@ class CMSProductsState extends State<CMSProducts> {
                         );
                       },
                     ),
-                     _buildClickableImageCard(
+                    _buildClickableImageCard(
                       context: context,
                       title: 'Paint Marker for Monitoring System (Optional)',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI(17)/CMS/PMMS.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -143,11 +143,11 @@ class CMSProductsState extends State<CMSProducts> {
                         );
                       },
                     ),
-                     _buildClickableImageCard(
+                    _buildClickableImageCard(
                       context: context,
                       title: 'Single Line (Stationary) Mighty Lube® Monitoring System',
                       imagePath:
-                          '',
+                          'assets/industrial/PFOOI(17)/CMS/SLMLMS.png',
                       onTap: () {
                         Navigator.push(
                           context,

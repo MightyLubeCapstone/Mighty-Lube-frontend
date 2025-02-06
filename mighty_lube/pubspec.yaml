@@ -78,6 +78,34 @@ flutter:
     - assets/industrial/Free Carrier (2)/FR314.png
     - assets/industrial/Free Carrier (2)/FR317.png
 
+
+    - assets/industrial/OHPRLB(20)/CCS/CCS.png
+    - assets/industrial/OHPRLB(20)/CCS/300I.png
+    - assets/industrial/OHPRLB(20)/CCS/LBCBS.png
+    - assets/industrial/OHPRLB(20)/CCS/OEB.png
+    - assets/industrial/OHPRLB(20)/CCS/OP8.png
+    - assets/industrial/OHPRLB(20)/CCS/OP8NP.png
+    - assets/industrial/OHPRLB(20)/CCS/OP13.png
+    - assets/industrial/OHPRLB(20)/CCS/OP55.png
+    - assets/industrial/OHPRLB(20)/CCS/YCB.png
+
+    - assets/industrial/OHPRLB(20)/CGS/CGS.png
+
+    - assets/industrial/OHPRLB(20)/CLS/CLS.png
+    - assets/industrial/OHPRLB(20)/CLS/2100L.png
+    - assets/industrial/OHPRLB(20)/CLS/9000L.png
+    - assets/industrial/OHPRLB(20)/CLS/CDL.png
+    - assets/industrial/OHPRLB(20)/CLS/ES.png
+    - assets/industrial/OHPRLB(20)/CLS/OP4A.png
+    - assets/industrial/OHPRLB(20)/CLS/OP52.png
+    - assets/industrial/OHPRLB(20)/CLS/OP139A.png
+
+    - assets/industrial/PFOOI(17)/CMS/CMS.png
+    - assets/industrial/PFOOI(17)/CMS/MLAIO.png
+    - assets/industrial/PFOOI(17)/CMS/PMLMS.png
+    - assets/industrial/PFOOI(17)/CMS/PMMS.png
+    - assets/industrial/PFOOI(17)/CMS/SLMLMS.png
+
     - assets/industrial/IBRC(3)/CLS.png
     - assets/industrial/IBRC(3)/CGS.png
     - assets/industrial/IBRC(3)/MLRFC.png
@@ -97,12 +125,6 @@ flutter:
     - assets/industrial/PFOOI(17)/CLS/ES.png
     - assets/industrial/PFOOI(17)/CLS/OP55.png
     - assets/industrial/PFOOI(17)/CLS/OP139A.png
-
-    - assets/industrial/PFOOI(17)/CMS/CMS.png
-    - assets/industrial/PFOOI(17)/CMS/MLAIO.png
-    - assets/industrial/PFOOI(17)/CMS/PMLMS.png
-    - assets/industrial/PFOOI(17)/CMS/PMMS.png
-    - assets/industrial/PFOOI(17)/CMS/SLMLMS.png
 
 
 

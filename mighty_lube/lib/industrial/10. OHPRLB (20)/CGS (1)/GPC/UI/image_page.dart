@@ -39,7 +39,7 @@ class ImageSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
-                  '', // Path to your image
+                  'assets/industrial/OHPRLB(20)/CGS/CGS.png', // Path to your image
                   fit: BoxFit.cover,
                 ),
               ),
