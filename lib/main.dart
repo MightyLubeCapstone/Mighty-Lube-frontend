@@ -37,7 +37,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/idustrial', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/FGLM', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages

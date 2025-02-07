@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/protien/FGLM/API/flgm_api.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/protien/protienHome.dart';
 
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
@@ -9,65 +10,35 @@ class ConfigurationSection extends StatefulWidget {
 }
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
-  final controllers = FormAPI().controllers;
-  final formData = FormAPI().formData;
-  String? conveyorLengthUnit = FormAPI().conveyorLengthUnit;
-  String? conveyorSpeedUnit = FormAPI().conveyorSpeedUnit;
-
-  void formCall() async {
-    final success = await FormAPI().fglmForm();
-    if (success) {
-      print('Successfully added FGLM data');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Successfully added data'),
-        ),
-      );
-    } else {
-      print('Failed to add FGLM data');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to add data'),
-        ),
-      );
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    controllers.forEach((key, controller) {
-      controller.addListener(() {
-        formData[key] = controller.text;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    for (var controller in controllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
+  int itemCount = 1; // Default count
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(20.0),
+    return Column(
       children: [
-        buildGradientButton(context, 'General Information'),
-        buildGradientButton(context, 'Customer Power Utilities'),
-        buildGradientButton(context, 'Monitoring Features Requested'),
-        buildGradientButton(context, 'Conveyor Specifications'),
-        buildGradientButton(context, 'Wire'),
-        buildGradientButton(context, 'Measurement'),
+        buildBreadcrumbNavigation(context),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(20.0),
+            children: [
+              buildGradientButton(context, 'General Information',
+                  buildGeneralInformationContent()),
+              buildGradientButton(context, 'Customer Power Utilities',
+                  buildCustomerPowerUtilitiesContent()),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        buildCounterSection(),
+        const SizedBox(height: 20),
+        buildGradientConfiguratorButton(),
+        const SizedBox(height: 20),
       ],
     );
   }
 
-  // Create gradient buttons
-  Widget buildGradientButton(BuildContext context, String title) {
+  Widget buildGradientButton(
+      BuildContext context, String title, Widget content) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
@@ -88,68 +59,68 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ),
       child: TextButton(
         onPressed: () {
-          if (title == 'General Information') {
-            // Show detailed form for General Information
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => FractionallySizedBox(
-                heightFactor: 0.90, // Ensures 90% of the screen is used
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        Center(
-                          child: Container(
-                            width: 50,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) => FractionallySizedBox(
+              heightFactor: 0.90,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: 50,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'General Information',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      content,
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        buildFormSections(), // Form sections with dividers
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Save'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Save',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
               ),
-            );
-          }
+            ),
+          );
         },
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
@@ -171,78 +142,53 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Build form sections with dividers
-  Widget buildFormSections() {
+  Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle('Conveyor Details'),
-        buildTextField('Name of Conveyor System', 'conveyorName'),
-        buildTextField('Conveyor Chain Size', 'conveyorChainSize'),
-        buildTextField('Protein: Chain Manufacturer', 'chainManufacturer'),
-        buildTwoFieldRow(
-          buildTextField('Wheel Manufacturer', 'wheelManufacturer'),
-          buildTextField('Chain Pin Type *', 'chainPinType'),
-        ),
-        buildSectionDivider(),
-        buildSectionTitle('Conveyor Dimensions & Speed'),
-        buildTwoFieldRow(
-          buildTextField('Conveyor Length', 'conveyorLength'),
-          buildDropdownField('Conveyor Length Unit', ['Feet', 'Meters'],
-              (value) {
-            setState(() {
-              conveyorLengthUnit = value;
-              formData['conveyorLengthUnit'] = value;
-            });
-          }),
-        ),
-        buildTwoFieldRow(
-          buildTextField('Conveyor Speed (Min/Max)', 'conveyorSpeed'),
-          buildDropdownField(
-              'Conveyor Speed Unit', ['Feet / minute', 'Meters / minute'],
-              (value) {
-            setState(() {
-              conveyorSpeedUnit = value;
-              formData['conveyorSpeedUnit'] = value;
-            });
-          }),
-        ),
-        buildSectionDivider(),
-        buildSectionTitle('Conveyor Movement Details'),
-        buildTwoFieldRow(
-          buildTextField('Indexing or Variable Speed Conditions', 'indexing'),
-          buildTextField('Direction of Travel', 'directionOfTravel'),
-        ),
-        buildSectionDivider(),
-        buildSectionTitle('Conveyor Material & Style'),
-        buildTwoFieldRow(
-          buildTextField('What Type of Metal *', 'metalType'),
-          buildTextField('Style of Conveyor *', 'conveyorStyle'),
-        ),
-        buildTwoFieldRow(
-          buildTextField('Color of Trolley *', 'trolleyColor'),
-          buildTextField('Type of Trolley *', 'trolleyType'),
-        ),
+        buildDropdownField('Conveyor Chain Size', [
+          'X348 Chain (3”)',
+          'X458 Chain (4”)',
+          'OX678 Chain (6”)',
+          'Other'
+        ]),
+        buildDropdownField('Protein: Chain Manufacturer', [
+          'Green Line',
+          'Frost',
+          'M&M',
+          'Stork',
+          'Meyn',
+          'Linco',
+          'DC',
+          'Merel',
+          'D&F',
+          'Other'
+        ]),
         buildSectionDivider(),
         buildSectionTitle('Environmental Details'),
-        buildTextField('Application Environment *', 'applicationEnvironment'),
-        buildTextField('Temperature of Surrounding Area', 'temperature'),
-        buildTwoFieldRow(
-          buildTextField('Is the Conveyor Loaded or Unloaded? *', 'loaded'),
-          buildTextField(
-              'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
-              'swing'),
-        ),
-        buildSectionDivider(),
-        buildSectionTitle('Attachments'),
-        buildTextField('I Have A Plant Layout To Attach', 'plantLayout'),
-        buildTextField('I Have The Required Pictures Of Each Chain To Attach',
-            'chainPictures'),
+        buildDropdownField('Is the Conveyor "__" at Planned Install Location',
+            ['Loaded', 'Unloaded']),
+        buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
   }
 
-  // Helper to build a section title
+  Widget buildCustomerPowerUtilitiesContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
+            ['Option 1', 'Option 2', 'Option 3']),
+        buildDropdownField(
+          'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
+          ['Yes', 'No'],
+        ),
+        buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
+      ],
+    );
+  }
+
   Widget buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -257,7 +203,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Helper to build a section divider
   Widget buildSectionDivider() {
     return const Divider(
       color: Colors.grey,
@@ -266,36 +211,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  // Helper to build a single text field
-  Widget buildTextField(String hint, String key) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15.0),
-      child: TextField(
-        controller: controllers[key],
-        decoration: InputDecoration(
-          labelText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Helper to build a row with two fields
-  Widget buildTwoFieldRow(Widget first, Widget second) {
-    return Row(
-      children: [
-        Expanded(child: first),
-        const SizedBox(width: 10),
-        Expanded(child: second),
-      ],
-    );
-  }
-
-  // Helper to build a dropdown field
-  Widget buildDropdownField(
-      String label, List<String> options, ValueChanged<String?> onChanged) {
+  Widget buildDropdownField(String label, List<String> options) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -305,15 +221,126 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        value: formData[label],
         items: options
             .map((option) => DropdownMenuItem<String>(
                   value: option,
                   child: Text(option),
                 ))
             .toList(),
-        onChanged: onChanged,
+        onChanged: (value) {},
       ),
     );
   }
+
+  Widget buildCounterSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {
+            setState(() {
+              if (itemCount > 1) itemCount--;
+            });
+          },
+          icon: const Icon(Icons.remove_circle_outline,
+              color: Colors.blue, size: 30),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            '$itemCount',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              itemCount++;
+            });
+          },
+          icon: const Icon(Icons.add_circle_outline,
+              color: Colors.blue, size: 30),
+        ),
+      ],
+    );
+  }
+
+  Widget buildGradientConfiguratorButton() {
+    return Container(
+      height: 50,
+      width: MediaQuery.of(context).size.width * 0.7, // Shorter width
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF73A1F9), Color(0xFF4D86F5)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: TextButton(
+        onPressed: () {
+          // Add your "Add to Configurator" logic here
+        },
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        child: const Text(
+          'ADD TO CONFIGURATOR',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Widget buildBreadcrumbNavigation(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.home, color: Colors.blue),
+          onPressed: () {
+            // Navigate to the home page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ApplicationPage()),
+            );
+          },
+        ),
+        const Text(' > '),
+        GestureDetector(
+          onTap: () {
+            // Navigate to the Protein page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProteinHome()),
+            ); // Replace with navigation to your Protein page
+          },
+          child: const Text(
+            'Protein',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
