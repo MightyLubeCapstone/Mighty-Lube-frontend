@@ -129,7 +129,7 @@ class CLSProductsState extends State<CLSProducts> {
                     ),
                     _buildClickableImageCard(
                       context: context,
-                      title: 'OP-40E',
+                      title: 'OP-48E',
                       imagePath:
                           'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-48E.png',
                       onTap: () {
