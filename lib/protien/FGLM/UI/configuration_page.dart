@@ -11,7 +11,7 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-
+  final TextEditingController conveyorSystem = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -142,10 +142,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
+
+
   Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        buildTextField('Name of Conveyor System',conveyorSystem),
         buildSectionTitle('Conveyor Details'),
         buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
@@ -188,6 +191,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+
+
 
   Widget buildSectionTitle(String title) {
     return Padding(
@@ -305,6 +311,32 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ),
     );
   }
+
+  Widget buildTextField(String hintText, TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 15.0), // Padding applied correctly
+    child: TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0), // Adds rounded corners
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0), // Ensures consistent style
+          borderSide: const BorderSide(color: Colors.grey), // Default border color
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0), // Rounded corners when focused
+          borderSide: const BorderSide(color: Colors.blue, width: 2.0), // Highlight color
+        ),
+      ),
+    ),
+  );
+}
+
+
+
 }
 
 Widget buildBreadcrumbNavigation(BuildContext context) {
@@ -332,7 +364,7 @@ Widget buildBreadcrumbNavigation(BuildContext context) {
             ); // Replace with navigation to your Protein page
           },
           child: const Text(
-            'Protein',
+            'Products',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
