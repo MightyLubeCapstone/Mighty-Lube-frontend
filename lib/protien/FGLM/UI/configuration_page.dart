@@ -12,6 +12,14 @@ class ConfigurationSection extends StatefulWidget {
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   final TextEditingController conveyorSystem = TextEditingController();
+  final TextEditingController conveyorLength = TextEditingController();
+  final TextEditingController conveyorSpeed = TextEditingController();
+  final TextEditingController conveyorIndex = TextEditingController();
+  final TextEditingController operatingVoltage = TextEditingController();
+  final TextEditingController conductor4 = TextEditingController();
+  final TextEditingController conductor7 = TextEditingController();
+  final TextEditingController conductor2 = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,6 +33,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   buildGeneralInformationContent()),
               buildGradientButton(context, 'Customer Power Utilities',
                   buildCustomerPowerUtilitiesContent()),
+              buildGradientButton(context, 'New/Adding to Existing Monitoring System',
+                  buildNewMonitoringSystem()),
+              buildGradientButton(context, 'Monitoring Features Requested',
+                   buildMonitoringFeatures()),   
+              buildGradientButton(context, 'Conveyor Specifications',
+                  buildConveyorSpecifications()),
+              buildGradientButton(context, 'Wire',
+                  buildWire()),
             ],
           ),
         ),
@@ -63,7 +79,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             context: context,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
             ),
             builder: (context) => FractionallySizedBox(
               heightFactor: 0.90,
@@ -80,7 +96,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                       const SizedBox(height: 20),
                       Center(
                         child: Container(
-                          width: 50,
+                          width: 40,
                           height: 5,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
@@ -92,7 +108,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -125,7 +141,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(25),
           ),
         ),
         child: Center(
@@ -142,13 +158,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-
-
   Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        
         buildTextField('Name of Conveyor System',conveyorSystem),
+        buildSectionDivider(),
         buildSectionTitle('Conveyor Details'),
         buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
@@ -168,11 +184,78 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'D&F',
           'Other'
         ]),
+        buildDropdownField('Chain Pin Type', [
+          'Bolts',
+          'Pin',
+          'Log',
+        ]),
+        buildTextField('Enter Number Here',conveyorLength),
+        buildDropdownField('Conveyor Length Unit', [
+          'Feet',
+          'Inches',
+          'm Meter',
+          'mm Milimeter'
+        ]),
+        buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
+        buildDropdownField('Conveyor Speed Unit', [
+          'Feet/Minute',
+          'Meter/Minute',
+        ]),
+        buildTextField('Indexing or Variable Speed Conditions',conveyorIndex),
+        buildDropdownField('Direction of Travel', [
+          'Right to Left',
+          'Left to Right',
+        ]),
+        buildDropdownField('What Type of Metal', [
+          'Stainless Steel',
+          'Zinc',
+          'Mild Steel',
+          'Other'
+        ]),
+        buildDropdownField('Style of Conveyor', [
+          'I-Beam',
+          'Meyn',
+          'Sani Track',
+          'T Rail',
+          'Other'
+        ]),
+        buildDropdownField('Color of Trolley', [
+          'Blue',
+          'Green',
+          'Grey',
+          'Other'
+        ]),
+        buildDropdownField('Type of Trolly', [
+          'Meyn Trolley Halve Green Wheel Bolt Version',
+          'Meyn Plastic Click Version',
+          'Meyn Stainless Steel Halve w/ Green Wheel',
+          'Meyn Stainless Stell Halve Gray Wheel',
+          'Stork Halve Bolt Version Blue Wheel',
+          'Linco Plastic Halve Blue Wheel'
+        ]),
+        buildDropdownField('Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Is the Conveyor Loaded or Unloaded at Planned Install Location? *', [
+          'Loaded',
+          'Unloaded'
+        ]),
+        buildDropdownField('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('I Have A Plant Layout To Attach', [
+          'Yes - Will Attach',
+          'No - Do Not Have'
+        ]),
+        buildDropdownField('I Have The Required Pictures Of Each Chain To Attach', [
+          'Yes - Will Attach',
+          'No - Do Not Have'
+        ]),
+
         buildSectionDivider(),
-        buildSectionTitle('Environmental Details'),
-        buildDropdownField('Is the Conveyor "__" at Planned Install Location',
-            ['Loaded', 'Unloaded']),
-        buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
+        
       ],
     );
   }
@@ -181,17 +264,105 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3']),
-        buildDropdownField(
-          'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
-          ['Yes', 'No'],
-        ),
-        buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
+        buildSectionDivider(),
+        buildTextField('Operating Voltage - Single Phase: (Volts/hz] *',operatingVoltage),
+        buildSectionDivider(),
       ],
     );
   }
 
+  Widget buildNewMonitoringSystem() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildSectionDivider(),
+        buildDropdownField('Connecting to Existing Monitoring', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Add New Monitoring System', [
+          'Yes',
+          'No'
+        ]),
+        buildSectionDivider(),
+      ],
+    );
+  }
+
+  Widget buildMonitoringFeatures() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildSectionDivider(),
+        buildDropdownField('Drive Motor Amp', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Drive Take-up-Air', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Take-Up Distance', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Drive Motor Temp', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Drive Motor Vibration', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Bent or Missing Trolley detect', [
+          'Yes',
+          'No'
+        ]),
+        buildSectionDivider(),
+      ],
+    );
+  }
+
+  Widget buildConveyorSpecifications() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildSectionDivider(),
+        buildDropdownField('Lubrication from the Side of Chain', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Lubrication from the Top of Chain', [
+          'Yes',
+          'No'
+        ]),
+        buildDropdownField('Is the Conveyor Chain Clean?', [
+          'Yes',
+          'No'
+        ]),
+        buildSectionDivider(),
+      ],
+    );
+  }
+  
+  Widget buildWire() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildSectionDivider(),
+        buildDropdownField('Measurement Units', [
+          'Feet',
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
+        ]),
+        buildTextField('Enter 4 Conductor Number Here',conductor4),
+        buildTextField('Enter 7 Conductor Number Here',conductor7),
+        buildTextField('Enter 2 Conductor Number Here',conductor2),
+        buildSectionDivider(),
+      ],
+    );
+  }
 
 
 
@@ -334,8 +505,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     ),
   );
 }
-
-
 
 }
 
