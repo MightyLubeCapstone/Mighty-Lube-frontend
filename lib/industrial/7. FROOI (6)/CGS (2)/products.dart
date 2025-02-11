@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/7.%20FROOI%20(6)/CGS%20(2)/FR314/UI/FR314.dart';
 import 'package:mighty_lube/industrial/7.%20FROOI%20(6)/CGS%20(2)/FR317/UI/FR317.dart';
@@ -43,8 +44,8 @@ class CGSProductsState extends State<CGSProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        link: ApplicationPage(),
-        customIcon: Icons.description,
+        link: ProfilePage(),
+        customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),
       body: Padding(

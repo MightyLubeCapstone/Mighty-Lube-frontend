@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CGS%20(1)/products.dart';
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/products.dart';
@@ -42,8 +43,8 @@ class IBRCNavState extends State<IBRCNav> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        link: ApplicationPage(),
-        customIcon: Icons.description,
+        link: ProfilePage(),
+        customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),
       body: Padding(

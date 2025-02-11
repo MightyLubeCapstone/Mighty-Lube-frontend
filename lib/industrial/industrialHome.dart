@@ -3,7 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
+import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'product_list.dart';
 
 import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/CLS.dart';
 import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/subfolders.dart';
@@ -46,104 +48,9 @@ class IndustrialHome extends StatefulWidget {
 }
 
 class _IndustrialHomeState extends State<IndustrialHome> {
+  // Helper function to filter cards based on the search query
   String searchQuery = '';
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        link: ApplicationPage(),
-        customIcon: Icons.description,
-      ),
-      drawer: const CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Breadcrumb Navigation with Search Box
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
-                    );
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(width: 4),
-                    ],
-                  ),
-                ),
-                const Text(' > '),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
-                    );
-                  },
-                  child: const Text(
-                    'Industrial',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                // Search Box
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      ),
-                      suffixIcon: const Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Vertical list of images with text, filtered by search query
-            Expanded(
-              child: ListView(
-                children:
-                    // if search hasn't been activated...
-                    // else build dynamic list
-                    (searchQuery == '')
-                        ? _buildDefaultCards()
-                        : _buildDynamicList(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Helper function to filter cards based on the search query
   bool _filterCard(String title) {
     return title.toLowerCase().contains(searchQuery.toLowerCase());
   }
@@ -226,6 +133,101 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                     );
                   },
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar(
+        link: ProfilePage(),
+        customIcon: Icons.person,
+      ),
+      drawer: const CustomDrawer(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Breadcrumb Navigation with Search Box
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardPage()),
+                    );
+                  },
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.home,
+                        color: Colors.blue,
+                      ),
+                      SizedBox(width: 4),
+                    ],
+                  ),
+                ),
+                const Text(' > '),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ApplicationPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Industrial',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                // Search Box
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 12.0,
+                      ),
+                      suffixIcon: const Icon(Icons.search),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Vertical list of images with text, filtered by search query
+            Expanded(
+              child: ListView(
+                children:
+                    // if search hasn't been activated...
+                    // else build dynamic list
+                    (searchQuery == '')
+                        ? _buildDefaultCards()
+                        : _buildDynamicList(),
               ),
             ),
           ],
@@ -361,6 +363,19 @@ class _IndustrialHomeState extends State<IndustrialHome> {
   }
 
   List<Widget> _buildDynamicList() {
-    return [];
+    return productList.entries
+        .where((entry) => _filterCard(entry.key))
+        .map((entry) => _buildClickableImageCard(
+              context: context,
+              title: entry.value.title,
+              imagePath: entry.value.imagePath,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => entry.value.callback),
+                );
+              },
+            ))
+        .toList();
   }
 }

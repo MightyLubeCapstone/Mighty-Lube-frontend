@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/CDL/UI/CDL.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/OP40E/UI/OP40E.dart';
-import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/subfolders.dart';
+import 'package:mighty_lube/industrial/5.%20FT(4)/subfolders.dart';
+
 
 
 class HeaderLogo extends StatelessWidget {
@@ -44,8 +46,8 @@ class CLSProductsState extends State<CLSProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        link: ApplicationPage(),
-        customIcon: Icons.description,
+        link: ProfilePage(),
+        customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),
       body: Padding(
@@ -80,7 +82,7 @@ class CLSProductsState extends State<CLSProducts> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const IBRCNav()),
+                          builder: (context) => const FTNav()),
                     );
                   },
                   child: const Text(

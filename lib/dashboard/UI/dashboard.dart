@@ -16,7 +16,7 @@ class DashboardPage extends StatelessWidget {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? username = prefs.getString('currentUsername');
 
-      if (username!.isEmpty) {
+      if (username == "" || username!.isEmpty) {
         throw Exception('Username not found');
       }
 
