@@ -189,6 +189,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
+
+
+
+
+
+
+
   Widget buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -305,6 +312,29 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ),
     );
   }
+
+  Widget buildTextField(String hintText, TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 15.0), // Padding applied correctly
+    child: TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0), // Adds rounded corners
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0), // Ensures consistent style
+          borderSide: const BorderSide(color: Colors.grey), // Default border color
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0), // Rounded corners when focused
+          borderSide: const BorderSide(color: Colors.blue, width: 2.0), // Highlight color
+        ),
+      ),
+    ),
+  );
+}
 }
 
 Widget buildBreadcrumbNavigation(BuildContext context) {
