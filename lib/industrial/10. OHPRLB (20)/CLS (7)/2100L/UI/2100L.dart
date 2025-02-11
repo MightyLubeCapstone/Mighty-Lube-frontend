@@ -5,14 +5,14 @@ import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
 
-class Page2100L extends StatefulWidget {
-  const Page2100L({super.key});
+class Page2100LBeam extends StatefulWidget {
+  const Page2100LBeam({super.key});
 
   @override
-  State<Page2100L> createState() => Page2100LState();
+  State<Page2100LBeam> createState() => Page2100LBeamState();
 }
 
-class Page2100LState extends State<Page2100L> {
+class Page2100LBeamState extends State<Page2100LBeam> {
   int _selectedIndex = 0;
 
   // Pages for bottom navigation
