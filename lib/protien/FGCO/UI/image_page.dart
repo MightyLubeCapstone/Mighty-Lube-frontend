@@ -82,7 +82,7 @@ class ImageSection extends StatelessWidget {
               ); // Replace with navigation to your Protein page
             },
             child: const Text(
-              'Protein',
+              'Products',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
