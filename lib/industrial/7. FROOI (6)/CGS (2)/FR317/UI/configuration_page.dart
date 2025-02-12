@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/7.%20FROOI%20(6)/CGS%20(2)/products.dart';
+import 'package:mighty_lube/helper_widgets.dart';
 
 
 class ConfigurationSection extends StatefulWidget {
@@ -12,6 +13,14 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
+  final TextEditingController conveyorSystem = TextEditingController();
+  final TextEditingController conveyorLength = TextEditingController();
+  final TextEditingController conveyorSpeed = TextEditingController();
+  final TextEditingController conveyorIndex = TextEditingController();
+  final TextEditingController operatingVoltage = TextEditingController();
+  final TextEditingController conductor4 = TextEditingController();
+  final TextEditingController conductor7 = TextEditingController();
+  final TextEditingController conductor2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,139 +31,36 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent()),
-              buildGradientButton(context, 'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent()),
+              CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent()),
+              CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent()),
+              CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildMonitoringFeatures()),
+              CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
+              CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
+              CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
             ],
           ),
         ),
-        const SizedBox(height: 20),
-        buildCounterSection(),
-        const SizedBox(height: 20),
-        buildGradientConfiguratorButton(),
+       
+        CommonWidgets.buildConfiguratorWithCounter(),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  Widget buildGradientButton(
-      BuildContext context, String title, Widget content) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF73A1F9), Color(0xFF4D86F5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: TextButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            builder: (context) => FractionallySizedBox(
-              heightFactor: 0.90,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 20),
-                      Center(
-                        child: Container(
-                          width: 50,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      content,
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+//actual buttons w/ the questions :) 
 
   Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildSectionTitle('Conveyor Details'),
-        buildDropdownField('Conveyor Chain Size', [
+        CommonWidgets.buildSectionTitle('Conveyor Details'),
+        CommonWidgets.buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
           'X458 Chain (4”)',
           'OX678 Chain (6”)',
           'Other'
         ]),
-        buildDropdownField('Protein: Chain Manufacturer', [
+        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
           'Green Line',
           'Frost',
           'M&M',
@@ -166,11 +72,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'D&F',
           'Other'
         ]),
-        buildSectionDivider(),
-        buildSectionTitle('Environmental Details'),
-        buildDropdownField('Is the Conveyor "__" at Planned Install Location',
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildSectionTitle('Environmental Details'),
+        CommonWidgets.buildDropdownField('Is the Conveyor "__" at Planned Install Location',
             ['Loaded', 'Unloaded']),
-        buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
+        CommonWidgets.buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
   }
@@ -179,131 +85,126 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
+        CommonWidgets.buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
             ['Option 1', 'Option 2', 'Option 3']),
-        buildDropdownField(
+        CommonWidgets.buildDropdownField(
           'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'],
         ),
-        buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
+        CommonWidgets.buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
       ],
     );
   }
 
-  Widget buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.blueAccent,
-        ),
-      ),
-    );
-  }
-
-  Widget buildSectionDivider() {
-    return const Divider(
-      color: Colors.grey,
-      thickness: 1,
-      height: 30,
-    );
-  }
-
-  Widget buildDropdownField(String label, List<String> options) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15.0),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        items: options
-            .map((option) => DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option),
-                ))
-            .toList(),
-        onChanged: (value) {},
-      ),
-    );
-  }
-
-  Widget buildCounterSection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+  Widget buildNewMonitoringSystem() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        IconButton(
-          onPressed: () {
-            setState(() {
-              if (itemCount > 1) itemCount--;
-            });
-          },
-          icon: const Icon(Icons.remove_circle_outline,
-              color: Colors.blue, size: 30),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            '$itemCount',
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              itemCount++;
-            });
-          },
-          icon: const Icon(Icons.add_circle_outline,
-              color: Colors.blue, size: 30),
-        ),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Connecting to Existing Monitoring', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Add New Monitoring System', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildGradientConfiguratorButton() {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width * 0.7, // Shorter width
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF73A1F9), Color(0xFF4D86F5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: TextButton(
-        onPressed: () {
-          // Add your "Add to Configurator" logic here
-        },
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: const Text(
-          'ADD TO CONFIGURATOR',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+  Widget buildMonitoringFeatures() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Drive Motor Amp', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Drive Take-up-Air', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Take-Up Distance', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Drive Motor Temp', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Drive Motor Vibration', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Bent or Missing Trolley detect', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
+
+  Widget buildConveyorSpecifications() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+       CommonWidgets. buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Lubrication from the Side of Chain', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Is the Conveyor Chain Clean?', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
+  
+  Widget buildController() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Measurement Units', [
+          'Feet',
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
+        ]),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
+
+  Widget buildWire() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Measurement Units', [
+          'Feet',
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
+        ]),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildSectionDivider(),
+      ],
     );
   }
 }
