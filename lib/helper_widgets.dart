@@ -162,8 +162,8 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein(String label, List<String> options,
-      dynamic dropdownSelection, Function(dynamic) onChanged) {
+  static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
+      T dropdownSelection, Function(dynamic) onChanged) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -181,7 +181,9 @@ class CommonWidgets {
             .toList(),
         onChanged: (value) {
           if (value != null) {
-            dynamic newValue = value;
+            dynamic newValue;
+            print(dropdownSelection
+                .runtimeType); // this gives null even with template????
             if (dropdownSelection is bool) {
               value == "Yes" ? newValue = true : newValue = false;
             } else if (dropdownSelection is int) {

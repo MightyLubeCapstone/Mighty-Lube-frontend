@@ -13,50 +13,46 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  bool parseBool(String value) {
-    return value.toLowerCase() ==
-        'true'; // Returns true if the string is "true" (case insensitive)
-  }
 
   Future<bool>? status;
   // Gen Info
   final TextEditingController conveyorSystemName = TextEditingController();
-  int? conveyorChainSize;
-  int? chainManufacturer;
-  int? chainPinType;
+  int? conveyorChainSize = -1;
+  int? chainManufacturer = -1;
+  int? chainPinType = -1;
   final TextEditingController conveyorLength = TextEditingController();
-  int? conveyorLengthUnit;
+  int? conveyorLengthUnit = -1;
   final TextEditingController conveyorSpeed = TextEditingController();
-  int? conveyorSpeedUnit;
+  int? conveyorSpeedUnit = -1;
   final TextEditingController conveyorIndex = TextEditingController();
-  int? directionOfTravel;
-  int? metalType;
-  int? conveyorStyle;
-  int? trolleyColor;
-  int? trolleyType;
-  bool? surroundingTemp;
-  bool? conveyorLoaded;
-  bool? conveyorSwing;
-  bool? plantLayout;
-  bool? requiredPics;
+  int? directionOfTravel = -1;
+  int? metalType = -1;
+  int? conveyorStyle = -1;
+  int? trolleyColor = -1;
+  int? trolleyType = -1;
+  bool? surroundingTemp = false;
+  bool? conveyorLoaded = false;
+  bool? conveyorSwing = false;
+  bool? plantLayout = false;
+  bool? requiredPics = false;
   // CPU
   final TextEditingController operatingVoltage = TextEditingController();
   // MonSys
-  bool? existingMonitor;
-  bool? newMonitor;
+  bool? existingMonitor = false;
+  bool? newMonitor = false;
   // MonFeatures
-  bool? motorAmp;
-  bool? takeUpAir;
-  bool? takeUpDist;
-  bool? motorTemp;
-  bool? motorVib;
-  bool? detectFaultyTrolley;
+  bool? motorAmp = false;
+  bool? takeUpAir = false;
+  bool? takeUpDist = false;
+  bool? motorTemp = false;
+  bool? motorVib = false;
+  bool? detectFaultyTrolley = false;
   // ConveyorSpecs
-  bool? sideLube;
-  bool? topLube;
+  bool? sideLube = false;
+  bool? topLube = false;
   bool? cleanChain;
   // Wire
-  int? measureUnits;
+  int? measureUnits = -1;
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
@@ -104,17 +100,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             'Name of Conveyor System', conveyorSystemName),
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Conveyor Chain Size',
           ['X348 Chain (3”)', 'X458 Chain (4”)', 'OX678 Chain (6”)', 'Other'],
           conveyorChainSize,
           (value) {
             setState(() {
-              conveyorChainSize = int.tryParse(value); // Update state properly
+              conveyorChainSize = value; // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Protein: Chain Manufacturer',
           [
             'Green Line',
@@ -131,11 +127,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           chainManufacturer,
           (value) {
             setState(() {
-              chainManufacturer = int.tryParse(value); // Update state properly
+              chainManufacturer = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Chain Pin Type',
           [
             'Bolts',
@@ -145,24 +141,24 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           chainPinType,
           (value) {
             setState(() {
-              chainPinType = int.tryParse(value); // Update state properly
+              chainPinType = (value); // Update state properly
             });
           },
         ),
         CommonWidgets.buildTextField('Enter Number Here', conveyorLength),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Conveyor Length Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Milimeter'],
           conveyorLengthUnit,
           (value) {
             setState(() {
-              conveyorLengthUnit = int.tryParse(value); // Update state properly
+              conveyorLengthUnit = (value); // Update state properly
             });
           },
         ),
         CommonWidgets.buildTextField(
             'Enter Conveyor Speed (Min/Max)', conveyorSpeed),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Conveyor Speed Unit',
           [
             'Feet/Minute',
@@ -171,13 +167,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           conveyorSpeedUnit,
           (value) {
             setState(() {
-              conveyorSpeedUnit = int.tryParse(value); // Update state properly
+              conveyorSpeedUnit = (value); // Update state properly
             });
           },
         ),
         CommonWidgets.buildTextField(
             'Indexing or Variable Speed Conditions', conveyorIndex),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Direction of Travel',
           [
             'Right to Left',
@@ -186,41 +182,41 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           directionOfTravel,
           (value) {
             setState(() {
-              directionOfTravel = int.tryParse(value); // Update state properly
+              directionOfTravel = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'What Type of Metal',
           ['Stainless Steel', 'Zinc', 'Mild Steel', 'Other'],
           metalType,
           (value) {
             setState(() {
-              metalType = int.tryParse(value); // Update state properly
+              metalType = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Style of Conveyor',
           ['I-Beam', 'Meyn', 'Sani Track', 'T Rail', 'Other'],
           conveyorStyle,
           (value) {
             setState(() {
-              conveyorStyle = int.tryParse(value); // Update state properly
+              conveyorStyle = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Color of Trolley',
           ['Blue', 'Green', 'Grey', 'Other'],
           trolleyColor,
           (value) {
             setState(() {
-              trolleyColor = int.tryParse(value); // Update state properly
+              trolleyColor = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Type of Trolly',
           [
             'Meyn Trolley Halve Green Wheel Bolt Version',
@@ -233,57 +229,57 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           trolleyType,
           (value) {
             setState(() {
-              trolleyType = int.tryParse(value); // Update state properly
+              trolleyType = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
           ['Yes', 'No'],
           surroundingTemp,
           (value) {
             setState(() {
-              surroundingTemp = parseBool(value); // Update state properly
+              surroundingTemp = value; // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
           ['Loaded', 'Unloaded'],
           conveyorLoaded,
           (value) {
             setState(() {
-              conveyorLoaded = parseBool(value); // Update state properly
+              conveyorLoaded = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
           ['Yes', 'No'],
           conveyorSwing,
           (value) {
             setState(() {
-              conveyorSwing = parseBool(value); // Update state properly
+              conveyorSwing = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'I Have A Plant Layout To Attach',
           ['Yes - Will Attach', 'No - Do Not Have'],
           plantLayout,
           (value) {
             setState(() {
-              plantLayout = parseBool(value); // Update state properly
+              plantLayout = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'I Have The Required Pictures Of Each Chain To Attach',
           ['Yes - Will Attach', 'No - Do Not Have'],
           requiredPics,
           (value) {
             setState(() {
-              requiredPics = parseBool(value); // Update state properly
+              requiredPics = (value); // Update state properly
             });
           },
         ),
@@ -309,23 +305,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Connecting to Existing Monitoring',
           ['Yes', 'No'],
           existingMonitor,
           (value) {
             setState(() {
-              existingMonitor = parseBool(value); // Update state properly
+              existingMonitor = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Add New Monitoring System',
           ['Yes', 'No'],
           newMonitor,
           (value) {
             setState(() {
-              newMonitor = parseBool(value); // Update state properly
+              newMonitor = (value); // Update state properly
             });
           },
         ),
@@ -339,63 +335,63 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Drive Motor Amp',
           ['Yes', 'No'],
           motorAmp,
           (value) {
             setState(() {
-              motorAmp = parseBool(value); // Update state properly
+              motorAmp = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Drive Take-up-Air',
           ['Yes', 'No'],
           takeUpAir,
           (value) {
             setState(() {
-              takeUpAir = parseBool(value); // Update state properly
+              takeUpAir = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Take-Up Distance',
           ['Yes', 'No'],
           takeUpDist,
           (value) {
             setState(() {
-              takeUpDist = parseBool(value); // Update state properly
+              takeUpDist = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Drive Motor Temp',
           ['Yes', 'No'],
           motorTemp,
           (value) {
             setState(() {
-              motorTemp = parseBool(value); // Update state properly
+              motorTemp = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Drive Motor Vibration',
           ['Yes', 'No'],
           motorVib,
           (value) {
             setState(() {
-              motorVib = parseBool(value); // Update state properly
+              motorVib = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Bent or Missing Trolley detect',
           ['Yes', 'No'],
           detectFaultyTrolley,
           (value) {
             setState(() {
-              detectFaultyTrolley = parseBool(value); // Update state properly
+              detectFaultyTrolley = (value); // Update state properly
             });
           },
         ),
@@ -409,33 +405,33 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Lubrication from the Side of Chain',
           ['Yes', 'No'],
           sideLube,
           (value) {
             setState(() {
-              sideLube = parseBool(value); // Update state properly
+              sideLube = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Lubrication from the Top of Chain',
           ['Yes', 'No'],
           topLube,
           (value) {
             setState(() {
-              topLube = parseBool(value); // Update state properly
+              topLube = (value); // Update state properly
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<bool?>(
           'Is the Conveyor Chain Clean?',
           ['Yes', 'No'],
           cleanChain,
           (value) {
             setState(() {
-              cleanChain = parseBool(value); // Update state properly
+              cleanChain = (value); // Update state properly
             });
           },
         ),
@@ -449,13 +445,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldProtein<int?>(
           'Measurement Units',
           ['Feet', 'Inches', 'm Meter', 'mm Milimeter'],
           measureUnits,
           (value) {
             setState(() {
-              measureUnits = int.tryParse(value); // Update state properly
+              measureUnits = (value); // Update state properly
             });
           },
         ),
@@ -510,7 +506,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     };
     //add a loader that shows a happy popup for this eventually :)
     status = FormAPI().addFglm(fglmData);
-
     return null;
   }
 }
