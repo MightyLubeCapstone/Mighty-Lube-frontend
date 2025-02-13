@@ -1,71 +1,58 @@
-import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '../../../env.dart';
 
 class FormAPI {
-  String? conveyorLengthUnit;
-  String? conveyorSpeedUnit;
-  Map<String, dynamic> formData = {};
+  // untested :.(
+  Future<List<Map<String, dynamic>>?> getFglm() async {
+    try {
+      final url = Uri.parse('$baseUrl/api/fglm');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  final Map<String, TextEditingController> controllers = {
-    'conveyorName': TextEditingController(),
-    'conveyorChainSize': TextEditingController(),
-    'chainManufacturer': TextEditingController(),
-    'wheelManufacturer': TextEditingController(),
-    'chainPinType': TextEditingController(),
-    'conveyorLength': TextEditingController(),
-    'conveyorLengthUnit': TextEditingController(),
-    'conveyorSpeed': TextEditingController(),
-    'conveyorSpeedUnit': TextEditingController(),
-    'indexing': TextEditingController(),
-    'directionOfTravel': TextEditingController(),
-    'metalType': TextEditingController(),
-    'conveyorStyle': TextEditingController(),
-    'trolleyColor': TextEditingController(),
-    'trolleyType': TextEditingController(),
-    'applicationEnvironment': TextEditingController(),
-    'temperature': TextEditingController(),
-    'loaded': TextEditingController(),
-    'swing': TextEditingController(),
-    'plantLayout': TextEditingController(),
-    'chainPictures': TextEditingController(),
-  };
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
+      });
 
-  void getFglm() async {
-    final fglmData = await ApiState().getFglm();
-
-    if (fglmData != null) {
-      print(fglmData);
-    } else {
-      print('Failed to get FGLM data');
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['fglmEntries'] is List) {
+          return List<Map<String, dynamic>>.from(responseData['fglmEntries']);
+        } else {
+          print('response here : $responseData');
+          return null;
+        }
+      }
+    } catch (error) {
+      print("Error getting FGLM: $error");
+      return null;
     }
+    return null;
   }
 
-  fglmForm() async {
-    final fglmData = {
-      'conveyorName': controllers['conveyorName']?.text,
-      'conveyorChainSize': controllers['conveyorChainSize']?.text,
-      'chainManufacturer': controllers['chainManufacturer']?.text,
-      'wheelManufacturer': controllers['wheelManufacturer']?.text,
-      'chainPinType': controllers['chainPinType']?.text,
-      'conveyorLength': controllers['conveyorLength']?.text,
-      'conveyorLengthUnit': conveyorLengthUnit,
-      'conveyorSpeed': controllers['conveyorSpeed']?.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'indexing': controllers['indexing']?.text,
-      'directionOfTravel': controllers['directionOfTravel']?.text,
-      'metalType': controllers['metalType']?.text,
-      'conveyorStyle': controllers['conveyorStyle']?.text,
-      'trolleyColor': controllers['trolleyColor']?.text,
-      'trolleyType': controllers['trolleyType']?.text,
-      'applicationEnvironment': controllers['applicationEnvironment']?.text,
-      'temperature': controllers['temperature']?.text,
-      'loaded': controllers['loaded']?.text,
-      'swing': controllers['swing']?.text,
-      'plantLayout': controllers['plantLayout']?.text,
-      'chainPictures': controllers['chainPictures']?.text,
-    };
-    final success = await ApiState().addFglm(fglmData);
+  Future<bool> addFglm(dynamic fglmData) async {
+    try {
+      final url = Uri.parse('$baseUrl/api/fglm');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return success;
+      final response = await http.post(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
+        'fglmData': jsonEncode(fglmData),
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print(responseData);
+        return true;
+      } else {
+        print('Failed to add FGLM ${response.body}');
+        return false;
+      }
+    } catch (error) {
+      print("Error adding FGLM: $error");
+      return false;
+    }
   }
 }

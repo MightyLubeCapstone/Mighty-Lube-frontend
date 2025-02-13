@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class CommonWidgets {
   // Nice looking button
-  static Widget buildGradientButton(BuildContext context, String title, Widget content) {
+  static Widget buildGradientButton(
+      BuildContext context, String title, Widget content) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
@@ -45,7 +46,8 @@ class CommonWidgets {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
@@ -159,8 +161,9 @@ class CommonWidgets {
     );
   }
 
-  // Dropdown list
-  static Widget buildDropdownField(String label, List<String> options) {
+  // Dropdown list - protein (temporary until industrial is finished API-wise)
+  static Widget buildDropdownFieldProtein(
+      String label, List<String> options, dynamic dropdownSelection) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -176,7 +179,52 @@ class CommonWidgets {
                   child: Text(option),
                 ))
             .toList(),
-        onChanged: (value) {},
+        onChanged: (value) {
+          if (value != null) {
+            if (dropdownSelection.runtimeType == bool) {
+              (value == "Yes"
+                  ? dropdownSelection = true
+                  : dropdownSelection = false);
+            } else if (dropdownSelection.runtimeType == int) {
+              // number range
+              dropdownSelection = options.indexOf(value) + 1;
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  // Dropdown list
+  static Widget buildDropdownField(
+      String label, List<String> options) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        items: options
+            .map((option) => DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option),
+                ))
+            .toList(),
+        onChanged: (value) {
+          // if (value != null) {
+          //   if (dropdownSelection.runtimeType == bool) {
+          //     (value == "Yes"
+          //         ? dropdownSelection = true
+          //         : dropdownSelection = false);
+          //   } else if (dropdownSelection.runtimeType == int) {
+          //     // number range
+          //     dropdownSelection = options.indexOf(value) + 1;
+          //   }
+          // }
+        },
       ),
     );
   }
@@ -187,7 +235,8 @@ class CommonWidgets {
   }
 
   // Text Field
-  static Widget buildTextField(String hintText, TextEditingController controller) {
+  static Widget buildTextField(
+      String hintText, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
@@ -196,7 +245,8 @@ class CommonWidgets {
           hintText: hintText,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0), borderSide: const BorderSide(color: Colors.grey)),
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: const BorderSide(color: Colors.grey)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
               borderSide: const BorderSide(color: Colors.blue, width: 2.0)),
@@ -209,7 +259,8 @@ class CommonWidgets {
 // Internal StatefulWidget for managing the counter state
 class _ConfiguratorWithCounter extends StatefulWidget {
   @override
-  _ConfiguratorWithCounterState createState() => _ConfiguratorWithCounterState();
+  _ConfiguratorWithCounterState createState() =>
+      _ConfiguratorWithCounterState();
 }
 
 class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
@@ -230,13 +281,15 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   if (itemCount > 1) itemCount--;
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline,
+                  color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -245,7 +298,8 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   itemCount++;
                 });
               },
-              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline,
+                  color: Colors.blue, size: 30),
             ),
           ],
         ),

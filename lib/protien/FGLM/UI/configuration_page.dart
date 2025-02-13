@@ -12,11 +12,44 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  final TextEditingController conveyorSystem = TextEditingController();
+  // Gen Info
+  final TextEditingController conveyorSystemName = TextEditingController();
+  int? conveyorChainSize;
+  int? chainManufacturer;
+  int? chainPinType;
   final TextEditingController conveyorLength = TextEditingController();
+  int? conveyorLengthUnit;
   final TextEditingController conveyorSpeed = TextEditingController();
+  int? conveyorSpeedUnit;
   final TextEditingController conveyorIndex = TextEditingController();
+  int? directionOfTravel;
+  int? metalType;
+  int? conveyorStyle;
+  int? trolleyColor;
+  int? trolleyType;
+  bool? surroundingTemp;
+  bool? conveyorLoaded;
+  bool? conveyorSwing;
+  bool? plantLayout;
+  bool? requiredPics;
+  // CPU
   final TextEditingController operatingVoltage = TextEditingController();
+  // MonSys
+  bool? existingMonitor;
+  bool? newMonitor;
+  // MonFeatures
+  bool? motorAmp;
+  bool? takeUpAir;
+  bool? takeUpDist;
+  bool? motorTemp;
+  bool? motorVib;
+  bool? detectFaultyTrolley;
+  // ConveyorSpecs
+  bool? sideLube;
+  bool? topLube;
+  bool? cleanChain;
+  // Wire
+  int? measureUnits;
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
@@ -32,126 +65,124 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',
                   buildGeneralInformationContent()),
-              CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',
+              CommonWidgets.buildGradientButton(
+                  context,
+                  'Customer Power Utilities',
                   buildCustomerPowerUtilitiesContent()),
-              CommonWidgets.buildGradientButton(context, 'New/Adding to Existing Monitoring System',
+              CommonWidgets.buildGradientButton(
+                  context,
+                  'New/Adding to Existing Monitoring System',
                   buildNewMonitoringSystem()),
-              CommonWidgets.buildGradientButton(context, 'Monitoring Features Requested',
-                   buildMonitoringFeatures()),   
-              CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',
-                  buildConveyorSpecifications()),
-              CommonWidgets.buildGradientButton(context, 'Wire',
-                  buildWire()),
+              CommonWidgets.buildGradientButton(context,
+                  'Monitoring Features Requested', buildMonitoringFeatures()),
+              CommonWidgets.buildGradientButton(context,
+                  'Conveyor Specifications', buildConveyorSpecifications()),
+              CommonWidgets.buildGradientButton(context, 'Wire', buildWire()),
             ],
           ),
         ),
-        
         CommonWidgets.buildConfiguratorWithCounter(),
         const SizedBox(height: 20),
       ],
     );
   }
 
-//buttons  
+//buttons
 
   Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        
-        CommonWidgets.buildTextField('Name of Conveyor System',conveyorSystem),
+        CommonWidgets.buildTextField(
+            'Name of Conveyor System', conveyorSystemName),
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
-        CommonWidgets.buildDropdownField('Conveyor Chain Size', [
-          'X348 Chain (3”)',
-          'X458 Chain (4”)',
-          'OX678 Chain (6”)',
-          'Other'
-        ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
-          'Green Line',
-          'Frost',
-          'M&M',
-          'Stork',
-          'Meyn',
-          'Linco',
-          'DC',
-          'Merel',
-          'D&F',
-          'Other'
-        ]),
-        CommonWidgets.buildDropdownField('Chain Pin Type', [
-          'Bolts',
-          'Pin',
-          'Log',
-        ]),
-        CommonWidgets.buildTextField('Enter Number Here',conveyorLength),
-        CommonWidgets.buildDropdownField('Conveyor Length Unit', [
-          'Feet',
-          'Inches',
-          'm Meter',
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
-        CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
-          'Feet/Minute',
-          'Meter/Minute',
-        ]),
-        CommonWidgets.buildTextField('Indexing or Variable Speed Conditions',conveyorIndex),
-        CommonWidgets.buildDropdownField('Direction of Travel', [
-          'Right to Left',
-          'Left to Right',
-        ]),
-        CommonWidgets.buildDropdownField('What Type of Metal', [
-          'Stainless Steel',
-          'Zinc',
-          'Mild Steel',
-          'Other'
-        ]),
-        CommonWidgets.buildDropdownField('Style of Conveyor', [
-          'I-Beam',
-          'Meyn',
-          'Sani Track',
-          'T Rail',
-          'Other'
-        ]),
-        CommonWidgets.buildDropdownField('Color of Trolley', [
-          'Blue',
-          'Green',
-          'Grey',
-          'Other'
-        ]),
-        CommonWidgets.buildDropdownField('Type of Trolly', [
-          'Meyn Trolley Halve Green Wheel Bolt Version',
-          'Meyn Plastic Click Version',
-          'Meyn Stainless Steel Halve w/ Green Wheel',
-          'Meyn Stainless Stell Halve Gray Wheel',
-          'Stork Halve Bolt Version Blue Wheel',
-          'Linco Plastic Halve Blue Wheel'
-        ]),
-        CommonWidgets.buildDropdownField('Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Is the Conveyor Loaded or Unloaded at Planned Install Location? *', [
-          'Loaded',
-          'Unloaded'
-        ]),
-        CommonWidgets.buildDropdownField('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('I Have A Plant Layout To Attach', [
-          'Yes - Will Attach',
-          'No - Do Not Have'
-        ]),
-        CommonWidgets.buildDropdownField('I Have The Required Pictures Of Each Chain To Attach', [
-          'Yes - Will Attach',
-          'No - Do Not Have'
-        ]),
-
+        CommonWidgets.buildDropdownFieldProtein(
+            'Conveyor Chain Size',
+            ['X348 Chain (3”)', 'X458 Chain (4”)', 'OX678 Chain (6”)', 'Other'],
+            conveyorChainSize),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Protein: Chain Manufacturer',
+            [
+              'Green Line',
+              'Frost',
+              'M&M',
+              'Stork',
+              'Meyn',
+              'Linco',
+              'DC',
+              'Merel',
+              'D&F',
+              'Other'
+            ],
+            chainManufacturer),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Chain Pin Type',
+            [
+              'Bolts',
+              'Pin',
+              'Log',
+            ],
+            chainPinType),
+        CommonWidgets.buildTextField('Enter Number Here', conveyorLength),
+        CommonWidgets.buildDropdownFieldProtein('Conveyor Length Unit',
+            ['Feet', 'Inches', 'm Meter', 'mm Milimeter'], conveyorLengthUnit),
+        CommonWidgets.buildTextField(
+            'Enter Conveyor Speed (Min/Max)', conveyorSpeed),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Conveyor Speed Unit',
+            [
+              'Feet/Minute',
+              'Meter/Minute',
+            ],
+            conveyorSpeedUnit),
+        CommonWidgets.buildTextField(
+            'Indexing or Variable Speed Conditions', conveyorIndex),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Direction of Travel',
+            [
+              'Right to Left',
+              'Left to Right',
+            ],
+            directionOfTravel),
+        CommonWidgets.buildDropdownFieldProtein('What Type of Metal',
+            ['Stainless Steel', 'Zinc', 'Mild Steel', 'Other'], metalType),
+        CommonWidgets.buildDropdownFieldProtein('Style of Conveyor',
+            ['I-Beam', 'Meyn', 'Sani Track', 'T Rail', 'Other'], conveyorStyle),
+        CommonWidgets.buildDropdownFieldProtein('Color of Trolley',
+            ['Blue', 'Green', 'Grey', 'Other'], trolleyColor),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Type of Trolly',
+            [
+              'Meyn Trolley Halve Green Wheel Bolt Version',
+              'Meyn Plastic Click Version',
+              'Meyn Stainless Steel Halve w/ Green Wheel',
+              'Meyn Stainless Stell Halve Gray Wheel',
+              'Stork Halve Bolt Version Blue Wheel',
+              'Linco Plastic Halve Blue Wheel'
+            ],
+            trolleyType),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+            ['Yes', 'No'],
+            surroundingTemp),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
+            ['Loaded', 'Unloaded'],
+            conveyorLoaded),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
+            ['Yes', 'No'],
+            conveyorSwing),
+        CommonWidgets.buildDropdownFieldProtein(
+            'I Have A Plant Layout To Attach',
+            ['Yes - Will Attach', 'No - Do Not Have'],
+            plantLayout),
+        CommonWidgets.buildDropdownFieldProtein(
+            'I Have The Required Pictures Of Each Chain To Attach',
+            ['Yes - Will Attach', 'No - Do Not Have'],
+            requiredPics),
         CommonWidgets.buildSectionDivider(),
-        
       ],
     );
   }
@@ -161,7 +192,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField('Operating Voltage - Single Phase: (Volts/hz] *',operatingVoltage),
+        CommonWidgets.buildTextField(
+            'Operating Voltage - Single Phase: (Volts/hz] *', operatingVoltage),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -172,14 +204,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Connecting to Existing Monitoring', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Add New Monitoring System', [
-          'Yes',
-          'No'
-        ]),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Connecting to Existing Monitoring',
+            ['Yes', 'No'],
+            existingMonitor),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Add New Monitoring System', ['Yes', 'No'], newMonitor),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -190,30 +220,20 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Drive Motor Amp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Take-up-Air', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Take-Up Distance', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Temp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Vibration', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Bent or Missing Trolley detect', [
-          'Yes',
-          'No'
-        ]),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Drive Motor Amp', ['Yes', 'No'], motorAmp),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Drive Take-up-Air', ['Yes', 'No'], takeUpAir),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Take-Up Distance', ['Yes', 'No'], takeUpDist),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Drive Motor Temp', ['Yes', 'No'], motorTemp),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Drive Motor Vibration', ['Yes', 'No'], motorVib),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Bent or Missing Trolley detect',
+            ['Yes', 'No'],
+            detectFaultyTrolley),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -224,43 +244,34 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Lubrication from the Side of Chain', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Is the Conveyor Chain Clean?', [
-          'Yes',
-          'No'
-        ]),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Lubrication from the Side of Chain', ['Yes', 'No'], sideLube),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Lubrication from the Top of Chain', ['Yes', 'No'], topLube),
+        CommonWidgets.buildDropdownFieldProtein(
+            'Is the Conveyor Chain Clean?', ['Yes', 'No'], cleanChain),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
-  
+
   Widget buildWire() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildDropdownFieldProtein('Measurement Units',
+            ['Feet', 'Inches', 'm Meter', 'mm Milimeter'], measureUnits),
+        CommonWidgets.buildTextField(
+            'Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField(
+            'Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField(
+            'Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
-
-
 }
 
 Widget buildBreadcrumbNavigation(BuildContext context) {
