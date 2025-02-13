@@ -162,8 +162,8 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein(
-      String label, List<String> options, dynamic dropdownSelection) {
+  static Widget buildDropdownFieldProtein(String label, List<String> options,
+      dynamic dropdownSelection, Function(dynamic) onChanged) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -181,14 +181,14 @@ class CommonWidgets {
             .toList(),
         onChanged: (value) {
           if (value != null) {
-            if (dropdownSelection.runtimeType == bool) {
-              (value == "Yes"
-                  ? dropdownSelection = true
-                  : dropdownSelection = false);
-            } else if (dropdownSelection.runtimeType == int) {
+            dynamic newValue = value;
+            if (dropdownSelection is bool) {
+              value == "Yes" ? newValue = true : newValue = false;
+            } else if (dropdownSelection is int) {
               // number range
-              dropdownSelection = options.indexOf(value) + 1;
+              newValue = options.indexOf(value) + 1;
             }
+            onChanged(newValue);
           }
         },
       ),
@@ -196,8 +196,7 @@ class CommonWidgets {
   }
 
   // Dropdown list
-  static Widget buildDropdownField(
-      String label, List<String> options) {
+  static Widget buildDropdownField(String label, List<String> options) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -230,8 +229,10 @@ class CommonWidgets {
   }
 
   // Configurator Button with Counter
-  static Widget buildConfiguratorWithCounter() {
-    return _ConfiguratorWithCounter();
+  static Widget buildConfiguratorWithCounter({VoidCallback? callback}) {
+    return _ConfiguratorWithCounter(
+      callback: callback,
+    );
   }
 
   // Text Field
@@ -258,6 +259,8 @@ class CommonWidgets {
 
 // Internal StatefulWidget for managing the counter state
 class _ConfiguratorWithCounter extends StatefulWidget {
+  final VoidCallback? callback;
+  const _ConfiguratorWithCounter({this.callback});
   @override
   _ConfiguratorWithCounterState createState() =>
       _ConfiguratorWithCounterState();
@@ -326,6 +329,9 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
           child: TextButton(
             onPressed: () {
               // Add "Add to Configurator" logic here
+              if (widget.callback != null) {
+                widget.callback!();
+              }
             },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,

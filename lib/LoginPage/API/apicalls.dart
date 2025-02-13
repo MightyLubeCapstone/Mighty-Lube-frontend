@@ -50,15 +50,15 @@ class ApiState extends ChangeNotifier {
   Future<bool> loginUser(String username, String password) async {
     try {
       final url = Uri.parse('$baseUrl/api/sessions');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      final response = await http.post(url, headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
-        'username': username,
-        'password': password,
-      });
-
+      final response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer blank'
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+          }));
       print(response.statusCode);
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
@@ -67,7 +67,6 @@ class ApiState extends ChangeNotifier {
         await prefs.setString('sessionID', responseData['sessionID']);
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('currentUsername', username);
-
         return true;
       } else {
         print(response.body);
