@@ -35,13 +35,14 @@ class FormAPI {
     try {
       final url = Uri.parse('$baseUrl/api/fglm');
       SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      final response = await http.post(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
-        'fglmData': jsonEncode(fglmData),
-      });
-
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString('sessionID')}',
+        },
+        body: jsonEncode({'fglmData': fglmData}),
+      );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         print(responseData);

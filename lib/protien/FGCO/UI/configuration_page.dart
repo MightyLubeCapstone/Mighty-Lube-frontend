@@ -12,7 +12,6 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  int? dumbVar;
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorVolts = TextEditingController();
   final TextEditingController conveyorOptions = TextEditingController();
@@ -51,37 +50,39 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildTextField('Name of Conveyor System', conveyorSystem),
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
-        CommonWidgets.buildDropdownFieldProtein(
-            'Conveyor Chain Size',
-            [
-              'X348 Chain (3”)',
-              'X458 Chain (4”)',
-              'OX678 Chain (6”)',
-              '3/8" Log Chain'
-                  'Other'
-            ],
-            dumbVar),
-        CommonWidgets.buildDropdownFieldProtein(
-            'Protein: Chain Manufacturer',
-            [
-              'Green Line',
-              'Frost',
-              'M&M',
-              'Stork',
-              'Meyn',
-              'Linco',
-              'DC',
-              'Merel',
-              'D&F',
-              'Other'
-            ],
-            dumbVar),
-        CommonWidgets.buildDropdownFieldProtein(
-            'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
-            ['Loaded', 'Unloaded'],
-            dumbVar),
-        CommonWidgets.buildDropdownFieldProtein(
-            'Is this a Drip Line?', ['Yes', 'No'], dumbVar),
+        CommonWidgets.buildDropdownField(
+          'Conveyor Chain Size',
+          [
+            'X348 Chain (3”)',
+            'X458 Chain (4”)',
+            'OX678 Chain (6”)',
+            '3/8" Log Chain'
+                'Other'
+          ],
+        ),
+        CommonWidgets.buildDropdownField(
+          'Protein: Chain Manufacturer',
+          [
+            'Green Line',
+            'Frost',
+            'M&M',
+            'Stork',
+            'Meyn',
+            'Linco',
+            'DC',
+            'Merel',
+            'D&F',
+            'Other'
+          ],
+        ),
+        CommonWidgets.buildDropdownField(
+          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+          ['Loaded', 'Unloaded'],
+        ),
+        CommonWidgets.buildDropdownField(
+          'Is this a Drip Line?',
+          ['Yes', 'No'],
+        ),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -104,10 +105,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
-            'Confirm Installation Clearance of: Minimum of 2" (.61m) for Clearance fo Moter Height from Rail AND Motor Gear Housing assembly width',
-            ['Yes', 'No'],
-            dumbVar),
+        CommonWidgets.buildDropdownField(
+          'Confirm Installation Clearance of: Minimum of 2" (.61m) for Clearance fo Moter Height from Rail AND Motor Gear Housing assembly width',
+          ['Yes', 'No'],
+        ),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -118,10 +119,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
-            ' 3-Station Push Button Switch', ['Yes', 'No'], dumbVar),
-        CommonWidgets.buildDropdownFieldProtein(
-            'Totally Enclosed Food-Grade Metal Shroud', ['Yes', 'No'], dumbVar),
+        CommonWidgets.buildDropdownField(
+          ' 3-Station Push Button Switch',
+          ['Yes', 'No'],
+        ),
+        CommonWidgets.buildDropdownField(
+          'Totally Enclosed Food-Grade Metal Shroud',
+          ['Yes', 'No'],
+        ),
         CommonWidgets.buildTextField(
             'Enter Other Information Here: ', conveyorOptions),
         CommonWidgets.buildSectionDivider(),

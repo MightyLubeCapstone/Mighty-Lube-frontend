@@ -162,11 +162,25 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein(
-      String label, List<String> options, dynamic dropdownSelection) {
+  static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
+      T dropdownSelection, Function(dynamic) onChanged) {
+    String? assessedValue;
+    // Ensure assessedValue corresponds to an option in the list
+    if (dropdownSelection is int &&
+        dropdownSelection > 0 &&
+        dropdownSelection <= options.length) {
+      assessedValue = options[dropdownSelection - 1]; // Convert int to String
+    } else if (dropdownSelection is bool) {
+      assessedValue = (dropdownSelection == true)
+          ? options[1]
+          : options[0]; // Convert bool to String
+    } else {
+      assessedValue = null; // No valid selection yet
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
+        value: assessedValue, // Ensure value is valid
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -181,14 +195,14 @@ class CommonWidgets {
             .toList(),
         onChanged: (value) {
           if (value != null) {
-            if (dropdownSelection.runtimeType == bool) {
-              (value == "Yes"
-                  ? dropdownSelection = true
-                  : dropdownSelection = false);
-            } else if (dropdownSelection.runtimeType == int) {
+            dynamic newValue;
+            if (dropdownSelection is bool) {
+              value == "Yes" ? newValue = true : newValue = false;
+            } else if (dropdownSelection is int) {
               // number range
-              dropdownSelection = options.indexOf(value) + 1;
+              newValue = options.indexOf(value) + 1;
             }
+            onChanged(newValue);
           }
         },
       ),
@@ -196,8 +210,7 @@ class CommonWidgets {
   }
 
   // Dropdown list
-  static Widget buildDropdownField(
-      String label, List<String> options) {
+  static Widget buildDropdownField(String label, List<String> options) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
@@ -230,8 +243,10 @@ class CommonWidgets {
   }
 
   // Configurator Button with Counter
-  static Widget buildConfiguratorWithCounter() {
-    return _ConfiguratorWithCounter();
+  static Widget buildConfiguratorWithCounter({VoidCallback? callback}) {
+    return _ConfiguratorWithCounter(
+      callback: callback,
+    );
   }
 
   // Text Field
@@ -258,6 +273,8 @@ class CommonWidgets {
 
 // Internal StatefulWidget for managing the counter state
 class _ConfiguratorWithCounter extends StatefulWidget {
+  final VoidCallback? callback;
+  const _ConfiguratorWithCounter({this.callback});
   @override
   _ConfiguratorWithCounterState createState() =>
       _ConfiguratorWithCounterState();
@@ -326,6 +343,9 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
           child: TextButton(
             onPressed: () {
               // Add "Add to Configurator" logic here
+              if (widget.callback != null) {
+                widget.callback!();
+              }
             },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
