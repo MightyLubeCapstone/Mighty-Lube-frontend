@@ -4,33 +4,6 @@ import 'package:http/http.dart' as http;
 import '../../../env.dart';
 
 class FormAPI {
-  // untested :.(
-  Future<List<Map<String, dynamic>>?> getFglm() async {
-    try {
-      final url = Uri.parse('$baseUrl/api/fglm');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
-      });
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        if (responseData['fglmEntries'] is List) {
-          return List<Map<String, dynamic>>.from(responseData['fglmEntries']);
-        } else {
-          print('response here : $responseData');
-          return null;
-        }
-      }
-    } catch (error) {
-      print("Error getting FGLM: $error");
-      return null;
-    }
-    return null;
-  }
-
   Future<bool> addFglm(dynamic fglmData) async {
     try {
       final url = Uri.parse('$baseUrl/api/fglm');
