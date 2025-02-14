@@ -84,7 +84,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             ],
           ),
         ),
-        CommonWidgets.buildConfiguratorWithCounter(callback: addFGLMInfo),
+        CommonWidgets.buildConfiguratorWithCounter(callback: (int value) {
+          addFGLMInfo(value);
+        }),
         const SizedBox(height: 20),
       ],
     );
@@ -466,7 +468,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addFGLMInfo() {
+  VoidCallback? addFGLMInfo(int numRequested) {
     dynamic fglmData = {
       "conveyorName": conveyorSystemName.text,
       "conveyorChainSize": conveyorChainSize,
@@ -505,7 +507,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       "conductor2": conductor2.text
     };
     //add a loader that shows a happy popup for this eventually :)
-    status = FormAPI().addFglm(fglmData);
+    status = FormAPI().addFglm(fglmData, numRequested);
     return null;
   }
 }

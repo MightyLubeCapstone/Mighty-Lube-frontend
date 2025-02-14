@@ -243,7 +243,7 @@ class CommonWidgets {
   }
 
   // Configurator Button with Counter
-  static Widget buildConfiguratorWithCounter({VoidCallback? callback}) {
+  static Widget buildConfiguratorWithCounter({void Function(int)? callback}) {
     return _ConfiguratorWithCounter(
       callback: callback,
     );
@@ -273,7 +273,7 @@ class CommonWidgets {
 
 // Internal StatefulWidget for managing the counter state
 class _ConfiguratorWithCounter extends StatefulWidget {
-  final VoidCallback? callback;
+  final void Function(int)? callback;
   const _ConfiguratorWithCounter({this.callback});
   @override
   _ConfiguratorWithCounterState createState() =>
@@ -344,7 +344,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
             onPressed: () {
               // Add "Add to Configurator" logic here
               if (widget.callback != null) {
-                widget.callback!();
+                widget.callback!(itemCount);
               }
             },
             style: TextButton.styleFrom(

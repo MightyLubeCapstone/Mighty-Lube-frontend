@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../../env.dart';
 
 class FormAPI {
-  Future<bool> addFglm(dynamic fglmData) async {
+  Future<bool> addFglm(dynamic fglmData, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/fglm');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -14,7 +14,7 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode({'fglmData': fglmData}),
+        body: jsonEncode({'fglmData': fglmData, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
