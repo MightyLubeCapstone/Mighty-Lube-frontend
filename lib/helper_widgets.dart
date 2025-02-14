@@ -163,17 +163,11 @@ class CommonWidgets {
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
   static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
-      T dropdownSelection, Function(dynamic) onChanged) {
+      int? dropdownSelection, Function(dynamic) onChanged) {
     String? assessedValue;
     // Ensure assessedValue corresponds to an option in the list
-    if (dropdownSelection is int &&
-        dropdownSelection > 0 &&
-        dropdownSelection <= options.length) {
+    if (dropdownSelection! > 0 && dropdownSelection <= options.length) {
       assessedValue = options[dropdownSelection - 1]; // Convert int to String
-    } else if (dropdownSelection is bool) {
-      assessedValue = (dropdownSelection == true)
-          ? options[1]
-          : options[0]; // Convert bool to String
     } else {
       assessedValue = null; // No valid selection yet
     }
@@ -196,12 +190,8 @@ class CommonWidgets {
         onChanged: (value) {
           if (value != null) {
             dynamic newValue;
-            if (dropdownSelection is bool) {
-              value == "Yes" ? newValue = true : newValue = false;
-            } else if (dropdownSelection is int) {
-              // number range
-              newValue = options.indexOf(value) + 1;
-            }
+            // number range
+            newValue = options.indexOf(value) + 1;
             onChanged(newValue);
           }
         },
