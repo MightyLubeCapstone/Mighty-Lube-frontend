@@ -30,26 +30,26 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorStyle = -1;
   int? trolleyColor = -1;
   int? trolleyType = -1;
-  bool? surroundingTemp = false;
-  bool? conveyorLoaded = false;
-  bool? conveyorSwing = false;
-  bool? plantLayout = false;
-  bool? requiredPics = false;
+  bool? surroundingTemp;
+  bool? conveyorLoaded;
+  bool? conveyorSwing;
+  bool? plantLayout;
+  bool? requiredPics;
   // CPU
   final TextEditingController operatingVoltage = TextEditingController();
   // MonSys
-  bool? existingMonitor = false;
-  bool? newMonitor = false;
+  bool? existingMonitor;
+  bool? newMonitor;
   // MonFeatures
-  bool? motorAmp = false;
-  bool? takeUpAir = false;
-  bool? takeUpDist = false;
-  bool? motorTemp = false;
-  bool? motorVib = false;
-  bool? detectFaultyTrolley = false;
+  bool? motorAmp;
+  bool? takeUpAir;
+  bool? takeUpDist;
+  bool? motorTemp;
+  bool? motorVib;
+  bool? detectFaultyTrolley;
   // ConveyorSpecs
-  bool? sideLube = false;
-  bool? topLube = false;
+  bool? sideLube;
+  bool? topLube;
   bool? cleanChain;
   // Wire
   int? measureUnits = -1;

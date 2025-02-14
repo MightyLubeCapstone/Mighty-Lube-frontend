@@ -35,7 +35,6 @@ class FormAPI {
     try {
       final url = Uri.parse('$baseUrl/api/fglm');
       SharedPreferences prefs = await SharedPreferences.getInstance();
-
       final response = await http.post(
         url,
         headers: {
@@ -44,7 +43,6 @@ class FormAPI {
         },
         body: jsonEncode({'fglmData': fglmData}),
       );
-
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         print(responseData);
