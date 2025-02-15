@@ -7,7 +7,6 @@ import 'package:password_strength_checker/password_strength_checker.dart';
 import 'dart:async';
 import 'package:dropdown_search/dropdown_search.dart';
 
-
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
 
@@ -207,7 +206,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
     try {
       bool success = await ApiState().makeAccount(username, password, firstName,
-          lastName, email, phoneNumber, companyName, countrytype ?? "");
+          lastName, email, phoneNumber, companyName, countrytype!);
 
       print(firstName);
       print(lastName);
@@ -215,6 +214,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       print(email);
       print(username);
       print(password);
+      print(countrytype);
       if (success) {
         Navigator.pushNamed(context, '/dashboard');
       } else {
