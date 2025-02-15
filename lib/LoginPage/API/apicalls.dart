@@ -55,7 +55,6 @@ class ApiState extends ChangeNotifier {
       final response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer blank'
           },
           body: jsonEncode({
             'username': username,
