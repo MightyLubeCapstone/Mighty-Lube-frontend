@@ -3,6 +3,8 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
+import '../API/fgco_api.dart';
+
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
 
@@ -12,9 +14,18 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  final TextEditingController conveyorSystem = TextEditingController();
-  final TextEditingController conveyorVolts = TextEditingController();
-  final TextEditingController conveyorOptions = TextEditingController();
+  Future<bool>? status;
+
+  final TextEditingController conveyorSystemName = TextEditingController();
+  int? conveyorChainSize = -1;
+  int? chainManufacturer = -1;
+  int? conveyorLoaded = -1;
+  int? dripLine = -1;
+  final TextEditingController operatingVoltage = TextEditingController();
+  int? installationClearance = -1;
+  int? pushButton = -1;
+  int? enclosedShroud = -1;
+  final TextEditingController additionalOtherInfo = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +48,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             ],
           ),
         ),
-        CommonWidgets.buildConfiguratorWithCounter(),
+        CommonWidgets.buildConfiguratorWithCounter(callback: (int value) {
+          addFGCOinfo(value);
+        }),
         const SizedBox(height: 20),
       ],
     );
@@ -47,10 +60,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildTextField('Name of Conveyor System', conveyorSystem),
+        CommonWidgets.buildTextField(
+            'Name of Conveyor System', conveyorSystemName),
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           'Conveyor Chain Size',
           [
             'X348 Chain (3”)',
@@ -59,8 +73,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             '3/8" Log Chain'
                 'Other'
           ],
+          conveyorChainSize,
+          (value) {
+            setState(() {
+              conveyorChainSize = (value); // Update state properly
+            });
+          },
         ),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           'Protein: Chain Manufacturer',
           [
             'Green Line',
@@ -74,14 +94,32 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             'D&F',
             'Other'
           ],
+          chainManufacturer,
+          (value) {
+            setState(() {
+              chainManufacturer = (value); // Update state properly
+            });
+          },
         ),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
           ['Loaded', 'Unloaded'],
+          conveyorLoaded,
+          (value) {
+            setState(() {
+              conveyorLoaded = (value); // Update state properly
+            });
+          },
         ),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           'Is this a Drip Line?',
           ['Yes', 'No'],
+          dripLine,
+          (value) {
+            setState(() {
+              dripLine = (value); // Update state properly
+            });
+          },
         ),
         CommonWidgets.buildSectionDivider(),
       ],
@@ -94,7 +132,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField(
-            'Enter Operating Voltage - 3 Phase: (Volts/hz)', conveyorVolts),
+            'Enter Operating Voltage - 3 Phase: (Volts/hz)', operatingVoltage),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -105,9 +143,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           'Confirm Installation Clearance of: Minimum of 2" (.61m) for Clearance fo Moter Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'],
+          installationClearance,
+          (value) {
+            setState(() {
+              installationClearance = (value); // Update state properly
+            });
+          },
         ),
         CommonWidgets.buildSectionDivider(),
       ],
@@ -119,19 +163,50 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           ' 3-Station Push Button Switch',
           ['Yes', 'No'],
+          pushButton,
+          (value) {
+            setState(() {
+              pushButton = (value); // Update state properly
+            });
+          },
         ),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldProtein(
           'Totally Enclosed Food-Grade Metal Shroud',
           ['Yes', 'No'],
+          enclosedShroud,
+          (value) {
+            setState(() {
+              enclosedShroud = (value); // Update state properly
+            });
+          },
         ),
         CommonWidgets.buildTextField(
-            'Enter Other Information Here: ', conveyorOptions),
+            'Enter Other Information Here: ', additionalOtherInfo),
         CommonWidgets.buildSectionDivider(),
       ],
     );
+  }
+
+  VoidCallback? addFGCOinfo(int numRequested) {
+    dynamic fgcoData = {
+      "conveyorSystemName": conveyorSystemName.text,
+      "conveyorChainSize": conveyorChainSize,
+      "chainManufacturer": chainManufacturer,
+      "conveyorLoaded": conveyorLoaded,
+      "dripLine": dripLine,
+      "operatingVoltTriple": (operatingVoltage.text != "")
+          ? int.parse(operatingVoltage.text)
+          : -1, // remove this once validation is here
+      "installationClearance": installationClearance,
+      "pushButton": pushButton,
+      "enclosedShroud": enclosedShroud,
+      "additionalOtherInfo": additionalOtherInfo.text
+    };
+    status = FormAPI().addFGCO(fgcoData, numRequested);
+    return null;
   }
 }
 
