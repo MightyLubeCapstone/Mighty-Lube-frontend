@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 import 'package:mighty_lube/helper_widgets.dart';
-
-import '../API/fgco_api.dart';
+import 'package:mighty_lube/api.dart';
 
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
@@ -205,7 +204,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       "enclosedShroud": enclosedShroud,
       "additionalOtherInfo": additionalOtherInfo.text
     };
-    status = FormAPI().addFGCO(fgcoData, numRequested);
+    status = FormAPI().addOrder("fgco", fgcoData, numRequested);
     return null;
   }
 }

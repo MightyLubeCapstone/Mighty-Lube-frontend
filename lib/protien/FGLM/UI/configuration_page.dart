@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/FGLM/API/flgm_api.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 import 'package:mighty_lube/helper_widgets.dart';
+import 'package:mighty_lube/api.dart';
 
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
@@ -507,7 +507,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       "conductor2": conductor2.text
     };
     //add a loader that shows a happy popup for this eventually :)
-    status = FormAPI().addFglm(fglmData, numRequested);
+    status = FormAPI().addOrder("fglm", fglmData, numRequested);
     return null;
   }
 }
