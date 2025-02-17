@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/3.%20ETIPO%20(8)/CCS%20(2)/products.dart';
+import 'package:mighty_lube/helper_widgets.dart';
 
 
 class ImageSection extends StatelessWidget {
@@ -11,7 +12,7 @@ class ImageSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildBreadcrumbNavigation(context),
+        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CCSProducts()),
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(

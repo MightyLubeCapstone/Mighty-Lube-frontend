@@ -4,7 +4,6 @@ import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
-import 'related_products_page.dart'; // Related products section
 import 'image_page.dart';
 
 class FGLMPage extends StatefulWidget {
@@ -22,7 +21,6 @@ class _FGLMPageState extends State<FGLMPage> {
     const HomeSection(),
     const ImageSection(),
     const ConfigurationSection(),
-    const RelatedProductsSection(),
   ];
 
   // Update the page on bottom navigation tap

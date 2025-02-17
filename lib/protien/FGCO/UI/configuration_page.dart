@@ -3,6 +3,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
+
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
 
@@ -20,7 +21,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        buildBreadcrumbNavigation(context),
+        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -133,45 +134,4 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-}
-
-Widget buildBreadcrumbNavigation(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        IconButton(
-          icon: const Icon(
-            Icons.home,
-            color: Color(0xFF579AF6),
-          ),
-          onPressed: () {
-            // Navigate to the home page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ApplicationPage()),
-            );
-          },
-        ),
-        const Text(' > '),
-        GestureDetector(
-          onTap: () {
-            // Navigate to the Protein page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProteinHome()),
-            ); // Replace with navigation to your Protein page
-          },
-          child: const Text(
-            'Products',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }

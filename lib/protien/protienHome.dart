@@ -10,6 +10,7 @@ import '../application/UI/applicationHome.dart';
 import '../dashboard/UI/dashboard.dart';
 import '../industrial/product_list.dart';
 
+
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
 
@@ -135,6 +136,7 @@ class _ProteinHomeState extends State<ProteinHome> {
     );
   }
 
+
   // Reusable widget for image cards
   Widget _buildClickableImageCard({
     required BuildContext context,
@@ -155,7 +157,7 @@ class _ProteinHomeState extends State<ProteinHome> {
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
                 color: Color.fromARGB(
-                    255, 87, 154, 246), // Same blue as breadcrumb nav
+                    255, 87, 154, 246), 
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
