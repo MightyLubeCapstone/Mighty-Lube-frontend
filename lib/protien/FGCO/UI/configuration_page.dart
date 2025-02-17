@@ -38,16 +38,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   void _validateDropdownField(int? value, String field) {
     setState(() {
-      errors[field] = (value == null || value == -1) ? 'This field is required.' : null;
+      errors[field] =
+          (value == null || value == -1) ? 'This field is required.' : null;
     });
   }
 
   void _validatorDelay(String value, String field) {
-    if (_delay?.isActive ?? false){
+    if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
     // manual delay so its not a constant spam of requirements (hopefully)
-    _delay = Timer(const Duration(milliseconds: 100), () {
+    _delay = Timer(const Duration(milliseconds: 0), () {
       _validateTextField(value, field);
     });
   }
@@ -59,6 +60,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   Future<void> _validateForm() async {
     _validateTextField(conveyorSystemName.text, 'conveyorName');
+    _validateDropdownField(chainManufacturer, 'chainManufacturer');
+    _validateDropdownField(installationClearance, 'installationClearance');
+    _validateDropdownField(pushButton, 'pushButton');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
     _validateTextField(operatingVoltage.text, 'operatingVoltage');
 
@@ -78,11 +82,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     super.initState();
     conveyorSystemName.addListener(_onNameChanged);
     operatingVoltage.addListener(_onOpChanged);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _validateForm();
-      setState(() {});
-    });
   }
 
   void _onNameChanged() {
@@ -91,6 +90,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   void _onOpChanged() {
     _validatorDelay(operatingVoltage.text, 'operatingVoltage');
+  }
+
+  final Map<String, List<String>> sections = {
+    "general" : ['conveyorName', 'conveyorChainSize', 'chainManufacturer', 'conveyorLoaded'],
+    "customerPowerUtilities" : ['operatingVoltage'],
+    "opss" : ['installationClearance'],
+    "additional" : ['pushButton']
+  };
+
+  bool sectionError(String section) {
+    return sections[section]!.any((field) => errors[field] != null);
   }
 
   @override
@@ -103,14 +113,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             padding: const EdgeInsets.all(20.0),
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent()),
+                  buildGeneralInformationContent(), isError: sectionError("general")),
               CommonWidgets.buildGradientButton(
                   context,
                   'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent()),
-              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS()),
+                  buildCustomerPowerUtilitiesContent(), isError: sectionError("customerPowerUtilities")),
+              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(), isError: sectionError("opss")),
               CommonWidgets.buildGradientButton(
-                  context, 'Additional Options Avaliable', buildAdditional()),
+                  context, 'Additional Options Avaliable', buildAdditional(), isError: sectionError("additional")),
             ],
           ),
         ),
@@ -123,103 +133,103 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildGeneralInformationContent() {
-    return
-    ValueListenableBuilder<TextEditingValue>(
-          valueListenable: conveyorSystemName,
-          builder: (context, value, child) {
-            _validatorDelay(value.text, 'conveyorName');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildTextField(
-            'Name of Conveyor System *', conveyorSystemName, errorText: errors['conveyorName']),
-            if (errors['conveyorName'] != null) buildErrorText(errors['conveyorName']!),
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionTitle('Conveyor Details'),
-        CommonWidgets.buildDropdownFieldProtein(
-          'Conveyor Chain Size',
-          [
-            'X348 Chain (3”)',
-            'X458 Chain (4”)',
-            'OX678 Chain (6”)',
-            '3/8" Log Chain'
-                'Other'
-          ],
-          conveyorChainSize,
-          (value) {
-            setState(() {
-              conveyorChainSize = (value); // Update state properly
-            });
-          },
-        ),
-        CommonWidgets.buildDropdownFieldProtein(
-          'Protein: Chain Manufacturer',
-          [
-            'Green Line',
-            'Frost',
-            'M&M',
-            'Stork',
-            'Meyn',
-            'Linco',
-            'DC',
-            'Merel',
-            'D&F',
-            'Other'
-          ],
-          chainManufacturer,
-          (value) {
-            setState(() {
-              chainManufacturer = (value); // Update state properly
-            });
-          },
-        ),
-        CommonWidgets.buildDropdownFieldProtein(
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
-          ['Loaded', 'Unloaded'],
-          conveyorLoaded,
-          (value) {
-            setState(() {
-              conveyorLoaded = (value); // Update state properly
-              _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-            });
-          },
-          errorText: errors['conveyorLoaded'],
-        ),
-        CommonWidgets.buildDropdownFieldProtein(
-          'Is this a Drip Line?',
-          ['Yes', 'No'],
-          dripLine,
-          (value) {
-            setState(() {
-              dripLine = (value); // Update state properly
-            });
-          },
-        ),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-    );
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: conveyorSystemName,
+        builder: (context, value, child) {
+          _validatorDelay(value.text, 'conveyorName');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildTextField(
+                  'Name of Conveyor System *', conveyorSystemName,
+                  errorText: errors['conveyorName']),
+              if (errors['conveyorName'] != null)
+                buildErrorText(errors['conveyorName']!),
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildSectionTitle('Conveyor Details'),
+              CommonWidgets.buildDropdownFieldProtein(
+                'Conveyor Chain Size',
+                [
+                  'X348 Chain (3”)',
+                  'X458 Chain (4”)',
+                  'OX678 Chain (6”)',
+                  '3/8" Log Chain'
+                      'Other'
+                ],
+                conveyorChainSize,
+                (value) {
+                  setState(() {
+                    conveyorChainSize = (value); // Update state properly
+                  });
+                },
+              ),
+              CommonWidgets.buildDropdownFieldProtein(
+                'Protein: Chain Manufacturer',
+                [
+                  'Green Line',
+                  'Frost',
+                  'M&M',
+                  'Stork',
+                  'Meyn',
+                  'Linco',
+                  'DC',
+                  'Merel',
+                  'D&F',
+                  'Other'
+                ],
+                chainManufacturer,
+                (value) {
+                  setState(() {
+                    chainManufacturer = (value); // Update state properly
+                  });
+                },
+              ),
+              CommonWidgets.buildDropdownFieldProtein(
+                'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
+                ['Loaded', 'Unloaded'],
+                conveyorLoaded,
+                (value) {
+                  setState(() {
+                    conveyorLoaded = (value); // Update state properly
+                    _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
+                  });
+                },
+                errorText: errors['conveyorLoaded'],
+              ),
+              CommonWidgets.buildDropdownFieldProtein(
+                'Is this a Drip Line?',
+                ['Yes', 'No'],
+                dripLine,
+                (value) {
+                  setState(() {
+                    dripLine = (value); // Update state properly
+                  });
+                },
+              ),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
   }
 
   Widget buildCustomerPowerUtilitiesContent() {
-    return
-    ValueListenableBuilder<TextEditingValue>(
-      valueListenable: operatingVoltage,
-      builder: (context, value, child) {
-        _validatorDelay(value.text, 'operatingVoltage');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField(
-            'Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage, errorText: errors['operatingVoltage']),
-        if (errors['operatingVoltage'] != null) buildErrorText(errors['operatingVoltage']!),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-      }
-    );
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: operatingVoltage,
+        builder: (context, value, child) {
+          _validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField(
+                  'Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage,
+                  errorText: errors['operatingVoltage']),
+              if (errors['operatingVoltage'] != null)
+                buildErrorText(errors['operatingVoltage']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
   }
 
   Widget buildOPSS() {
@@ -234,8 +244,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               installationClearance = (value); // Update state properly
+              _validateDropdownField(installationClearance, 'installationClearance');
             });
           },
+          errorText: errors['installationClearance'],
         ),
         CommonWidgets.buildSectionDivider(),
       ],
@@ -254,8 +266,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               pushButton = (value); // Update state properly
+              _validateDropdownField(pushButton, 'pushButton');
             });
           },
+          errorText: errors['pushButton'],
         ),
         CommonWidgets.buildDropdownFieldProtein(
           'Totally Enclosed Food-Grade Metal Shroud',
@@ -276,29 +290,29 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   VoidCallback? addFGCOinfo(int numRequested) {
     if (validForm()) {
-    dynamic fgcoData = {
-      "conveyorSystemName": conveyorSystemName.text,
-      "conveyorChainSize": conveyorChainSize,
-      "chainManufacturer": chainManufacturer,
-      "conveyorLoaded": conveyorLoaded,
-      "dripLine": dripLine,
-      "operatingVoltTriple": (operatingVoltage.text != "")
-          ? int.parse(operatingVoltage.text)
-          : -1, // remove this once validation is here
-      "installationClearance": installationClearance,
-      "pushButton": pushButton,
-      "enclosedShroud": enclosedShroud,
-      "additionalOtherInfo": additionalOtherInfo.text
-    };
-    status = FormAPI().addOrder("fgco", fgcoData, numRequested);
-    return null;
-  } else {
+      dynamic fgcoData = {
+        "conveyorSystemName": conveyorSystemName.text,
+        "conveyorChainSize": conveyorChainSize,
+        "chainManufacturer": chainManufacturer,
+        "conveyorLoaded": conveyorLoaded,
+        "dripLine": dripLine,
+        "operatingVoltTriple": (operatingVoltage.text != "")
+            ? int.parse(operatingVoltage.text)
+            : -1, // remove this once validation is here
+        "installationClearance": installationClearance,
+        "pushButton": pushButton,
+        "enclosedShroud": enclosedShroud,
+        "additionalOtherInfo": additionalOtherInfo.text
+      };
+      status = FormAPI().addOrder("fgco", fgcoData, numRequested);
+      return null;
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill out all required fields.')),
       );
     }
     return null;
-}
+  }
 }
 
 Widget buildBreadcrumbNavigation(BuildContext context) {
@@ -342,7 +356,7 @@ Widget buildBreadcrumbNavigation(BuildContext context) {
   );
 }
 
-Widget buildErrorText(String message){
+Widget buildErrorText(String message) {
   return Padding(
     padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
     child: Text(
