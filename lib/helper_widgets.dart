@@ -162,24 +162,42 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
-      int? dropdownSelection, Function(dynamic) onChanged) {
+  static Widget buildDropdownFieldProtein<T>(String label, List<String> options, int? dropdownSelection, Function(dynamic) onChanged, {String? errorText}) {
     String? assessedValue;
-    // Ensure assessedValue corresponds to an option in the list
-    if (dropdownSelection! > 0 && dropdownSelection <= options.length) {
-      assessedValue = options[dropdownSelection - 1]; // Convert int to String
-    } else {
-      assessedValue = null; // No valid selection yet
+
+    if (dropdownSelection != null && dropdownSelection > 0 && dropdownSelection <= options.length) {
+      assessedValue = options[dropdownSelection - 1];
     }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
-        value: assessedValue, // Ensure value is valid
+        value: assessedValue,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: errorText != null ? Colors.red : Colors.grey, 
+              width: 2.0,
+            ),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: errorText != null ? Colors.red : Colors.grey,
+                width: 2.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: errorText != null ? Colors.red : Colors.blue,
+              width: 2.0,
+            ),
+          ),
+          errorText: errorText,
         ),
         items: options
             .map((option) => DropdownMenuItem<String>(
@@ -198,6 +216,7 @@ class CommonWidgets {
       ),
     );
   }
+
 
   // Dropdown list
   static Widget buildDropdownField(String label, List<String> options) {
@@ -241,20 +260,23 @@ class CommonWidgets {
 
   // Text Field
   static Widget buildTextField(
-      String hintText, TextEditingController controller) {
+      String hintText, TextEditingController controller, {String? errorText}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0), 
+          borderSide: BorderSide(
+            color: errorText != null ? Colors.red : Colors.grey, width: 2.0,
+          )),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.grey)),
+              borderSide: BorderSide(color: errorText != null ? Colors.red : Colors.grey, width: 2.0,)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.blue, width: 2.0)),
+              borderSide: BorderSide(color: errorText != null ? Colors.red : Colors.blue, width: 2.0)),
         ),
       ),
     );

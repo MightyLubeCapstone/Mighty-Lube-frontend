@@ -3,6 +3,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/protien/protienHome.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 import 'package:mighty_lube/api.dart';
+import 'dart:async';
 
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
@@ -14,6 +15,7 @@ class ConfigurationSection extends StatefulWidget {
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   Future<bool>? status;
+  Timer? _delay;
 
   final TextEditingController conveyorSystemName = TextEditingController();
   int? conveyorChainSize = -1;
@@ -25,6 +27,71 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? pushButton = -1;
   int? enclosedShroud = -1;
   final TextEditingController additionalOtherInfo = TextEditingController();
+
+  Map<String, String?> errors = {};
+
+  void _validateTextField(String value, String field) {
+    setState(() {
+      errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
+    });
+  }
+
+  void _validateDropdownField(int? value, String field) {
+    setState(() {
+      errors[field] = (value == null || value == -1) ? 'This field is required.' : null;
+    });
+  }
+
+  void _validatorDelay(String value, String field) {
+    if (_delay?.isActive ?? false){
+      _delay!.cancel();
+    }
+    // manual delay so its not a constant spam of requirements (hopefully)
+    _delay = Timer(const Duration(milliseconds: 100), () {
+      _validateTextField(value, field);
+    });
+  }
+
+  bool validForm() {
+    _validateForm();
+    return errors.values.every((error) => error == null);
+  }
+
+  Future<void> _validateForm() async {
+    _validateTextField(conveyorSystemName.text, 'conveyorName');
+    _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
+    _validateTextField(operatingVoltage.text, 'operatingVoltage');
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    conveyorSystemName.removeListener(_onNameChanged);
+    operatingVoltage.removeListener(_onOpChanged);
+    _delay?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    conveyorSystemName.addListener(_onNameChanged);
+    operatingVoltage.addListener(_onOpChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _validateForm();
+      setState(() {});
+    });
+  }
+
+  void _onNameChanged() {
+    _validatorDelay(conveyorSystemName.text, 'conveyorName');
+  }
+
+  void _onOpChanged() {
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +123,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildGeneralInformationContent() {
+    return
+    ValueListenableBuilder<TextEditingValue>(
+          valueListenable: conveyorSystemName,
+          builder: (context, value, child) {
+            _validatorDelay(value.text, 'conveyorName');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildTextField(
-            'Name of Conveyor System', conveyorSystemName),
+            'Name of Conveyor System *', conveyorSystemName, errorText: errors['conveyorName']),
+            if (errors['conveyorName'] != null) buildErrorText(errors['conveyorName']!),
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
         CommonWidgets.buildDropdownFieldProtein(
@@ -101,14 +174,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
         ),
         CommonWidgets.buildDropdownFieldProtein(
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+          'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
           ['Loaded', 'Unloaded'],
           conveyorLoaded,
           (value) {
             setState(() {
               conveyorLoaded = (value); // Update state properly
+              _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
             });
           },
+          errorText: errors['conveyorLoaded'],
         ),
         CommonWidgets.buildDropdownFieldProtein(
           'Is this a Drip Line?',
@@ -124,16 +199,26 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+    );
+  }
 
   Widget buildCustomerPowerUtilitiesContent() {
+    return
+    ValueListenableBuilder<TextEditingValue>(
+      valueListenable: operatingVoltage,
+      builder: (context, value, child) {
+        _validatorDelay(value.text, 'operatingVoltage');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField(
-            'Enter Operating Voltage - 3 Phase: (Volts/hz)', operatingVoltage),
+            'Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage, errorText: errors['operatingVoltage']),
+        if (errors['operatingVoltage'] != null) buildErrorText(errors['operatingVoltage']!),
         CommonWidgets.buildSectionDivider(),
       ],
+    );
+      }
     );
   }
 
@@ -190,6 +275,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addFGCOinfo(int numRequested) {
+    if (validForm()) {
     dynamic fgcoData = {
       "conveyorSystemName": conveyorSystemName.text,
       "conveyorChainSize": conveyorChainSize,
@@ -206,7 +292,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     };
     status = FormAPI().addOrder("fgco", fgcoData, numRequested);
     return null;
-  }
+  } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
+    return null;
+}
 }
 
 Widget buildBreadcrumbNavigation(BuildContext context) {
@@ -246,6 +338,20 @@ Widget buildBreadcrumbNavigation(BuildContext context) {
           ),
         ),
       ],
+    ),
+  );
+}
+
+Widget buildErrorText(String message){
+  return Padding(
+    padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
+    child: Text(
+      message,
+      style: const TextStyle(
+        color: Colors.red,
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+      ),
     ),
   );
 }
