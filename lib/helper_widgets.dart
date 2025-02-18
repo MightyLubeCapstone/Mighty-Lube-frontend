@@ -292,6 +292,57 @@ class CommonWidgets {
       ),
     );
   }
+
+  // breadcrumb nav
+  static Widget buildBreadcrumbNavigation(
+    BuildContext context, String text, Widget page, String text2, Widget page2) {
+    return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.home, color: Colors.blue),
+          onPressed: () {
+            // Navigate to the home page dynamically
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => page),
+            );
+          },
+        ),
+        const SizedBox(width: 8), // Spacing
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            color: Colors.black54,
+          ),
+        ),
+        const SizedBox(width: 8), // Spacing
+        GestureDetector(
+          onTap: () {
+            // Navigate to the second page dynamically
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => page2),
+            );
+          },
+          child: Text(
+            text2,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
 }
 
 // Internal StatefulWidget for managing the counter state

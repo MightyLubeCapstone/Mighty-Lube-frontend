@@ -107,7 +107,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        buildBreadcrumbNavigation(context),
+        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),

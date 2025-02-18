@@ -83,7 +83,7 @@ class ProductsHomeState extends State<ProductsHome> {
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Conveyor Lubrication Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

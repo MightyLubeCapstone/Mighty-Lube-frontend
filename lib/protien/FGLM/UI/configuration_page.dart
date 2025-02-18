@@ -180,18 +180,24 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   final Map<String, List<String>> sections = {
     "general": [
-      'conveyorName', 'conveyorChainSize', 'chainManufacturer',
-      'chainPinType', 'metalType', 'conveyorStyle', 'trolleyColor',
-      'trolleyType', 'conveyorLoaded', 'conveyorSwing'],
-    "monitor" : [
-      'motorAmp', 'takeUpAir', 'takeUpDist','detectFaultyTrolley'],
+      'conveyorName',
+      'conveyorChainSize',
+      'chainManufacturer',
+      'chainPinType',
+      'metalType',
+      'conveyorStyle',
+      'trolleyColor',
+      'trolleyType',
+      'conveyorLoaded',
+      'conveyorSwing'
+    ],
+    "monitor": ['motorAmp', 'takeUpAir', 'takeUpDist', 'detectFaultyTrolley'],
     "custom": ['operatingVoltage'],
     "conveyor": ['sideLube', 'topLube'],
     "wire": ['con2', 'con4', 'con7'],
   };
 
   bool sectionError(String section) {
-    
     return sections[section]!.any((field) => errors[field] != null);
   }
 
@@ -199,26 +205,35 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        buildBreadcrumbNavigation(context),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(), isError: sectionError("general"),),
+              CommonWidgets.buildGradientButton(
+                context,
+                'General Information',
+                buildGeneralInformationContent(),
+                isError: sectionError("general"),
+              ),
               CommonWidgets.buildGradientButton(
                   context,
                   'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(), isError: sectionError("custom")),
+                  buildCustomerPowerUtilitiesContent(),
+                  isError: sectionError("custom")),
               CommonWidgets.buildGradientButton(
                   context,
                   'New/Adding to Existing Monitoring System',
                   buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context,
-                  'Monitoring Features Requested', buildMonitoringFeatures(), isError: sectionError("monitor")),
+                  'Monitoring Features Requested', buildMonitoringFeatures(),
+                  isError: sectionError("monitor")),
               CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications(), isError: sectionError("conveyor")),
-              CommonWidgets.buildGradientButton(context, 'Wire', buildWire(), isError: sectionError("wire")),
+                  'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: sectionError("conveyor")),
+              CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
+                  isError: sectionError("wire")),
             ],
           ),
         ),
@@ -259,7 +274,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorChainSize = value; // Update state properly
-                    _validateDropdownField(conveyorChainSize, 'conveyorChainSize');
+                    _validateDropdownField(
+                        conveyorChainSize, 'conveyorChainSize');
                   });
                 },
                 errorText: errors['conveyorChainSize'],
@@ -282,7 +298,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainManufacturer = (value); // Update state properly
-                    _validateDropdownField(chainManufacturer, 'chainManufacturer');
+                    _validateDropdownField(
+                        chainManufacturer, 'chainManufacturer');
                   });
                 },
                 errorText: errors['chainManufacturer'],
@@ -574,7 +591,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               detectFaultyTrolley = (value); // Update state properly
-              _validateDropdownField(detectFaultyTrolley, 'detectFaultyTrolley');
+              _validateDropdownField(
+                  detectFaultyTrolley, 'detectFaultyTrolley');
             });
           },
           errorText: errors['detectFaultyTrolley'],
@@ -629,8 +647,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildWire() {
-    return
-      Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
@@ -644,45 +661,48 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        ValueListenableBuilder(valueListenable: conductor2, builder: (context, value, child) {
-          _validatorDelay(value.text, 'con2');
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonWidgets.buildTextField(
-                  'Enter 2 Conductor Number Here', conductor2,
-                  errorText: errors['con2']),
-              if (errors['con2'] != null)
-                buildErrorText(errors['con2']!),
-            ],
-          );
-        }),
-        ValueListenableBuilder(valueListenable: conductor4, builder: (context, value, child) {
-          _validatorDelay(value.text, 'con4');
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonWidgets.buildTextField(
-                  'Enter 4 Conductor Number Here', conductor4,
-                  errorText: errors['con4']),
-              if (errors['con4'] != null)
-                buildErrorText(errors['con4']!),
-            ],
-          );
-        }),
-        ValueListenableBuilder(valueListenable: conductor7, builder: (context, value, child) {
-          _validatorDelay(value.text, 'con7');
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonWidgets.buildTextField(
-                  'Enter 7 Conductor Number Here', conductor7,
-                  errorText: errors['con7']),
-              if (errors['con7'] != null)
-                buildErrorText(errors['con7']!),
-            ],
-          );
-        }),
+        ValueListenableBuilder(
+            valueListenable: conductor2,
+            builder: (context, value, child) {
+              _validatorDelay(value.text, 'con2');
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonWidgets.buildTextField(
+                      'Enter 2 Conductor Number Here', conductor2,
+                      errorText: errors['con2']),
+                  if (errors['con2'] != null) buildErrorText(errors['con2']!),
+                ],
+              );
+            }),
+        ValueListenableBuilder(
+            valueListenable: conductor4,
+            builder: (context, value, child) {
+              _validatorDelay(value.text, 'con4');
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonWidgets.buildTextField(
+                      'Enter 4 Conductor Number Here', conductor4,
+                      errorText: errors['con4']),
+                  if (errors['con4'] != null) buildErrorText(errors['con4']!),
+                ],
+              );
+            }),
+        ValueListenableBuilder(
+            valueListenable: conductor7,
+            builder: (context, value, child) {
+              _validatorDelay(value.text, 'con7');
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonWidgets.buildTextField(
+                      'Enter 7 Conductor Number Here', conductor7,
+                      errorText: errors['con7']),
+                  if (errors['con7'] != null) buildErrorText(errors['con7']!),
+                ],
+              );
+            }),
         CommonWidgets.buildSectionDivider(),
       ],
     );
