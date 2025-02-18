@@ -8,7 +8,7 @@ import 'package:mighty_lube/protien/FGLM/UI/FGLM.dart';
 
 import '../application/UI/applicationHome.dart';
 import '../dashboard/UI/dashboard.dart';
-import '../industrial/product_list.dart';
+import '../product_list.dart';
 
 
 class HeaderLogo extends StatelessWidget {

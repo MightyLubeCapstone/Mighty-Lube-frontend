@@ -21,7 +21,7 @@ import 'protien/protienHome.dart';
 import 'application/UI/applicationHome.dart';
 
 // industrial pages
-import 'industrial/industrialHome.dart';
+import 'industrialHome.dart';
 
 // api imports
 
@@ -37,7 +37,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/login', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/dashboard', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
@@ -59,8 +59,9 @@ class MainApp extends StatelessWidget {
         // application pages
         '/application': (context) => const ApplicationPage(),
 
-        // industrial pages
-        '/idustrial': (context) => const IndustrialHome(),
+        //industrial page
+        '/industrial': (context) => const IndustrialHome(),
+
       },
       debugShowCheckedModeBanner: false,
     );
