@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class CommonWidgets {
   // Nice looking button
   static Widget buildGradientButton(
-      BuildContext context, String title, Widget content) {
+      BuildContext context, String title, Widget content, {bool isError = false} ) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: Colors.white.withOpacity(0.8),
+          color: isError ? Colors.red : Colors.white.withOpacity(0.8),
           width: 2,
         ),
         gradient: const LinearGradient(
@@ -163,29 +163,45 @@ class CommonWidgets {
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
   static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
-      T dropdownSelection, Function(dynamic) onChanged) {
+      int? dropdownSelection, Function(dynamic) onChanged,
+      {String? errorText}) {
     String? assessedValue;
-    // Ensure assessedValue corresponds to an option in the list
-    if (dropdownSelection is int &&
+
+    if (dropdownSelection != null &&
         dropdownSelection > 0 &&
         dropdownSelection <= options.length) {
-      assessedValue = options[dropdownSelection - 1]; // Convert int to String
-    } else if (dropdownSelection is bool) {
-      assessedValue = (dropdownSelection == true)
-          ? options[1]
-          : options[0]; // Convert bool to String
-    } else {
-      assessedValue = null; // No valid selection yet
+      assessedValue = options[dropdownSelection - 1];
     }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: DropdownButtonFormField<String>(
-        value: assessedValue, // Ensure value is valid
+        value: assessedValue,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: errorText != null ? Colors.red : Colors.grey,
+              width: 2.0,
+            ),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: errorText != null ? Colors.red : Colors.grey,
+              width: 2.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: errorText != null ? Colors.red : Colors.blue,
+              width: 2.0,
+            ),
+          ),
+          errorText: errorText,
         ),
         items: options
             .map((option) => DropdownMenuItem<String>(
@@ -196,12 +212,8 @@ class CommonWidgets {
         onChanged: (value) {
           if (value != null) {
             dynamic newValue;
-            if (dropdownSelection is bool) {
-              value == "Yes" ? newValue = true : newValue = false;
-            } else if (dropdownSelection is int) {
-              // number range
-              newValue = options.indexOf(value) + 1;
-            }
+            // number range
+            newValue = options.indexOf(value) + 1;
             onChanged(newValue);
           }
         },
@@ -243,7 +255,7 @@ class CommonWidgets {
   }
 
   // Configurator Button with Counter
-  static Widget buildConfiguratorWithCounter({VoidCallback? callback}) {
+  static Widget buildConfiguratorWithCounter({void Function(int)? callback}) {
     return _ConfiguratorWithCounter(
       callback: callback,
     );
@@ -251,20 +263,31 @@ class CommonWidgets {
 
   // Text Field
   static Widget buildTextField(
-      String hintText, TextEditingController controller) {
+      String hintText, TextEditingController controller,
+      {String? errorText}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(
+                color: errorText != null ? Colors.red : Colors.grey,
+                width: 2.0,
+              )),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.grey)),
+              borderSide: BorderSide(
+                color: errorText != null ? Colors.red : Colors.grey,
+                width: 2.0,
+              )),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.blue, width: 2.0)),
+              borderSide: BorderSide(
+                  color: errorText != null ? Colors.red : Colors.blue,
+                  width: 2.0)),
         ),
       ),
     );
@@ -324,7 +347,7 @@ class CommonWidgets {
 
 // Internal StatefulWidget for managing the counter state
 class _ConfiguratorWithCounter extends StatefulWidget {
-  final VoidCallback? callback;
+  final void Function(int)? callback;
   const _ConfiguratorWithCounter({this.callback});
   @override
   _ConfiguratorWithCounterState createState() =>
@@ -395,7 +418,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
             onPressed: () {
               // Add "Add to Configurator" logic here
               if (widget.callback != null) {
-                widget.callback!();
+                widget.callback!(itemCount);
               }
             },
             style: TextButton.styleFrom(

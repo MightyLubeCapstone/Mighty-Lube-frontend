@@ -17,18 +17,20 @@ class ApiState extends ChangeNotifier {
     String country,
   ) async {
     try {
-      final response =
-          await http.post(Uri.parse('$baseUrl/api/users'), headers: {
-        'Content-Type': 'application/json',
-        'firstName': firstName,
-        'lastName': lastName,
-        'username': username,
-        'password': password,
-        'emailAddress': email,
-        'phoneNumber': phoneNumber,
-        'companyName': companyName,
-        'country': country,
-      });
+      final response = await http.post(Uri.parse('$baseUrl/api/users'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+            'firstName': firstName,
+            'lastName': lastName,
+            'emailAddress': email,
+            'phoneNumber': phoneNumber,
+            'companyName': companyName,
+            'country': country,
+          }));
 
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
@@ -53,7 +55,6 @@ class ApiState extends ChangeNotifier {
       final response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer blank'
           },
           body: jsonEncode({
             'username': username,

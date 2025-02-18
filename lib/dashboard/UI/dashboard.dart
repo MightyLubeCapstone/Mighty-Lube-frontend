@@ -6,6 +6,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../LoginPage/API/apicalls.dart';
 import 'profile.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -67,6 +68,7 @@ class DashboardPage extends StatelessWidget {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 // Navigate to log out
+                                ApiState().logoutUser();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
