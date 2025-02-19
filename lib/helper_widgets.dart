@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CommonWidgets {
   // Nice looking button
   static Widget buildGradientButton(
-      BuildContext context, String title, Widget content, {bool isError = false} ) {
+      BuildContext context, String title, Widget content,
+      {bool isError = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
@@ -166,11 +167,20 @@ class CommonWidgets {
       int? dropdownSelection, Function(dynamic) onChanged,
       {String? errorText}) {
     String? assessedValue;
-
     if (dropdownSelection != null &&
         dropdownSelection > 0 &&
         dropdownSelection <= options.length) {
       assessedValue = options[dropdownSelection - 1];
+    }
+
+    OutlineInputBorder borderStyle(Color color) {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: color,
+          width: 2.0, // Explicitly set width to match TextField
+        ),
+      );
     }
 
     return Padding(
@@ -180,41 +190,26 @@ class CommonWidgets {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(color: Colors.black),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorText != null ? Colors.red : Colors.grey,
-              width: 2.0,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorText != null ? Colors.red : Colors.grey,
-              width: 2.0,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorText != null ? Colors.red : Colors.blue,
-              width: 2.0,
-            ),
-          ),
+          border: borderStyle(Colors.grey),
+          enabledBorder: borderStyle(Colors.grey),
+          focusedBorder: borderStyle(Colors.grey),
+          errorBorder:
+              borderStyle(Colors.red), // Ensure error thickness matches
+          focusedErrorBorder:
+              borderStyle(Colors.red), // Ensure when focused with error
           errorText: errorText,
         ),
         items: options
             .map((option) => DropdownMenuItem<String>(
                   value: option,
-                  child: Text(option),
+                  child: Text(option,
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w400)),
                 ))
             .toList(),
         onChanged: (value) {
           if (value != null) {
-            dynamic newValue;
-            // number range
-            newValue = options.indexOf(value) + 1;
-            onChanged(newValue);
+            onChanged(options.indexOf(value) + 1);
           }
         },
       ),
@@ -265,84 +260,86 @@ class CommonWidgets {
   static Widget buildTextField(
       String hintText, TextEditingController controller,
       {String? errorText}) {
+    OutlineInputBorder borderStyle(Color color) {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: color,
+          width: 2.0, // Explicitly set width to match TextField
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,
         decoration: InputDecoration(
-          hintText: hintText,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.grey,
-                width: 2.0,
-              )),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.grey,
-                width: 2.0,
-              )),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                  color: errorText != null ? Colors.red : Colors.blue,
-                  width: 2.0)),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black),
+          border: borderStyle(Colors.grey),
+          enabledBorder: borderStyle(Colors.grey),
+          focusedBorder: borderStyle(Colors.grey),
+          errorBorder:
+              borderStyle(Colors.red), // Ensure error thickness matches
+          focusedErrorBorder:
+              borderStyle(Colors.red), // Ensure when focused with error
+          errorText: errorText,
         ),
       ),
     );
   }
 
   // breadcrumb nav
-  static Widget buildBreadcrumbNavigation(
-    BuildContext context, String text, Widget page, String text2, Widget page2) {
+  static Widget buildBreadcrumbNavigation(BuildContext context, String text,
+      Widget page, String text2, Widget page2) {
     return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.home, color: Colors.blue),
-          onPressed: () {
-            // Navigate to the home page dynamically
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page),
-            );
-          },
-        ),
-        const SizedBox(width: 8), // Spacing
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-            color: Colors.black54,
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.blue),
+            onPressed: () {
+              // Navigate to the home page dynamically
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page),
+              );
+            },
           ),
-        ),
-        const SizedBox(width: 8), // Spacing
-        GestureDetector(
-          onTap: () {
-            // Navigate to the second page dynamically
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page2),
-            );
-          },
-          child: Text(
-            text2,
+          const SizedBox(width: 8), // Spacing
+          Text(
+            text,
             style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              fontWeight: FontWeight.normal,
+              color: Colors.black54,
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-
+          const SizedBox(width: 8), // Spacing
+          GestureDetector(
+            onTap: () {
+              // Navigate to the second page dynamically
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page2),
+              );
+            },
+            child: Text(
+              text2,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // Internal StatefulWidget for managing the counter state
