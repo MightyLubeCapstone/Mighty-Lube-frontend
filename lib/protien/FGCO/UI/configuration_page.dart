@@ -30,10 +30,21 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   Map<String, String?> errors = {};
 
-  void _validateTextField(String value, String field) {
+  void _validateTextField(String value, String field, {bool isNum = false, bool decimal = false}) {
     setState(() {
-      errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
-    });
+      if (value.trim().isEmpty) {
+          errors[field] = 'This field is required.';
+        } else if (isNum) {
+          RegExp num = decimal ? RegExp(r'^\d+(\.\d+)?$') : RegExp(r'^\d+$');
+          if (!num.hasMatch(value)) {
+            errors[field] = 'Please enter a valid number.';
+          } else {
+            errors[field] = null;
+          }
+        } else {
+          errors[field] = null;
+        }    
+      });
   }
 
   void _validateDropdownField(int? value, String field) {
@@ -43,13 +54,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
   }
 
-  void _validatorDelay(String value, String field) {
+  void _validatorDelay(String value, String field, {bool isNum = false, bool decimal = false}) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
     // manual delay so its not a constant spam of requirements (hopefully)
     _delay = Timer(const Duration(milliseconds: 0), () {
-      _validateTextField(value, field);
+      _validateTextField(value, field, isNum: isNum, decimal: decimal);
     });
   }
 
@@ -64,7 +75,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     _validateDropdownField(installationClearance, 'installationClearance');
     _validateDropdownField(pushButton, 'pushButton');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage');
+    _validateTextField(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
 
     setState(() {});
   }
@@ -89,14 +100,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage');
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
   }
 
   final Map<String, List<String>> sections = {
-    "general" : ['conveyorName', 'conveyorChainSize', 'chainManufacturer', 'conveyorLoaded'],
-    "customerPowerUtilities" : ['operatingVoltage'],
-    "opss" : ['installationClearance'],
-    "additional" : ['pushButton']
+    "general": [
+      'conveyorName',
+      'conveyorChainSize',
+      'chainManufacturer',
+      'conveyorLoaded'
+    ],
+    "customerPowerUtilities": ['operatingVoltage'],
+    "opss": ['installationClearance'],
+    "additional": ['pushButton']
   };
 
   bool sectionError(String section) {
@@ -107,20 +123,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(), isError: sectionError("general")),
+                  buildGeneralInformationContent(),
+                  isError: sectionError("general")),
               CommonWidgets.buildGradientButton(
                   context,
                   'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(), isError: sectionError("customerPowerUtilities")),
-              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(), isError: sectionError("opss")),
+                  buildCustomerPowerUtilitiesContent(),
+                  isError: sectionError("customerPowerUtilities")),
+              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(),
+                  isError: sectionError("opss")),
               CommonWidgets.buildGradientButton(
-                  context, 'Additional Options Avaliable', buildAdditional(), isError: sectionError("additional")),
+                  context, 'Additional Options Avaliable', buildAdditional(),
+                  isError: sectionError("additional")),
             ],
           ),
         ),
@@ -244,7 +265,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               installationClearance = (value); // Update state properly
-              _validateDropdownField(installationClearance, 'installationClearance');
+              _validateDropdownField(
+                  installationClearance, 'installationClearance');
             });
           },
           errorText: errors['installationClearance'],
