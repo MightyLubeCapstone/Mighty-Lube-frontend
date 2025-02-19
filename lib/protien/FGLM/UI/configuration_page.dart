@@ -81,12 +81,26 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'con4': null,
     'con7': null,
     'con2': null,
-    'operatingVoltage': null
+    'operatingVoltage': null,
+    'conveyorLength': null,
+    'conveyorSpeed': null,
   };
 
-  void _validateTextField(String value, String field) {
+  void _validateTextField(String value, String field, {bool isNum = false, bool decimal = false}) {
     setState(() {
-      errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
+      //errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
+      if (value.trim().isEmpty) {
+        errors[field] = 'This field is required.';
+      } else if (isNum) {
+        RegExp num = decimal ? RegExp(r'^\d+(\.\d+)?$') : RegExp(r'^\d+$');
+        if (!num.hasMatch(value)) {
+          errors[field] = 'Please enter a valid number.';
+        } else {
+          errors[field] = null;
+        }
+      } else {
+        errors[field] = null;
+      }
     });
   }
 
@@ -97,13 +111,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
   }
 
-  void _validatorDelay(String value, String field) {
+  void _validatorDelay(String value, String field, {bool isNum = false, bool decimal = false}) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
     // manual delay so its not a constant spam of requirements (hopefully)
     _delay = Timer(const Duration(milliseconds: 0), () {
-      _validateTextField(value, field);
+      _validateTextField(value, field, isNum: isNum, decimal: decimal);
     });
   }
 
@@ -129,10 +143,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     _validateDropdownField(topLube, 'topLube');
 
     _validateTextField(conveyorSystemName.text, 'conveyorName');
-    _validateTextField(conductor4.text, 'con4');
-    _validateTextField(conductor7.text, 'con7');
-    _validateTextField(conductor2.text, 'con2');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage');
+    _validateTextField(conductor4.text, 'con4', isNum: true, decimal: true);
+    _validateTextField(conductor7.text, 'con7', isNum: true, decimal: true);
+    _validateTextField(conductor2.text, 'con2', isNum: true, decimal: true);
+    _validateTextField(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
+    _validateTextField(conveyorLength.text, 'conveyorLength', isNum: true, decimal: true);
+    _validateTextField(conveyorSpeed.text, 'conveyorSpeed', isNum: true, decimal: true);
 
     setState(() {});
   }
@@ -144,6 +160,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     conductor7.removeListener(_on7Changed);
     conductor4.removeListener(_on4Changed);
     conductor2.removeListener(_on2Changed);
+    conveyorLength.removeListener(_onLengthChanged);
+    conveyorSpeed.removeListener(_onSpeedChanged);
     _delay?.cancel();
     super.dispose();
   }
@@ -156,6 +174,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     conductor7.addListener(_on7Changed);
     conductor4.addListener(_on4Changed);
     conductor2.addListener(_on2Changed);
+    conveyorLength.addListener(_onLengthChanged);
+    conveyorSpeed.addListener(_onSpeedChanged);
   }
 
   void _onNameChanged() {
@@ -163,19 +183,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage');
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
   }
 
   void _on7Changed() {
-    _validatorDelay(conductor7.text, 'con7');
+    _validatorDelay(conductor7.text, 'con7', isNum: true, decimal: true);
   }
 
   void _on4Changed() {
-    _validatorDelay(conductor4.text, 'con4');
+    _validatorDelay(conductor4.text, 'con4', isNum: true, decimal: true);
   }
 
   void _on2Changed() {
-    _validatorDelay(conductor2.text, 'con2');
+    _validatorDelay(conductor2.text, 'con2', isNum: true, decimal: true);
+  }
+
+  void _onLengthChanged() {
+    _validatorDelay(conveyorLength.text, 'conveyorLength', isNum: true, decimal: true);
+  }
+
+  void _onSpeedChanged() {
+    _validatorDelay(conveyorSpeed.text, 'conveyorSpeed', isNum: true, decimal: true);
   }
 
   final Map<String, List<String>> sections = {
@@ -316,7 +344,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['chainPinType'],
               ),
-              CommonWidgets.buildTextField('Enter Number Here', conveyorLength),
+              CommonWidgets.buildTextField('Enter Number Here', conveyorLength, errorText: errors['conveyorLength']),
+              if (errors['conveyorLength'] != null)
+                buildErrorText(errors['conveyorLength']!),
               CommonWidgets.buildDropdownFieldProtein(
                 'Conveyor Length Unit',
                 ['Feet', 'Inches', 'm Meter', 'mm Milimeter'],
@@ -328,7 +358,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
               ),
               CommonWidgets.buildTextField(
-                  'Enter Conveyor Speed (Min/Max)', conveyorSpeed),
+                  'Enter Conveyor Speed (Min/Max)', conveyorSpeed, errorText: errors['conveyorSpeed']),
+              if (errors['conveyorSpeed'] != null)
+                buildErrorText(errors['conveyorSpeed']!),
               CommonWidgets.buildDropdownFieldProtein(
                 'Conveyor Speed Unit',
                 [
@@ -810,3 +842,4 @@ Widget buildErrorText(String message) {
     ),
   );
 }
+
