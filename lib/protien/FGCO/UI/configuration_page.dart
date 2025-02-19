@@ -30,21 +30,22 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   Map<String, String?> errors = {};
 
-  void _validateTextField(String value, String field, {bool isNum = false, bool decimal = false}) {
+  void _validateTextField(String value, String field,
+      {bool isNum = false, bool decimal = false}) {
     setState(() {
       if (value.trim().isEmpty) {
-          errors[field] = 'This field is required.';
-        } else if (isNum) {
-          RegExp num = decimal ? RegExp(r'^\d+(\.\d+)?$') : RegExp(r'^\d+$');
-          if (!num.hasMatch(value)) {
-            errors[field] = 'Please enter a valid number.';
-          } else {
-            errors[field] = null;
-          }
+        errors[field] = 'This field is required.';
+      } else if (isNum) {
+        RegExp num = decimal ? RegExp(r'^\d+(\.\d+)?$') : RegExp(r'^\d+$');
+        if (!num.hasMatch(value)) {
+          errors[field] = 'Please enter a valid number.';
         } else {
           errors[field] = null;
-        }    
-      });
+        }
+      } else {
+        errors[field] = null;
+      }
+    });
   }
 
   void _validateDropdownField(int? value, String field) {
@@ -54,7 +55,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
   }
 
-  void _validatorDelay(String value, String field, {bool isNum = false, bool decimal = false}) {
+  void _validatorDelay(String value, String field,
+      {bool isNum = false, bool decimal = false}) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
@@ -75,7 +77,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     _validateDropdownField(installationClearance, 'installationClearance');
     _validateDropdownField(pushButton, 'pushButton');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
+    _validateTextField(operatingVoltage.text, 'operatingVoltage',
+        isNum: true, decimal: true);
 
     setState(() {});
   }
@@ -100,7 +103,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage',
+        isNum: true, decimal: true);
   }
 
   final Map<String, List<String>> sections = {
@@ -164,8 +168,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildTextField(
                   'Name of Conveyor System *', conveyorSystemName,
                   errorText: errors['conveyorName']),
-              if (errors['conveyorName'] != null)
-                buildErrorText(errors['conveyorName']!),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
               CommonWidgets.buildDropdownFieldProtein(
@@ -245,8 +247,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildTextField(
                   'Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage,
                   errorText: errors['operatingVoltage']),
-              if (errors['operatingVoltage'] != null)
-                buildErrorText(errors['operatingVoltage']!),
               CommonWidgets.buildSectionDivider(),
             ],
           );
