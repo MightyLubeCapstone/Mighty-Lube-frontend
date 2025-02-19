@@ -706,7 +706,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonWidgets.buildTextField(
-                      'Enter 2 Conductor Number Here', conductor2,
+                      'Enter 2 Conductor Number Here *', conductor2,
                       errorText: errors['con2']),
                 ],
               );
@@ -719,7 +719,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonWidgets.buildTextField(
-                      'Enter 4 Conductor Number Here', conductor4,
+                      'Enter 4 Conductor Number Here *', conductor4,
                       errorText: errors['con4']),
                 ],
               );
@@ -732,7 +732,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonWidgets.buildTextField(
-                      'Enter 7 Conductor Number Here', conductor7,
+                      'Enter 7 Conductor Number Here *', conductor7,
                       errorText: errors['con7']),
                 ],
               );
