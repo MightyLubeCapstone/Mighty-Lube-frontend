@@ -74,6 +74,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     _validateTextField(conveyorSystemName.text, 'conveyorName');
     _validateDropdownField(chainManufacturer, 'chainManufacturer');
+    _validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     _validateDropdownField(installationClearance, 'installationClearance');
     _validateDropdownField(pushButton, 'pushButton');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
@@ -171,7 +172,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
               CommonWidgets.buildDropdownFieldProtein(
-                'Conveyor Chain Size',
+                'Conveyor Chain Size *',
                 [
                   'X348 Chain (3”)',
                   'X458 Chain (4”)',
@@ -183,11 +184,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorChainSize = (value); // Update state properly
+                    _validateDropdownField(
+                        conveyorChainSize, 'conveyorChainSize');
                   });
                 },
+                errorText: errors['conveyorChainSize'],
               ),
               CommonWidgets.buildDropdownFieldProtein(
-                'Protein: Chain Manufacturer',
+                'Protein: Chain Manufacturer *',
                 [
                   'Green Line',
                   'Frost',
@@ -204,8 +208,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainManufacturer = (value); // Update state properly
+                    _validateDropdownField(
+                        chainManufacturer, 'chainManufacturer');
                   });
                 },
+                errorText: errors['chainManufacturer'],
               ),
               CommonWidgets.buildDropdownFieldProtein(
                 'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
@@ -282,7 +289,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownFieldProtein(
-          ' 3-Station Push Button Switch',
+          '3-Station Push Button Switch *',
           ['Yes', 'No'],
           pushButton,
           (value) {
