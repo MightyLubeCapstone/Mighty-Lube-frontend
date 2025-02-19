@@ -1,5 +1,6 @@
 // just flutter pages
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/shoppingCart.dart';
 
 // login in pages
 import 'LoginPage/UI/createAccount.dart';
@@ -23,6 +24,7 @@ import 'application/UI/applicationHome.dart';
 // industrial pages
 import 'industrialHome.dart';
 
+
 // api imports
 
 void main() {
@@ -37,7 +39,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/dashboard', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/shopping', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
@@ -62,8 +64,12 @@ class MainApp extends StatelessWidget {
         //industrial page
         '/industrial': (context) => const IndustrialHome(),
 
+        '/shopping': (context) => ShoppingPage(cartItems: myCartItems, showAlternativeUI: true),
+
       },
       debugShowCheckedModeBanner: false,
     );
   }
 }
+
+

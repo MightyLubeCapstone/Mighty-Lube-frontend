@@ -324,7 +324,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "installationClearance": installationClearance,
         "pushButton": pushButton,
         "enclosedShroud": enclosedShroud,
-        "additionalOtherInfo": additionalOtherInfo.text
+        "additionalOtherInfo": additionalOtherInfo.text,
       };
       status = FormAPI().addOrder("fgco", fgcoData, numRequested);
       return null;
