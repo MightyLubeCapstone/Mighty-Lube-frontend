@@ -202,21 +202,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final email = emailController.text;
     final username = usernameController.text;
     final password = passwordController.text;
-    //final confirmPassword = confirmPasswordController.text;
 
     try {
       bool success = await ApiState().makeAccount(username, password, firstName,
           lastName, email, phoneNumber, companyName, countrytype!);
-
-      print(firstName);
-      print(lastName);
-      print(phoneNumber);
-      print(email);
-      print(username);
-      print(password);
-      print(countrytype);
       if (success) {
-        Navigator.pushNamed(context, '/dashboard');
+        Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         showDialog(
             context: context,

@@ -121,11 +121,9 @@ class ApiState extends ChangeNotifier {
         'username': username,
       });
 
-      print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print(responseData);
         return responseData['message'];
       } else if (response.statusCode == 400) {
         print('Failed to get user');
