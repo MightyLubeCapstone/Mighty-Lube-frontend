@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'package:mighty_lube/env.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
@@ -36,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoggedIn = false;
   bool usererror = false;
   bool passerror = false;
+  bool? status = false;
 
   Future<void> login() async {
     final username = usernameController.text;
@@ -44,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       usererror = false;
       passerror = false;
+      status = null;
     });
 
     if (username.isNotEmpty && password.isNotEmpty) {
@@ -64,6 +69,9 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         if (username.isEmpty) usererror = true;
         if (password.isEmpty) passerror = true;
+        setState(() {
+          status = false;
+        });
       });
       showError(context, 'Please enter a username and password');
     }
@@ -85,6 +93,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (status == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()), // Loading indicator
+      );
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       body: Column(

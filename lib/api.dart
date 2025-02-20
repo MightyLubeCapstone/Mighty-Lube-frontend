@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'env.dart';
@@ -29,6 +30,29 @@ class FormAPI {
     } catch (error) {
       print("Error adding order: $error");
       return false;
+    }
+  }
+
+  Future<dynamic> getOrders() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}"
+      };
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        dynamic data = jsonDecode(response.body);
+        return data["orders"];
+      } else if (response.statusCode == 400) {
+        return [];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      print(error);
+      return [];
     }
   }
 }

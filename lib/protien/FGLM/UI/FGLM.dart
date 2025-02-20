@@ -15,13 +15,27 @@ class FGLMPage extends StatefulWidget {
 
 class _FGLMPageState extends State<FGLMPage> {
   int _selectedIndex = 0;
+  int cartItemCount = 0;
+
+  // Function to update the cart count
+  void updateCartItemCount(int newCount) {
+    setState(() {
+      cartItemCount = newCount;
+    });
+  }
 
   // Pages for bottom navigation
-  final List<Widget> _pages = [
-    const HomeSection(),
-    const ImageSection(),
-    const ConfigurationSection(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomeSection(),
+      const ImageSection(),
+      ConfigurationSection(updateCartItemCount: updateCartItemCount),
+    ];
+  }
 
   // Update the page on bottom navigation tap
   void _onItemTapped(int index) {
@@ -36,6 +50,7 @@ class _FGLMPageState extends State<FGLMPage> {
         appBar: CustomAppBar(
           link: const ProfilePage(),
           customIcon: Icons.description,
+          cartItemCount: cartItemCount, // Pass cart count to AppBar
         ),
         drawer: const CustomDrawer(),
         body: _pages[_selectedIndex],

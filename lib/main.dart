@@ -1,11 +1,11 @@
 // just flutter pages
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/shoppingCart.dart';
 
 // login in pages
 import 'LoginPage/UI/createAccount.dart';
 import 'LoginPage/UI/forgotPassword.dart';
 import 'LoginPage/UI/loginPage.dart';
+import 'package:mighty_lube/LoginPage/UI/home.dart';
 
 // dashboard pages
 import 'dashboard/UI/dashboard.dart';
@@ -14,6 +14,7 @@ import 'dashboard/UI/drafts.dart';
 import 'dashboard/UI/profile.dart';
 
 // protien pages
+import 'env.dart';
 import 'protien/FGLM/UI/FGLM.dart';
 import 'protien/FGCO/UI/FGCO.dart';
 import 'protien/protienHome.dart';
@@ -23,7 +24,6 @@ import 'application/UI/applicationHome.dart';
 
 // industrial pages
 import 'industrialHome.dart';
-
 
 // api imports
 
@@ -39,10 +39,11 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/FGCO', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
+        '/': (context) => const Home(),
         '/login': (context) => const LoginPage(),
         '/createAccount': (context) => const CreateAccountPage(),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
@@ -64,12 +65,9 @@ class MainApp extends StatelessWidget {
         //industrial page
         '/industrial': (context) => const IndustrialHome(),
 
-        '/shopping': (context) => ShoppingPage(cartItems: myCartItems, showAlternativeUI: true),
-
+        //'/shopping': (context) => ShoppingPage(cartItems: myCartItems, showAlternativeUI: true),
       },
       debugShowCheckedModeBanner: false,
     );
   }
 }
-
-

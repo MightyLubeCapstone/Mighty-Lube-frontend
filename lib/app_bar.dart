@@ -1,19 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:mighty_lube/shoppingCart.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget link;
   final double height;
   final IconData customIcon;
   int? cartItemCount = -1;
+  bool? reload;
 
-  CustomAppBar(
-      {super.key,
-      required this.link,
-      this.height = 100,
-      required this.customIcon,
-      this.cartItemCount});
+  CustomAppBar({
+    super.key,
+    required this.link,
+    this.height = 100,
+    required this.customIcon,
+    this.cartItemCount,
+    this.reload,
+  });
+
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  void getOrders() async {
+    dynamic temp = await FormAPI().getOrders();
+    int totalQuantities = 0;
+    for (var order in temp) {
+      totalQuantities += order["quantity"] as int;
+    }
+    widget.cartItemCount = totalQuantities;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // load all orders :D
+    getOrders();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +62,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: Icon(customIcon, color: Colors.white),
+                    icon: Icon(widget.customIcon, color: Colors.white),
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => link),
+                        MaterialPageRoute(builder: (context) => widget.link),
                       );
                     },
                   ),
@@ -44,7 +74,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     badgeStyle:
                         const badges.BadgeStyle(badgeColor: Colors.white),
                     badgeContent: Text(
-                      cartItemCount.toString(),
+                      widget.cartItemCount != null
+                          ? widget.cartItemCount!.toString()
+                          : "",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
@@ -54,7 +86,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       icon:
                           const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
-                        // Add Cart functionality
+                        if (widget.reload == false) {
+                          // do nothing
+                        } else {
+                          // Add Cart functionality
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShoppingPage(),
+                            ),
+                          );
+                        }
                       },
                     ),
                   )
@@ -66,7 +108,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(height);
 }

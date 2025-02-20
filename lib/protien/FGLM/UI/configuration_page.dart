@@ -6,7 +6,8 @@ import 'package:mighty_lube/api.dart';
 import 'dart:async';
 
 class ConfigurationSection extends StatefulWidget {
-  const ConfigurationSection({super.key});
+  final void Function(int) updateCartItemCount;
+  const ConfigurationSection({super.key, required this.updateCartItemCount});
 
   @override
   State<ConfigurationSection> createState() => _ConfigurationSectionState();
@@ -16,7 +17,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   Timer? _delay;
 
-  Future<bool>? status;
+  bool? status;
   // Gen Info
   final TextEditingController conveyorSystemName = TextEditingController();
   int? conveyorChainSize = -1;
@@ -742,7 +743,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addFGLMInfo(int numRequested) {
+  Future<VoidCallback?> addFGLMInfo(int numRequested) async{
     if (validForm()) {
       dynamic fglmData = {
         "conveyorName": conveyorSystemName.text,
@@ -781,8 +782,22 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "conductor7": conductor7.text,
         "conductor2": conductor2.text
       };
+      setState(() {
+        status = null;
+      });
       //add a loader that shows a happy popup for this eventually :)
-      status = FormAPI().addOrder("fglm", fglmData, numRequested);
+      status = await FormAPI().addOrder("fglm", fglmData, numRequested);
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
+      setState(() {});
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
