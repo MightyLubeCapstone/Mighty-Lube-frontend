@@ -6,7 +6,6 @@ import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 
-
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
 
@@ -132,8 +131,8 @@ class _IndustrialHomeState extends State<IndustrialHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),

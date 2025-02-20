@@ -14,6 +14,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "badges",
+      "rootUri": "file:///C:/Users/wesat/AppData/Local/Pub/Cache/hosted/pub.dev/badges-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "boolean_selector",
       "rootUri": "file:///C:/Users/wesat/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.2",
       "packageUri": "lib/",
@@ -356,7 +362,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2025-02-19T01:12:31.977414Z",
+  "generated": "2025-02-20T00:18:40.218142Z",
   "generator": "pub",
   "generatorVersion": "3.7.0",
   "flutterRoot": "file:///C:/Code/Flutter/flutter",

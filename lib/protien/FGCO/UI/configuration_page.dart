@@ -6,7 +6,8 @@ import 'package:mighty_lube/api.dart';
 import 'dart:async';
 
 class ConfigurationSection extends StatefulWidget {
-  const ConfigurationSection({super.key});
+  final void Function(int) updateCartItemCount;
+  const ConfigurationSection({super.key, required this.updateCartItemCount});
 
   @override
   State<ConfigurationSection> createState() => _ConfigurationSectionState();
@@ -345,9 +346,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully added to configurator!')),
         );
+        widget.updateCartItemCount(numRequested);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Successfully added to configurator!')),
+          const SnackBar(content: Text('Error adding to configurator!')),
         );
       }
       setState(() {});

@@ -261,8 +261,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
-    appBar: const CustomAppBar(
-      link: ApplicationPage(),
+    appBar: CustomAppBar(
+      link: const ApplicationPage(),
       customIcon: Icons.description,
     ),
     drawer: const CustomDrawer(),

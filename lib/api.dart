@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'env.dart';
 
 class FormAPI {
-  Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
+  Future<bool> addOrder(
+      String endpoint, dynamic order, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/$endpoint');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -14,7 +15,8 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode({'${endpoint}Data': order, 'numRequested': numRequested}),
+        body: jsonEncode(
+            {'${endpoint}Data': order, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);

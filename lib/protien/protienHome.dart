@@ -49,8 +49,8 @@ class _ProteinHomeState extends State<ProteinHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),

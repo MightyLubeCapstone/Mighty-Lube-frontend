@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         link: ApplicationPage(),
         customIcon: Icons.description,
       ),

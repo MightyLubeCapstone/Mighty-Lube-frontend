@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/header_logo.dart';
+import 'package:badges/badges.dart' as badges;
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget link;
   final double height;
   final IconData customIcon;
+  int? cartItemCount = -1;
 
-  const CustomAppBar(
+  CustomAppBar(
       {super.key,
       required this.link,
       this.height = 100,
-      required this.customIcon});
+      required this.customIcon,
+      this.cartItemCount});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             const HeaderLogo(),
             Positioned(
               top: 50, // Adjust position
-              right: 10,
+              right: 15,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -37,12 +40,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       );
                     },
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart, color: Colors.white),
-                    onPressed: () {
-                      // Add Cart functionality
-                    },
-                  ),
+                  badges.Badge(
+                    badgeStyle:
+                        const badges.BadgeStyle(badgeColor: Colors.white),
+                    badgeContent: Text(
+                      cartItemCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
+                      onPressed: () {
+                        // Add Cart functionality
+                      },
+                    ),
+                  )
                 ],
               ),
             ),

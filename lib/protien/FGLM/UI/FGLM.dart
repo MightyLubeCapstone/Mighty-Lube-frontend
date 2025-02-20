@@ -33,11 +33,11 @@ class _FGLMPageState extends State<FGLMPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppBar(
-        link: ProfilePage(),
-        customIcon: Icons.description,
-      ),
-      drawer: const CustomDrawer(),
+        appBar: CustomAppBar(
+          link: const ProfilePage(),
+          customIcon: Icons.description,
+        ),
+        drawer: const CustomDrawer(),
         body: _pages[_selectedIndex],
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(
