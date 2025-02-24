@@ -20,6 +20,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
+  final TextEditingController specialOptions = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +33,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent()),
               CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent()),
-              CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildMonitoringFeatures()),
+              CommonWidgets.buildGradientButton(context, 'New or Existing Monitoring System',buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
-              CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
+              CommonWidgets.buildGradientButton(context, 'CC5: Measurements',buildMeasurements()),
             ],
           ),
         ),
@@ -52,30 +53,60 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionTitle('Conveyor Details'),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTextField('Name of Conveyor System',conveyorSystem),
         CommonWidgets.buildDropdownField('Conveyor Chain Size', [
-          'X348 Chain (3”)',
-          'X458 Chain (4”)',
-          'OX678 Chain (6”)',
+          'CC5 3”',
+          'CC5 4”',
+          'CC5 6”',
+          'RC60', 'RC80', 'RC 2080', 'RC 2060',
           'Other'
         ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
-          'Green Line',
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
+          'Daifuku',
           'Frost',
-          'M&M',
-          'Stork',
-          'Meyn',
-          'Linco',
-          'DC',
-          'Merel',
-          'D&F',
+          'NKC',
+          'Pacline',
+          'Rapid',
+          'WEBB',
+          'Webb-Stiles',
+          'Wilkie Brothers',
           'Other'
+        ]),
+        CommonWidgets.buildTextField('Enter Conveyor Length',conveyorLength),
+        CommonWidgets.buildDropdownField('Conveyor Length Unit', [
+          'Feet',
+          'Inches',
+          'm Meter',
+          'mm Millimeter',
+        ]),
+        CommonWidgets.buildTextField('Conveyor Speed (Min/Max)',conveyorSpeed),
+        CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
+          'Feet/Minute',
+          'Meters/Minute',
+        ]),
+        CommonWidgets.buildTextField('Indexing or Variable Speed Conditions',conveyorIndex),
+        CommonWidgets.buildDropdownField('Direction of Travel', [
+          'Right to Left',
+          'Left to Right',
+        ]),
+        CommonWidgets.buildDropdownField('Application Environment', [
+          'Ambient',
+          'Caustic (i.e. Phospate/E-Coat, etc.)',
+          'Oven',
+          'Wash Down',
+          'Intrinsic','Food Grade', 'Other'
+        ]),
+        CommonWidgets.buildDropdownField('Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?', [
+          'Yes',
+          'No',
+        ]),
+        CommonWidgets.buildDropdownField('Is Conveyor Single or Double Strand', [
+          'Single',
+          'Double',
         ]),
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionTitle('Environmental Details'),
-        CommonWidgets.buildDropdownField('Is the Conveyor "__" at Planned Install Location',
-            ['Loaded', 'Unloaded']),
-        CommonWidgets.buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
+        
       ],
     );
   }
@@ -84,13 +115,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3']),
-        CommonWidgets.buildDropdownField(
-          'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
-          ['Yes', 'No'],
-        ),
-        CommonWidgets.buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTextField('Operating Voltage - 3 Phase: (Volts/hz)',operatingVoltage),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
@@ -104,44 +131,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Yes',
           'No'
         ]),
-        CommonWidgets.buildDropdownField('Add New Monitoring System', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
-  Widget buildMonitoringFeatures() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Drive Motor Amp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Take-up-Air', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Take-Up Distance', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Temp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Vibration', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Bent or Missing Trolley detect', [
-          'Yes',
-          'No'
-        ]),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -151,12 +140,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-       CommonWidgets. buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Lubrication from the Side of Chain', [
+        CommonWidgets. buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Is their High Rollers', [
           'Yes',
           'No'
         ]),
-        CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
+        CommonWidgets.buildDropdownField('Outboard Wheels  ', [
           'Yes',
           'No'
         ]),
@@ -174,15 +163,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildTextField('Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',specialOptions),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -206,5 +187,26 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+  //same as wire. leave for now cause this is the image ones
+  Widget buildMeasurements() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Measurement Units', [
+          'Feet',
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
+        ]),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
+
 
 }
