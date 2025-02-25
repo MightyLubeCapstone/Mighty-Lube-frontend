@@ -14,7 +14,7 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  Timer? _delay;
+  final Validators validate = Validators();
 
   Future<bool>? status;
   // Gen Info
@@ -84,98 +84,88 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'operatingVoltage': null
   };
 
-  void _validateTextField(String value, String field) {
-    setState(() {
-      errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
-    });
-  }
-
-  void _validateDropdownField(int? value, String field) {
-    setState(() {
-      errors[field] =
-          (value == null || value == -1) ? 'This field is required.' : null;
-    });
-  }
-
-  void _validatorDelay(String value, String field) {
-    if (_delay?.isActive ?? false) {
-      _delay!.cancel();
-    }
-    // manual delay so its not a constant spam of requirements (hopefully)
-    _delay = Timer(const Duration(milliseconds: 0), () {
-      _validateTextField(value, field);
-    });
-  }
+  
 
   bool validForm() {
+    validate.mapErrors(errors);
     _validateForm();
     return errors.values.every((error) => error == null);
   }
 
   Future<void> _validateForm() async {
-    _validateDropdownField(chainPinType, 'chainPinType');
-    _validateDropdownField(metalType, 'metalType');
-    _validateDropdownField(conveyorStyle, 'conveyorStyle');
-    _validateDropdownField(trolleyColor, 'trolleyColor');
-    _validateDropdownField(trolleyType, 'trolleyType');
-    _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-    _validateDropdownField(conveyorSwing, 'conveyorSwing');
-    _validateDropdownField(motorAmp, 'motorAmp');
-    _validateDropdownField(takeUpAir, 'takeUpAir');
-    _validateDropdownField(takeUpDist, 'takeUpDist');
-    _validateDropdownField(motorTemp, 'motorTemp');
-    _validateDropdownField(detectFaultyTrolley, 'detectFaultyTrolley');
-    _validateDropdownField(sideLube, 'sideLube');
-    _validateDropdownField(topLube, 'topLube');
+    validate.validateDropdownField(chainPinType, 'chainPinType');
+    validate.validateDropdownField(metalType, 'metalType');
+    validate.validateDropdownField(conveyorStyle, 'conveyorStyle');
+    validate.validateDropdownField(trolleyColor, 'trolleyColor');
+    validate.validateDropdownField(trolleyType, 'trolleyType');
+    validate.validateDropdownField(conveyorLoaded, 'conveyorLoaded');
+    validate.validateDropdownField(conveyorSwing, 'conveyorSwing');
+    validate.validateDropdownField(motorAmp, 'motorAmp');
+    validate.validateDropdownField(takeUpAir, 'takeUpAir');
+    validate.validateDropdownField(takeUpDist, 'takeUpDist');
+    validate.validateDropdownField(motorTemp, 'motorTemp');
+    validate.validateDropdownField(detectFaultyTrolley, 'detectFaultyTrolley');
+    validate.validateDropdownField(sideLube, 'sideLube');
+    validate.validateDropdownField(topLube, 'topLube');
 
-    _validateTextField(conveyorSystemName.text, 'conveyorName');
-    _validateTextField(conductor4.text, 'con4');
-    _validateTextField(conductor7.text, 'con7');
-    _validateTextField(conductor2.text, 'con2');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage');
-
+    validate.validateTextField(conveyorSystemName.text, 'conveyorName');
+    validate.validateTextField(conductor4.text, 'con4');
+    validate.validateTextField(conductor7.text, 'con7');
+    validate.validateTextField(conductor2.text, 'con2');
+    validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
+    
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    conveyorSystemName.removeListener(_onNameChanged);
-    operatingVoltage.removeListener(_onOpChanged);
-    conductor7.removeListener(_on7Changed);
-    conductor4.removeListener(_on4Changed);
-    conductor2.removeListener(_on2Changed);
-    _delay?.cancel();
-    super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    conveyorSystemName.addListener(_onNameChanged);
-    operatingVoltage.addListener(_onOpChanged);
-    conductor7.addListener(_on7Changed);
-    conductor4.addListener(_on4Changed);
-    conductor2.addListener(_on2Changed);
+    conveyorSystemName.addListener(() {
+      validate.onNameOpChanged(conveyorSystemName.text, 'conveyorName');
+      setState(() {});
+    });
+    operatingVoltage.addListener(() {
+      validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
+      setState(() {});
+    });
+    conductor7.addListener(() {
+      validate.onNum247Changed(conductor7.text, 'con7');
+      setState(() {});
+    });
+    conductor4.addListener(() {
+      validate.onNum247Changed(conductor4.text, 'con4');
+      setState(() {});
+    });
+    conductor2.addListener(() {
+      validate.onNum247Changed(conductor2.text, 'con2');
+      setState(() {});
+    });
   }
 
-  void _onNameChanged() {
-    _validatorDelay(conveyorSystemName.text, 'conveyorName');
-  }
-
-  void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage');
-  }
-
-  void _on7Changed() {
-    _validatorDelay(conductor7.text, 'con7');
-  }
-
-  void _on4Changed() {
-    _validatorDelay(conductor4.text, 'con4');
-  }
-
-  void _on2Changed() {
-    _validatorDelay(conductor2.text, 'con2');
+  @override
+  void dispose() {
+    conveyorSystemName.removeListener(() {
+      validate.onNameOpChanged(conveyorSystemName.text, 'conveyorName');
+      setState(() {});
+    });
+    operatingVoltage.removeListener(() {
+      validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
+      setState(() {});
+    });
+    conductor7.removeListener(() {
+      validate.onNum247Changed(conductor7.text, 'con7');
+      setState(() {});
+    });
+    conductor4.removeListener(() {
+      validate.onNum247Changed(conductor4.text, 'con4');
+      setState(() {});
+    });
+    conductor2.removeListener(() {
+      validate.onNum247Changed(conductor2.text, 'con2');
+      setState(() {});
+    });
+    validate.delay?.cancel();
+    super.dispose();
   }
 
   final Map<String, List<String>> sections = {
@@ -251,7 +241,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return ValueListenableBuilder<TextEditingValue>(
         valueListenable: conveyorSystemName,
         builder: (context, value, child) {
-          _validatorDelay(value.text, 'conveyorName');
+          validate.validatorDelay(value.text, 'conveyorName');
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -274,7 +264,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorChainSize = value; // Update state properly
-                    _validateDropdownField(
+                    validate.validateDropdownField(
                         conveyorChainSize, 'conveyorChainSize');
                   });
                 },
@@ -298,7 +288,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainManufacturer = (value); // Update state properly
-                    _validateDropdownField(
+                    validate.validateDropdownField(
                         chainManufacturer, 'chainManufacturer');
                   });
                 },
@@ -311,7 +301,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainPinType = value;
-                    _validateDropdownField(chainPinType, 'chainPinType');
+                    validate.validateDropdownField(chainPinType, 'chainPinType');
                   });
                 },
                 errorText: errors['chainPinType'],
@@ -364,7 +354,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     metalType = (value);
-                    _validateDropdownField(metalType, 'metalType');
+                    validate.validateDropdownField(metalType, 'metalType');
                   });
                 },
                 errorText: errors['metalType'],
@@ -376,7 +366,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorStyle = (value);
-                    _validateDropdownField(conveyorStyle, 'conveyorStyle');
+                    validate.validateDropdownField(conveyorStyle, 'conveyorStyle');
                   });
                 },
                 errorText: errors['conveyorStyle'],
@@ -388,7 +378,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     trolleyColor = (value);
-                    _validateDropdownField(trolleyColor, 'trolleyColor');
+                    validate.validateDropdownField(trolleyColor, 'trolleyColor');
                   });
                 },
                 errorText: errors['trolleyColor'],
@@ -407,7 +397,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     trolleyType = (value); // Update state properly
-                    _validateDropdownField(trolleyType, 'trolleyType');
+                    validate.validateDropdownField(trolleyType, 'trolleyType');
                   });
                 },
                 errorText: errors['trolleyType'],
@@ -429,7 +419,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorLoaded = (value); // Update state properly
-                    _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
+                    validate.validateDropdownField(conveyorLoaded, 'conveyorLoaded');
                   });
                 },
                 errorText: errors['conveyorLoaded'],
@@ -441,7 +431,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorSwing = (value); // Update state properly
-                    _validateDropdownField(conveyorSwing, 'conveyorSwing');
+                    validate.validateDropdownField(conveyorSwing, 'conveyorSwing');
                   });
                 },
                 errorText: errors['conveyorSwing'],
@@ -476,7 +466,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return ValueListenableBuilder<TextEditingValue>(
         valueListenable: operatingVoltage,
         builder: (context, value, child) {
-          _validatorDelay(value.text, 'operatingVoltage');
+          validate.validatorDelay(value.text, 'operatingVoltage');
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -535,7 +525,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               motorAmp = (value); // Update state properly
-              _validateDropdownField(motorAmp, 'motorAmp');
+              validate.validateDropdownField(motorAmp, 'motorAmp');
             });
           },
           errorText: errors['motorAmp'],
@@ -547,7 +537,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               takeUpAir = (value); // Update state properly
-              _validateDropdownField(takeUpAir, 'takeUpAir');
+              validate.validateDropdownField(takeUpAir, 'takeUpAir');
             });
           },
           errorText: errors['takeUpAir'],
@@ -559,7 +549,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               takeUpDist = (value); // Update state properly
-              _validateDropdownField(takeUpDist, 'takeUpDist');
+              validate.validateDropdownField(takeUpDist, 'takeUpDist');
             });
           },
           errorText: errors['takeUpDist'],
@@ -591,7 +581,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               detectFaultyTrolley = (value); // Update state properly
-              _validateDropdownField(
+              validate.validateDropdownField(
                   detectFaultyTrolley, 'detectFaultyTrolley');
             });
           },
@@ -614,7 +604,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               sideLube = (value); // Update state properly
-              _validateDropdownField(sideLube, 'sideLube');
+              validate.validateDropdownField(sideLube, 'sideLube');
             });
           },
           errorText: errors['sideLube'],
@@ -626,7 +616,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               topLube = (value); // Update state properly
-              _validateDropdownField(topLube, 'topLube');
+              validate.validateDropdownField(topLube, 'topLube');
             });
           },
           errorText: errors['topLube'],
@@ -664,7 +654,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ValueListenableBuilder(
             valueListenable: conductor2,
             builder: (context, value, child) {
-              _validatorDelay(value.text, 'con2');
+              validate.validatorDelay(value.text, 'con2');
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -678,7 +668,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ValueListenableBuilder(
             valueListenable: conductor4,
             builder: (context, value, child) {
-              _validatorDelay(value.text, 'con4');
+              validate.validatorDelay(value.text, 'con4');
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -692,7 +682,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ValueListenableBuilder(
             valueListenable: conductor7,
             builder: (context, value, child) {
-              _validatorDelay(value.text, 'con7');
+              validate.validatorDelay(value.text, 'con7');
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

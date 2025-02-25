@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class CommonWidgets {
   // Nice looking button
@@ -440,4 +441,41 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
       ],
     );
   }
+}
+
+class Validators {
+  Map<String, String?> errors = {};
+  Timer? delay;
+
+  void mapErrors(Map<String, String?> newErrors) {
+    errors = newErrors;
+  }
+
+  void validateTextField(String value, String field) {
+    errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
+  }
+
+  void validateDropdownField(int? value, String field) {
+    errors[field] =
+      (value == null || value == -1) ? 'This field is required.' : null;
+  }
+
+  void validatorDelay(String value, String field) {
+    if (delay?.isActive ?? false) {
+      delay!.cancel();
+    }
+    // manual delay so its not a constant spam of requirements (hopefully)
+    delay = Timer(const Duration(milliseconds: 0), () {
+      validateTextField(value, field);
+    });
+  }
+
+  void onNameOpChanged(name, field) {
+    validatorDelay(name, field);
+  }
+
+  void onNum247Changed(name, field) {
+    validatorDelay(name, field);
+  }
+
 }
