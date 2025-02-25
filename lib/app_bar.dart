@@ -10,15 +10,16 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final IconData customIcon;
   int? cartItemCount = -1;
   bool? reload;
+  void Function(int)? callback;
 
-  CustomAppBar({
-    super.key,
-    required this.link,
-    this.height = 100,
-    required this.customIcon,
-    this.cartItemCount,
-    this.reload,
-  });
+  CustomAppBar(
+      {super.key,
+      required this.link,
+      this.height = 100,
+      required this.customIcon,
+      this.cartItemCount,
+      this.reload,
+      this.callback});
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -35,6 +36,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
       totalQuantities += order["quantity"] as int;
     }
     widget.cartItemCount = totalQuantities;
+    if (widget.callback != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.callback!(totalQuantities);
+      });
+    }
     setState(() {});
   }
 

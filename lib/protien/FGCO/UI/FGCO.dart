@@ -51,6 +51,7 @@ class FGCOPageState extends State<FGCOPage> {
         link: const ProfilePage(),
         customIcon: Icons.description,
         cartItemCount: cartItemCount, // Pass cart count to AppBar
+        callback: updateCartItemCount,
       ),
       drawer: const CustomDrawer(),
       body: _pages[_selectedIndex],

@@ -49,8 +49,9 @@ class _FGLMPageState extends State<FGLMPage> {
     return Scaffold(
         appBar: CustomAppBar(
           link: const ProfilePage(),
-          customIcon: Icons.description,
+          customIcon: Icons.person,
           cartItemCount: cartItemCount, // Pass cart count to AppBar
+          callback: updateCartItemCount,
         ),
         drawer: const CustomDrawer(),
         body: _pages[_selectedIndex],
