@@ -88,6 +88,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   bool validForm() {
     validate.mapErrors(errors);
+    validate.mapSections(sections);
     _validateForm();
     return errors.values.every((error) => error == null);
   }
@@ -187,10 +188,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     "wire": ['con2', 'con4', 'con7'],
   };
 
-  bool sectionError(String section) {
-    return sections[section]!.any((field) => errors[field] != null);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -205,25 +202,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 context,
                 'General Information',
                 buildGeneralInformationContent(),
-                isError: sectionError("general"),
+                isError: validate.sectionError("general"),
               ),
               CommonWidgets.buildGradientButton(
                   context,
                   'Customer Power Utilities',
                   buildCustomerPowerUtilitiesContent(),
-                  isError: sectionError("custom")),
+                  isError: validate.sectionError("custom")),
               CommonWidgets.buildGradientButton(
                   context,
                   'New/Adding to Existing Monitoring System',
                   buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context,
                   'Monitoring Features Requested', buildMonitoringFeatures(),
-                  isError: sectionError("monitor")),
+                  isError: validate.sectionError("monitor")),
               CommonWidgets.buildGradientButton(context,
                   'Conveyor Specifications', buildConveyorSpecifications(),
-                  isError: sectionError("conveyor")),
+                  isError: validate.sectionError("conveyor")),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
-                  isError: sectionError("wire")),
+                  isError: validate.sectionError("wire")),
             ],
           ),
         ),

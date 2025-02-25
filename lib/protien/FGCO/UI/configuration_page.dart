@@ -15,7 +15,8 @@ class ConfigurationSection extends StatefulWidget {
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   Future<bool>? status;
-  Timer? _delay;
+  
+  final Validators validate = Validators();
 
   final TextEditingController conveyorSystemName = TextEditingController();
   int? conveyorChainSize = -1;
@@ -28,68 +29,61 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? enclosedShroud = -1;
   final TextEditingController additionalOtherInfo = TextEditingController();
 
-  Map<String, String?> errors = {};
-
-  void _validateTextField(String value, String field) {
-    setState(() {
-      errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
-    });
-  }
-
-  void _validateDropdownField(int? value, String field) {
-    setState(() {
-      errors[field] =
-          (value == null || value == -1) ? 'This field is required.' : null;
-    });
-  }
-
-  void _validatorDelay(String value, String field) {
-    if (_delay?.isActive ?? false) {
-      _delay!.cancel();
-    }
-    // manual delay so its not a constant spam of requirements (hopefully)
-    _delay = Timer(const Duration(milliseconds: 0), () {
-      _validateTextField(value, field);
-    });
-  }
+  Map<String, String?> errors = {
+    'conveyorName': null,
+    'conveyorChainSize': null,
+    'chainManufacturer': null,
+    'conveyorLoaded': null,
+    'dripLine': null,
+    'operatingVoltage': null,
+    'installationClearance': null,
+    'pushButton': null,
+    'enclosedShroud': null,
+    'additionalOtherInfo': null,
+  };
 
   bool validForm() {
+    validate.mapSections(sections);
+    validate.mapErrors(errors);
     _validateForm();
     return errors.values.every((error) => error == null);
   }
 
   Future<void> _validateForm() async {
-    _validateTextField(conveyorSystemName.text, 'conveyorName');
-    _validateDropdownField(chainManufacturer, 'chainManufacturer');
-    _validateDropdownField(installationClearance, 'installationClearance');
-    _validateDropdownField(pushButton, 'pushButton');
-    _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage');
+    validate.validateTextField(conveyorSystemName.text, 'conveyorName');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(installationClearance, 'installationClearance');
+    validate.validateDropdownField(pushButton, 'pushButton');
+    validate.validateDropdownField(conveyorLoaded, 'conveyorLoaded');
+    validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
 
     setState(() {});
   }
 
   @override
   void dispose() {
-    conveyorSystemName.removeListener(_onNameChanged);
-    operatingVoltage.removeListener(_onOpChanged);
-    _delay?.cancel();
+    conveyorSystemName.removeListener(() {validate.onNameOpChanged(conveyorSystemName.text, 'conveyorName');
+      setState(() {});
+    });
+    operatingVoltage.removeListener(() {
+      validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
+      setState(() {});
+    });
+    validate.delay?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    conveyorSystemName.addListener(_onNameChanged);
-    operatingVoltage.addListener(_onOpChanged);
-  }
-
-  void _onNameChanged() {
-    _validatorDelay(conveyorSystemName.text, 'conveyorName');
-  }
-
-  void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage');
+    conveyorSystemName.addListener(() {
+      validate.onNameOpChanged(conveyorSystemName.text, 'conveyorName');
+      setState(() {});
+    });
+    operatingVoltage.addListener(() {
+      validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
+      setState(() {});
+    });
   }
 
   final Map<String, List<String>> sections = {
@@ -98,10 +92,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     "opss" : ['installationClearance'],
     "additional" : ['pushButton']
   };
-
-  bool sectionError(String section) {
-    return sections[section]!.any((field) => errors[field] != null);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,14 +103,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             padding: const EdgeInsets.all(20.0),
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(), isError: sectionError("general")),
+                  buildGeneralInformationContent(), isError: validate.sectionError("general")),
               CommonWidgets.buildGradientButton(
                   context,
                   'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(), isError: sectionError("customerPowerUtilities")),
-              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(), isError: sectionError("opss")),
+                  buildCustomerPowerUtilitiesContent(), isError: validate.sectionError("customerPowerUtilities")),
+              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(), isError: validate.sectionError("opss")),
               CommonWidgets.buildGradientButton(
-                  context, 'Additional Options Avaliable', buildAdditional(), isError: sectionError("additional")),
+                  context, 'Additional Options Avaliable', buildAdditional(), isError: validate.sectionError("additional")),
             ],
           ),
         ),
@@ -136,7 +126,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return ValueListenableBuilder<TextEditingValue>(
         valueListenable: conveyorSystemName,
         builder: (context, value, child) {
-          _validatorDelay(value.text, 'conveyorName');
+          validate.validatorDelay(value.text, 'conveyorName');
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -191,7 +181,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorLoaded = (value); // Update state properly
-                    _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
+                    validate.validateDropdownField(conveyorLoaded, 'conveyorLoaded');
                   });
                 },
                 errorText: errors['conveyorLoaded'],
@@ -216,7 +206,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return ValueListenableBuilder<TextEditingValue>(
         valueListenable: operatingVoltage,
         builder: (context, value, child) {
-          _validatorDelay(value.text, 'operatingVoltage');
+          validate.validatorDelay(value.text, 'operatingVoltage');
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -244,7 +234,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               installationClearance = (value); // Update state properly
-              _validateDropdownField(installationClearance, 'installationClearance');
+              validate.validateDropdownField(installationClearance, 'installationClearance');
             });
           },
           errorText: errors['installationClearance'],
@@ -266,7 +256,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               pushButton = (value); // Update state properly
-              _validateDropdownField(pushButton, 'pushButton');
+              validate.validateDropdownField(pushButton, 'pushButton');
             });
           },
           errorText: errors['pushButton'],

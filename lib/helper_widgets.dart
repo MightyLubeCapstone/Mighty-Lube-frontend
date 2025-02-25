@@ -445,10 +445,23 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
 
 class Validators {
   Map<String, String?> errors = {};
+  Map<String, List<String>> sections = {};
   Timer? delay;
 
   void mapErrors(Map<String, String?> newErrors) {
     errors = newErrors;
+  }
+
+  void mapSections(Map<String, List<String>> newSections) {
+    sections = newSections;
+  }
+
+  bool sectionError(String section) {
+    List<String>? fields = sections[section];
+    if (fields == null || fields.isEmpty) {
+      return false;
+    }
+    return sections[section]!.any((field) => errors[field] != null);
   }
 
   void validateTextField(String value, String field) {
