@@ -43,7 +43,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
               CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
-              CommonWidgets.buildGradientButton(context, 'Chain on Edge Drag Line: Measurements',buildMeasurements()),
+              CommonWidgets.buildGradientButton(context, 'Flat Top: Measurements',buildMeasurements()),
             ],
           ),
         ),
