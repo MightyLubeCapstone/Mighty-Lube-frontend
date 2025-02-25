@@ -164,8 +164,8 @@ class CommonWidgets {
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
   static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
-      int? dropdownSelection, Function(dynamic) onChanged,
-      {String? errorText}) {
+      int? dropdownSelection, Function(int) onChanged,
+      {String? errorText, bool? isEditable = true}) {
     String? assessedValue;
     if (dropdownSelection != null &&
         dropdownSelection > 0 &&
@@ -185,33 +185,43 @@ class CommonWidgets {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
-      child: DropdownButtonFormField<String>(
-        value: assessedValue,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.black),
-          border: borderStyle(Colors.grey),
-          enabledBorder: borderStyle(Colors.grey),
-          focusedBorder: borderStyle(Colors.grey),
-          errorBorder:
-              borderStyle(Colors.red), // Ensure error thickness matches
-          focusedErrorBorder:
-              borderStyle(Colors.red), // Ensure when focused with error
-          errorText: errorText,
+      child: GestureDetector(
+        onTap: (isEditable ?? false)
+            ? null
+            : () {}, // Ensure isEditable is not null
+        behavior: HitTestBehavior.opaque, // Prevents taps from propagating
+        child: AbsorbPointer(
+          absorbing: !(isEditable ?? false), // Ensure isEditable is not null
+          child: DropdownButtonFormField<String>(
+            value: assessedValue,
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: const TextStyle(color: Colors.black),
+              border: borderStyle(Colors.grey),
+              enabledBorder: borderStyle(Colors.grey),
+              focusedBorder: borderStyle(Colors.grey),
+              errorBorder: borderStyle(Colors.red),
+              focusedErrorBorder: borderStyle(Colors.red),
+              errorText: errorText, // No need for `!`, it's nullable already
+            ),
+            items: options
+                .map((option) => DropdownMenuItem<String>(
+                      value: option,
+                      child: Text(option,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400)),
+                    ))
+                .toList(),
+            onChanged: (isEditable ?? false)
+                ? (value) {
+                    if (value != null) {
+                      onChanged(options.indexOf(value) + 1);
+                    }
+                  }
+                : null, // Prevents value change
+          ),
         ),
-        items: options
-            .map((option) => DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.w400)),
-                ))
-            .toList(),
-        onChanged: (value) {
-          if (value != null) {
-            onChanged(options.indexOf(value) + 1);
-          }
-        },
       ),
     );
   }
@@ -259,7 +269,7 @@ class CommonWidgets {
   // Text Field
   static Widget buildTextField(
       String hintText, TextEditingController controller,
-      {String? errorText}) {
+      {String? errorText, bool isEditable = true}) {
     OutlineInputBorder borderStyle(Color color) {
       return OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -273,6 +283,7 @@ class CommonWidgets {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
+        enabled: isEditable,
         style:
             const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,

@@ -3,6 +3,7 @@ import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/helper_widgets.dart';
 
 class ShoppingPage extends StatefulWidget {
   dynamic cartItems = [];
@@ -36,6 +37,108 @@ class _ShoppingPageState extends State<ShoppingPage> {
     getOrders();
   }
 
+  void _showCurrentConfiguration(bool isEditable) {
+    // ### IMPORTANT AS FUCK ### //
+    List<int?> dropdownStateHolders = List.filled(20, 1);
+    List<TextEditingController> textStateHolders = [
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder"),
+      TextEditingController(text: "Placeholder")
+    ];
+    // first, grab the order info by calling GET orders/order (unimplemented atm :|)
+    // dummy data :D
+    int numberOfFields = 10;
+    List<String> labels = [
+      "label1",
+      "label2",
+      "label3",
+      "label4",
+      "label5",
+      "label6",
+      "label7",
+      "label8",
+      "label9",
+      "label10"
+    ];
+    List<String> options = ["Option 1", "Option 2", "Option 3"];
+
+    // THEN, build the modal
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+            child: Column(
+              children: [
+                const Text(
+                  "Your current configuration",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: numberOfFields,
+                    itemBuilder: (context, index) {
+                      // placeholder logic...
+                      if (index % 2 == 0) {
+                        return CommonWidgets.buildDropdownFieldProtein(
+                          isEditable: isEditable,
+                          labels[index],
+                          options,
+                          dropdownStateHolders[index],
+                          (value) {
+                            setState(() {
+                              dropdownStateHolders[index] = value;
+                            });
+                          },
+                        );
+                      } else {
+                        return CommonWidgets.buildTextField(
+                          labels[index],
+                          textStateHolders[index],
+                          isEditable: isEditable,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +166,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
                       return GestureDetector(
                         onTap: () {
-                          //_showProductDetails(product);
-                        }, // Opens the bottom modal
+                          // this is the one that needs to show all their CURRENT choices...
+                          _showCurrentConfiguration(false);
+                        },
                         child: Card(
                           margin: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 16),
@@ -116,7 +220,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                     IconButton(
                                       icon: const Icon(Icons.edit,
                                           color: Colors.blue),
-                                      onPressed: () => {},
+                                      onPressed: () => {
+                                        // show modal with all possible choices, just like original page
+                                        _showCurrentConfiguration(true)
+                                      },
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.delete,
