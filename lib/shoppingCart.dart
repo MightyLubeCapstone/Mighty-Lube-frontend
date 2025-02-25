@@ -320,8 +320,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                       final product = widget.cartItems![index];
 
                       return GestureDetector(
-                        onTap: () => _showProductDetails(
-                            product), // Opens the bottom modal
+                        onTap: () {
+                          //_showProductDetails(product);
+                        }, // Opens the bottom modal
                         child: Card(
                           margin: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 16),
@@ -357,7 +358,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 ),
                                 const SizedBox(width: 12),
 
-                                // Product Name Only
                                 Expanded(
                                   child: Text(
                                     product["name"] ?? "Unknown Product",
