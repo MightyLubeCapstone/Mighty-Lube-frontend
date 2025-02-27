@@ -17,9 +17,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController conveyorIndex = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
-  final TextEditingController conductor4 = TextEditingController();
-  final TextEditingController conductor7 = TextEditingController();
-  final TextEditingController conductor2 = TextEditingController();
+  final TextEditingController resSize = TextEditingController();
+  final TextEditingController specialOP = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +31,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent()),
               CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent()),
-              CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildMonitoringFeatures()),
+              CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
-              CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
+              CommonWidgets.buildGradientButton(context, 'In Board Roller Chain: Measurements',buildMeasurement()),
             ],
           ),
         ),
@@ -52,30 +51,61 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
+        CommonWidgets.buildTextField('Enter Name of Conveyor System',conveyorSystem),
         CommonWidgets.buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
           'X458 Chain (4”)',
-          'OX678 Chain (6”)',
+          'X678 Chain (6”)',
+          '3/8" Log Chain',
           'Other'
         ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
-          'Green Line',
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
+          'Daifuku',
           'Frost',
-          'M&M',
-          'Stork',
-          'Meyn',
-          'Linco',
-          'DC',
-          'Merel',
-          'D&F',
+          'NKC',
+          'Pacline',
+          'Rapid',
+          'WEBB',
+          'Webb-Stiles',
+          'Wilkie Brothers',
           'Other'
+        ]),
+        CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
+        CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
+          'Feet/Minute',
+          'Meters/Minute',
+        ]),
+        CommonWidgets.buildTextField('Enter Indexing or Variable Speed Conditions',conveyorIndex),
+        CommonWidgets.buildDropdownField('Direction of Travel', [
+          'Right to Left',
+          'Left to Right',
+        ]),
+        CommonWidgets.buildDropdownField('Application Environment ', [
+          'Ambient',
+          'Caustic (i.e. Phosphate/E-Coast, etc.)',
+          'Oven',
+          'Wash Down', 'Intrinsic', 'Food Grade', 'Other'
+        ]),
+        CommonWidgets.buildDropdownField('Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?', [
+          'Yes',
+          'No',
+        ]),
+        CommonWidgets.buildDropdownField('Is the Conveyor Loaded or Unloaded at Planned Install Location?', [
+          'Loaded',
+          'Unloaded',
+        ]),
+        CommonWidgets.buildDropdownField('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side', [
+          'Yes',
+          'No',
+        ]),
+        CommonWidgets.buildDropdownField('Is Conveyor Single or Double Strand', [
+          'Single',
+          'Double',
         ]),
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionTitle('Environmental Details'),
-        CommonWidgets.buildDropdownField('Is the Conveyor "__" at Planned Install Location',
-            ['Loaded', 'Unloaded']),
-        CommonWidgets.buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
   }
@@ -84,18 +114,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3']),
-        CommonWidgets.buildDropdownField(
-          'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
-          ['Yes', 'No'],
-        ),
-        CommonWidgets.buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
+         CommonWidgets.buildSectionDivider(),
+         CommonWidgets.buildTextField('Operating Voltage - Single Phase: (Volts/hz)',operatingVoltage),
+         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildNewMonitoringSystem() {
+  Widget buildNewMonitoringSystem() { //will probably need template B
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,64 +138,72 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-
-  Widget buildMonitoringFeatures() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Drive Motor Amp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Take-up-Air', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Take-Up Distance', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Temp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Vibration', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Bent or Missing Trolley detect', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
+  
   Widget buildConveyorSpecifications() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-       CommonWidgets. buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Lubrication from the Side of Chain', [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Wheel:Open Race Style', [
+          'Not Applicable',
+          'Open Inside', 
+          'Open Outside'
+        ]),
+        CommonWidgets.buildDropdownField('Wheel: Sealed Style', [
+          'Extended',
+          'Flush', 
+          'Recessed'
+        ]),
+        CommonWidgets.buildDropdownField('Power Chain', [
           'Yes',
           'No'
         ]),
+        CommonWidgets.buildDropdownField('Chain Pins', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Slider Plates', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Outboard Wheels', [
+          'Yes',
+          'No'
+        ]),
+
+      // ADD TEMPLATE C HERE! 
+
         CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
           'Yes',
           'No'
         ]),
+        CommonWidgets.buildDropdownField('Reservoir Size', [
+          '10 Gallon',
+          '65 Gallon'
+        ]),
+        CommonWidgets.buildTextField('Reservior Size Quantity',resSize),
         CommonWidgets.buildDropdownField('Is the Conveyor Chain Clean?', [
           'Yes',
           'No'
         ]),
+        
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
   
-  Widget buildController() {
+  Widget buildController() { // will need template C too
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTextField('Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',specialOP),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
+
+  Widget buildMeasurement() { // leave this one alone - will come back and do later
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -180,68 +214,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'm Meter', 
           'mm Milimeter'
         ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildWire() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-}
-
-Widget buildBreadcrumbNavigation(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.home, color: Colors.blue),
-          onPressed: () {
-            // Navigate to the home page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ApplicationPage()),
-            );
-          },
-        ),
-        const Text(' > '),
-        GestureDetector(
-          onTap: () {
-            // Navigate to the Protein page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const IBRCCLSProducts()),
-            ); // Replace with navigation to your Protein page
-          },
-          child: const Text(
-            'Products',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }
