@@ -55,4 +55,76 @@ class FormAPI {
       return [];
     }
   }
+
+  Future<dynamic> getOrder(dynamic orderID) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders/order");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+        "orderID": orderID.toString(),
+      };
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        dynamic data = jsonDecode(response.body);
+        return data["orderInfo"];
+      } else if (response.statusCode == 400) {
+        return [];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      print(error);
+      return [];
+    }
+  }
+
+  Future<bool> updateOrder(
+      dynamic orderID, Map<String, dynamic> newData) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "orderID": orderID,
+        "data": newData,
+      });
+      final response = await http.put(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> deleteOrder(dynamic orderID) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "orderID": orderID,
+      });
+      final response = await http.delete(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
 }
