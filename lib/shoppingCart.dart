@@ -24,6 +24,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   int totalQuantities = 0;
   bool loading = false;
   bool editLoading = false;
+  bool deleteLoading = false;
 
   List<dynamic> stateHolders = []; // either an int or a TextEdControl
 
@@ -164,7 +165,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.7,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+              padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0),
               child: Column(
                 children: [
                   if (!isEditable)
@@ -251,6 +252,53 @@ class _ShoppingPageState extends State<ShoppingPage> {
     );
   }
 
+  Future<bool> removeOrder(dynamic orderID) async {
+    bool? confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: const Text(
+              "Are you sure you want to delete this order? This action cannot be undone."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete != true) return false; // Exit if user cancels
+
+    setState(() {
+      deleteLoading = true;
+    });
+
+    bool status = await FormAPI().deleteOrder(orderID);
+
+    setState(() {
+      deleteLoading = false;
+    });
+
+    if (status) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully deleted order!')),
+      );
+      return true;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error when deleting order!')),
+      );
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -285,8 +333,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         },
                         child: loading == false
                             ? Card(
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 16),
+                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -294,27 +341,21 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       // Product Image (Aligned Left)
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          product["image"] ??
-                                              "assets/default_product.png",
+                                          product["image"] ?? "assets/default_product.png",
                                           width: 60,
                                           height: 60,
                                           fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Container(
+                                          errorBuilder: (context, error, stackTrace) => Container(
                                             width: 60,
                                             height: 60,
                                             color: Colors.grey[300],
-                                            child: const Icon(
-                                                Icons.image_not_supported,
-                                                size: 30),
+                                            child: const Icon(Icons.image_not_supported, size: 30),
                                           ),
                                         ),
                                       ),
@@ -334,29 +375,35 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.blue),
+                                            icon: const Icon(Icons.edit, color: Colors.blue),
                                             onPressed: () => {
                                               setState(() {
                                                 loading = true;
                                               }),
                                               // show modal with all possible choices, just like original page
-                                              _showCurrentConfiguration(
-                                                  product["orderID"], true)
+                                              _showCurrentConfiguration(product["orderID"], true)
                                             },
                                           ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Colors.red),
-                                            onPressed: () {
-                                              setState(() {
-                                                // needs to pull up a confirmation window and then remove it
-                                                // from both cartItems AND the database
-                                                widget.cartItems!
-                                                    .removeAt(index);
-                                              });
-                                            },
-                                          ),
+                                          if (deleteLoading == true)
+                                            const CircularProgressIndicator(),
+                                          if (deleteLoading == false)
+                                            IconButton(
+                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              onPressed: () {
+                                                setState(() {
+                                                  // needs to pull up a confirmation window and then remove it
+                                                  // from both cartItems AND the database
+                                                  Future<bool> status =
+                                                      removeOrder(product["orderID"]);
+                                                  status.then((success) {
+                                                    if (success) {
+                                                      widget.cartItems!.removeAt(index);
+                                                      totalQuantities--;
+                                                    }
+                                                  });
+                                                });
+                                              },
+                                            ),
                                         ],
                                       ),
                                     ],
@@ -403,10 +450,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     ),
                     child: const Text(
                       "SAVE CONFIGURATION",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -425,10 +470,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     ),
                     child: const Text(
                       "FINALIZE CONFIGURATION",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
