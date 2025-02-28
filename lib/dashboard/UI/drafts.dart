@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
@@ -25,8 +26,51 @@ class HeaderLogo extends StatelessWidget {
   }
 }
 
-class DraftsPage extends StatelessWidget {
-  const DraftsPage({super.key});
+class DraftsPage extends StatefulWidget {
+  DraftsPage({super.key});
+  dynamic cartItems = [];
+
+  @override
+  State<DraftsPage> createState() => _DraftsPageState();
+}
+
+class _DraftsPageState extends State<DraftsPage> {
+  int totalQuantities = 0;
+
+  void getOrders() async {
+    widget.cartItems = await FormAPI().getOrders("cart");
+    for (var order in widget.cartItems) {
+      totalQuantities += order["quantity"] as int;
+    }
+    setState(() {});
+  }
+
+  Future<bool> moveOrders(List<dynamic> orders, String updatedCategory) async {
+    if (orders.isEmpty) {
+      return false;
+    }
+    bool status = await FormAPI().moveOrders(orders, updatedCategory);
+    if (status == true) {
+      // good snackbar thingy
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully moved form!')),
+      );
+      return true;
+    } else {
+      // other snackbar thingy
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error when moving form!')),
+      );
+      return false;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // fetch orders
+    getOrders();
+  }
 
   @override
   Widget build(BuildContext context) {

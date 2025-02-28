@@ -37,6 +37,7 @@ class ApiState extends ChangeNotifier {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
         await prefs.setBool('isLoggedIn', true); // we'll talk about this one
+        await prefs.setString('currentUsername', username);
 
         return true;
       } else {

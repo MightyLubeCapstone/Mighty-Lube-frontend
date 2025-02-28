@@ -29,11 +29,31 @@ class _ShoppingPageState extends State<ShoppingPage> {
   List<dynamic> stateHolders = []; // either an int or a TextEdControl
 
   void getOrders() async {
-    widget.cartItems = await FormAPI().getOrders();
+    widget.cartItems = await FormAPI().getOrders("cart");
     for (var order in widget.cartItems) {
       totalQuantities += order["quantity"] as int;
     }
     setState(() {});
+  }
+
+  Future<bool> moveOrders(List<dynamic> orders, String updatedCategory) async {
+    if (orders.isEmpty) {
+      return false;
+    }
+    bool status = await FormAPI().moveOrders(orders, updatedCategory);
+    if (status == true) {
+      // good snackbar thingy
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully moved form!')),
+      );
+      return true;
+    } else {
+      // other snackbar thingy
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error when moving form!')),
+      );
+      return false;
+    }
   }
 
   @override
@@ -152,7 +172,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
     // THEN, build the modal
     showModalBottomSheet(
-      backgroundColor: const Color.fromARGB(255, 167, 195, 234),
+      backgroundColor: const Color(0xFF579AF6),
       showDragHandle: true,
       context: context,
       isScrollControlled: true,
@@ -169,51 +189,61 @@ class _ShoppingPageState extends State<ShoppingPage> {
               child: Column(
                 children: [
                   if (!isEditable)
-                    const Text(
-                      "Current configuration",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 20.0, 0, 0.0),
+                      child: Text(
+                        "Current configuration",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
                   if (isEditable)
-                    Center(
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () => {
-                              _resetStates(),
-                              Navigator.of(context).pop(),
-                            },
-                            icon: const Icon(
-                              Icons.cancel,
-                              color: Colors.red,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 0.0),
+                      child: Center(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => {
+                                _resetStates(),
+                                Navigator.of(context).pop(),
+                              },
+                              icon: const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                                size: 40.0,
+                              ),
                             ),
-                          ),
-                          const Text(
-                            "      Edit configuration     ",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                            const Text(
+                              "      Edit configuration     ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
-                          ),
-                          (editLoading == true
-                              ? const CircularProgressIndicator()
-                              : IconButton(
-                                  onPressed: () => {
-                                    _submitNewData(orderID, newData),
-                                    Navigator.of(context).pop()
-                                  },
-                                  icon: const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                  ),
-                                )),
-                        ],
+                            (editLoading == true
+                                ? const CircularProgressIndicator()
+                                : IconButton(
+                                    onPressed: () => {
+                                      _submitNewData(orderID, newData),
+                                      Navigator.of(context).pop()
+                                    },
+                                    icon: const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 40.0,
+                                    ),
+                                  )),
+                          ],
+                        ),
                       ),
                     ),
+                  const SizedBox(height: 20),
+                  CommonWidgets.buildSectionDivider(),
                   const SizedBox(height: 20),
                   Expanded(
                     child: ListView.builder(
@@ -262,11 +292,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
               "Are you sure you want to delete this order? This action cannot be undone."),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Delete", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -333,7 +365,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         },
                         child: loading == false
                             ? Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -341,21 +374,27 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       // Product Image (Aligned Left)
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          product["image"] ?? "assets/default_product.png",
+                                          product["image"] ??
+                                              "assets/default_product.png",
                                           width: 60,
                                           height: 60,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => Container(
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
                                             width: 60,
                                             height: 60,
                                             color: Colors.grey[300],
-                                            child: const Icon(Icons.image_not_supported, size: 30),
+                                            child: const Icon(
+                                                Icons.image_not_supported,
+                                                size: 30),
                                           ),
                                         ),
                                       ),
@@ -375,29 +414,34 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon: const Icon(Icons.edit, color: Colors.blue),
+                                            icon: const Icon(Icons.edit,
+                                                color: Colors.blue),
                                             onPressed: () => {
                                               setState(() {
                                                 loading = true;
                                               }),
                                               // show modal with all possible choices, just like original page
-                                              _showCurrentConfiguration(product["orderID"], true)
+                                              _showCurrentConfiguration(
+                                                  product["orderID"], true)
                                             },
                                           ),
                                           if (deleteLoading == true)
                                             const CircularProgressIndicator(),
                                           if (deleteLoading == false)
                                             IconButton(
-                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
                                               onPressed: () {
                                                 setState(() {
                                                   // needs to pull up a confirmation window and then remove it
                                                   // from both cartItems AND the database
                                                   Future<bool> status =
-                                                      removeOrder(product["orderID"]);
+                                                      removeOrder(
+                                                          product["orderID"]);
                                                   status.then((success) {
                                                     if (success) {
-                                                      widget.cartItems!.removeAt(index);
+                                                      widget.cartItems!
+                                                          .removeAt(index);
                                                       totalQuantities--;
                                                     }
                                                   });
@@ -438,7 +482,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
                   ElevatedButton(
                     onPressed: () {
                       // TODO: Implement Save Configuration logic
-                      print("Save Configuration clicked");
+                      List<dynamic> orders = [];
+                      for (var order in widget.cartItems!) {
+                        orders.add(order["orderID"]);
+                      }
+                      moveOrders(orders, "saved").then((success) => {
+                            setState(() {
+                              widget.cartItems = [];
+                            })
+                          });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF579AF6), // Blue button
@@ -450,15 +502,25 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     ),
                     child: const Text(
                       "SAVE CONFIGURATION",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 15),
                   ElevatedButton(
                     onPressed: () {
                       // TODO: Implement Finalize Configuration logic
-                      print("Finalize Configuration clicked");
+                      List<dynamic> orders = [];
+                      for (var order in widget.cartItems!) {
+                        orders.add(order["orderID"]);
+                      }
+                      moveOrders(orders, "finalized").then((success) => {
+                            setState(() {
+                              widget.cartItems = [];
+                            })
+                          });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF579AF6), // Blue button
@@ -470,8 +532,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     ),
                     child: const Text(
                       "FINALIZE CONFIGURATION",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -483,38 +547,3 @@ class _ShoppingPageState extends State<ShoppingPage> {
     );
   }
 }
-
-// Fake Data for Testing
-List<dynamic> myCartItems = [
-  {
-    "name": "Industrial Lubricant",
-    "image": "assets/lubricant.png",
-    "details": ["High performance", "500ml", "Long-lasting"],
-    "quantity": 2
-  },
-  {
-    "name": "Hydraulic Fluid",
-    "image": "assets/hydraulic.png",
-    "details": ["Synthetic blend", "1L", "Anti-wear protection"],
-    "quantity": 1
-  },
-  {
-    "name": "Grease Cartridge",
-    "image": "assets/grease.png",
-    "details": ["Lithium-based", "500g", "Extreme pressure resistance"],
-    "quantity": 3
-  },
-];
-
-// // Example Navigator Call
-// void navigateToShoppingPage(BuildContext context) {
-//   Navigator.push(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => ShoppingPage(
-//         cartItems: myCartItems, // Using fake data
-//         showAlternativeUI: true, // Showing alternative view
-//       ),
-//     ),
-//   );
-// }

@@ -61,6 +61,9 @@ class _LoginPageState extends State<LoginPage> {
           usererror = true;
           passerror = true;
           showError(context, 'Incorrect username or password');
+          setState(() {
+            status = false;
+          });
         }
       } catch (e) {
         showError(context, 'Failed to login');

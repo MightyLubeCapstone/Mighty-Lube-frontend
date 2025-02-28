@@ -14,7 +14,6 @@ import 'dashboard/UI/drafts.dart';
 import 'dashboard/UI/profile.dart';
 
 // protien pages
-import 'env.dart';
 import 'protien/FGLM/UI/FGLM.dart';
 import 'protien/FGCO/UI/FGCO.dart';
 import 'protien/protienHome.dart';
@@ -51,7 +50,7 @@ class MainApp extends StatelessWidget {
         // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
         '/configurations': (context) => const ConfigurationsPage(),
-        '/drafts': (context) => const DraftsPage(),
+        '/drafts': (context) => DraftsPage(),
         '/profile': (context) => const ProfilePage(),
 
         // protien pages

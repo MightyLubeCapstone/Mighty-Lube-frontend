@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 import 'env.dart';
 
 class FormAPI {
-  Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
+  Future<bool> addOrder(
+      String endpoint, dynamic order, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/$endpoint');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -15,7 +16,8 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode({'${endpoint}Data': order, 'numRequested': numRequested}),
+        body: jsonEncode(
+            {'${endpoint}Data': order, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -31,13 +33,14 @@ class FormAPI {
     }
   }
 
-  Future<dynamic> getOrders() async {
+  Future<dynamic> getOrders(String orderCategory) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/orders");
       final headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer ${prefs.getString("sessionID")}"
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+        "ordercategory": orderCategory,
       };
       final response = await http.get(uri, headers: headers);
       if (response.statusCode == 200) {
@@ -78,7 +81,8 @@ class FormAPI {
     }
   }
 
-  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData) async {
+  Future<bool> updateOrder(
+      dynamic orderID, Map<String, dynamic> newData) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/orders");
@@ -114,6 +118,30 @@ class FormAPI {
         "orderID": orderID,
       });
       final response = await http.delete(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> moveOrders(List<dynamic> orders, String updatedCategory) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders/order");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "orders": orders,
+        "updatedCategory": updatedCategory,
+      });
+      final response = await http.put(uri, headers: headers, body: body);
       if (response.statusCode == 200) {
         return true;
       } else {
