@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'env.dart';
 
 class FormAPI {
-  Future<bool> addOrder(
-      String endpoint, dynamic order, int numRequested) async {
+  Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/$endpoint');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -16,8 +15,7 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode(
-            {'${endpoint}Data': order, 'numRequested': numRequested}),
+        body: jsonEncode({'${endpoint}Data': order, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -33,19 +31,41 @@ class FormAPI {
     }
   }
 
-  Future<dynamic> getOrders(String orderCategory) async {
+  Future<dynamic> getOrders() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/orders");
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${prefs.getString("sessionID")}",
-        "ordercategory": orderCategory,
       };
       final response = await http.get(uri, headers: headers);
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);
         return data["orders"];
+      } else if (response.statusCode == 400) {
+        return [];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      print(error);
+      return [];
+    }
+  }
+
+  Future<dynamic> getDrafts() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders/saved");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        dynamic data = jsonDecode(response.body);
+        return data["drafts"];
       } else if (response.statusCode == 400) {
         return [];
       } else {
@@ -81,8 +101,7 @@ class FormAPI {
     }
   }
 
-  Future<bool> updateOrder(
-      dynamic orderID, Map<String, dynamic> newData) async {
+  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/orders");
@@ -129,17 +148,39 @@ class FormAPI {
     }
   }
 
-  Future<bool> moveOrders(List<dynamic> orders, String updatedCategory) async {
+  Future<bool> saveDraft(String draftTitle) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      final uri = Uri.parse("$baseUrl/api/orders/order");
+      final uri = Uri.parse("$baseUrl/api/orders/save");
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${prefs.getString("sessionID")}",
       };
       final body = jsonEncode({
-        "orders": orders,
-        "updatedCategory": updatedCategory,
+        "draftTitle": draftTitle,
+      });
+      final response = await http.put(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> finalize(String configurationName) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders/finalize");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "configurationName": configurationName,
       });
       final response = await http.put(uri, headers: headers, body: body);
       if (response.statusCode == 200) {

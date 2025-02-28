@@ -26,21 +26,33 @@ class _ShoppingPageState extends State<ShoppingPage> {
   bool editLoading = false;
   bool deleteLoading = false;
 
-  List<dynamic> stateHolders = []; // either an int or a TextEdControl
-
   void getOrders() async {
-    widget.cartItems = await FormAPI().getOrders("cart");
+    widget.cartItems = await FormAPI().getOrders();
     for (var order in widget.cartItems) {
       totalQuantities += order["quantity"] as int;
     }
     setState(() {});
   }
 
-  Future<bool> moveOrders(List<dynamic> orders, String updatedCategory) async {
-    if (orders.isEmpty) {
+  Future<bool> saveDraft(String draftTitle) async {
+    bool status = await FormAPI().saveDraft(draftTitle);
+    if (status == true) {
+      // good snackbar thingy
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully moved form!')),
+      );
+      return true;
+    } else {
+      // other snackbar thingy
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error when moving form!')),
+      );
       return false;
     }
-    bool status = await FormAPI().moveOrders(orders, updatedCategory);
+  }
+
+  Future<bool> finalize(String configurationName) async {
+    bool status = await FormAPI().finalize(configurationName);
     if (status == true) {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +76,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   // X button in EditModal
-  void _resetStates() {
+  void _resetStates(List<dynamic> stateHolders) {
     for (var state in stateHolders) {
       if (state["controller"] is int) {
         setState(() {
@@ -80,7 +92,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   // Checkmark in EditModal
-  void _submitNewData(dynamic orderID, Map<String, dynamic> newData) async {
+  void _submitNewData(
+      dynamic orderID, Map<String, dynamic> newData, List<dynamic> stateHolders) async {
     setState(() {
       editLoading = true;
     });
@@ -122,6 +135,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // pressing the modal, regardless of the pencil or card itself
   void _showCurrentConfiguration(dynamic orderID, bool isEditable) async {
     // ### IMPORTANT AS FUCK ### //
+    List<dynamic> stateHolders = []; // either an int or a TextEdControl
     List<List<String>> options = [];
     List<String> labels = [];
     Map<String, dynamic> newData = {};
@@ -208,7 +222,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           children: [
                             IconButton(
                               onPressed: () => {
-                                _resetStates(),
+                                _resetStates(stateHolders),
                                 Navigator.of(context).pop(),
                               },
                               icon: const Icon(
@@ -218,7 +232,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ),
                             ),
                             const Text(
-                              "      Edit configuration     ",
+                              "    Edit configuration    ",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -229,7 +243,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 ? const CircularProgressIndicator()
                                 : IconButton(
                                     onPressed: () => {
-                                      _submitNewData(orderID, newData),
+                                      _submitNewData(orderID, newData, stateHolders),
                                       Navigator.of(context).pop()
                                     },
                                     icon: const Icon(
@@ -292,13 +306,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
               "Are you sure you want to delete this order? This action cannot be undone."),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Delete", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -365,8 +377,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         },
                         child: loading == false
                             ? Card(
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 16),
+                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -374,27 +385,21 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       // Product Image (Aligned Left)
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          product["image"] ??
-                                              "assets/default_product.png",
+                                          product["image"] ?? "assets/default_product.png",
                                           width: 60,
                                           height: 60,
                                           fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Container(
+                                          errorBuilder: (context, error, stackTrace) => Container(
                                             width: 60,
                                             height: 60,
                                             color: Colors.grey[300],
-                                            child: const Icon(
-                                                Icons.image_not_supported,
-                                                size: 30),
+                                            child: const Icon(Icons.image_not_supported, size: 30),
                                           ),
                                         ),
                                       ),
@@ -414,34 +419,29 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.blue),
+                                            icon: const Icon(Icons.edit, color: Colors.blue),
                                             onPressed: () => {
                                               setState(() {
                                                 loading = true;
                                               }),
                                               // show modal with all possible choices, just like original page
-                                              _showCurrentConfiguration(
-                                                  product["orderID"], true)
+                                              _showCurrentConfiguration(product["orderID"], true)
                                             },
                                           ),
                                           if (deleteLoading == true)
                                             const CircularProgressIndicator(),
                                           if (deleteLoading == false)
                                             IconButton(
-                                              icon: const Icon(Icons.delete,
-                                                  color: Colors.red),
+                                              icon: const Icon(Icons.delete, color: Colors.red),
                                               onPressed: () {
                                                 setState(() {
                                                   // needs to pull up a confirmation window and then remove it
                                                   // from both cartItems AND the database
                                                   Future<bool> status =
-                                                      removeOrder(
-                                                          product["orderID"]);
+                                                      removeOrder(product["orderID"]);
                                                   status.then((success) {
                                                     if (success) {
-                                                      widget.cartItems!
-                                                          .removeAt(index);
+                                                      widget.cartItems!.removeAt(index);
                                                       totalQuantities--;
                                                     }
                                                   });
@@ -486,7 +486,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                       for (var order in widget.cartItems!) {
                         orders.add(order["orderID"]);
                       }
-                      moveOrders(orders, "saved").then((success) => {
+                      saveDraft("Saved draft #1").then((success) => {
                             setState(() {
                               widget.cartItems = [];
                             })
@@ -502,10 +502,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     ),
                     child: const Text(
                       "SAVE CONFIGURATION",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -516,7 +514,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                       for (var order in widget.cartItems!) {
                         orders.add(order["orderID"]);
                       }
-                      moveOrders(orders, "finalized").then((success) => {
+                      finalize("Config #1").then((success) => {
                             setState(() {
                               widget.cartItems = [];
                             })
@@ -532,10 +530,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     ),
                     child: const Text(
                       "FINALIZE CONFIGURATION",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),

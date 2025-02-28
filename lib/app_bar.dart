@@ -30,7 +30,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   void getOrders() async {
-    dynamic temp = await FormAPI().getOrders("cart");
+    dynamic temp = await FormAPI().getOrders();
     int totalQuantities = 0;
     for (var order in temp) {
       totalQuantities += order["quantity"] as int;
