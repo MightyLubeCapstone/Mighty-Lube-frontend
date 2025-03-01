@@ -20,7 +20,7 @@ class _FGLMPageState extends State<FGLMPage> {
   // Function to update the cart count
   void updateCartItemCount(int newCount) {
     setState(() {
-      cartItemCount = newCount;
+      cartItemCount += newCount;
     });
   }
 

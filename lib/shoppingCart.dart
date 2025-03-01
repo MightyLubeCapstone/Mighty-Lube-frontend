@@ -39,13 +39,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
     if (status == true) {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Successfully moved form!')),
+        const SnackBar(content: Text('Successfully saved form to drafts!')),
       );
       return true;
     } else {
       // other snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error when moving form!')),
+        const SnackBar(content: Text('Error when saving draft!')),
       );
       return false;
     }
@@ -56,13 +56,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
     if (status == true) {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Successfully moved form!')),
+        const SnackBar(content: Text('Successfully finalized configuration!')),
       );
       return true;
     } else {
       // other snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error when moving form!')),
+        const SnackBar(content: Text('Error when finalizing configuration!')),
       );
       return false;
     }
@@ -515,7 +515,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                       for (var order in widget.cartItems!) {
                         orders.add(order["orderID"]);
                       }
-                      finalize("Config #1").then((success) => {
+                      finalize("Configuration #1").then((success) => {
                             setState(() {
                               widget.cartItems = [];
                             })

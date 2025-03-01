@@ -77,6 +77,29 @@ class FormAPI {
     }
   }
 
+  Future<dynamic> getConfigurations() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders/configurations");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        dynamic data = jsonDecode(response.body);
+        return data["configurations"];
+      } else if (response.statusCode == 400) {
+        return [];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      print(error);
+      return [];
+    }
+  }
+
   Future<dynamic> getOrder(dynamic orderID) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

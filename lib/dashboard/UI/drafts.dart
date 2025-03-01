@@ -7,27 +7,6 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
-class HeaderLogo extends StatelessWidget {
-  const HeaderLogo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 180, // Increased height for a larger logo area
-      color: const Color.fromARGB(255, 87, 154, 246),
-      child: Center(
-        child: SvgPicture.asset(
-          'assets/WhiteML_Logo-w-tag-vector.svg',
-          width: 100, // Increased width for a larger logo
-          height: 150,
-          color: const Color.fromARGB(255, 249, 249, 250),
-        ),
-      ),
-    );
-  }
-}
-
 class DraftsPage extends StatefulWidget {
   DraftsPage({super.key});
   dynamic draftItems = [];

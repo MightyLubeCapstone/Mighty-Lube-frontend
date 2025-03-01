@@ -49,7 +49,7 @@ class MainApp extends StatelessWidget {
 
         // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
-        '/configurations': (context) => const ConfigurationsPage(),
+        '/configurations': (context) => ConfigurationsPage(),
         '/drafts': (context) => DraftsPage(),
         '/profile': (context) => const ProfilePage(),
 

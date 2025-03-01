@@ -54,25 +54,22 @@ class DashboardPage extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: 'Hello ${snapshot.data}, ',
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           TextSpan(
-                            text: '(not ${snapshot.data}? ',
+                            text: '(not ${snapshot.data}? )',
                             style: const TextStyle(fontSize: 16),
                           ),
                           TextSpan(
                             text: '(Log out)',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.blue),
+                            style: const TextStyle(fontSize: 16, color: Colors.blue),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 // Navigate to log out
                                 ApiState().logoutUser();
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const LoginPage()),
+                                  MaterialPageRoute(builder: (context) => const LoginPage()),
                                 );
                               },
                           ),
@@ -96,8 +93,7 @@ class DashboardPage extends StatelessWidget {
                       ..onTap = () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const ConfigurationsPage()),
+                          MaterialPageRoute(builder: (context) => ConfigurationsPage()),
                         );
                       },
                   ),
@@ -129,8 +125,7 @@ class DashboardPage extends StatelessWidget {
                         // Navigate to account details
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
+                          MaterialPageRoute(builder: (context) => const ProfilePage()),
                         );
                       },
                   ),
