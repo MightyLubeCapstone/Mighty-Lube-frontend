@@ -104,7 +104,7 @@ class FormAPI {
   Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      final uri = Uri.parse("$baseUrl/api/orders");
+      final uri = Uri.parse("$baseUrl/api/orders/order");
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${prefs.getString("sessionID")}",
@@ -160,6 +160,52 @@ class FormAPI {
         "draftTitle": draftTitle,
       });
       final response = await http.put(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> restoreDraft(dynamic cartID) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "cartID": cartID,
+      });
+      final response = await http.put(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> deleteDraft(dynamic cartID) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final uri = Uri.parse("$baseUrl/api/orders/saved");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "cartID": cartID,
+      });
+      final response = await http.delete(uri, headers: headers, body: body);
       if (response.statusCode == 200) {
         return true;
       } else {

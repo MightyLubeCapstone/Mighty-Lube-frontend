@@ -367,6 +367,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     itemCount: widget.cartItems!.length,
                     itemBuilder: (context, index) {
                       final product = widget.cartItems![index];
+                      print(product["orderID"]);
                       return GestureDetector(
                         onTap: () {
                           setState(() {
