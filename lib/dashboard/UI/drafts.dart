@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
@@ -19,7 +18,7 @@ class _DraftsPageState extends State<DraftsPage> {
   int totalQuantities = 0;
 
   void getOrders() async {
-    dynamic cartItems = await FormAPI().getOrders();
+    dynamic cartItems = await CartAPI().getOrders();
     for (var order in cartItems) {
       totalQuantities += order["quantity"] as int;
     }
@@ -27,7 +26,7 @@ class _DraftsPageState extends State<DraftsPage> {
   }
 
   void getDrafts() async {
-    widget.draftItems = await FormAPI().getDrafts() as List;
+    widget.draftItems = await DraftAPI().getDrafts() as List;
     setState(() {});
   }
 
@@ -55,7 +54,7 @@ class _DraftsPageState extends State<DraftsPage> {
 
     if (confirmDelete != true) return false; // Exit if user cancels
 
-    bool status = await FormAPI().deleteDraft(cartID);
+    bool status = await DraftAPI().deleteDraft(cartID);
 
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,7 +93,7 @@ class _DraftsPageState extends State<DraftsPage> {
 
     if (confirmRestore != true) return false; // Exit if user cancels
 
-    bool status = await FormAPI().restoreDraft(cartID);
+    bool status = await CartAPI().restoreDraft(cartID);
 
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(

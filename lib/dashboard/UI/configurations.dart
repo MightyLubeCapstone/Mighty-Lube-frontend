@@ -18,7 +18,7 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
   int totalQuantities = 0;
 
   void getOrders() async {
-    dynamic cartItems = await FormAPI().getOrders();
+    dynamic cartItems = await CartAPI().getOrders();
     for (var order in cartItems) {
       totalQuantities += order["quantity"] as int;
     }
@@ -26,7 +26,7 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
   }
 
   void getConfigurations() async {
-    widget.configurationItems = await FormAPI().getConfigurations() as List;
+    widget.configurationItems = await ConfigurationAPI().getConfigurations() as List;
     setState(() {});
   }
 

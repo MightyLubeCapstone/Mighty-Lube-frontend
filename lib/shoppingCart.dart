@@ -27,7 +27,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   bool deleteLoading = false;
 
   void getOrders() async {
-    widget.cartItems = await FormAPI().getOrders();
+    widget.cartItems = await CartAPI().getOrders();
     for (var order in widget.cartItems) {
       totalQuantities += order["quantity"] as int;
     }
@@ -35,7 +35,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   Future<bool> saveDraft(String draftTitle) async {
-    bool status = await FormAPI().saveDraft(draftTitle);
+    bool status = await DraftAPI().saveDraft(draftTitle);
     if (status == true) {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
@@ -52,7 +52,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   Future<bool> finalize(String configurationName) async {
-    bool status = await FormAPI().finalize(configurationName);
+    bool status = await ConfigurationAPI().finalize(configurationName);
     if (status == true) {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
@@ -115,7 +115,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         }
       }
     }
-    bool status = await FormAPI().updateOrder(orderID, newData);
+    bool status = await CartAPI().updateOrder(orderID, newData);
     setState(() {
       editLoading = false;
     });
@@ -141,7 +141,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     Map<String, dynamic> newData = {};
 
     // first, grab the order info by calling GET orders/order
-    Map orderInfo = await FormAPI().getOrder(orderID) as Map<String, dynamic>;
+    Map orderInfo = await CartAPI().getOrder(orderID) as Map<String, dynamic>;
     orderInfo.remove("_id");
     setState(() {
       loading = false;
@@ -324,7 +324,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       deleteLoading = true;
     });
 
-    bool status = await FormAPI().deleteOrder(orderID);
+    bool status = await CartAPI().deleteOrder(orderID);
 
     setState(() {
       deleteLoading = false;
