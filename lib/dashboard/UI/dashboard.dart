@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:mighty_lube/LoginPage/UI/loginPage.dart';
+import 'package:mighty_lube/LoginPage/UI/login_page.dart';
 import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/application/UI/application_home.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +24,9 @@ class DashboardPage extends StatelessWidget {
 
       return username;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return 'Error fetching name';
     }
   }
@@ -32,7 +35,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        link: ApplicationPage(),
+        link: const ApplicationPage(),
         customIcon: Icons.description,
       ),
       drawer: const CustomDrawer(),
@@ -110,7 +113,9 @@ class DashboardPage extends StatelessWidget {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         // Navigate to billing address
-                        print('Navigate to billing address');
+                        if (kDebugMode) {
+                          print('Navigate to billing address');
+                        }
                       },
                   ),
 

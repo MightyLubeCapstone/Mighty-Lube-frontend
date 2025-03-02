@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/application/UI/application_home.dart';
+import 'package:mighty_lube/protien/protein_home.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 import 'package:mighty_lube/api.dart';
 import 'dart:async';
@@ -87,8 +87,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSpeed': null,
   };
 
-  void _validateTextField(String value, String field,
-      {bool isNum = false, bool decimal = false}) {
+  void _validateTextField(String value, String field, {bool isNum = false, bool decimal = false}) {
     setState(() {
       //errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
       if (value.trim().isEmpty) {
@@ -108,13 +107,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   void _validateDropdownField(int? value, String field) {
     setState(() {
-      errors[field] =
-          (value == null || value == -1) ? 'This field is required.' : null;
+      errors[field] = (value == null || value == -1) ? 'This field is required.' : null;
     });
   }
 
-  void _validatorDelay(String value, String field,
-      {bool isNum = false, bool decimal = false}) {
+  void _validatorDelay(String value, String field, {bool isNum = false, bool decimal = false}) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
@@ -151,12 +148,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     _validateTextField(conductor4.text, 'con4', isNum: true, decimal: true);
     _validateTextField(conductor7.text, 'con7', isNum: true, decimal: true);
     _validateTextField(conductor2.text, 'con2', isNum: true, decimal: true);
-    _validateTextField(operatingVoltage.text, 'operatingVoltage',
-        isNum: true, decimal: true);
-    _validateTextField(conveyorLength.text, 'conveyorLength',
-        isNum: true, decimal: true);
-    _validateTextField(conveyorSpeed.text, 'conveyorSpeed',
-        isNum: true, decimal: true);
+    _validateTextField(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
+    _validateTextField(conveyorLength.text, 'conveyorLength', isNum: true, decimal: true);
+    _validateTextField(conveyorSpeed.text, 'conveyorSpeed', isNum: true, decimal: true);
 
     setState(() {});
   }
@@ -191,8 +185,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage',
-        isNum: true, decimal: true);
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
   }
 
   void _on7Changed() {
@@ -208,13 +201,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onLengthChanged() {
-    _validatorDelay(conveyorLength.text, 'conveyorLength',
-        isNum: true, decimal: true);
+    _validatorDelay(conveyorLength.text, 'conveyorLength', isNum: true, decimal: true);
   }
 
   void _onSpeedChanged() {
-    _validatorDelay(conveyorSpeed.text, 'conveyorSpeed',
-        isNum: true, decimal: true);
+    _validatorDelay(conveyorSpeed.text, 'conveyorSpeed', isNum: true, decimal: true);
   }
 
   final Map<String, List<String>> sections = {
@@ -244,8 +235,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -257,19 +248,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 isError: sectionError("general"),
               ),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
                   isError: sectionError("custom")),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'New or Existing Monitoring System',
-                  buildNewMonitoringSystem()),
-              CommonWidgets.buildGradientButton(context,
-                  'Monitoring Features Requested', buildMonitoringFeatures(),
+                  context, 'New or Existing Monitoring System', buildNewMonitoringSystem()),
+              CommonWidgets.buildGradientButton(
+                  context, 'Monitoring Features Requested', buildMonitoringFeatures(),
                   isError: sectionError("monitor")),
-              CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications(),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
                   isError: sectionError("conveyor")),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: sectionError("wire")),
@@ -294,25 +281,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonWidgets.buildTextField(
-                  'Name of Conveyor System *', conveyorSystemName,
+              CommonWidgets.buildTextField('Name of Conveyor System *', conveyorSystemName,
                   errorText: errors['conveyorName']),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
               CommonWidgets.buildDropdownFieldProtein(
                 'Conveyor Chain Size *',
-                [
-                  'X348 Chain (3”)',
-                  'X458 Chain (4”)',
-                  'OX678 Chain (6”)',
-                  'Other'
-                ],
+                ['X348 Chain (3”)', 'X458 Chain (4”)', 'OX678 Chain (6”)', 'Other'],
                 conveyorChainSize,
                 (value) {
                   setState(() {
                     conveyorChainSize = value; // Update state properly
-                    _validateDropdownField(
-                        conveyorChainSize, 'conveyorChainSize');
+                    _validateDropdownField(conveyorChainSize, 'conveyorChainSize');
                   });
                 },
                 errorText: errors['conveyorChainSize'],
@@ -335,8 +315,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainManufacturer = (value); // Update state properly
-                    _validateDropdownField(
-                        chainManufacturer, 'chainManufacturer');
+                    _validateDropdownField(chainManufacturer, 'chainManufacturer');
                   });
                 },
                 errorText: errors['chainManufacturer'],
@@ -353,8 +332,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['chainPinType'],
               ),
-              CommonWidgets.buildTextField(
-                  'Enter Number Here *', conveyorLength,
+              CommonWidgets.buildTextField('Enter Number Here *', conveyorLength,
                   errorText: errors['conveyorLength']),
               CommonWidgets.buildDropdownFieldProtein(
                 'Conveyor Length Unit *',
@@ -366,8 +344,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildTextField(
-                  'Enter Conveyor Speed (Min/Max) *', conveyorSpeed,
+              CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max) *', conveyorSpeed,
                   errorText: errors['conveyorSpeed']),
               CommonWidgets.buildDropdownFieldProtein(
                 'Conveyor Speed Unit *',
@@ -382,8 +359,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildTextField(
-                  'Indexing or Variable Speed Conditions', conveyorIndex),
+              CommonWidgets.buildTextField('Indexing or Variable Speed Conditions', conveyorIndex),
               CommonWidgets.buildDropdownFieldProtein(
                 'Direction of Travel',
                 [
@@ -522,8 +498,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             children: [
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildTextField(
-                  'Operating Voltage - Single Phase: (Volts/hz] *',
-                  operatingVoltage,
+                  'Operating Voltage - Single Phase: (Volts/hz] *', operatingVoltage,
                   errorText: errors['operatingVoltage']),
               CommonWidgets.buildSectionDivider(),
             ],
@@ -629,8 +604,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               detectFaultyTrolley = (value); // Update state properly
-              _validateDropdownField(
-                  detectFaultyTrolley, 'detectFaultyTrolley');
+              _validateDropdownField(detectFaultyTrolley, 'detectFaultyTrolley');
             });
           },
           errorText: errors['detectFaultyTrolley'],
@@ -706,8 +680,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonWidgets.buildTextField(
-                      'Enter 2 Conductor Number Here *', conductor2,
+                  CommonWidgets.buildTextField('Enter 2 Conductor Number Here *', conductor2,
                       errorText: errors['con2']),
                 ],
               );
@@ -719,8 +692,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonWidgets.buildTextField(
-                      'Enter 4 Conductor Number Here *', conductor4,
+                  CommonWidgets.buildTextField('Enter 4 Conductor Number Here *', conductor4,
                       errorText: errors['con4']),
                 ],
               );
@@ -732,8 +704,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonWidgets.buildTextField(
-                      'Enter 7 Conductor Number Here *', conductor7,
+                  CommonWidgets.buildTextField('Enter 7 Conductor Number Here *', conductor7,
                       errorText: errors['con7']),
                 ],
               );
@@ -743,7 +714,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Future<VoidCallback?> addFGLMInfo(int numRequested) async{
+  Future<VoidCallback?> addFGLMInfo(int numRequested) async {
     if (validForm()) {
       dynamic fglmData = {
         "conveyorName": conveyorSystemName.text,
@@ -777,7 +748,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "sideLube": sideLube,
         "topLube": topLube,
         "cleanChain": cleanChain,
-        "measureUnits": measureUnits,
+        "wireMeasurementUnit": measureUnits,
         "conductor4": conductor4.text,
         "conductor7": conductor7.text,
         "conductor2": conductor2.text
@@ -787,6 +758,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       });
       //add a loader that shows a happy popup for this eventually :)
       status = await FormAPI().addOrder("fglm", fglmData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
       if (status == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully added to configurator!')),

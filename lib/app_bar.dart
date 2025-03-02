@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:mighty_lube/shoppingCart.dart';
+import 'package:mighty_lube/shopping_cart.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget link;

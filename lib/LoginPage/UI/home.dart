@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +9,7 @@ class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  _HomeState createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
@@ -28,9 +29,8 @@ class _HomeState extends State<Home> {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${prefs.getString("sessionID")}"
       };
-
       final response = await http.get(uri, headers: headers);
-
+      if (!mounted) return;
       if (response.statusCode == 200) {
         // Navigate to dashboard if session is valid
         Navigator.pushReplacementNamed(context, '/dashboard');
@@ -39,7 +39,9 @@ class _HomeState extends State<Home> {
         Navigator.pushReplacementNamed(context, '/login');
       }
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       Navigator.pushReplacementNamed(context, '/login');
     }
   }

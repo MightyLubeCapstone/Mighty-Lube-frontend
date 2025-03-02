@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mighty_lube/env.dart';
 import 'dart:convert';
@@ -41,11 +40,15 @@ class ApiState extends ChangeNotifier {
 
         return true;
       } else {
-        print('Account creation failed: ${response.body}');
+        if (kDebugMode) {
+          print('Account creation failed: ${response.body}');
+        }
         return false;
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return false;
     }
   }
@@ -61,21 +64,23 @@ class ApiState extends ChangeNotifier {
             'username': username,
             'password': password,
           }));
-      print(response.statusCode);
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
-        print(responseData);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('currentUsername', username);
         return true;
       } else {
-        print(response.body);
+        if (kDebugMode) {
+          print(response.body);
+        }
         return false;
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return false;
     }
   }
@@ -105,9 +110,13 @@ class ApiState extends ChangeNotifier {
         await prefs.setBool('isLoggedIn', false); // will talk about this too
       }
     } catch (error) {
-      print("Error logging out: ${error.toString()}");
+      if (kDebugMode) {
+        print("Error logging out: ${error.toString()}");
+      }
     } finally {
-      print('logged out');
+      if (kDebugMode) {
+        print('logged out');
+      }
     }
   }
 
@@ -122,19 +131,18 @@ class ApiState extends ChangeNotifier {
         'username': username,
       });
 
-      print(response.body);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         return responseData['message'];
       } else if (response.statusCode == 400) {
-        print('Failed to get user');
         return 'Username already exists';
       } else {
-        print('Failed to get user');
         return 'Error: ${response.body}';
       }
     } catch (error) {
-      print("Error getting user: $error");
+      if (kDebugMode) {
+        print("Error getting user: $error");
+      }
       return 'Error';
     }
   }
@@ -153,17 +161,17 @@ class ApiState extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print(responseData);
         return {
           'firstName': responseData['firstName'],
           'lastName': responseData['lastName'],
         };
       } else {
-        print('Failed to get user');
         return {'error': 'Error fetching user'};
       }
     } catch (error) {
-      print("Error getting user: $error");
+      if (kDebugMode) {
+        print("Error getting user: $error");
+      }
       return {'error': 'Server error'};
     }
   }
@@ -176,7 +184,6 @@ class ApiState extends ChangeNotifier {
 
       final token = prefs.getString('sessionID');
       if (token == null) {
-        print('No session ID found');
         return null;
       }
 
@@ -188,14 +195,14 @@ class ApiState extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print(responseData);
         return responseData;
       } else {
-        print('Failed to get user info');
         return null;
       }
     } catch (error) {
-      print("Error getting user info: $error");
+      if (kDebugMode) {
+        print("Error getting user info: $error");
+      }
       return null;
     }
   }

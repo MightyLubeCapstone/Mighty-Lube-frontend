@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/application/UI/application_home.dart';
+import 'package:mighty_lube/protien/protein_home.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 import 'package:mighty_lube/api.dart';
 import 'dart:async';
@@ -325,6 +325,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         status = null;
       });
       status = await FormAPI().addOrder("fgco", fgcoData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
       if (status == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully added to configurator!')),

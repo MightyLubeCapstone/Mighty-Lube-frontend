@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/LoginPage/API/apicalls.dart';
 import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/application/UI/application_home.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,9 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final username = prefs.getString('currentUsername');
-      print(username);
+      if (kDebugMode) {
+        print(username);
+      }
 
       setState(() {
         _username = username;
@@ -36,8 +39,9 @@ class _ProfilePageState extends State<ProfilePage> {
         });
       }
     } catch (e) {
-      print(e);
-      print('Failed to load data');
+      if (kDebugMode) {
+        print('Failed to load data: $e');
+      }
     }
   }
 
@@ -51,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        link: ApplicationPage(),
+        link: const ApplicationPage(),
         customIcon: Icons.description,
       ),
       drawer: const CustomDrawer(),
@@ -69,11 +73,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   buildTextFieldWithIcon(Icons.person, 'First Name:',
                       'Current: ${_firstNameController.text}', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(Icons.person, 'Last Name:',
-                      'Current: ${_lastNameController.text}', context),
+                  buildTextFieldWithIcon(
+                      Icons.person, 'Last Name:', 'Current: ${_lastNameController.text}', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(Icons.account_circle, 'Display Name:',
-                      _username ?? 'Loading...', context),
+                  buildTextFieldWithIcon(
+                      Icons.account_circle, 'Display Name:', _username ?? 'Loading...', context),
                 ],
               ),
               const SizedBox(height: 20),
@@ -82,14 +86,14 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildProfileCard(
                 context,
                 children: [
-                  buildTextFieldWithIcon(Icons.business, 'Company Name:',
-                      'Enter company name', context),
+                  buildTextFieldWithIcon(
+                      Icons.business, 'Company Name:', 'Enter company name', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(Icons.phone, 'Phone Number:',
-                      'Enter phone number', context),
+                  buildTextFieldWithIcon(
+                      Icons.phone, 'Phone Number:', 'Enter phone number', context),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(Icons.email, 'Email Address:',
-                      'Enter email address', context),
+                  buildTextFieldWithIcon(
+                      Icons.email, 'Email Address:', 'Enter email address', context),
                 ],
               ),
               const SizedBox(height: 20),
@@ -98,16 +102,16 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildProfileCard(
                 context,
                 children: [
-                  buildTextFieldWithIcon(Icons.lock, 'Current Password:',
-                      'Enter current password', context,
+                  buildTextFieldWithIcon(
+                      Icons.lock, 'Current Password:', 'Enter current password', context,
                       obscureText: true),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(Icons.lock_outline, 'New Password:',
-                      'Enter new password', context,
+                  buildTextFieldWithIcon(
+                      Icons.lock_outline, 'New Password:', 'Enter new password', context,
                       obscureText: true),
                   const SizedBox(height: 15),
-                  buildTextFieldWithIcon(Icons.lock_outline,
-                      'Confirm Password:', 'Confirm new password', context,
+                  buildTextFieldWithIcon(
+                      Icons.lock_outline, 'Confirm Password:', 'Confirm new password', context,
                       obscureText: true),
                 ],
               ),
@@ -169,8 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileCard(BuildContext context,
-      {required List<Widget> children}) {
+  Widget _buildProfileCard(BuildContext context, {required List<Widget> children}) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -185,8 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildTextFieldWithIcon(
-      IconData icon, String label, String hint, BuildContext context,
+  Widget buildTextFieldWithIcon(IconData icon, String label, String hint, BuildContext context,
       {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

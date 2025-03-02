@@ -90,7 +90,7 @@ class CartAPI {
     }
   }
 
-  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData) async {
+  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData, int numRequestedValue) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/cart/order");
@@ -101,6 +101,7 @@ class CartAPI {
       final body = jsonEncode({
         "orderID": orderID,
         "data": newData,
+        "numRequested" : numRequestedValue,
       });
       final response = await http.put(uri, headers: headers, body: body);
       if (response.statusCode == 200) {

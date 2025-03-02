@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // login in pages
-import 'LoginPage/UI/createAccount.dart';
-import 'LoginPage/UI/forgotPassword.dart';
-import 'LoginPage/UI/loginPage.dart';
+import 'LoginPage/UI/create_account.dart';
+import 'LoginPage/UI/forgot_password.dart';
+import 'LoginPage/UI/login_page.dart';
 import 'package:mighty_lube/LoginPage/UI/home.dart';
 
 // dashboard pages
@@ -16,13 +16,13 @@ import 'dashboard/UI/profile.dart';
 // protien pages
 import 'protien/FGLM/UI/FGLM.dart';
 import 'protien/FGCO/UI/FGCO.dart';
-import 'protien/protienHome.dart';
+import 'protien/protein_home.dart';
 
 // application pages
-import 'application/UI/applicationHome.dart';
+import 'application/UI/application_home.dart';
 
 // industrial pages
-import 'industrialHome.dart';
+import 'industrial_home.dart';
 
 // api imports
 

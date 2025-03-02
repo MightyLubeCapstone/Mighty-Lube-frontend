@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/application/UI/application_home.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
@@ -56,6 +56,7 @@ class _DraftsPageState extends State<DraftsPage> {
 
     bool status = await DraftAPI().deleteDraft(cartID);
 
+    if (!mounted) return false;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successfully deleted draft!')),
@@ -95,6 +96,7 @@ class _DraftsPageState extends State<DraftsPage> {
 
     bool status = await CartAPI().restoreDraft(cartID);
 
+    if (!mounted) return false;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successfully restored draft!')),
@@ -117,6 +119,11 @@ class _DraftsPageState extends State<DraftsPage> {
   }
 
   void _showDraftInfo(int index) {
+    dynamic cart = widget.draftItems[index]["cart"];
+    int totalNumRequested = 0;
+    for (var order in cart) {
+      totalNumRequested += order["numRequested"] as int;
+    }
     showModalBottomSheet(
       backgroundColor: const Color(0xFF579AF6),
       showDragHandle: true,
@@ -163,7 +170,7 @@ class _DraftsPageState extends State<DraftsPage> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0.0),
                     child: Text(
-                      "Number of items in saved draft: \n${widget.draftItems[index]["cart"].length}",
+                      "Number of items in saved draft: \n$totalNumRequested",
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -252,8 +259,11 @@ class _DraftsPageState extends State<DraftsPage> {
                                           );
                                           if (status) {
                                             setState(() {
-                                              totalQuantities =
-                                                  widget.draftItems[index]["cart"].length;
+                                              dynamic cart = widget.draftItems[index]["cart"];
+                                              totalQuantities = 0;
+                                              for (var order in cart) {
+                                                totalQuantities += order["numRequested"] as int;
+                                              }
                                             });
                                           }
                                         },

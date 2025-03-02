@@ -57,7 +57,7 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
-              await ApiState().logoutUser();
+              ApiState().logoutUser();
               Navigator.pushNamedAndRemoveUntil(
                   context, '/login', (route) => false);
             },

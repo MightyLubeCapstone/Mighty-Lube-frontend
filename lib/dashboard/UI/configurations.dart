@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/application/UI/application_home.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
@@ -39,6 +39,11 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
   }
 
   void _showConfigInfo(int index) {
+    dynamic cart = widget.configurationItems[index]["cart"];
+    int numOrders = 0;
+    for (var order in cart) {
+      numOrders += order["numRequested"] as int;
+    }
     showModalBottomSheet(
       backgroundColor: const Color(0xFF579AF6),
       showDragHandle: true,
@@ -85,7 +90,7 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0.0),
                     child: Text(
-                      "Number of items in configuration: \n${widget.configurationItems[index]["cart"].length}",
+                      "Number of items in configuration: \n$numOrders",
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
