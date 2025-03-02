@@ -270,7 +270,7 @@ class CommonWidgets {
 
   // Text Field
   static Widget buildTextField(String hintText, TextEditingController controller,
-      {String? errorText, bool isEditable = true}) {
+      {String? errorText, bool isEditable = true, Function(String)? callback}) {
     OutlineInputBorder borderStyle(Color color) {
       return OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -284,6 +284,11 @@ class CommonWidgets {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
+        onChanged: (value) => {
+          if(callback != null) {
+            callback(value)
+          }
+        },
         enabled: isEditable,
         style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,

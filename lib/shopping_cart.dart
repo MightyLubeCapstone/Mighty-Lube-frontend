@@ -26,6 +26,25 @@ class _ShoppingPageState extends State<ShoppingPage> {
   bool editLoading = false;
   bool deleteLoading = false;
 
+  void _validateTextField(String value, int index, dynamic stateHolders) {
+    setState(() {
+      if (value.trim().isEmpty) {
+        stateHolders[index]["error"] = 'This field is required.';
+      } else {
+        stateHolders[index]["error"] = null;
+      }
+    });
+  }
+
+  bool _validateNewInfo(List<dynamic> stateHolders) {
+    for (var field in stateHolders) {
+      if (field["error"] != null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void getOrders() async {
     widget.cartItems = await CartAPI().getOrders();
     for (var order in widget.cartItems) {
@@ -104,8 +123,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   // Checkmark in EditModal
-  void _submitNewData(dynamic orderID, Map<String, dynamic> newData, List<dynamic> stateHolders,
-      dynamic numRequested) async {
+  Future<bool> _submitNewData(dynamic orderID, Map<String, dynamic> newData,
+      List<dynamic> stateHolders, dynamic numRequested) async {
+    if (!_validateNewInfo(stateHolders)) {
+      return false;
+    }
     setState(() {
       editLoading = true;
     });
@@ -135,7 +157,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       editLoading = false;
     });
-    if (!mounted) return;
+    if (!mounted) return false;
     if (status == true) {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
@@ -147,12 +169,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
         const SnackBar(content: Text('Error when updating form!')),
       );
     }
+    return true;
   }
 
   // pressing the modal, regardless of the pencil or card itself
   void _showCurrentConfiguration(dynamic orderID, bool isEditable, int numRequested) async {
     // ### IMPORTANT AS FUCK ### //
-    List<dynamic> stateHolders = []; // either an int or a TextEdControl
+    dynamic stateHolders = []; // either an int or a TextEdControl
     dynamic numRequestedState = {"controller": numRequested, "initial": numRequested};
     List<List<String>> options = [];
     List<String> labels = [];
@@ -189,15 +212,29 @@ class _ShoppingPageState extends State<ShoppingPage> {
         }
       } else {
         // TextEdControl addition
-        stateHolders.add(
-          {
-            "controller": TextEditingController(
-              text: entry.value.toString(),
-            ),
-            "initial": entry.value.toString(),
-            "field": entry.key,
-          },
-        ); // mind-fuck of code right here
+        if (entry.value is int) {
+          stateHolders.add(
+            {
+              "controller": TextEditingController(
+                text: entry.value.toString(),
+              ),
+              "initial": entry.value.toString(),
+              "field": entry.key,
+            },
+          ); // mind-fuck of code right here
+        } else {
+          stateHolders.add(
+            {
+              "controller": TextEditingController(
+                text: entry.value["value"].toString(),
+              ),
+              "initial": entry.value["value"].toString(),
+              "field": entry.key,
+              if (entry.value["required"] == true) "error": null,
+            },
+          ); // mind-fuck of code right here
+        }
+
         options.add([]); // jank-ass code to get me through the night
       }
     }
@@ -261,10 +298,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             (editLoading == true
                                 ? const CircularProgressIndicator()
                                 : IconButton(
-                                    onPressed: () => {
-                                      _submitNewData(
-                                          orderID, newData, stateHolders, numRequestedState),
-                                      Navigator.of(context).pop()
+                                    onPressed: () async {
+                                      bool valid = await _submitNewData(
+                                          orderID, newData, stateHolders, numRequestedState);
+                                      if (valid && mounted) {
+                                        // ignore: use_build_context_synchronously
+                                        Navigator.of(context).pop();
+                                      }
                                     },
                                     icon: const Icon(
                                       Icons.check_circle,
@@ -310,6 +350,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             labels[index],
                             stateHolders[index]["controller"],
                             isEditable: isEditable,
+                            errorText: stateHolders[index]["error"],
+                            callback: (value) => {
+                              _validateTextField(value, index, stateHolders),
+                            },
                           );
                         }
                       },
