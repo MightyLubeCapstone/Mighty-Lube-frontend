@@ -8,7 +8,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget link;
   final double height;
   final IconData customIcon;
-  int? cartItemCount = -1;
+  int? cartItemCount = 0;
   bool? reload;
   void Function(int)? callback;
 
@@ -77,20 +77,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     },
                   ),
                   badges.Badge(
-                    badgeStyle:
-                        const badges.BadgeStyle(badgeColor: Colors.white),
+                    badgeStyle: const badges.BadgeStyle(badgeColor: Colors.white),
                     badgeContent: Text(
-                      widget.cartItemCount != null
-                          ? widget.cartItemCount!.toString()
-                          : "",
+                      widget.cartItemCount != null ? widget.cartItemCount!.toString() : "",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                       ),
                     ),
                     child: IconButton(
-                      icon:
-                          const Icon(Icons.shopping_cart, color: Colors.white),
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         if (widget.reload == false) {
                           // do nothing

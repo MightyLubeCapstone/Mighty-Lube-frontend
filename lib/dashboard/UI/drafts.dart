@@ -301,7 +301,7 @@ Widget _buildEmptyDraftView() {
     children: [
       // Add an Icon for better visual context
       Icon(
-        Icons.shopping_cart_outlined,
+        Icons.all_inbox_sharp,
         size: 80,
         color: Colors.grey.shade400,
       ),
@@ -318,7 +318,7 @@ Widget _buildEmptyDraftView() {
       const SizedBox(height: 8),
       // Subheading
       Text(
-        'No cart found',
+        'No carts found',
         style: TextStyle(
           fontSize: 18,
           color: Colors.grey.shade600,

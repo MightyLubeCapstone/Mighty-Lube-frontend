@@ -25,7 +25,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   bool loading = false;
   String name = "error";
-  int totalQuantities = -1;
+  int totalQuantities = 0;
 
   void getOrders() async {
     setState(() {

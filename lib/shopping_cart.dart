@@ -428,6 +428,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   @override
   Widget build(BuildContext context) {
+    double left = MediaQuery.of(context).size.width * 0.23;
+
     return Scaffold(
       appBar: CustomAppBar(
         link: const ApplicationPage(),
@@ -442,10 +444,22 @@ class _ShoppingPageState extends State<ShoppingPage> {
               children: [
                 Expanded(
                   child: widget.cartItems!.isEmpty
-                      ? const Center(
-                          child: Text(
-                            "No products in the cart.",
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(left, 0, 0, 100),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Add an Icon for better visual context
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                size: 80,
+                                color: Colors.grey.shade400,
+                              ),
+                              const Text(
+                                "No products in the cart.",
+                                style: TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                            ],
                           ),
                         )
                       : ListView.builder(
