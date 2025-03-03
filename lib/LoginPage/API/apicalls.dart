@@ -35,8 +35,6 @@ class ApiState extends ChangeNotifier {
         final responseData = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
-        await prefs.setBool('isLoggedIn', true); // we'll talk about this one
-        await prefs.setString('currentUsername', username);
 
         return true;
       } else {
@@ -68,8 +66,6 @@ class ApiState extends ChangeNotifier {
         final responseData = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
-        await prefs.setBool('isLoggedIn', true);
-        await prefs.setString('currentUsername', username);
         return true;
       } else {
         if (kDebugMode) {
@@ -85,7 +81,7 @@ class ApiState extends ChangeNotifier {
     }
   }
 
-  Future<void> logoutUser() async {
+  Future<bool> logoutUser() async {
     // this isnt done yet
     try {
       final url = Uri.parse('$baseUrl/api/sessions');
@@ -93,6 +89,7 @@ class ApiState extends ChangeNotifier {
       final token = prefs.getString('sessionID');
       if (token == null) {
         // send back to homepage with an error message
+        return true;
       } else {
         final response = await http.delete(
           url,
@@ -103,16 +100,19 @@ class ApiState extends ChangeNotifier {
         );
         if (response.statusCode == 200) {
           // no error
+          await prefs.remove('sessionID');
+          return true;
         } else {
+          await prefs.remove('sessionID');
           // error message, either way still going to send back to login screen
+          return false;
         }
-        await prefs.remove('sessionID');
-        await prefs.setBool('isLoggedIn', false); // will talk about this too
       }
     } catch (error) {
       if (kDebugMode) {
         print("Error logging out: ${error.toString()}");
       }
+      return false;
     } finally {
       if (kDebugMode) {
         print('logged out');
@@ -123,11 +123,8 @@ class ApiState extends ChangeNotifier {
   Future<String> checkUser(String username) async {
     try {
       final url = Uri.parse('$baseUrl/api/users/username');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         'username': username,
       });
 
@@ -147,40 +144,10 @@ class ApiState extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, String>> getUser(String username) async {
+  Future<dynamic> getUserInfo() async {
     try {
       final url = Uri.parse('$baseUrl/api/users/userinfo');
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      username = prefs.getString('currentUsername') ?? username;
-
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${prefs.getString('sessionID')}',
-        'username': username,
-      });
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        return {
-          'firstName': responseData['firstName'],
-          'lastName': responseData['lastName'],
-        };
-      } else {
-        return {'error': 'Error fetching user'};
-      }
-    } catch (error) {
-      if (kDebugMode) {
-        print("Error getting user: $error");
-      }
-      return {'error': 'Server error'};
-    }
-  }
-
-  Future<Map<String, dynamic>?> getUserInfo(String username) async {
-    try {
-      final url = Uri.parse('$baseUrl/api/users/userinfo');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      username = prefs.getString('currentUsername') ?? username;
 
       final token = prefs.getString('sessionID');
       if (token == null) {
@@ -190,7 +157,6 @@ class ApiState extends ChangeNotifier {
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
-        'username': username,
       });
 
       if (response.statusCode == 200) {

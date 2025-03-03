@@ -1,13 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'package:mighty_lube/LoginPage/UI/login_page.dart';
 import 'package:mighty_lube/header_logo.dart' as logo;
 
 import 'dashboard/UI/configurations.dart';
 import 'dashboard/UI/drafts.dart';
 import 'dashboard/UI/profile.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  Future<void> logoutUser() async {
+    bool? confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm logout"),
+          content: const Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmDelete != true) return; // Exit if user cancels
+
+    bool status = await ApiState().logoutUser();
+    if (!mounted) return;
+    if (status) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully logged out!')),
+      );
+      Navigator.push(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error when logging out!')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +73,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => ConfigurationsPage()),
+                MaterialPageRoute(builder: (context) => ConfigurationsPage()),
               );
             },
           ),
@@ -45,21 +90,18 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.account_circle),
             title: const Text('Account Details'),
-            onTap: () async {
+            onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfilePage(),
-                  ));
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
-            onTap: () async {
-              ApiState().logoutUser();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (route) => false);
+            onTap: () {
+              logoutUser();
             },
           ),
         ],
