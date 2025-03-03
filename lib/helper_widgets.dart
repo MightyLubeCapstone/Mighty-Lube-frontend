@@ -163,7 +163,7 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
+  static Widget buildDropdownFieldError<T>(String label, List<String> options,
       int? dropdownSelection, Function(dynamic) onChanged,
       {String? errorText}) {
     String? assessedValue;
