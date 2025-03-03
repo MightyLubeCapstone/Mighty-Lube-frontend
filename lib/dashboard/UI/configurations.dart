@@ -16,6 +16,7 @@ class ConfigurationsPage extends StatefulWidget {
 
 class _ConfigurationsPageState extends State<ConfigurationsPage> {
   int totalQuantities = 0;
+  bool configLoading = false;
 
   void getOrders() async {
     dynamic cartItems = await CartAPI().getOrders();
@@ -26,8 +27,13 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
   }
 
   void getConfigurations() async {
+    setState(() {
+      configLoading = true;
+    });
     widget.configurationItems = await ConfigurationAPI().getConfigurations() as List;
-    setState(() {});
+    setState(() {
+      configLoading = false;
+    });
   }
 
   @override
@@ -115,61 +121,63 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
         cartItemCount: totalQuantities,
       ),
       drawer: const CustomDrawer(),
-      body: Column(
-        children: [
-          Expanded(
-            child: widget.configurationItems!.isEmpty
-                ? buildDefaultView(context)
-                : ListView.builder(
-                    itemCount: widget.configurationItems!.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => {},
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    widget.configurationItems[index]["configurationName"] ??
-                                        "Unknown draft",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+      body: (configLoading == true)
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: widget.configurationItems!.isEmpty
+                      ? buildDefaultView(context)
+                      : ListView.builder(
+                          itemCount: widget.configurationItems!.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () => {},
+                              child: Card(
+                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          widget.configurationItems[index]["configurationName"] ??
+                                              "Unknown draft",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Edit & Delete Icons
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.remove_red_eye_rounded,
+                                                color: Colors.lightBlueAccent),
+                                            onPressed: () {
+                                              // display small modal from bottom with all small info
+                                              _showConfigInfo(index);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-
-                                // Edit & Delete Icons
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove_red_eye_rounded,
-                                          color: Colors.lightBlueAccent),
-                                      onPressed: () {
-                                        // display small modal from bottom with all small info
-                                        _showConfigInfo(index);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
+                ),
+              ],
+            ),
     );
   }
 }

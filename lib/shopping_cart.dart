@@ -22,7 +22,8 @@ class ShoppingPage extends StatefulWidget {
 
 class _ShoppingPageState extends State<ShoppingPage> {
   int totalQuantities = 0;
-  bool loading = false;
+  bool cartLoading = false;
+  bool orderLoading = false;
   bool editLoading = false;
   bool deleteLoading = false;
 
@@ -46,7 +47,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   void getOrders() async {
+    setState(() {
+      cartLoading = true;
+    });
     widget.cartItems = await CartAPI().getOrders();
+    setState(() {
+      cartLoading = false;
+    });
     for (var order in widget.cartItems) {
       totalQuantities += order["quantity"] as int;
     }
@@ -185,7 +192,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     Map orderInfo = await CartAPI().getOrder(orderID) as Map<String, dynamic>;
     orderInfo.remove("_id");
     setState(() {
-      loading = false;
+      orderLoading = false;
     });
     int numberOfFields = orderInfo.length; // bye bye _id :)
     for (var entry in orderInfo.entries) {
@@ -429,206 +436,212 @@ class _ShoppingPageState extends State<ShoppingPage> {
         cartItemCount: totalQuantities,
       ),
       drawer: const CustomDrawer(),
-      body: Column(
-        children: [
-          Expanded(
-            child: widget.cartItems!.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No products in the cart.",
-                      style: TextStyle(fontSize: 18, color: Colors.black),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: widget.cartItems!.length,
-                    itemBuilder: (context, index) {
-                      final product = widget.cartItems![index];
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            loading = true;
-                          });
-                          // this is the one that needs to show all their CURRENT choices...
-                          _showCurrentConfiguration(product["orderID"], false, product["quantity"]);
-                        },
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+      body: (cartLoading == true)
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: widget.cartItems!.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "No products in the cart.",
+                            style: TextStyle(fontSize: 18, color: Colors.black),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // Product Image (Aligned Left)
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    product["image"] ?? "assets/default_product.png",
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => Container(
-                                      width: 60,
-                                      height: 60,
-                                      color: Colors.grey[300],
-                                      child: const Icon(Icons.image_not_supported, size: 30),
-                                    ),
-                                  ),
+                        )
+                      : ListView.builder(
+                          itemCount: widget.cartItems!.length,
+                          itemBuilder: (context, index) {
+                            final product = widget.cartItems![index];
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  orderLoading = true;
+                                });
+                                // this is the one that needs to show all their CURRENT choices...
+                                _showCurrentConfiguration(
+                                    product["orderID"], false, product["quantity"]);
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                const SizedBox(width: 12),
-
-                                // Name and Quantity
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        product["name"] ?? "Unknown Product",
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
+                                      // Product Image (Aligned Left)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.asset(
+                                          product["image"] ?? "assets/default_product.png",
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) => Container(
+                                            width: 60,
+                                            height: 60,
+                                            color: Colors.grey[300],
+                                            child: const Icon(Icons.image_not_supported, size: 30),
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        'Number requested: ${product["quantity"].toString()}',
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.normal,
-                                          color:
-                                              Colors.black54, // A lighter color for less emphasis
+                                      const SizedBox(width: 12),
+
+                                      // Name and Quantity
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              product["name"] ?? "Unknown Product",
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              'Number requested: ${product["quantity"].toString()}',
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors
+                                                    .black54, // A lighter color for less emphasis
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      ),
+
+                                      // Edit & Delete Icons
+                                      Row(
+                                        children: [
+                                          if (orderLoading == false)
+                                            IconButton(
+                                              icon: const Icon(Icons.edit, color: Colors.blue),
+                                              onPressed: () => {
+                                                setState(() {
+                                                  orderLoading = true;
+                                                }),
+                                                // show modal with all possible choices, just like original page
+                                                _showCurrentConfiguration(
+                                                    product["orderID"], true, product["quantity"])
+                                              },
+                                            ),
+                                          if (orderLoading == true)
+                                            const CircularProgressIndicator(),
+                                          if (deleteLoading == true)
+                                            const CircularProgressIndicator(),
+                                          if (deleteLoading == false)
+                                            IconButton(
+                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              onPressed: () {
+                                                setState(() {
+                                                  // needs to pull up a confirmation window and then remove it
+                                                  // from both cartItems AND the database
+                                                  Future<bool> status =
+                                                      removeOrder(product["orderID"]);
+                                                  status.then((success) {
+                                                    if (success) {
+                                                      widget.cartItems!.removeAt(index);
+                                                      totalQuantities -= product["quantity"] as int;
+                                                    }
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
 
-                                // Edit & Delete Icons
-                                Row(
-                                  children: [
-                                    if (loading == false)
-                                      IconButton(
-                                        icon: const Icon(Icons.edit, color: Colors.blue),
-                                        onPressed: () => {
-                                          setState(() {
-                                            loading = true;
-                                          }),
-                                          // show modal with all possible choices, just like original page
-                                          _showCurrentConfiguration(
-                                              product["orderID"], true, product["quantity"])
-                                        },
-                                      ),
-                                    if (loading == true) const CircularProgressIndicator(),
-                                    if (deleteLoading == true) const CircularProgressIndicator(),
-                                    if (deleteLoading == false)
-                                      IconButton(
-                                        icon: const Icon(Icons.delete, color: Colors.red),
-                                        onPressed: () {
-                                          setState(() {
-                                            // needs to pull up a confirmation window and then remove it
-                                            // from both cartItems AND the database
-                                            Future<bool> status = removeOrder(product["orderID"]);
-                                            status.then((success) {
-                                              if (success) {
-                                                widget.cartItems!.removeAt(index);
-                                                totalQuantities -= product["quantity"] as int;
-                                              }
-                                            });
-                                          });
-                                        },
-                                      ),
-                                  ],
-                                ),
-                              ],
+                // Bottom Buttons (Only Show if Cart is Not Empty)
+                if (widget.cartItems!.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1), // Subtle shadow
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: const Offset(0, -2), // Shadow at the top only
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            List<dynamic> orders = [];
+                            for (var order in widget.cartItems!) {
+                              orders.add(order["orderID"]);
+                            }
+                            saveDraft("Saved draft #1").then((success) => {
+                                  setState(() {
+                                    widget.cartItems = [];
+                                  })
+                                });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF579AF6), // Blue button
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
+                          child: const Text(
+                            "SAVE CONFIGURATION",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
                         ),
-                      );
-                    },
-                  ),
-          ),
-
-          // Bottom Buttons (Only Show if Cart is Not Empty)
-          if (widget.cartItems!.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1), // Subtle shadow
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                    offset: const Offset(0, -2), // Shadow at the top only
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      List<dynamic> orders = [];
-                      for (var order in widget.cartItems!) {
-                        orders.add(order["orderID"]);
-                      }
-                      saveDraft("Saved draft #1").then((success) => {
-                            setState(() {
-                              widget.cartItems = [];
-                            })
-                          });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF579AF6), // Blue button
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    child: const Text(
-                      "SAVE CONFIGURATION",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                        const SizedBox(height: 15),
+                        ElevatedButton(
+                          onPressed: () {
+                            List<dynamic> orders = [];
+                            for (var order in widget.cartItems!) {
+                              orders.add(order["orderID"]);
+                            }
+                            finalize("Configuration #1").then((success) => {
+                                  setState(() {
+                                    widget.cartItems = [];
+                                  })
+                                });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF579AF6), // Blue button
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          child: const Text(
+                            "FINALIZE CONFIGURATION",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () {
-                      List<dynamic> orders = [];
-                      for (var order in widget.cartItems!) {
-                        orders.add(order["orderID"]);
-                      }
-                      finalize("Configuration #1").then((success) => {
-                            setState(() {
-                              widget.cartItems = [];
-                            })
-                          });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF579AF6), // Blue button
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    child: const Text(
-                      "FINALIZE CONFIGURATION",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
-              ),
+              ],
             ),
-        ],
-      ),
     );
   }
 }

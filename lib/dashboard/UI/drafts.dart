@@ -16,6 +16,7 @@ class DraftsPage extends StatefulWidget {
 
 class _DraftsPageState extends State<DraftsPage> {
   int totalQuantities = 0;
+  bool draftsLoading = false;
 
   void getOrders() async {
     dynamic cartItems = await CartAPI().getOrders();
@@ -26,8 +27,13 @@ class _DraftsPageState extends State<DraftsPage> {
   }
 
   void getDrafts() async {
+    setState(() {
+      draftsLoading = true;
+    });
     widget.draftItems = await DraftAPI().getDrafts() as List;
-    setState(() {});
+    setState(() {
+      draftsLoading = false;
+    });
   }
 
   Future<bool> removeDraft(dynamic cartID) async {
@@ -196,90 +202,94 @@ class _DraftsPageState extends State<DraftsPage> {
       ),
       drawer: const CustomDrawer(),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: widget.draftItems!.isEmpty
-                  ? _buildEmptyDraftView()
-                  : ListView.builder(
-                      itemCount: widget.draftItems!.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () => {
-                            // display small modal from bottom with all small info
-                            _showDraftInfo(index)
-                          },
-                          child: Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      widget.draftItems[index]["draftTitle"] ?? "Unknown draft",
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+        child: (draftsLoading == true)
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: widget.draftItems!.isEmpty
+                        ? _buildEmptyDraftView()
+                        : ListView.builder(
+                            itemCount: widget.draftItems!.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () => {
+                                  // display small modal from bottom with all small info
+                                  _showDraftInfo(index)
+                                },
+                                child: Card(
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  elevation: 3,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            widget.draftItems[index]["draftTitle"] ??
+                                                "Unknown draft",
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+
+                                        // Edit & Delete Icons
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              onPressed: () async {
+                                                // delete from drafts
+                                                // needs to pull up a confirmation window and then remove it
+                                                // from both cartItems AND the database
+                                                bool status = await removeDraft(
+                                                    widget.draftItems[index]["cartID"]);
+                                                if (status) {
+                                                  setState(() {
+                                                    widget.draftItems.removeAt(index);
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.shopping_cart_checkout,
+                                                  color: Colors.green),
+                                              onPressed: () async {
+                                                // send to cart (replaces what is in there)
+                                                bool status = await restoreDraft(
+                                                  widget.draftItems[index]["cartID"],
+                                                );
+                                                if (status) {
+                                                  setState(() {
+                                                    dynamic cart = widget.draftItems[index]["cart"];
+                                                    totalQuantities = 0;
+                                                    for (var order in cart) {
+                                                      totalQuantities +=
+                                                          order["numRequested"] as int;
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-
-                                  // Edit & Delete Icons
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.delete, color: Colors.red),
-                                        onPressed: () async {
-                                          // delete from drafts
-                                          // needs to pull up a confirmation window and then remove it
-                                          // from both cartItems AND the database
-                                          bool status =
-                                              await removeDraft(widget.draftItems[index]["cartID"]);
-                                          if (status) {
-                                            setState(() {
-                                              widget.draftItems.removeAt(index);
-                                            });
-                                          }
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.shopping_cart_checkout,
-                                            color: Colors.green),
-                                        onPressed: () async {
-                                          // send to cart (replaces what is in there)
-                                          bool status = await restoreDraft(
-                                            widget.draftItems[index]["cartID"],
-                                          );
-                                          if (status) {
-                                            setState(() {
-                                              dynamic cart = widget.draftItems[index]["cart"];
-                                              totalQuantities = 0;
-                                              for (var order in cart) {
-                                                totalQuantities += order["numRequested"] as int;
-                                              }
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-            )
-          ],
-        ),
+                  )
+                ],
+              ),
       ),
     );
   }
