@@ -1,5 +1,7 @@
 // just flutter pages
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/api.dart';
+import 'package:mighty_lube/env.dart';
 
 // login in pages
 import 'LoginPage/UI/create_account.dart';
@@ -24,8 +26,6 @@ import 'application/UI/application_home.dart';
 // industrial pages
 import 'industrial_home.dart';
 
-// api imports
-
 void main() {
   runApp(const MainApp());
 }
@@ -36,6 +36,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
+      // this checks the session any time that the navigator is used (aka all the time pretty much)
+      navigatorObservers: [SessionObserver(checkSession: UserAPI().checkSession)],
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
           '/', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page

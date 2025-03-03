@@ -4,6 +4,202 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'env.dart';
 
+class UserAPI {
+  Future<bool> checkSession() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final sessionID = prefs.getString("sessionID");
+      if (sessionID == null) {
+        return false;
+      }
+      final uri = Uri.parse("$baseUrl/api/sessions");
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $sessionID',
+      };
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
+
+  Future<bool> makeAccount(
+    String username,
+    String password,
+    String firstName,
+    String lastName,
+    String email,
+    String phoneNumber,
+    String companyName,
+    String country,
+  ) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/api/users'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+            'firstName': firstName,
+            'lastName': lastName,
+            'emailAddress': email,
+            'phoneNumber': phoneNumber,
+            'companyName': companyName,
+            'country': country,
+          }));
+
+      if (response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('sessionID', responseData['sessionID']);
+
+        return true;
+      } else {
+        if (kDebugMode) {
+          print('Account creation failed: ${response.body}');
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
+  Future<bool> loginUser(String username, String password) async {
+    try {
+      final url = Uri.parse('$baseUrl/api/sessions');
+      final response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+          }));
+      if (response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('sessionID', responseData['sessionID']);
+        return true;
+      } else {
+        if (kDebugMode) {
+          print(response.body);
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
+  Future<bool> logoutUser() async {
+    // this isnt done yet
+    try {
+      final url = Uri.parse('$baseUrl/api/sessions');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('sessionID');
+      if (token == null) {
+        // send back to homepage with an error message
+        return true;
+      } else {
+        final response = await http.delete(
+          url,
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+        if (response.statusCode == 200) {
+          // no error
+          await prefs.remove('sessionID');
+          return true;
+        } else {
+          await prefs.remove('sessionID');
+          // error message, either way still going to send back to login screen
+          return false;
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error logging out: ${error.toString()}");
+      }
+      return false;
+    } finally {
+      if (kDebugMode) {
+        print('logged out');
+      }
+    }
+  }
+
+  Future<String> checkUser(String username) async {
+    try {
+      final url = Uri.parse('$baseUrl/api/users/username');
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'username': username,
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData['message'];
+      } else if (response.statusCode == 400) {
+        return 'Username already exists';
+      } else {
+        return 'Error: ${response.body}';
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error getting user: $error");
+      }
+      return 'Error';
+    }
+  }
+
+  Future<dynamic> getUserInfo() async {
+    try {
+      final url = Uri.parse('$baseUrl/api/users/userinfo');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      final token = prefs.getString('sessionID');
+      if (token == null) {
+        return null;
+      }
+
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error getting user info: $error");
+      }
+      return null;
+    }
+  }
+}
+
 class FormAPI {
   Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
     try {
@@ -90,7 +286,8 @@ class CartAPI {
     }
   }
 
-  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData, int numRequestedValue) async {
+  Future<bool> updateOrder(
+      dynamic orderID, Map<String, dynamic> newData, int numRequestedValue) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/cart/order");
@@ -101,7 +298,7 @@ class CartAPI {
       final body = jsonEncode({
         "orderID": orderID,
         "data": newData,
-        "numRequested" : numRequestedValue,
+        "numRequested": numRequestedValue,
       });
       final response = await http.put(uri, headers: headers, body: body);
       if (response.statusCode == 200) {

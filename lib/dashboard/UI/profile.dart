@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/application_home.dart';
@@ -25,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         loading = true;
       });
-      final data = await ApiState().getUserInfo();
+      final data = await UserAPI().getUserInfo();
 
       if (data != null) {
         _firstNameController.text = data['firstName'] ?? '';

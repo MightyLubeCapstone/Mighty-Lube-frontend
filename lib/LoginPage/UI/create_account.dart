@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 import 'package:password_strength_checker/password_strength_checker.dart';
 import 'dart:async';
@@ -119,7 +119,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     _errorUser = null;
     try {
       if (username.isNotEmpty) {
-        var userCheck = await ApiState().checkUser(username);
+        var userCheck = await UserAPI().checkUser(username);
         if (userCheck != 'Username available!') {
           _errorUser = userCheck;
         } else {
@@ -178,7 +178,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final password = passwordController.text;
 
     try {
-      bool success = await ApiState().makeAccount(
+      bool success = await UserAPI().makeAccount(
           username, password, firstName, lastName, email, phoneNumber, companyName, countrytype!);
       if (success) {
         Navigator.pushReplacementNamed(context, '/dashboard');

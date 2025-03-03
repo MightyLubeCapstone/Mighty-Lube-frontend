@@ -12,7 +12,6 @@ import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/env.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../LoginPage/API/apicalls.dart';
 import 'profile.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -69,7 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
     if (confirmDelete != true) return; // Exit if user cancels
 
-    bool status = await ApiState().logoutUser();
+    bool status = await UserAPI().logoutUser();
     if (!mounted) return;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(

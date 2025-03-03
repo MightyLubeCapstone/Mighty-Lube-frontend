@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (username.isNotEmpty && password.isNotEmpty) {
       try {
-        bool loginSuccess = await ApiState().loginUser(username, password);
+        bool loginSuccess = await UserAPI().loginUser(username, password);
         if (loginSuccess) {
           isLoggedIn = true;
           if (mounted) {

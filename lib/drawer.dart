@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
 import 'package:mighty_lube/LoginPage/UI/login_page.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart' as logo;
 
 import 'dashboard/UI/configurations.dart';
@@ -37,7 +37,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
     if (confirmDelete != true) return; // Exit if user cancels
 
-    bool status = await ApiState().logoutUser();
+    bool status = await UserAPI().logoutUser();
     if (!mounted) return;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
