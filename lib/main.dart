@@ -47,8 +47,8 @@ class MainApp extends StatelessWidget {
         // login pages
         '/': (context) => const Home(),
         '/login': (context) => const LoginPage(),
-        '/createAccount': (context) => const CreateAccountPage(),
-        '/forgotPassword': (context) => const ForgotPasswordPage(),
+        '/create_account': (context) => const CreateAccountPage(),
+        '/forgot_password': (context) => const ForgotPasswordPage(),
 
         // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
@@ -57,7 +57,7 @@ class MainApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
 
         // protien pages
-        '/protienHome': (context) => const ProteinHome(),
+        '/protein_home': (context) => const ProteinHome(),
         '/FGLM': (context) => const FGLMPage(),
         '/FGCO': (context) => const FGCOPage(),
 

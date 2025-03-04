@@ -481,6 +481,28 @@ class ConfigurationAPI {
       });
       final response = await http.put(uri, headers: headers, body: body);
       if (response.statusCode == 200) {
+        // THEN send an email...
+        try {
+          final uri = Uri.parse("$baseUrl/api/email/send-email");
+          final headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${prefs.getString("sessionID")}",
+          };
+          final response = await http.post(uri, headers: headers, body: body);
+          final data = jsonDecode(response.body);
+          if (response.statusCode == 201) {
+            return true;
+          } else {
+            if (kDebugMode) {
+              print(data);
+            }
+          }
+        } catch (error) {
+          if (kDebugMode) {
+            print(error);
+          }
+          return false;
+        }
         return true;
       } else {
         return false;

@@ -83,7 +83,34 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   Future<bool> finalize(String configurationName) async {
+    // confirm first...
+    bool? confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Finalize?"),
+          content: const Text("Are you sure you want to finalize this configuration?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Finalize", style: TextStyle(color: Color(0xFF579AF6))),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmDelete == false) return false;
+    setState(() {
+      cartLoading = true;
+    });
     bool status = await ConfigurationAPI().finalize(configurationName);
+    setState(() {
+      cartLoading = false;
+    });
     if (!mounted) {
       return Future(() {
         return false;
@@ -237,6 +264,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
               ),
               "initial": entry.value["value"].toString(),
               "field": entry.key,
+              "required": entry.value["required"],
               if (entry.value["required"] == true) "error": null,
             },
           ); // mind-fuck of code right here
@@ -359,7 +387,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             isEditable: isEditable,
                             errorText: stateHolders[index]["error"],
                             callback: (value) => {
-                              _validateTextField(value, index, stateHolders),
+                              if (stateHolders[index]["required"])
+                                _validateTextField(value, index, stateHolders),
                             },
                           );
                         }
@@ -633,6 +662,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             finalize("Configuration #1").then((success) => {
                                   setState(() {
                                     widget.cartItems = [];
+                                    totalQuantities = 0;
                                   })
                                 });
                           },

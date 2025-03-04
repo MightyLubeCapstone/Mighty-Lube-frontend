@@ -32,7 +32,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
     dynamic cart = await CartAPI().getOrders();
     for (var order in cart) {
-      totalQuantities = order["quantity"] as int;
+      totalQuantities += order["quantity"] as int;
     }
     setState(() {
       loading = false;
