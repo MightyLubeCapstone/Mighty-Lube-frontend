@@ -61,7 +61,38 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   Future<bool> saveDraft(String draftTitle) async {
+    // confirm first...
+    bool? confirmSave = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Save?"),
+          content: const Text(
+              "Are you sure you want to save this configuration as a draft? It will remove it from your cart, but can be retrieved from the Drafts page."),
+          actions: [
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Save",
+                  style: TextStyle(color: Color(0xFF579AF6))),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmSave == false) return false;
+    setState(() {
+      cartLoading = true;
+    });
     bool status = await DraftAPI().saveDraft(draftTitle);
+    setState(() {
+      cartLoading = false;
+    });
     if (!mounted) {
       return Future(() {
         return false;
