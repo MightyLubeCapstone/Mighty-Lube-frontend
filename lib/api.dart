@@ -21,6 +21,7 @@ class UserAPI {
       if (response.statusCode == 200) {
         return true;
       } else {
+        prefs.remove("sessionID");
         return false;
       }
     } catch (error) {
@@ -201,7 +202,8 @@ class UserAPI {
 }
 
 class FormAPI {
-  Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
+  Future<bool> addOrder(
+      String endpoint, dynamic order, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/$endpoint');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -211,7 +213,8 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode({'${endpoint}Data': order, 'numRequested': numRequested}),
+        body: jsonEncode(
+            {'${endpoint}Data': order, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -286,8 +289,8 @@ class CartAPI {
     }
   }
 
-  Future<bool> updateOrder(
-      dynamic orderID, Map<String, dynamic> newData, int numRequestedValue) async {
+  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData,
+      int numRequestedValue) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/cart/order");

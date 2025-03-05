@@ -10,8 +10,13 @@ class SessionObserver extends NavigatorObserver {
   @override
   void didPush(Route route, Route? previousRoute) async {
     super.didPush(route, previousRoute);
-
-    if (route.settings.name == "/create_account" || route.settings.name == "/forgot_password" || previousRoute!.settings.name == "/create_account") {
+    if (previousRoute != null) {
+      if (previousRoute.settings.name == "/create_account") {
+        return;
+      }
+    }
+    if (route.settings.name == "/create_account" ||
+        route.settings.name == "/forgot_password") {
       return;
     }
 
@@ -23,6 +28,6 @@ class SessionObserver extends NavigatorObserver {
 }
 
 String get baseUrl {
-  //return 'https://mighty-lube-backend.azurewebsites.net';
-  return 'http://10.0.2.2:8000';
+  return 'https://mighty-lube-backend.azurewebsites.net';
+  //return 'http://10.0.2.2:8000';
 }
