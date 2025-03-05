@@ -89,15 +89,19 @@ class _ShoppingPageState extends State<ShoppingPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirm Finalize?"),
-          content: const Text("Are you sure you want to finalize this configuration?"),
+          content: const Text(
+              "Are you sure you want to finalize this configuration?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
-              child: const Text("Finalize", style: TextStyle(color: Color(0xFF579AF6))),
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Finalize",
+                  style: TextStyle(color: Color(0xFF579AF6))),
             ),
           ],
         );
@@ -187,7 +191,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
     if (numRequested["controller"] != numRequested["initial"]) {
       numRequestedValue = numRequested["controller"];
     }
-    bool status = await CartAPI().updateOrder(orderID, newData, numRequestedValue);
+    bool status =
+        await CartAPI().updateOrder(orderID, newData, numRequestedValue);
     setState(() {
       editLoading = false;
     });
@@ -207,201 +212,228 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   // pressing the modal, regardless of the pencil or card itself
-  void _showCurrentConfiguration(dynamic orderID, bool isEditable, int numRequested) async {
-    // ### IMPORTANT AS FUCK ### //
-    dynamic stateHolders = []; // either an int or a TextEdControl
-    dynamic numRequestedState = {"controller": numRequested, "initial": numRequested};
-    List<List<String>> options = [];
-    List<String> labels = [];
-    Map<String, dynamic> newData = {};
+  void _showCurrentConfiguration(
+      dynamic orderID, bool isEditable, int numRequested) async {
+    try {
+      // ### IMPORTANT AS FUCK ### //
+      dynamic stateHolders = []; // either an int or a TextEdControl
+      dynamic numRequestedState = {
+        "controller": numRequested,
+        "initial": numRequested
+      };
+      List<List<String>> options = [];
+      List<String> labels = [];
+      Map<String, dynamic> newData = {};
 
-    // first, grab the order info by calling GET orders/order
-    Map orderInfo = await CartAPI().getOrder(orderID) as Map<String, dynamic>;
-    orderInfo.remove("_id");
-    setState(() {
-      orderLoading = false;
-    });
-    int numberOfFields = orderInfo.length; // bye bye _id :)
-    for (var entry in orderInfo.entries) {
-      // map iteration
-      labels.add(entry.key);
-      if (entry.value.runtimeType == List) {
-        // dropdown addition
-        List mappedOptions = entry.value as List;
-        List<String> newList = []; // Create a new list
-        options.add(newList); // Add it to options
-        for (var option in mappedOptions) {
-          // array iteration
-          newList.add(option["value"]);
-          if (option["isSelected"] as bool == true) {
-            int optionKey = option["key"];
+      // first, grab the order info by calling GET orders/order
+      Map orderInfo = await CartAPI().getOrder(orderID) as Map<String, dynamic>;
+      orderInfo.remove("_id");
+      setState(() {
+        orderLoading = false;
+      });
+      int numberOfFields = orderInfo.length; // bye bye _id :)
+      for (var entry in orderInfo.entries) {
+        // map iteration
+        labels.add(entry.key);
+        if (entry.value.runtimeType == List) {
+          // dropdown addition
+          List mappedOptions = entry.value as List;
+          List<String> newList = []; // Create a new list
+          options.add(newList); // Add it to options
+          for (var option in mappedOptions) {
+            // array iteration
+            newList.add(option["value"]);
+            if (option["isSelected"] as bool == true) {
+              int optionKey = option["key"];
+              stateHolders.add(
+                {
+                  "controller": optionKey,
+                  "initial": optionKey,
+                  "field": entry.key,
+                },
+              );
+            }
+          }
+        } else {
+          // TextEdControl addition
+          if (entry.value is int) {
             stateHolders.add(
               {
-                "controller": optionKey,
-                "initial": optionKey,
+                "controller": TextEditingController(
+                  text: entry.value.toString(),
+                ),
+                "initial": entry.value.toString(),
                 "field": entry.key,
               },
-            );
-          }
-        }
-      } else {
-        // TextEdControl addition
-        if (entry.value is int) {
-          stateHolders.add(
-            {
-              "controller": TextEditingController(
-                text: entry.value.toString(),
-              ),
-              "initial": entry.value.toString(),
-              "field": entry.key,
-            },
-          ); // mind-fuck of code right here
-        } else {
-          stateHolders.add(
-            {
-              "controller": TextEditingController(
-                text: entry.value["value"].toString(),
-              ),
-              "initial": entry.value["value"].toString(),
-              "field": entry.key,
-              "required": entry.value["required"],
-              if (entry.value["required"] == true) "error": null,
-            },
-          ); // mind-fuck of code right here
-        }
-
-        options.add([]); // jank-ass code to get me through the night
-      }
-    }
-
-    // THEN, build the modal
-    if (!mounted) return;
-    showModalBottomSheet(
-      backgroundColor: const Color(0xFF579AF6),
-      showDragHandle: true,
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
-      builder: (context) {
-        return Container(
-          color: Colors.white,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0),
-              child: Column(
-                children: [
-                  if (!isEditable)
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 20.0, 0, 0.0),
-                      child: Text(
-                        "Current configuration",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                  if (isEditable)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 0.0),
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => {
-                                _resetStates(stateHolders, numRequestedState),
-                                Navigator.of(context).pop(),
-                              },
-                              icon: const Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                                size: 40.0,
-                              ),
-                            ),
-                            const Text(
-                              "   Edit configuration?   ",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            (editLoading == true
-                                ? const CircularProgressIndicator()
-                                : IconButton(
-                                    onPressed: () async {
-                                      bool valid = await _submitNewData(
-                                          orderID, newData, stateHolders, numRequestedState);
-                                      if (valid && mounted) {
-                                        // ignore: use_build_context_synchronously
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
-                                    icon: const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                      size: 40.0,
-                                    ),
-                                  )),
-                          ],
-                        ),
-                      ),
-                    ),
-                  if (isEditable)
-                    CommonWidgets.buildCounter(
-                      numRequestedState["controller"],
-                      callback: (int newNumRequested) => {
-                        setState(() {
-                          numRequestedState["controller"] = newNumRequested;
-                        })
-                      },
-                    ),
-                  CommonWidgets.buildSectionDivider(),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: numberOfFields,
-                      itemBuilder: (context, index) {
-                        // placeholder logic...
-                        if (stateHolders[index]["controller"] is int) {
-                          return CommonWidgets.buildDropdownFieldProtein(
-                            isEditable: isEditable,
-                            labels[index],
-                            options[index],
-                            stateHolders[index]["controller"],
-                            (value) {
-                              setState(() {
-                                stateHolders[index]["controller"] = value;
-                              });
-                            },
-                          );
-                        } else {
-                          return CommonWidgets.buildTextField(
-                            labels[index],
-                            stateHolders[index]["controller"],
-                            isEditable: isEditable,
-                            errorText: stateHolders[index]["error"],
-                            callback: (value) => {
-                              if (stateHolders[index]["required"])
-                                _validateTextField(value, index, stateHolders),
-                            },
-                          );
-                        }
-                      },
-                    ),
+            ); // mind-fuck of code right here
+          } else {
+            dynamic value = entry.value;
+            if (value is double) {
+              stateHolders.add(
+                {
+                  "controller": TextEditingController(
+                    text: entry.value.toString(),
                   ),
-                ],
+                  "initial": entry.value.toString(),
+                  "field": entry.key,
+                  //"required": entry.value,
+                  // TODO:add validation errors later...
+                },
+              ); // mind-fuck of code right here
+            } else {
+              stateHolders.add(
+                {
+                  "controller": TextEditingController(
+                    text: entry.value["value"].toString(),
+                  ),
+                  "initial": entry.value["value"].toString(),
+                  "field": entry.key,
+                  "required": entry.value["required"],
+                  if (entry.value["required"] == true) "error": null,
+                },
+              ); // mind-fuck of code right here
+            }
+          }
+
+          options.add([]); // jank-ass code to get me through the night
+        }
+      }
+
+      // THEN, build the modal
+      if (!mounted) return;
+      showModalBottomSheet(
+        backgroundColor: const Color(0xFF579AF6),
+        showDragHandle: true,
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        builder: (context) {
+          return Container(
+            color: Colors.white,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0),
+                child: Column(
+                  children: [
+                    if (!isEditable)
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 20.0, 0, 0.0),
+                        child: Text(
+                          "Current configuration",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    if (isEditable)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 0.0),
+                        child: Center(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => {
+                                  _resetStates(stateHolders, numRequestedState),
+                                  Navigator.of(context).pop(),
+                                },
+                                icon: const Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                  size: 40.0,
+                                ),
+                              ),
+                              const Text(
+                                "   Edit configuration?   ",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              (editLoading == true
+                                  ? const CircularProgressIndicator()
+                                  : IconButton(
+                                      onPressed: () async {
+                                        bool valid = await _submitNewData(
+                                            orderID,
+                                            newData,
+                                            stateHolders,
+                                            numRequestedState);
+                                        if (valid && mounted) {
+                                          // ignore: use_build_context_synchronously
+                                          Navigator.of(context).pop();
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                        size: 40.0,
+                                      ),
+                                    )),
+                            ],
+                          ),
+                        ),
+                      ),
+                    if (isEditable)
+                      CommonWidgets.buildCounter(
+                        numRequestedState["controller"],
+                        callback: (int newNumRequested) => {
+                          setState(() {
+                            numRequestedState["controller"] = newNumRequested;
+                          })
+                        },
+                      ),
+                    CommonWidgets.buildSectionDivider(),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: numberOfFields,
+                        itemBuilder: (context, index) {
+                          // placeholder logic...
+                          if (stateHolders[index]["controller"] is int) {
+                            return CommonWidgets.buildDropdownFieldProtein(
+                              isEditable: isEditable,
+                              labels[index],
+                              options[index],
+                              stateHolders[index]["controller"],
+                              (value) {
+                                setState(() {
+                                  stateHolders[index]["controller"] = value;
+                                });
+                              },
+                            );
+                          } else {
+                            return CommonWidgets.buildTextField(
+                              labels[index],
+                              stateHolders[index]["controller"],
+                              isEditable: isEditable,
+                              errorText: stateHolders[index]["error"],
+                              callback: (value) => {
+                                if (stateHolders[index]["required"])
+                                  _validateTextField(
+                                      value, index, stateHolders),
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    } catch (error) {
+      print("Error rendering the modal: $error");
+    }
   }
 
   Future<bool> removeOrder(dynamic orderID) async {
@@ -414,11 +446,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
               "Are you sure you want to delete this order? This action cannot be undone."),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Delete", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -486,7 +520,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ),
                               const Text(
                                 "No products in the cart.",
-                                style: TextStyle(fontSize: 18, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.black),
                               ),
                             ],
                           ),
@@ -501,11 +536,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   orderLoading = true;
                                 });
                                 // this is the one that needs to show all their CURRENT choices...
-                                _showCurrentConfiguration(
-                                    product["orderID"], false, product["quantity"]);
+                                _showCurrentConfiguration(product["orderID"],
+                                    false, product["quantity"]);
                               },
                               child: Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -513,21 +549,27 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       // Product Image (Aligned Left)
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          product["image"] ?? "assets/default_product.png",
+                                          product["image"] ??
+                                              "assets/default_product.png",
                                           width: 60,
                                           height: 60,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => Container(
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
                                             width: 60,
                                             height: 60,
                                             color: Colors.grey[300],
-                                            child: const Icon(Icons.image_not_supported, size: 30),
+                                            child: const Icon(
+                                                Icons.image_not_supported,
+                                                size: 30),
                                           ),
                                         ),
                                       ),
@@ -536,10 +578,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       // Name and Quantity
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              product["name"] ?? "Unknown Product",
+                                              product["name"] ??
+                                                  "Unknown Product",
                                               style: const TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
@@ -564,14 +608,17 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                         children: [
                                           if (orderLoading == false)
                                             IconButton(
-                                              icon: const Icon(Icons.edit, color: Colors.blue),
+                                              icon: const Icon(Icons.edit,
+                                                  color: Colors.blue),
                                               onPressed: () => {
                                                 setState(() {
                                                   orderLoading = true;
                                                 }),
                                                 // show modal with all possible choices, just like original page
                                                 _showCurrentConfiguration(
-                                                    product["orderID"], true, product["quantity"])
+                                                    product["orderID"],
+                                                    true,
+                                                    product["quantity"])
                                               },
                                             ),
                                           if (orderLoading == true)
@@ -580,17 +627,22 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                             const CircularProgressIndicator(),
                                           if (deleteLoading == false)
                                             IconButton(
-                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
                                               onPressed: () {
                                                 setState(() {
                                                   // needs to pull up a confirmation window and then remove it
                                                   // from both cartItems AND the database
                                                   Future<bool> status =
-                                                      removeOrder(product["orderID"]);
+                                                      removeOrder(
+                                                          product["orderID"]);
                                                   status.then((success) {
                                                     if (success) {
-                                                      widget.cartItems!.removeAt(index);
-                                                      totalQuantities -= product["quantity"] as int;
+                                                      widget.cartItems!
+                                                          .removeAt(index);
+                                                      totalQuantities -=
+                                                          product["quantity"]
+                                                              as int;
                                                     }
                                                   });
                                                 });
@@ -610,12 +662,14 @@ class _ShoppingPageState extends State<ShoppingPage> {
                 // Bottom Buttons (Only Show if Cart is Not Empty)
                 if (widget.cartItems!.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1), // Subtle shadow
+                          color: Colors.black
+                              .withValues(alpha: 0.1), // Subtle shadow
                           blurRadius: 5,
                           spreadRadius: 2,
                           offset: const Offset(0, -2), // Shadow at the top only
@@ -639,7 +693,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF579AF6), // Blue button
+                            backgroundColor:
+                                const Color(0xFF579AF6), // Blue button
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
@@ -649,7 +704,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           child: const Text(
                             "SAVE CONFIGURATION",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
                         const SizedBox(height: 15),
@@ -660,14 +717,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               orders.add(order["orderID"]);
                             }
                             finalize("Configuration #1").then((success) => {
-                                  setState(() {
-                                    widget.cartItems = [];
-                                    totalQuantities = 0;
-                                  })
+                                  if (success)
+                                    setState(() {
+                                      widget.cartItems = [];
+                                      totalQuantities = 0;
+                                    })
                                 });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF579AF6), // Blue button
+                            backgroundColor:
+                                const Color(0xFF579AF6), // Blue button
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
@@ -677,7 +736,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           child: const Text(
                             "FINALIZE CONFIGURATION",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
                         const SizedBox(height: 20),
