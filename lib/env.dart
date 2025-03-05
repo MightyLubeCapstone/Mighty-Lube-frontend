@@ -11,7 +11,7 @@ class SessionObserver extends NavigatorObserver {
   void didPush(Route route, Route? previousRoute) async {
     super.didPush(route, previousRoute);
     if (previousRoute != null) {
-      if (previousRoute.settings.name == "/create_account") {
+      if (previousRoute.settings.name == "/create_account" || previousRoute.settings.name == "/login") {
         return;
       }
     }
