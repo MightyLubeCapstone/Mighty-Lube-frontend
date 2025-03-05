@@ -746,14 +746,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            List<dynamic> orders = [];
-                            for (var order in widget.cartItems!) {
-                              orders.add(order["orderID"]);
-                            }
                             saveDraft().then((success) => {
                                   if (success)
                                     setState(() {
                                       widget.cartItems = [];
+                                      totalQuantities = 0;
                                     })
                                 });
                           },
@@ -774,10 +771,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         const SizedBox(height: 15),
                         ElevatedButton(
                           onPressed: () {
-                            List<dynamic> orders = [];
-                            for (var order in widget.cartItems!) {
-                              orders.add(order["orderID"]);
-                            }
                             finalize().then((success) => {
                                   if (success)
                                     setState(() {
