@@ -1,8 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
+
+  @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  // variables
+  final TextEditingController emailController = TextEditingController();
+  String? _errorEmail;
+
+  Future<bool> forgotPassword(String email) async {
+    if (!_validateEmail(email)) {
+      return false;
+    }
+    bool status = await UserAPI().forgotPassword(email);
+    if (status == true) {
+      // render OTP page
+      return true;
+    }
+    setState(() {
+      _errorEmail = "Email not found!";
+    });
+    return false;
+  }
+
+  bool _validateEmail(String email) {
+    setState(() {
+      if (email.isEmpty) {
+        _errorEmail = 'Email is Required';
+      } else if (!RegExp(r'[^@]+@[^@]+\.[^@]+$').hasMatch(email)) {
+        _errorEmail = 'Email must include an @\nEmail must include a domain(i.e., .com)';
+      } else {
+        _errorEmail = null;
+      }
+    });
+    return _errorEmail == null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +99,7 @@ class ForgotPasswordPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -68,7 +107,8 @@ class ForgotPasswordPage extends StatelessWidget {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                           filled: true,
                           fillColor: Colors.grey[100],
-                          hintText: 'Enter your email address here:',
+                          hintText: 'Enter your email address:',
+                          errorText: _errorEmail,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -81,11 +121,7 @@ class ForgotPasswordPage extends StatelessWidget {
                               margin: const EdgeInsets.only(right: 10),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFF73A1F9), Color(0xFF4D86F5)],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
+                                color: Colors.grey[500],
                               ),
                               child: TextButton(
                                 onPressed: () {
@@ -109,7 +145,7 @@ class ForgotPasswordPage extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF73A1F9), Color(0xFF4D86F5)],
+                                  colors: [Colors.blueAccent, Colors.lightBlueAccent],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -117,6 +153,15 @@ class ForgotPasswordPage extends StatelessWidget {
                               child: TextButton(
                                 onPressed: () {
                                   // Add functionality for the submit button
+                                  forgotPassword(emailController.text).then((success) => {
+                                        if (success == true)
+                                          {
+                                            // render OTP page
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.of(context)
+                                                .pushReplacementNamed("/enter_otp"),
+                                          }
+                                      });
                                 },
                                 child: const Text(
                                   'Submit',

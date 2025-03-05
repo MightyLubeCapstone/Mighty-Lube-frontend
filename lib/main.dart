@@ -8,6 +8,7 @@ import 'LoginPage/UI/create_account.dart';
 import 'LoginPage/UI/forgot_password.dart';
 import 'LoginPage/UI/login_page.dart';
 import 'package:mighty_lube/LoginPage/UI/home.dart';
+import 'package:mighty_lube/LoginPage/UI/enter_otp.dart';
 
 // dashboard pages
 import 'dashboard/UI/dashboard.dart';
@@ -51,6 +52,7 @@ class MainApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/create_account': (context) => const CreateAccountPage(),
         '/forgot_password': (context) => const ForgotPasswordPage(),
+        '/enter_otp': (context) => const EnterOTP(),
 
         // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
@@ -68,8 +70,6 @@ class MainApp extends StatelessWidget {
 
         //industrial page
         '/industrial': (context) => const IndustrialHome(),
-
-        //'/shopping': (context) => ShoppingPage(cartItems: myCartItems, showAlternativeUI: true),
       },
       debugShowCheckedModeBanner: false,
     );

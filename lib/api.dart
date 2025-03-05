@@ -78,6 +78,30 @@ class UserAPI {
     }
   }
 
+  Future<bool> forgotPassword(String email) async {
+    try {
+      final url = Uri.parse("$baseUrl/api/email/forgot");
+      final headers = {
+        "Content-Type" : "application/json",
+      };
+      final body = jsonEncode({
+        "email" : email,
+      });
+      final response = await http.post(url, headers: headers, body: body);
+      if(response.statusCode == 201) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
+
   Future<bool> loginUser(String username, String password) async {
     try {
       final url = Uri.parse('$baseUrl/api/sessions');
@@ -202,8 +226,7 @@ class UserAPI {
 }
 
 class FormAPI {
-  Future<bool> addOrder(
-      String endpoint, dynamic order, int numRequested) async {
+  Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/$endpoint');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -213,8 +236,7 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode(
-            {'${endpoint}Data': order, 'numRequested': numRequested}),
+        body: jsonEncode({'${endpoint}Data': order, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -289,8 +311,8 @@ class CartAPI {
     }
   }
 
-  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData,
-      int numRequestedValue) async {
+  Future<bool> updateOrder(
+      dynamic orderID, Map<String, dynamic> newData, int numRequestedValue) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/cart/order");
