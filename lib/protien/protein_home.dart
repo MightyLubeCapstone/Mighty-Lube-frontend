@@ -113,7 +113,6 @@ class _ProteinHomeState extends State<ProteinHome> {
     );
   }
 
-
   // Reusable widget for image cards
   Widget _buildClickableImageCard({
     required BuildContext context,
@@ -133,8 +132,7 @@ class _ProteinHomeState extends State<ProteinHome> {
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 87, 154, 246), 
+                color: Color.fromARGB(255, 87, 154, 246),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),

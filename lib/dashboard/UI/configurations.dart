@@ -30,7 +30,8 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
     setState(() {
       configLoading = true;
     });
-    widget.configurationItems = await ConfigurationAPI().getConfigurations() as List;
+    widget.configurationItems =
+        await ConfigurationAPI().getConfigurations() as List;
     setState(() {
       configLoading = false;
     });
@@ -134,7 +135,8 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
                             return GestureDetector(
                               onTap: () => {},
                               child: Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -142,11 +144,13 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          widget.configurationItems[index]["configurationName"] ??
+                                          widget.configurationItems[index]
+                                                  ["configurationName"] ??
                                               "Unknown draft",
                                           style: const TextStyle(
                                             fontSize: 16,
@@ -159,7 +163,8 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon: const Icon(Icons.remove_red_eye_rounded,
+                                            icon: const Icon(
+                                                Icons.remove_red_eye_rounded,
                                                 color: Colors.lightBlueAccent),
                                             onPressed: () {
                                               // display small modal from bottom with all small info

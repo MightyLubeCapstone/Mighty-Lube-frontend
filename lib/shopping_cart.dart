@@ -80,7 +80,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
-              child: const Text("OK", style: TextStyle(color: Color(0xFF579AF6))),
+              child:
+                  const Text("OK", style: TextStyle(color: Color(0xFF579AF6))),
             ),
           ],
         );
@@ -106,12 +107,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
               "Are you sure you want to save this configuration as a draft? It will remove it from your cart, but can be retrieved from the Drafts page."),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
-              child: const Text("Save", style: TextStyle(color: Color(0xFF579AF6))),
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Save",
+                  style: TextStyle(color: Color(0xFF579AF6))),
             ),
           ],
         );
@@ -164,7 +168,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
-              child: const Text("OK", style: TextStyle(color: Color(0xFF579AF6))),
+              child:
+                  const Text("OK", style: TextStyle(color: Color(0xFF579AF6))),
             ),
           ],
         );
@@ -186,15 +191,19 @@ class _ShoppingPageState extends State<ShoppingPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirm Finalize?"),
-          content: const Text("Are you sure you want to finalize this configuration?"),
+          content: const Text(
+              "Are you sure you want to finalize this configuration?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
-              child: const Text("Finalize", style: TextStyle(color: Color(0xFF579AF6))),
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Finalize",
+                  style: TextStyle(color: Color(0xFF579AF6))),
             ),
           ],
         );
@@ -217,6 +226,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
       // good snackbar thingy
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successfully finalized configuration!')),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Successfully sent configuration to the team!')),
       );
       return true;
     } else {
@@ -284,7 +297,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
     if (numRequested["controller"] != numRequested["initial"]) {
       numRequestedValue = numRequested["controller"];
     }
-    bool status = await CartAPI().updateOrder(orderID, newData, numRequestedValue);
+    bool status =
+        await CartAPI().updateOrder(orderID, newData, numRequestedValue);
     setState(() {
       editLoading = false;
     });
@@ -304,11 +318,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   // pressing the modal, regardless of the pencil or card itself
-  void _showCurrentConfiguration(dynamic orderID, bool isEditable, int numRequested) async {
+  void _showCurrentConfiguration(
+      dynamic orderID, bool isEditable, int numRequested) async {
     try {
       // ### IMPORTANT AS FUCK ### //
       dynamic stateHolders = []; // either an int or a TextEdControl
-      dynamic numRequestedState = {"controller": numRequested, "initial": numRequested};
+      dynamic numRequestedState = {
+        "controller": numRequested,
+        "initial": numRequested
+      };
       List<List<String>> options = [];
       List<String> labels = [];
       Map<String, dynamic> newData = {};
@@ -365,7 +383,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                   "initial": entry.value.toString(),
                   "field": entry.key,
                   //"required": entry.value,
-                  // TODO:add validation errors later...
+                  // add validation errors later...
                 },
               ); // mind-fuck of code right here
             } else {
@@ -448,7 +466,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   : IconButton(
                                       onPressed: () async {
                                         bool valid = await _submitNewData(
-                                            orderID, newData, stateHolders, numRequestedState);
+                                            orderID,
+                                            newData,
+                                            stateHolders,
+                                            numRequestedState);
                                         if (valid && mounted) {
                                           // ignore: use_build_context_synchronously
                                           Navigator.of(context).pop();
@@ -501,7 +522,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               errorText: stateHolders[index]["error"],
                               callback: (value) => {
                                 if (stateHolders[index]["required"])
-                                  _validateTextField(value, index, stateHolders),
+                                  _validateTextField(
+                                      value, index, stateHolders),
                               },
                             );
                           }
@@ -532,11 +554,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
               "Are you sure you want to delete this order? This action cannot be undone."),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Delete", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -604,7 +628,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ),
                               const Text(
                                 "No products in the cart.",
-                                style: TextStyle(fontSize: 18, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.black),
                               ),
                             ],
                           ),
@@ -619,11 +644,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   orderLoading = true;
                                 });
                                 // this is the one that needs to show all their CURRENT choices...
-                                _showCurrentConfiguration(
-                                    product["orderID"], false, product["quantity"]);
+                                _showCurrentConfiguration(product["orderID"],
+                                    false, product["quantity"]);
                               },
                               child: Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -631,21 +657,27 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       // Product Image (Aligned Left)
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          product["image"] ?? "assets/default_product.png",
+                                          product["image"] ??
+                                              "assets/default_product.png",
                                           width: 60,
                                           height: 60,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => Container(
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
                                             width: 60,
                                             height: 60,
                                             color: Colors.grey[300],
-                                            child: const Icon(Icons.image_not_supported, size: 30),
+                                            child: const Icon(
+                                                Icons.image_not_supported,
+                                                size: 30),
                                           ),
                                         ),
                                       ),
@@ -654,10 +686,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       // Name and Quantity
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              product["name"] ?? "Unknown Product",
+                                              product["name"] ??
+                                                  "Unknown Product",
                                               style: const TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
@@ -682,14 +716,17 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                         children: [
                                           if (orderLoading == false)
                                             IconButton(
-                                              icon: const Icon(Icons.edit, color: Colors.blue),
+                                              icon: const Icon(Icons.edit,
+                                                  color: Colors.blue),
                                               onPressed: () => {
                                                 setState(() {
                                                   orderLoading = true;
                                                 }),
                                                 // show modal with all possible choices, just like original page
                                                 _showCurrentConfiguration(
-                                                    product["orderID"], true, product["quantity"])
+                                                    product["orderID"],
+                                                    true,
+                                                    product["quantity"])
                                               },
                                             ),
                                           if (orderLoading == true)
@@ -698,17 +735,22 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                             const CircularProgressIndicator(),
                                           if (deleteLoading == false)
                                             IconButton(
-                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
                                               onPressed: () {
                                                 setState(() {
                                                   // needs to pull up a confirmation window and then remove it
                                                   // from both cartItems AND the database
                                                   Future<bool> status =
-                                                      removeOrder(product["orderID"]);
+                                                      removeOrder(
+                                                          product["orderID"]);
                                                   status.then((success) {
                                                     if (success) {
-                                                      widget.cartItems!.removeAt(index);
-                                                      totalQuantities -= product["quantity"] as int;
+                                                      widget.cartItems!
+                                                          .removeAt(index);
+                                                      totalQuantities -=
+                                                          product["quantity"]
+                                                              as int;
                                                     }
                                                   });
                                                 });
@@ -728,12 +770,14 @@ class _ShoppingPageState extends State<ShoppingPage> {
                 // Bottom Buttons (Only Show if Cart is Not Empty)
                 if (widget.cartItems!.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1), // Subtle shadow
+                          color: Colors.black
+                              .withValues(alpha: 0.1), // Subtle shadow
                           blurRadius: 5,
                           spreadRadius: 2,
                           offset: const Offset(0, -2), // Shadow at the top only
@@ -755,7 +799,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF579AF6), // Blue button
+                            backgroundColor:
+                                const Color(0xFF579AF6), // Blue button
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
@@ -765,7 +810,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           child: const Text(
                             "SAVE CONFIGURATION",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
                         const SizedBox(height: 15),
@@ -780,7 +827,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF579AF6), // Blue button
+                            backgroundColor:
+                                const Color(0xFF579AF6), // Blue button
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
@@ -790,7 +838,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           child: const Text(
                             "FINALIZE CONFIGURATION",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
                         const SizedBox(height: 20),

@@ -12,7 +12,8 @@ class ImageSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Title Section
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(

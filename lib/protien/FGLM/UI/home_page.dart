@@ -11,7 +11,8 @@ class HomeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         const Padding(
           padding: EdgeInsets.fromLTRB(
               15.0, 30.0, 15.0, 20.0), // Adjusted top padding

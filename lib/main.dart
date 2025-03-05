@@ -38,7 +38,9 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       // this checks the session any time that the navigator is used (aka all the time pretty much)
-      navigatorObservers: [SessionObserver(checkSession: UserAPI().checkSession)],
+      navigatorObservers: [
+        SessionObserver(checkSession: UserAPI().checkSession)
+      ],
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
           '/', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page

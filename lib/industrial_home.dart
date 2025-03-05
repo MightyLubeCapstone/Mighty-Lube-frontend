@@ -126,7 +126,8 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -144,7 +145,8 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(

@@ -60,7 +60,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
         elevation: 0,
         flexibleSpace: Stack(
           children: [
-            const HeaderLogo(),
+            const HeaderLogo(
+              pressable: true,
+            ),
             Positioned(
               top: 50, // Adjust position
               right: 15,
@@ -77,16 +79,20 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     },
                   ),
                   badges.Badge(
-                    badgeStyle: const badges.BadgeStyle(badgeColor: Colors.white),
+                    badgeStyle:
+                        const badges.BadgeStyle(badgeColor: Colors.white),
                     badgeContent: Text(
-                      widget.cartItemCount != null ? widget.cartItemCount!.toString() : "",
+                      widget.cartItemCount != null
+                          ? widget.cartItemCount!.toString()
+                          : "",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                       ),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                      icon:
+                          const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         if (widget.reload == false) {
                           // do nothing

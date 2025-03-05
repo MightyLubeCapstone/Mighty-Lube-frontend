@@ -65,13 +65,15 @@ class _LoginPageState extends State<LoginPage> {
   void showError(BuildContext context, String message) {
     showDialog(
         context: context,
-        builder: (context) =>
-            AlertDialog(title: const Text("Login Error"), content: Text(message), actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              )
-            ]));
+        builder: (context) => AlertDialog(
+                title: const Text("Login Error"),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  )
+                ]));
   }
 
   @override
@@ -86,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const HeaderLogo(),
+          const HeaderLogo(pressable: false),
           const SizedBox(height: 10),
           Expanded(
             child: Center(
@@ -134,7 +136,8 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20),
                       const Text(
                         'Username:',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 8),
                       TextField(
@@ -142,9 +145,11 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: usererror ? Colors.red : Colors.grey),
+                            borderSide: BorderSide(
+                                color: usererror ? Colors.red : Colors.grey),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 15),
                           filled: true,
                           fillColor: Colors.grey[100],
                         ),
@@ -152,7 +157,8 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20),
                       const Text(
                         'Password:',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 8),
                       TextField(
@@ -161,9 +167,11 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: passerror ? Colors.red : Colors.grey),
+                            borderSide: BorderSide(
+                                color: passerror ? Colors.red : Colors.grey),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 15),
                           filled: true,
                           fillColor: Colors.grey[100],
                         ),

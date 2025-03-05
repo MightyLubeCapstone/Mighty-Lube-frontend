@@ -11,7 +11,7 @@ class ForgotPasswordPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const HeaderLogo(), // Add the logo header here
+          const HeaderLogo(pressable: false), // Add the logo header here
           const SizedBox(height: 20),
           Expanded(
             child: Center(

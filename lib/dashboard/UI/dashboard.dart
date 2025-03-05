@@ -55,11 +55,13 @@ class _DashboardPageState extends State<DashboardPage> {
           content: const Text("Are you sure you want to logout?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Logout", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -67,8 +69,13 @@ class _DashboardPageState extends State<DashboardPage> {
       },
     );
     if (confirmDelete != true) return; // Exit if user cancels
-
+    setState(() {
+      loading = true;
+    });
     bool status = await UserAPI().logoutUser();
+    setState(() {
+      loading = false;
+    });
     if (!mounted) return;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -125,91 +132,96 @@ class _DashboardPageState extends State<DashboardPage> {
         cartItemCount: totalQuantities,
       ),
       drawer: const CustomDrawer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
+      body: (loading == true)
+          ? const Center(child: CircularProgressIndicator.adaptive())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Hello $name, ',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '(not $name? )',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                TextButton(
-                  child: const Text(
-                    '(Log out)',
-                    style: TextStyle(fontSize: 16, color: Colors.blue),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Hello $name, ',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '(not $name? )',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      TextButton(
+                        child: const Text(
+                          '(Log out)',
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
+                        onPressed: () {
+                          logoutUser();
+                        },
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    logoutUser();
-                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'From your account dashboard you can view your ',
+                      style: const TextStyle(fontSize: 16),
+                      children: [
+                        TextSpan(
+                          text: 'recent configurations',
+                          style: const TextStyle(color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ConfigurationsPage()),
+                              );
+                            },
+                        ),
+                        const TextSpan(
+                          text: ', manage your ',
+                        ),
+
+                        // LEAVE THIS SPACING ALONE!!
+                        // I FOUND A SPECIAL LEVEL UP PAGE THAT I'M NOT GONNA TOUCH RN
+                        // ANTHONY DIDN"T SAY ANYTHING ABOUT THIS SO MAYBE IT'S NOT SUPPOSED TO BE HERE?
+                        TextSpan(
+                          text: 'billing address',
+                          style: const TextStyle(color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // Navigate to billing address
+                              if (kDebugMode) {
+                                print('Navigate to billing address');
+                              }
+                            },
+                        ),
+
+                        const TextSpan(
+                          text: ', and ',
+                        ),
+                        TextSpan(
+                          text: 'edit your password and account details.',
+                          style: const TextStyle(color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              // Navigate to account details
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ProfilePage()),
+                              );
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text.rich(
-              TextSpan(
-                text: 'From your account dashboard you can view your ',
-                style: const TextStyle(fontSize: 16),
-                children: [
-                  TextSpan(
-                    text: 'recent configurations',
-                    style: const TextStyle(color: Colors.blue),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ConfigurationsPage()),
-                        );
-                      },
-                  ),
-                  const TextSpan(
-                    text: ', manage your ',
-                  ),
-
-                  // LEAVE THIS SPACING ALONE!!
-                  // I FOUND A SPECIAL LEVEL UP PAGE THAT I'M NOT GONNA TOUCH RN
-                  // ANTHONY DIDN"T SAY ANYTHING ABOUT THIS SO MAYBE IT'S NOT SUPPOSED TO BE HERE?
-                  TextSpan(
-                    text: 'billing address',
-                    style: const TextStyle(color: Colors.blue),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // Navigate to billing address
-                        if (kDebugMode) {
-                          print('Navigate to billing address');
-                        }
-                      },
-                  ),
-
-                  const TextSpan(
-                    text: ', and ',
-                  ),
-                  TextSpan(
-                    text: 'edit your password and account details.',
-                    style: const TextStyle(color: Colors.blue),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () async {
-                        // Navigate to account details
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ProfilePage()),
-                        );
-                      },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

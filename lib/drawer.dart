@@ -15,6 +15,8 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+  bool loading = false;
+
   Future<void> logoutUser() async {
     bool? confirmDelete = await showDialog(
       context: context,
@@ -24,11 +26,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           content: const Text("Are you sure you want to logout?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Logout", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -36,8 +40,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
       },
     );
     if (confirmDelete != true) return; // Exit if user cancels
-
+    setState(() {
+      loading = true;
+    });
     bool status = await UserAPI().logoutUser();
+    setState(() {
+      loading = false;
+    });
     if (!mounted) return;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -65,7 +74,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             decoration: BoxDecoration(
               color: Color(0xFF579AF6),
             ),
-            child: logo.HeaderLogo(),
+            child: logo.HeaderLogo(pressable: false),
           ),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -98,7 +107,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout),
+            leading: (loading == false)
+                ? const Icon(Icons.logout)
+                : const CircularProgressIndicator.adaptive(),
             title: const Text('Logout'),
             onTap: () {
               logoutUser();

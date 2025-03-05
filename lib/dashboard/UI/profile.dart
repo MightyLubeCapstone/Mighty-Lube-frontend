@@ -80,8 +80,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         buildTextFieldWithIcon(Icons.person, 'Last Name:',
                             'Current: ${_lastNameController.text}', context),
                         const SizedBox(height: 15),
-                        buildTextFieldWithIcon(Icons.account_circle, 'Display Name:',
-                            'Current: ${_userNameController.text}', context),
+                        buildTextFieldWithIcon(
+                            Icons.account_circle,
+                            'Display Name:',
+                            'Current: ${_userNameController.text}',
+                            context),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -90,14 +93,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     _buildProfileCard(
                       context,
                       children: [
-                        buildTextFieldWithIcon(
-                            Icons.business, 'Company Name:', 'Enter company name', context),
+                        buildTextFieldWithIcon(Icons.business, 'Company Name:',
+                            'Enter company name', context),
                         const SizedBox(height: 15),
-                        buildTextFieldWithIcon(
-                            Icons.phone, 'Phone Number:', 'Enter phone number', context),
+                        buildTextFieldWithIcon(Icons.phone, 'Phone Number:',
+                            'Enter phone number', context),
                         const SizedBox(height: 15),
-                        buildTextFieldWithIcon(
-                            Icons.email, 'Email Address:', 'Enter email address', context),
+                        buildTextFieldWithIcon(Icons.email, 'Email Address:',
+                            'Enter email address', context),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -106,16 +109,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     _buildProfileCard(
                       context,
                       children: [
-                        buildTextFieldWithIcon(
-                            Icons.lock, 'Current Password:', 'Enter current password', context,
+                        buildTextFieldWithIcon(Icons.lock, 'Current Password:',
+                            'Enter current password', context,
+                            obscureText: true),
+                        const SizedBox(height: 15),
+                        buildTextFieldWithIcon(Icons.lock_outline,
+                            'New Password:', 'Enter new password', context,
                             obscureText: true),
                         const SizedBox(height: 15),
                         buildTextFieldWithIcon(
-                            Icons.lock_outline, 'New Password:', 'Enter new password', context,
-                            obscureText: true),
-                        const SizedBox(height: 15),
-                        buildTextFieldWithIcon(Icons.lock_outline, 'Confirm Password:',
-                            'Confirm new password', context,
+                            Icons.lock_outline,
+                            'Confirm Password:',
+                            'Confirm new password',
+                            context,
                             obscureText: true),
                       ],
                     ),
@@ -177,7 +183,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileCard(BuildContext context, {required List<Widget> children}) {
+  Widget _buildProfileCard(BuildContext context,
+      {required List<Widget> children}) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -192,7 +199,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildTextFieldWithIcon(IconData icon, String label, String hint, BuildContext context,
+  Widget buildTextFieldWithIcon(
+      IconData icon, String label, String hint, BuildContext context,
       {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
