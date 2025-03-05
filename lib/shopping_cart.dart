@@ -60,7 +60,42 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {});
   }
 
-  Future<bool> saveDraft(String draftTitle) async {
+  Future<bool> saveDraft() async {
+    // Show input dialog first
+    String? draftName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController controller = TextEditingController();
+        return AlertDialog(
+          title: const Text("Enter Draft Name"),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(hintText: "Draft Name"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child:
+                  const Text("OK", style: TextStyle(color: Color(0xFF579AF6))),
+            ),
+          ],
+        );
+      },
+    );
+    if (draftName == null || draftName.isEmpty) {
+      return Future(() {
+        return false;
+      }); // User canceled or entered empty name
+    }
+    if(!mounted) {
+      return Future(() {
+        return false;
+      }); // User canceled or entered empty name
+    }
     // confirm first...
     bool? confirmSave = await showDialog(
       context: context,
@@ -89,7 +124,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       cartLoading = true;
     });
-    bool status = await DraftAPI().saveDraft(draftTitle);
+    bool status = await DraftAPI().saveDraft(draftName);
     setState(() {
       cartLoading = false;
     });
@@ -113,7 +148,42 @@ class _ShoppingPageState extends State<ShoppingPage> {
     }
   }
 
-  Future<bool> finalize(String configurationName) async {
+  Future<bool> finalize() async {
+    // Show input dialog first
+    String? configName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController controller = TextEditingController();
+        return AlertDialog(
+          title: const Text("Enter Configuration Name"),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(hintText: "Configuration Name"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child:
+                  const Text("OK", style: TextStyle(color: Color(0xFF579AF6))),
+            ),
+          ],
+        );
+      },
+    );
+    if (configName == null || configName.isEmpty) {
+      return Future(() {
+        return false;
+      }); // User canceled or entered empty name
+    }
+    if (!mounted) {
+      return Future(() {
+        return false;
+      });
+    }
     // confirm first...
     bool? confirmDelete = await showDialog(
       context: context,
@@ -142,7 +212,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       cartLoading = true;
     });
-    bool status = await ConfigurationAPI().finalize(configurationName);
+    bool status = await ConfigurationAPI().finalize(configName);
     setState(() {
       cartLoading = false;
     });
@@ -717,7 +787,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             for (var order in widget.cartItems!) {
                               orders.add(order["orderID"]);
                             }
-                            saveDraft("Saved draft #1").then((success) => {
+                            saveDraft().then((success) => {
                                   setState(() {
                                     widget.cartItems = [];
                                   })
@@ -747,7 +817,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             for (var order in widget.cartItems!) {
                               orders.add(order["orderID"]);
                             }
-                            finalize("Configuration #1").then((success) => {
+                            finalize().then((success) => {
                                   if (success)
                                     setState(() {
                                       widget.cartItems = [];
