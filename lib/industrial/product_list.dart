@@ -6,12 +6,10 @@ import '1. CC5C (2)/CLS (2)/MLCC5CL/UI/MLCC5CL.dart';
 import '1. CC5C (2)/CLS (2)/OP40E/UI/OP40E.dart';
 import '2. COEDL (3)/CLS (3)/CDL/UI/CDL.dart';
 import '2. COEDL (3)/CLS (3)/MLCEL/UI/MLCEL.dart';
-import '3. ETIPO (8)/CCS (2)/O8074/UI/O8074.dart';
-import '3. ETIPO (8)/CCS (2)/OUN91/UI/OUN91.dart';
-import '3. ETIPO (8)/CLS (3)/9000INVL/UI/9000INVL.dart';
-import '3. ETIPO (8)/CLS (3)/OP41A/UI/OP41A.dart';
-import '3. ETIPO (8)/CLS (3)/OP48E/UI/OP48E.dart';
-import '3. ETIPO (8)/CMS (1)/MLAIO/UI/MLAIO.dart';
+import '3. ETIPO (4)/CCS (2)/O8074/UI/O8074.dart';
+import '3. ETIPO (4)/CCS (2)/OUN91/UI/OUN91.dart';
+import '3. ETIPO (4)/CLS (2)/9000INVL/UI/9000INVL.dart';
+import '3. ETIPO (4)/CLS (2)/OP48E/UI/OP48E.dart';
 import '4. ETOPO (10)/CLS (4)/2100L/UI/2100L.dart';
 import '4. ETOPO (10)/CLS (4)/9000L/UI/9000L.dart';
 import '4. ETOPO (10)/CMS (2)/PMLMS/UI/PMLMS.dart';
@@ -97,23 +95,11 @@ final Map<String, Product> productList = {
         'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/9000INVL.png',
     callback: Page900INVL(),
   ),
-  'OP-41A Conveyor Lubricators': const Product(
-    title: 'OP-41A Conveyor Lubricators',
-    imagePath:
-        'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-41A.png',
-    callback: OP41APage(),
-  ),
   'OP-48E': const Product(
     title: 'OP-48E',
     imagePath:
         'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-48E.png',
     callback: OP48EPage(),
-  ),
-  'Multi Line (Permanent) All IN ONE Monitoring + Lubrication': const Product(
-    title: 'Multi Line (Permanent) All IN ONE Monitoring + Lubrication',
-    imagePath:
-        'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Monitor Systems (1)/Multi Line.png',
-    callback: MLAIOPage(),
   ),
   // 4. ETOPO (6)
   '2100L Series Self-Contained Conveyor Lubricators': const Product(
