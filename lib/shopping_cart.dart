@@ -7,21 +7,15 @@ import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 class ShoppingPage extends StatefulWidget {
-  dynamic cartItems = [];
-  final bool showAlternativeUI;
-  final String emptyCartMessage;
-
-  ShoppingPage({
-    super.key,
-    this.showAlternativeUI = false,
-    this.emptyCartMessage = "Your cart is currently empty.",
-  });
+  ShoppingPage({super.key});
 
   @override
   State<ShoppingPage> createState() => _ShoppingPageState();
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
+  dynamic cartItems = [];
+
   int totalQuantities = 0;
   bool cartLoading = false;
   bool orderLoading = false;
@@ -34,7 +28,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       if (value.trim().isEmpty) {
         stateHolders[index]["error"] = 'This field is required.';
       } else if (stateHolders[index]["isNum"] == true) {
-        if (!RegExp(r'^\d+$').hasMatch(value)) {
+        if (!RegExp(r'^-?\d+(\.\d+)?$').hasMatch(value)) {
           stateHolders[index]["error"] = 'Please enter a valid number.';
         } else {
           stateHolders[index]["error"] = null;
@@ -58,11 +52,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       cartLoading = true;
     });
-    widget.cartItems = await CartAPI().getOrders();
+    cartItems = await CartAPI().getOrders();
     setState(() {
       cartLoading = false;
     });
-    for (var order in widget.cartItems) {
+    for (var order in cartItems) {
       totalQuantities += order["quantity"] as int;
     }
     setState(() {});
@@ -595,7 +589,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
           : Column(
               children: [
                 Expanded(
-                  child: widget.cartItems!.isEmpty
+                  child: cartItems!.isEmpty
                       ? Padding(
                           padding: EdgeInsets.fromLTRB(left, 0, 0, 100),
                           child: Column(
@@ -615,9 +609,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: widget.cartItems!.length,
+                          itemCount: cartItems!.length,
                           itemBuilder: (context, index) {
-                            final product = widget.cartItems![index];
+                            final product = cartItems![index];
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -712,7 +706,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                                       removeOrder(product["orderID"]);
                                                   status.then((success) {
                                                     if (success) {
-                                                      widget.cartItems!.removeAt(index);
+                                                      cartItems!.removeAt(index);
                                                       totalQuantities -= product["quantity"] as int;
                                                     }
                                                   });
@@ -731,7 +725,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                 ),
 
                 // Bottom Buttons (Only Show if Cart is Not Empty)
-                if (widget.cartItems!.isNotEmpty)
+                if (cartItems!.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                     decoration: BoxDecoration(
@@ -764,7 +758,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               saveDraft().then((success) => {
                                     if (success)
                                       setState(() {
-                                        widget.cartItems = [];
+                                        cartItems = [];
                                         totalQuantities = 0;
                                       })
                                   });
@@ -792,7 +786,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               finalize().then((success) => {
                                     if (success)
                                       setState(() {
-                                        widget.cartItems = [];
+                                        cartItems = [];
                                         totalQuantities = 0;
                                       })
                                   });
