@@ -29,9 +29,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
   bool deleteLoading = false;
 
   void _validateTextField(String value, int index, dynamic stateHolders) {
+    if (stateHolders[index]["required"] == false) return;
     setState(() {
       if (value.trim().isEmpty) {
         stateHolders[index]["error"] = 'This field is required.';
+      } else if (stateHolders[index]["isNum"] == true) {
+        if (!RegExp(r'^\d+$').hasMatch(value)) {
+          stateHolders[index]["error"] = 'Please enter a valid number.';
+        } else {
+          stateHolders[index]["error"] = null;
+        }
       } else {
         stateHolders[index]["error"] = null;
       }
@@ -358,32 +365,19 @@ class _ShoppingPageState extends State<ShoppingPage> {
               },
             ); // mind-fuck of code right here
           } else {
-            dynamic value = entry.value;
-            if (value is double) {
-              stateHolders.add(
-                {
-                  "controller": TextEditingController(
-                    text: entry.value.toString(),
-                  ),
-                  "initial": entry.value.toString(),
-                  "field": entry.key,
-                  //"required": entry.value,
-                  // add validation errors later...
-                },
-              ); // mind-fuck of code right here
-            } else {
-              stateHolders.add(
-                {
-                  "controller": TextEditingController(
-                    text: entry.value["value"].toString(),
-                  ),
-                  "initial": entry.value["value"].toString(),
-                  "field": entry.key,
-                  "required": entry.value["required"],
-                  if (entry.value["required"] == true) "error": null,
-                },
-              ); // mind-fuck of code right here
-            }
+            stateHolders.add(
+              {
+                "controller": TextEditingController(
+                  text: entry.value["value"].toString(),
+                ),
+                "initial": entry.value["value"].toString(),
+                "field": entry.key,
+                "required": entry.value["required"],
+                "isString": entry.value["isString"],
+                "isNum": entry.value["isNum"],
+                "error": null,
+              },
+            ); // mind-fuck of code right here
           }
 
           options.add([]); // jank-ass code to get me through the night
@@ -401,13 +395,18 @@ class _ShoppingPageState extends State<ShoppingPage> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
         ),
         builder: (context) {
-          return Container(
-            color: Colors.white,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Padding(
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: SingleChildScrollView(
+              child: Container(
+                color: const Color(0xffffffff),
+                // Remove the fixed height here to allow flexible resizing
+                // height: MediaQuery.of(context).size.height * 0.7,
                 padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min, // wrap content vertically
                   children: [
                     if (!isEditable)
                       const Padding(
@@ -428,9 +427,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           child: Row(
                             children: [
                               IconButton(
-                                onPressed: () => {
-                                  _resetStates(stateHolders, numRequestedState),
-                                  Navigator.of(context).pop(),
+                                onPressed: () {
+                                  _resetStates(stateHolders, numRequestedState);
+                                  Navigator.of(context).pop();
                                 },
                                 icon: const Icon(
                                   Icons.cancel,
@@ -453,7 +452,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                         bool valid = await _submitNewData(
                                             orderID, newData, stateHolders, numRequestedState);
                                         if (valid && mounted) {
-                                          // ignore: use_build_context_synchronously
                                           Navigator.of(context).pop();
                                         }
                                       },
@@ -478,12 +476,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
                       ),
                     CommonWidgets.buildSectionDivider(),
                     const SizedBox(height: 20),
-                    Expanded(
+                    // Ensure ListView adapts by wrapping it in a ConstrainedBox or shrinking it:
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // adjust maximum height as needed
+                        maxHeight: MediaQuery.of(context).size.height * 0.5,
+                      ),
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: numberOfFields,
                         itemBuilder: (context, index) {
-                          // placeholder logic...
                           if (stateHolders[index]["controller"] is int) {
                             return CommonWidgets.buildDropdownFieldProtein(
                               isEditable: isEditable,
@@ -503,8 +505,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               isEditable: isEditable,
                               errorText: stateHolders[index]["error"],
                               callback: (value) => {
-                                if (stateHolders[index]["required"])
-                                  _validateTextField(value, index, stateHolders),
+                                //if (stateHolders[index]["required"])
+                                _validateTextField(value, index, stateHolders),
                               },
                             );
                           }
