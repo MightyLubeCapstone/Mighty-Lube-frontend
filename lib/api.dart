@@ -82,16 +82,60 @@ class UserAPI {
     try {
       final url = Uri.parse("$baseUrl/api/email/forgot");
       final headers = {
-        "Content-Type" : "application/json",
+        "Content-Type": "application/json",
       };
       final body = jsonEncode({
-        "email" : email,
+        "email": email,
       });
       final response = await http.post(url, headers: headers, body: body);
-      if(response.statusCode == 201) {
+      if (response.statusCode == 201) {
         return true;
+      } else {
+        return false;
       }
-      else {
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
+
+  Future<bool> validateCode(String email, String passcode) async {
+    try {
+      final url = Uri.parse("$baseUrl/api/email/forgot");
+      final headers = {
+        "Content-Type": "application/json",
+        "email": email,
+        "passcode": passcode,
+      };
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword(String email, String password) async {
+    try {
+      final url = Uri.parse("$baseUrl/api/email/forgot");
+      final headers = {
+        "Content-Type": "application/json",
+        "email": email,
+        "password": password,
+      };
+      final response = await http.put(url, headers: headers);
+      print(response.body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
         return false;
       }
     } catch (error) {

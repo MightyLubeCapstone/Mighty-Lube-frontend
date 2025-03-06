@@ -1,39 +1,91 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/UI/change_pass.dart';
+import 'package:mighty_lube/LoginPage/UI/login_page.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 
-class EnterOTP extends StatefulWidget {
-  final String email;
-  const EnterOTP({super.key, required this.email});
+class PWDRequirements {
+  final String name;
+  final bool Function(String) check;
 
-  @override
-  State<EnterOTP> createState() => _EnterOtpState();
+  PWDRequirements(this.name, this.check);
 }
 
-class _EnterOtpState extends State<EnterOTP> {
-  final TextEditingController codeController = TextEditingController();
-  String? _errorCode;
+class ChangePass extends StatefulWidget {
+  final String email;
+  const ChangePass({super.key, required this.email});
 
-  bool _validateEmail(String code) {
+  @override
+  State<ChangePass> createState() => _ChangePassState();
+}
+
+class _ChangePassState extends State<ChangePass> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmController = TextEditingController();
+  String? _errorPassword;
+
+  List<PWDRequirements> requirements = [
+    PWDRequirements('Password must be at least 8 characters', (input) => input.length >= 8),
+    PWDRequirements('Password must contain at least one uppercase letter',
+        (input) => RegExp(r'[A-Z]').hasMatch(input)),
+    PWDRequirements('Password must contain at least one lowercase letter',
+        (input) => RegExp(r'[a-z]').hasMatch(input)),
+    PWDRequirements(
+        'Password must contain at least one number', (input) => RegExp(r'[0-9]').hasMatch(input)),
+    PWDRequirements('Password must contain at least one special character',
+        (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input)),
+  ];
+  List<PWDRequirements> _remains = [];
+
+  bool _validatePassword(String password) {
     setState(() {
-      if (code.isEmpty) {
-        _errorCode = 'Code is required!';
-      } else if (!RegExp(r'^\d{6}$').hasMatch(code)) {
-        _errorCode = 'Code must be exactly 6 numbers!';
+      _remains = requirements.where((req) => !req.check(password)).toList();
+      if (password.isEmpty) {
+        _errorPassword = 'Password is required!';
+      } else if (RegExp(r'.{8,}').hasMatch(password) == false) {
+        _errorPassword = 'Password must be at least 8 characters';
+      } else if (RegExp(r'[A-Z]').hasMatch(password) == false) {
+        _errorPassword = 'Password must contain at least one uppercase letter';
+      } else if (RegExp(r'[a-z]').hasMatch(password) == false) {
+        _errorPassword = 'Password must contain at least one lowercase letter';
+      } else if (RegExp(r'[0-9]').hasMatch(password) == false) {
+        _errorPassword = 'Password must contain at least one number';
+      } else if (RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(password) == false) {
+        _errorPassword = 'Password must contain at least one special character';
       } else {
-        _errorCode = null;
+        _errorPassword = null;
       }
     });
-    return _errorCode == null;
+    return _errorPassword == null;
   }
 
-  Future<bool> validatePasscode(String passCode) async {
+  Future<bool> resetPassword(String password) async {
     try {
-      if (!_validateEmail(passCode)) return false;
-      bool status = await UserAPI().validateCode(widget.email, passCode);
-      return status == true;
+      if (!_validatePassword(password)) {
+        return false;
+      }
+      bool status = await UserAPI().resetPassword(widget.email, password);
+      if (status == false) {
+        // 400, same password
+        _errorPassword = "Can not be your previous password!";
+        setState(() {});
+        return false;
+      }
+      // Yay, password is FINALLY reset...
+      if (!mounted) return false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Successfully changed password!'),
+        ),
+      );
+      // re-route to login :D
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+      return true;
     } catch (error) {
       if (kDebugMode) {
         print(error);
@@ -74,7 +126,7 @@ class _EnterOtpState extends State<EnterOTP> {
                     children: [
                       const Center(
                         child: Text(
-                          'One-time Passcode',
+                          'Change password',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -83,22 +135,15 @@ class _EnterOtpState extends State<EnterOTP> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
-                        'Enter your passcode received via email below',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
-                      ),
                       const SizedBox(height: 20),
                       const Text(
-                        'One-time passcode:',
+                        'Enter new password:',
                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 8),
                       TextField(
-                        controller: codeController,
+                        obscureText: true,
+                        controller: passwordController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -106,10 +151,52 @@ class _EnterOtpState extends State<EnterOTP> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                           filled: true,
                           fillColor: Colors.grey[100],
-                          hintText: 'Enter your one-time passcode:',
-                          errorText: _errorCode,
+                          hintText: 'Enter your new password:',
+                          errorText: _errorPassword,
                         ),
                       ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Confirm new password:',
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        onChanged: (value) => {
+                          _validatePassword(value),
+                        },
+                        obscureText: true,
+                        controller: confirmController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          hintText: 'Confirm your new password:',
+                        ),
+                      ),
+                      if (_remains.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Password must meet the following requirements:',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            for (var req in _remains)
+                              Text(
+                                '- ${req.name}',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                          ],
+                        ),
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,20 +239,7 @@ class _EnterOtpState extends State<EnterOTP> {
                               child: TextButton(
                                 onPressed: () {
                                   // Add functionality for the submit button
-                                  validatePasscode(codeController.text).then(
-                                    (success) => {
-                                      if (success)
-                                        {
-                                          Navigator.pushReplacement(
-                                            // ignore: use_build_context_synchronously
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ChangePass(email: widget.email),
-                                            ),
-                                          )
-                                        }
-                                    },
-                                  );
+                                  resetPassword(passwordController.text);
                                 },
                                 child: const Text(
                                   'Submit',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/LoginPage/UI/enter_otp.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 
@@ -155,11 +156,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   // Add functionality for the submit button
                                   forgotPassword(emailController.text).then((success) => {
                                         if (success == true)
-                                          {
-                                            // render OTP page
-                                            // ignore: use_build_context_synchronously
-                                            Navigator.of(context)
-                                                .pushReplacementNamed("/enter_otp"),
+                                          { // render OTP page
+                                            Navigator.pushReplacement(
+                                              // ignore: use_build_context_synchronously
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EnterOTP(email: emailController.text),
+                                              ),
+                                            )
                                           }
                                       });
                                 },

@@ -52,7 +52,6 @@ class MainApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/create_account': (context) => const CreateAccountPage(),
         '/forgot_password': (context) => const ForgotPasswordPage(),
-        '/enter_otp': (context) => const EnterOTP(),
 
         // dashboard pages
         '/dashboard': (context) => const DashboardPage(),

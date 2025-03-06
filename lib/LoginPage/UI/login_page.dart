@@ -34,13 +34,13 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushNamed(context, '/dashboard');
           }
         } else {
-          usererror = true;
-          passerror = true;
           if (mounted) {
             showError(context, 'Incorrect username or password');
           }
           setState(() {
             loading = false;
+            usererror = true;
+            passerror = true;
           });
         }
       } catch (e) {

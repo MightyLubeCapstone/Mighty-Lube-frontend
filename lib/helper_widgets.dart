@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class CommonWidgets {
   // Nice looking button
-  static Widget buildGradientButton(
-      BuildContext context, String title, Widget content,
+  static Widget buildGradientButton(BuildContext context, String title, Widget content,
       {bool isError = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -28,8 +27,7 @@ class CommonWidgets {
             offset: const Offset(0, 6),
           ),
           BoxShadow(
-            color:
-                const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.3),
+            color: const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.3),
             blurRadius: 5,
             offset: const Offset(-2, -2),
           ),
@@ -50,12 +48,10 @@ class CommonWidgets {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromARGB(25, 54, 53, 53)
-                        .withValues(alpha: 0.2),
+                    color: const Color.fromARGB(25, 54, 53, 53).withValues(alpha: 0.2),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -167,13 +163,11 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
-      int? dropdownSelection, Function(int) onChanged,
+  static Widget buildDropdownFieldProtein<T>(
+      String label, List<String> options, int? dropdownSelection, Function(int) onChanged,
       {String? errorText, bool? isEditable = true}) {
     String? assessedValue;
-    if (dropdownSelection != null &&
-        dropdownSelection > 0 &&
-        dropdownSelection <= options.length) {
+    if (dropdownSelection != null && dropdownSelection > 0 && dropdownSelection <= options.length) {
       assessedValue = options[dropdownSelection - 1];
     }
 
@@ -190,9 +184,7 @@ class CommonWidgets {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: GestureDetector(
-        onTap: (isEditable ?? false)
-            ? null
-            : () {}, // Ensure isEditable is not null
+        onTap: (isEditable ?? false) ? null : () {}, // Ensure isEditable is not null
         behavior: HitTestBehavior.opaque, // Prevents taps from propagating
         child: AbsorbPointer(
           absorbing: !(isEditable ?? false), // Ensure isEditable is not null
@@ -212,9 +204,7 @@ class CommonWidgets {
                 .map((option) => DropdownMenuItem<String>(
                       value: option,
                       child: Text(option,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400)),
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
                     ))
                 .toList(),
             onChanged: (isEditable ?? false)
@@ -279,8 +269,7 @@ class CommonWidgets {
   }
 
   // Text Field
-  static Widget buildTextField(
-      String hintText, TextEditingController controller,
+  static Widget buildTextField(String hintText, TextEditingController controller,
       {String? errorText, bool isEditable = true, Function(String)? callback}) {
     OutlineInputBorder borderStyle(Color color) {
       return OutlineInputBorder(
@@ -299,8 +288,7 @@ class CommonWidgets {
           if (callback != null) {callback(value)}
         },
         enabled: isEditable,
-        style:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,
         decoration: InputDecoration(
           labelText: hintText,
@@ -308,10 +296,8 @@ class CommonWidgets {
           border: borderStyle(Colors.grey),
           enabledBorder: borderStyle(Colors.grey),
           focusedBorder: borderStyle(Colors.grey),
-          errorBorder:
-              borderStyle(Colors.red), // Ensure error thickness matches
-          focusedErrorBorder:
-              borderStyle(Colors.red), // Ensure when focused with error
+          errorBorder: borderStyle(Colors.red), // Ensure error thickness matches
+          focusedErrorBorder: borderStyle(Colors.red), // Ensure when focused with error
           errorText: errorText,
         ),
       ),
@@ -319,8 +305,8 @@ class CommonWidgets {
   }
 
   // breadcrumb nav
-  static Widget buildBreadcrumbNavigation(BuildContext context, String text,
-      Widget page, String text2, Widget page2) {
+  static Widget buildBreadcrumbNavigation(
+      BuildContext context, String text, Widget page, String text2, Widget page2) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -373,8 +359,7 @@ class _ConfiguratorWithCounter extends StatefulWidget {
   final void Function(int)? callback;
   const _ConfiguratorWithCounter({this.callback});
   @override
-  _ConfiguratorWithCounterState createState() =>
-      _ConfiguratorWithCounterState();
+  _ConfiguratorWithCounterState createState() => _ConfiguratorWithCounterState();
 }
 
 class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
@@ -395,15 +380,13 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   if (itemCount > 1) itemCount--;
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -412,8 +395,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   itemCount++;
                 });
               },
-              icon: const Icon(Icons.add_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
             ),
           ],
         ),
@@ -431,8 +413,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
             ),
             boxShadow: [
               BoxShadow(
-                color:
-                    const Color.fromARGB(25, 54, 53, 53).withValues(alpha: 0.1),
+                color: const Color.fromARGB(25, 54, 53, 53).withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -504,15 +485,13 @@ class _CounterState extends State<_Counter> {
                   }
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -522,8 +501,7 @@ class _CounterState extends State<_Counter> {
                   widget.callback!(itemCount);
                 });
               },
-              icon: const Icon(Icons.add_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
             ),
           ],
         ),
