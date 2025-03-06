@@ -1,33 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial_home.dart';
 import 'package:mighty_lube/product_list.dart';
 import 'package:mighty_lube/protien/protein_home.dart';
-
-class HeaderLogo extends StatelessWidget {
-  const HeaderLogo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 180, // Larger logo area
-      color: const Color.fromARGB(255, 87, 154, 246),
-      child: Center(
-        child: SvgPicture.asset(
-          'assets/WhiteML_Logo-w-tag-vector.svg',
-          width: 100, // Logo width
-          height: 150,
-          colorFilter: const ColorFilter.mode(
-              Color.fromARGB(255, 249, 249, 250), BlendMode.clear),
-        ),
-      ),
-    );
-  }
-}
 
 class ApplicationPage extends StatefulWidget {
   const ApplicationPage({super.key});
@@ -64,8 +41,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // Navigate to Home
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -84,8 +60,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // Navigate to the Application page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -126,9 +101,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // Vertical list of images with text
             Expanded(
               child: ListView(
-                children: (searchQuery == "")
-                    ? _buildDefaultCards()
-                    : _buildDynamicList(),
+                children: (searchQuery == "") ? _buildDefaultCards() : _buildDynamicList(),
               ),
             ),
           ],
@@ -171,7 +144,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           // Navigate to Technician page
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardPage()),
+            MaterialPageRoute(builder: (context) => const IndustrialHome()),
           );
         },
       ),
@@ -210,11 +183,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // Title
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 87, 154, 246), // Same blue as breadcrumb nav
+                color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),

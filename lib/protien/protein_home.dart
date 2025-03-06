@@ -42,8 +42,7 @@ class _ProteinHomeState extends State<ProteinHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -61,8 +60,7 @@ class _ProteinHomeState extends State<ProteinHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -102,9 +100,7 @@ class _ProteinHomeState extends State<ProteinHome> {
             // Stacked vertical list of images with titles
             Expanded(
               child: ListView(
-                children: (searchQuery == '')
-                    ? _buildDefaultCards()
-                    : _buildDynamicList(),
+                children: (searchQuery == '') ? _buildDefaultCards() : _buildDynamicList(),
               ),
             ),
           ],
@@ -129,8 +125,7 @@ class _ProteinHomeState extends State<ProteinHome> {
           children: [
             // Title
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 87, 154, 246),
                 borderRadius: BorderRadius.only(

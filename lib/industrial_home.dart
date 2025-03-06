@@ -4,6 +4,7 @@ import 'package:mighty_lube/application/UI/application_home.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/helper_widgets.dart';
 
 class IndustrialHome extends StatefulWidget {
   const IndustrialHome({super.key});
@@ -126,8 +127,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -145,8 +145,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -185,6 +184,14 @@ class _IndustrialHomeState extends State<IndustrialHome> {
             const SizedBox(height: 20),
 
             // Vertical list of images with text, filtered by search query
+            const Expanded(
+              child: Center(
+                child: Text(
+                  "Coming soon!",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, height: -10),
+                ),
+              ),
+            )
           ],
         ),
       ),
