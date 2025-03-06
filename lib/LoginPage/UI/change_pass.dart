@@ -24,6 +24,8 @@ class _ChangePassState extends State<ChangePass> {
   final TextEditingController confirmController = TextEditingController();
   String? _errorPassword;
 
+  bool loading = false;
+
   List<PWDRequirements> requirements = [
     PWDRequirements('Password must be at least 8 characters', (input) => input.length >= 8),
     PWDRequirements('Password must contain at least one uppercase letter',
@@ -64,7 +66,13 @@ class _ChangePassState extends State<ChangePass> {
       if (!_validatePassword(password)) {
         return false;
       }
+      setState(() {
+        loading = true;
+      });
       bool status = await UserAPI().resetPassword(widget.email, password);
+      setState(() {
+        loading = false;
+      });
       if (status == false) {
         // 400, same password
         _errorPassword = "Can not be your previous password!";
@@ -102,164 +110,166 @@ class _ChangePassState extends State<ChangePass> {
       body: Column(
         children: [
           const HeaderLogo(pressable: false), // Add the logo header here
-          Expanded(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                margin: EdgeInsets.fromLTRB(20, 0, 20, keyboardHeight > 0 ? 0 : 100),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      spreadRadius: 5,
-                      blurRadius: 15,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Center(
-                        child: Text(
-                          'Change password',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Enter new password:',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        obscureText: true,
-                        controller: passwordController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          hintText: 'Enter your new password:',
-                          errorText: _errorPassword,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Confirm new password:',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        onChanged: (value) => {
-                          _validatePassword(value),
-                        },
-                        obscureText: true,
-                        controller: confirmController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          hintText: 'Confirm your new password:',
-                        ),
-                      ),
-                      if (_remains.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Password must meet the following requirements:',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            for (var req in _remains)
-                              Text(
-                                '- ${req.name}',
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                          ],
-                        ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(right: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey[500],
-                              ),
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // Cancel button
-                                },
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(left: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: const LinearGradient(
-                                  colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: TextButton(
-                                onPressed: () {
-                                  // Add functionality for the submit button
-                                  resetPassword(passwordController.text);
-                                },
-                                child: const Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
+          (loading == true)
+              ? const Expanded(child: Center(child: CircularProgressIndicator()))
+              : Expanded(
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      margin: EdgeInsets.fromLTRB(20, 0, 20, keyboardHeight > 0 ? 0 : 100),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            spreadRadius: 5,
+                            blurRadius: 15,
+                            offset: const Offset(0, 10),
                           ),
                         ],
                       ),
-                    ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Center(
+                              child: Text(
+                                'Change password',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'Enter new password:',
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              obscureText: true,
+                              controller: passwordController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                                hintText: 'Enter your new password:',
+                                errorText: _errorPassword,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'Confirm new password:',
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              onChanged: (value) => {
+                                _validatePassword(value),
+                              },
+                              obscureText: true,
+                              controller: confirmController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                                hintText: 'Confirm your new password:',
+                              ),
+                            ),
+                            if (_remains.isNotEmpty)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Password must meet the following requirements:',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  for (var req in _remains)
+                                    Text(
+                                      '- ${req.name}',
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                ],
+                              ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 50,
+                                    margin: const EdgeInsets.only(right: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.grey[500],
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context); // Cancel button
+                                      },
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 50,
+                                    margin: const EdgeInsets.only(left: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      gradient: const LinearGradient(
+                                        colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        // Add functionality for the submit button
+                                        resetPassword(passwordController.text);
+                                      },
+                                      child: const Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
         ],
       ),
     );
