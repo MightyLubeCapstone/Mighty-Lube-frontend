@@ -7,7 +7,7 @@ import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 class ShoppingPage extends StatefulWidget {
-  ShoppingPage({super.key});
+  const ShoppingPage({super.key});
 
   @override
   State<ShoppingPage> createState() => _ShoppingPageState();
@@ -446,6 +446,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                         bool valid = await _submitNewData(
                                             orderID, newData, stateHolders, numRequestedState);
                                         if (valid && mounted) {
+                                          // ignore: use_build_context_synchronously
                                           Navigator.of(context).pop();
                                         }
                                       },

@@ -101,7 +101,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ShoppingPage(),
+                              builder: (context) => const ShoppingPage(),
                             ),
                           );
                         }
