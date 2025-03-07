@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
@@ -50,6 +51,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conductor4': null,
     'conductor7': null,
     'conductor2': null,
+    'conveyorChainSize': null,
+    'chainManufacturer': null,
+    'installationClearance': null,
+    'dripLine': null,
   };
 
   bool validForm() {
@@ -68,6 +73,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conductor4.text, 'conductor4');
     validate.validateTextField(conductor7.text, 'conductor7');
     validate.validateTextField(conductor2.text, 'conductor2');
+    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(installationClearance, 'installationClearance');
+    validate.validateDropdownField(dripLine, 'dripLine');
 
     setState(() {});
   }
@@ -198,13 +207,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent(), isError: validate.sectionError("Customer Power Utilities")),
               CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildMonitoringFeatures(), isError: validate.sectionError("New/Existing Monitoring System")),
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications(), isError: validate.sectionError("Conveyor Specifications")),
-              CommonWidgets.buildGradientButton(context, 'Controller',buildController(), isError: validate.sectionError("Controller")),
-              CommonWidgets.buildGradientButton(context, 'Wire',buildWire(), isError: validate.sectionError("Wire")),
+              CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
+              CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
             ],
           ),
         ),
        
-        CommonWidgets.buildConfiguratorWithCounter(),
+        CommonWidgets.buildConfiguratorWithCounter(callback: (int value){
+          addOP40E(value);
+        }),
         const SizedBox(height: 20),
       ],
     );
@@ -280,11 +291,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3'], operatingVoltage, (value) {
-            setState(() {
-              operatingVoltage = (value); // Update state properly
-            });
-          },),
+            ['Option 1', 'Option 2', 'Option 3'], operatingVoltage, 
+            (value) {
+              setState(() {
+                operatingVoltage = (value);
+                validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
+              });
+          },
+          errorText: errors['operatingVoltage'],),
         CommonWidgets.buildDropdownFieldError(
           'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'], installationClearance, (value) {
@@ -468,5 +482,58 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildSectionDivider(),
       ],
     );
+  }
+
+  VoidCallback? addOP40E(int numRequested) {
+    if (validForm()) {
+      dynamic opData = {
+        'conveyorSystem': conveyorSystem.text,
+        'conveyorLength': conveyorLength.text,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorIndex': conveyorIndex.text,
+        'conveyorChainSize': conveyorChainSize,
+        'chainManufacturer': chainManufacturer,
+        'installationClearance': installationClearance,
+        'dripLine': dripLine,
+        'operatingVoltage': operatingVoltage,
+        'conductor4': conductor4.text,
+        'conductor7': conductor7.text,
+        'conductor2': conductor2.text,
+        'monitoringSystem': monitoringSystem,
+        'newMonitoringSystem': newMonitoringSystem,
+        'driveMotorAmp': driveMotorAmp,
+        'driveTakeUpAir': driveTakeUpAir,
+        'takeUpDistance': takeUpDistance,
+        'driveMotorTemp': driveMotorTemp,
+        'driveMotorVibration': driveMotorVibration,
+        'bentOrMissingTrolley': bentOrMissingTrolley,
+        'lubricationFromSide': lubricationFromSide,
+        'lubricationFromTop': lubricationFromTop,
+        'conveyorChainClean': conveyorChainClean,
+        'measurementUnits': measurementUnits,
+        'pushButtonSwitch': pushButtonSwitch,
+      };
+      status = FormAPI().addOrder("op40e", opData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
+    return null;
+  }
+
+  Widget buildErrorText(String message) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
+    child: Text(
+      message,
+      style: const TextStyle(
+        color: Colors.red,
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  );
   }
 }

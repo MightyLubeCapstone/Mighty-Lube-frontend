@@ -645,7 +645,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'plcConnection': plcConnection,
         'measurementUnits': measurementUnits,
       };
-      status = FormAPI().addOrder("op40e", opData, numRequested);
+      status = FormAPI().addOrder("CC5_OP40E", opData, numRequested);
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

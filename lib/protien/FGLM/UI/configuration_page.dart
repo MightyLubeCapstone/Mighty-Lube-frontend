@@ -84,7 +84,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'operatingVoltage': null
   };
 
-  
 
   bool validForm() {
     validate.mapErrors(errors);

@@ -444,7 +444,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'wireConductorNumber7': wireConductorNumber7.text,
         'wireConductorNumber2': wireConductorNumber2.text,
       };
-      status = FormAPI().addOrder("cdl", cdlData, numRequested);
+      status = FormAPI().addOrder("COE_CDL", cdlData, numRequested);
       return null;
     }  else {
       ScaffoldMessenger.of(context).showSnackBar(

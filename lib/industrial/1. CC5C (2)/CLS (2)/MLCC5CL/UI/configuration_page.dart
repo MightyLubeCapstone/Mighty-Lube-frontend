@@ -560,7 +560,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'highRollers': highRollers,
         'outboardWheels': outboardWheels,
       };
-      status = FormAPI().addOrder("mlcc5cl", mlData, numRequested);
+      status = FormAPI().addOrder("CC5_CL", mlData, numRequested);
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
