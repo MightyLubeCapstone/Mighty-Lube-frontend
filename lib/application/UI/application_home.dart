@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial_home.dart';
+//import 'package:mighty_lube/industrial_home.dart';
 import 'package:mighty_lube/product_list.dart';
 import 'package:mighty_lube/protien/protein_home.dart';
 
@@ -41,7 +41,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // Navigate to Home
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -60,7 +61,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // Navigate to the Application page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -101,7 +103,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // Vertical list of images with text
             Expanded(
               child: ListView(
-                children: (searchQuery == "") ? _buildDefaultCards() : _buildDynamicList(),
+                children: (searchQuery == "")
+                    ? _buildDefaultCards()
+                    : _buildDynamicList(),
               ),
             ),
           ],
@@ -112,18 +116,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   List<Widget> _buildDefaultCards() {
     return [
-      _buildClickableImageCard(
-        context: context,
-        title: 'Industrial (77)',
-        imagePath: 'assets/Industrial.png',
-        onTap: () {
-          // Navigate to Industrial page
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const IndustrialHome()),
-          );
-        },
-      ),
+      // _buildClickableImageCard(
+      //   context: context,
+      //   title: 'Industrial (77)',
+      //   imagePath: 'assets/Industrial.png',
+      //   onTap: () {
+      //     // Navigate to Industrial page
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const IndustrialHome()),
+      //     );
+      //   },
+      // ),
       _buildClickableImageCard(
         context: context,
         title: 'Protein (2)',
@@ -136,18 +140,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
           );
         },
       ),
-      _buildClickableImageCard(
-        context: context,
-        title: 'Technician (1)',
-        imagePath: 'assets/Technician.png',
-        onTap: () {
-          // Navigate to Technician page
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const IndustrialHome()),
-          );
-        },
-      ),
+      // _buildClickableImageCard(
+      //   context: context,
+      //   title: 'Technician (1)',
+      //   imagePath: 'assets/Technician.png',
+      //   onTap: () {
+      //     // Navigate to Technician page
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const IndustrialHome()),
+      //     );
+      //   },
+      // ),
     ];
   }
 
@@ -183,9 +187,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // Title
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
+                color: Color.fromARGB(
+                    255, 87, 154, 246), // Same blue as breadcrumb nav
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),

@@ -27,3 +27,9 @@ final Map<String, Product> productList = {
     callback: FGLMPage(),
   ),
 };
+
+final Map<String, String> imageList = {
+  // protein
+  'FGCO': 'assets/FGCO.png',
+  'FGLM': 'assets/FGLM.png',
+};
