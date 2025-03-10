@@ -89,7 +89,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         );
       },
     );
-    if (draftName.isEmpty) {
+    if (draftName!.isEmpty) {
       return Future(() {
         return false;
       }); // User canceled or entered empty name
@@ -177,7 +177,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         );
       },
     );
-    if (configName.isEmpty) {
+    if (configName!.isEmpty) {
       return Future(() {
         return false;
       }); // User canceled or entered empty name
