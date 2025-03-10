@@ -46,13 +46,11 @@ class _DraftsPageState extends State<DraftsPage> {
               "Are you sure you want to delete this draft? This action cannot be undone."),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true), // Confirm deletion
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
               child: const Text("Delete", style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -84,20 +82,16 @@ class _DraftsPageState extends State<DraftsPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirm Restore"),
-          content: const Text(
-              "Are you sure you want to use this draft? This action will"
+          content: const Text("Are you sure you want to use this draft? This action will"
               "overwrite your current cart contents and cannot be undone."),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false), // Cancel deletion
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
               child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true), // Confirm deletion
-              child: const Text("Use draft",
-                  style: TextStyle(color: Colors.green)),
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Use draft", style: TextStyle(color: Colors.green)),
             ),
           ],
         );
@@ -225,8 +219,7 @@ class _DraftsPageState extends State<DraftsPage> {
                                   _showDraftInfo(index)
                                 },
                                 child: Card(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 16),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                                   elevation: 3,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -234,13 +227,11 @@ class _DraftsPageState extends State<DraftsPage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(12),
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            widget.draftItems[index]
-                                                    ["draftTitle"] ??
+                                            widget.draftItems[index]["draftTitle"] ??
                                                 "Unknown draft",
                                             style: const TextStyle(
                                               fontSize: 16,
@@ -253,44 +244,34 @@ class _DraftsPageState extends State<DraftsPage> {
                                         Row(
                                           children: [
                                             IconButton(
-                                              icon: const Icon(Icons.delete,
-                                                  color: Colors.red),
+                                              icon: const Icon(Icons.delete, color: Colors.red),
                                               onPressed: () async {
                                                 // delete from drafts
                                                 // needs to pull up a confirmation window and then remove it
                                                 // from both cartItems AND the database
                                                 bool status = await removeDraft(
-                                                    widget.draftItems[index]
-                                                        ["cartID"]);
+                                                    widget.draftItems[index]["cartID"]);
                                                 if (status) {
                                                   setState(() {
-                                                    widget.draftItems
-                                                        .removeAt(index);
+                                                    widget.draftItems.removeAt(index);
                                                   });
                                                 }
                                               },
                                             ),
                                             IconButton(
-                                              icon: const Icon(
-                                                  Icons.shopping_cart_checkout,
+                                              icon: const Icon(Icons.shopping_cart_checkout,
                                                   color: Colors.green),
                                               onPressed: () async {
                                                 // send to cart (replaces what is in there)
-                                                bool status =
-                                                    await restoreDraft(
-                                                  widget.draftItems[index]
-                                                      ["cartID"],
+                                                bool status = await restoreDraft(
+                                                  widget.draftItems[index]["cartID"],
                                                 );
                                                 if (status) {
                                                   setState(() {
-                                                    dynamic cart =
-                                                        widget.draftItems[index]
-                                                            ["cart"];
-                                                    totalQuantities = 0;
+                                                    dynamic cart = widget.draftItems[index]["cart"];
                                                     for (var order in cart) {
                                                       totalQuantities +=
-                                                          order["numRequested"]
-                                                              as int;
+                                                          order["numRequested"] as int;
                                                     }
                                                   });
                                                 }
