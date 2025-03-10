@@ -89,7 +89,7 @@ class CMSProductsState extends State<CMSProducts> {
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Conveyor Monitor Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

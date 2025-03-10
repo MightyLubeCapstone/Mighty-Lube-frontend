@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/products.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 
@@ -20,7 +20,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Mighty Lube In Floor Tow Line:',
+                'OP-40E:',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -44,4 +44,5 @@ class HomeSection extends StatelessWidget {
       ],
     );
   }
+
 }

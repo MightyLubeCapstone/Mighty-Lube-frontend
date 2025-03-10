@@ -88,7 +88,7 @@ class CLSProductsState extends State<CLSProducts> {
                     );
                   },
                   child: const Text(
-                    'CCS',
+                    'Conveyor Lubrication Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

@@ -88,7 +88,7 @@ class CGSProductsState extends State<CGSProducts> {
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Conveyor Greaser Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

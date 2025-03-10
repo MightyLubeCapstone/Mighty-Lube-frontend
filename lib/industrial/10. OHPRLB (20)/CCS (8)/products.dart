@@ -93,7 +93,7 @@ class CCSProductsState extends State<CCSProducts> {
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Conveyor Cleaning Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

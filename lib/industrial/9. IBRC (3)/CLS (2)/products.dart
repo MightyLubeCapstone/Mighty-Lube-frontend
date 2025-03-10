@@ -85,7 +85,7 @@ class IBRCCLSProductsState extends State<IBRCCLSProducts> {
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Conveyor Lubrication Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

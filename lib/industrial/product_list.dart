@@ -18,7 +18,7 @@ import '6. FC (2)/FR314/UI/FR314.dart';
 import '6. FC (2)/FR317/UI/FR317.dart';
 import '7. FROOI (6)/CLS (3)/ES/UI/ES.dart';
 import '7. FROOI (6)/CLS (3)/OP139A/UI/OP139A.dart';
-import '8. IFTL (2)/CSL (2)/MLIFTL/UI/MLIFTL.dart';
+import '8. IFTL (2)/CLS (2)/MLIFTL/UI/MLIFTL.dart';
 import '9. IBRC (3)/CLS (2)/MLRFC/UI/MLRFC.dart';
 import '10. OHPRLB (20)/CCS (8)/300I/UI/300I.dart';
 import '10. OHPRLB (20)/CCS (8)/LBCBS/UI/LBCBS.dart';

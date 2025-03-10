@@ -4,8 +4,8 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/MLIFTL/UI/MLIFTL.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/OP40E/UI/OP40E.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/MLIFTL/UI/MLIFTL.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/OP40E/UI/OP40E.dart';
 import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/subfolder.dart';
 
 
@@ -85,7 +85,7 @@ class IFTLProductsState extends State<IFTLProducts> {
                     );
                   },
                   child: const Text(
-                    'CLS',
+                    'Conveyor Lubrication Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/products.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 
@@ -18,9 +18,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController conveyorIndex = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
-  final TextEditingController resSize = TextEditingController();
+  final TextEditingController equipBrand = TextEditingController();
+  final TextEditingController currentType = TextEditingController();
+  final TextEditingController currentGrade = TextEditingController();
+  final TextEditingController chainMaster = TextEditingController();
   final TextEditingController specialOP = TextEditingController();
-
+  final TextEditingController optionalInfo = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +39,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
-              CommonWidgets.buildGradientButton(context, 'Additonal Options Available',buildAdditional()),
-              CommonWidgets.buildGradientButton(context, 'In Floor Towline: Measurements',buildMeasurement()),
+              CommonWidgets.buildGradientButton(context, 'In Floor Towline: Measurements',buildMeasurements()),
             ],
           ),
         ),
@@ -54,7 +56,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
         CommonWidgets.buildTextField('Enter Name of Conveyor System',conveyorSystem),
@@ -75,6 +76,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Webb-Stiles',
           'Wilkie Brothers',
           'Other'
+        ]),
+        CommonWidgets.buildTextField('Enter Conveyor Length',conveyorLength),
+        CommonWidgets.buildDropdownField('Conveyor Length Unit', [
+          'Feet',
+          'Inches',
+          'm Meter',
+          'mm Milimeter',
         ]),
         CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
         CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
@@ -117,14 +125,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         CommonWidgets.buildSectionDivider(),
-         CommonWidgets.buildTextField('Operating Voltage - Single Phase: (Volts/hz)',operatingVoltage),
-         CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTextField('Operating Voltage - 3 Phase: (Volts/hz)',operatingVoltage),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildNewMonitoringSystem() { //will probably need template B
+  Widget buildNewMonitoringSystem() { // will probably need template B
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -141,31 +149,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-  
+
   Widget buildConveyorSpecifications() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Wheel:Open Race Style', [
+        CommonWidgets. buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Wheel: Open Race Style', [
           'Not Applicable',
-          'Open Inside', 
-          'Open Outside'
+          'Open Inside',
+          'Open Outside '
         ]),
         CommonWidgets.buildDropdownField('Wheel: Sealed Style', [
           'Extended',
-          'Flush', 
+          'Flush',
           'Recessed'
         ]),
-        CommonWidgets.buildDropdownField('Power Chain', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Chain Pins', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Slider Plates', [
+        CommonWidgets.buildDropdownField('Open Inside/ Shielded Outside', [
           'Yes',
           'No'
         ]),
@@ -178,14 +178,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'No'
         ]),
         CommonWidgets.buildDropdownField('Guide Rollers Open Race Style', [
-          'Not Applicable',
-          'Open Inside', 
+          'Not Applicable ',
+          'Open Inside',
           'Open Outside'
         ]),
-        CommonWidgets.buildDropdownField('Guide Rollers Sealed Style', [
+        CommonWidgets.buildDropdownField('Guide Rollers Sealed Styles', [
           'Extended',
-          'Flush', 
+          'Flush',
           'Recessed'
+        ]),
+        CommonWidgets.buildDropdownField('Open Hole', [
+          'Yes',
+          'No'
         ]),
         CommonWidgets.buildDropdownField('Dog Actuator', [
           'Yes',
@@ -199,71 +203,58 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Yes',
           'No'
         ]),
-        CommonWidgets.buildDropdownField('Roller Chains', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Bushings', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Rider Plates', [
-          'Yes',
-          'No'
-        ]),
         CommonWidgets.buildDropdownField('Outboard Wheels', [
           'Yes',
           'No'
         ]),
-
-      // ADD TEMPLATE C HERE! 
-
-        CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
+        CommonWidgets.buildDropdownField('Rail Lubrication', [
           'Yes',
           'No'
         ]),
-        CommonWidgets.buildDropdownField('Reservoir Size', [
-          '10 Gallon',
-          '65 Gallon'
-        ]),
-        CommonWidgets.buildTextField('Reservior Size Quantity',resSize),
-        CommonWidgets.buildDropdownField('Is the Conveyor Chain Clean?', [
-          'Yes',
-          'No'
-        ]),
-        
+        CommonWidgets.buildTextField('Enter Current Lubrication Equipment (Brand)',equipBrand),
+        CommonWidgets.buildTextField('Enter Current Lubricant Type',currentType),
+        CommonWidgets.buildTextField('Enter Current Lubricant Viscosity/Grade',currentGrade),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
   
-  Widget buildController() { // will need template C too
+  Widget buildController() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField('Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',specialOP),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
-  Widget buildAdditional() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Wash Down', [
+        CommonWidgets.buildTextField('Enter ChainMaster Controller',chainMaster),
+        CommonWidgets.buildDropdownField('Timer', [
           'Yes',
           'No'
         ]),
-        
+        CommonWidgets.buildDropdownField('Electric On/Off', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Pneumatic On/Off', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Mighty Lube Monitoring', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('PLC Connection', [
+          'Yes',
+          'No'
+        ]),
+       
+        CommonWidgets.buildTextField('Enter Other Details',optionalInfo),
+        CommonWidgets.buildTextField('Enter Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',specialOP),
+
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildMeasurement() { // leave this one alone - will come back and do later
+  Widget buildMeasurements() { //leave alone will come back and do later
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -274,13 +265,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'm Meter', 
           'mm Milimeter'
         ]),
-        
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
-
 }
-
-  
-

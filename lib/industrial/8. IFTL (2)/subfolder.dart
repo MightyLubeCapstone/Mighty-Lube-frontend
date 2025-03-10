@@ -5,7 +5,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CSL%20(2)/products.dart';
+import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/products.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
 
 
