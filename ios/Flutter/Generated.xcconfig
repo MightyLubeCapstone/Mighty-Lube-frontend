@@ -1,8 +1,13 @@
 // This is a generated file; do not edit or check into version control.
+<<<<<<< HEAD
 FLUTTER_ROOT=C:\Users\wesat\Documents\Flutter\flutter
 FLUTTER_APPLICATION_PATH=C:\Users\wesat\Documents\Code\CSC4610\MightyLubeProject\Mighty-Lube-frontend
+=======
+FLUTTER_ROOT=/Users/addison/development/flutter
+FLUTTER_APPLICATION_PATH=/Users/addison/Mighty-Lube-frontend
+>>>>>>> 052c57c (IOS Build Changes)
 COCOAPODS_PARALLEL_CODE_SIGN=true
-FLUTTER_TARGET=lib\main.dart
+FLUTTER_TARGET=/Users/addison/Mighty-Lube-frontend/lib/main.dart
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=0.1.0
 FLUTTER_BUILD_NUMBER=0.1.0
@@ -11,4 +16,4 @@ EXCLUDED_ARCHS[sdk=iphoneos*]=armv7
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=true
 TREE_SHAKE_ICONS=false
-PACKAGE_CONFIG=.dart_tool/package_config.json
+PACKAGE_CONFIG=/Users/addison/Mighty-Lube-frontend/.dart_tool/package_config.json
