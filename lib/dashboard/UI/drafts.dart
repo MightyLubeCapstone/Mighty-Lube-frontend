@@ -83,7 +83,7 @@ class _DraftsPageState extends State<DraftsPage> {
         return AlertDialog(
           title: const Text("Confirm Restore"),
           content: const Text("Are you sure you want to use this draft? This action will"
-              "overwrite your current cart contents and cannot be undone."),
+              " append this draft's contents to your current cart."),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
