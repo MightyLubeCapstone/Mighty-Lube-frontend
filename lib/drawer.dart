@@ -98,7 +98,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           ListTile(
             leading: const Icon(Icons.account_circle),
-            title: const Text('Account Details'),
+            title: const Text('Account Settings'),
             onTap: () {
               Navigator.push(
                 context,

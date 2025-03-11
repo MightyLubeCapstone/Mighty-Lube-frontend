@@ -78,6 +78,31 @@ class UserAPI {
     }
   }
 
+  Future<bool> removeAccount(String password) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final url = Uri.parse("$baseUrl/api/users");
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${prefs.getString("sessionID")}",
+      };
+      final body = jsonEncode({
+        "password": password,
+      });
+      final response = await http.delete(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
+
   Future<bool> forgotPassword(String email) async {
     try {
       final url = Uri.parse("$baseUrl/api/email/forgot");
