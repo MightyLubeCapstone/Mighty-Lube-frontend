@@ -34,8 +34,9 @@ flutter_native_splash:
     icon_background_color: "#ffffff"
   
 flutter_icons:
-  android: true
+  android: false
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/ML_Logo_square.png"
   adaptive_icon_background: "#ffffff"
 
