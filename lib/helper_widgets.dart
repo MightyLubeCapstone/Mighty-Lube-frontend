@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
+
 
 class CommonWidgets {
   // Nice looking button
@@ -293,7 +295,7 @@ class CommonWidgets {
     );
   }
 
-  // breadcrumb nav
+  // Breadcrumb nav
   static Widget buildBreadcrumbNavigation(
     BuildContext context, String text, Widget page, String text2, Widget page2) {
     return Padding(
@@ -339,6 +341,173 @@ class CommonWidgets {
         ),
       ],
     ),
+  );
+}
+  
+  // Fun image stuff 
+  static Widget buildImageDisplayEnhanced(
+  ImageProvider imageProvider, {
+  double width = 300,
+  double height = 300,
+  BoxFit fit = BoxFit.contain,
+  double borderRadius = 12,
+  Color backgroundColor = const Color(0xFFF3F4F6),
+  double shadowStrength = 0.2,
+  bool fullWidth = false,
+  double aspectRatio = 1.3,
+  bool enableZoom = false,
+  BuildContext? context, // required for zoom modal
+}) {
+  final Widget imageWidget = ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadius),
+    child: Stack(
+      children: [
+        Positioned.fill(
+          child: Image(
+            image: imageProvider,
+            fit: fit,
+            filterQuality: FilterQuality.high,
+          ),
+        ),
+        // Zoom hint icon
+        if (enableZoom)
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.zoom_in,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          ),
+      ],
+    ),
+  );
+
+  Widget tappableImage = enableZoom && context != null
+      ? GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => Scaffold(
+                  backgroundColor: Colors.black,
+                  appBar: AppBar(
+                    backgroundColor: Colors.black,
+                    iconTheme: const IconThemeData(color: Colors.white),
+                  ),
+                  body: Center(
+                    child: PhotoView(
+                      imageProvider: imageProvider,
+                      backgroundDecoration:
+                          const BoxDecoration(color: Colors.black),
+                      minScale: PhotoViewComputedScale.contained,
+                      maxScale: PhotoViewComputedScale.covered * 2.5,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          child: imageWidget,
+        )
+      : imageWidget;
+
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+    padding: const EdgeInsets.all(8),
+    width: fullWidth ? double.infinity : width,
+    height: fullWidth ? null : height,
+    decoration: BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(borderRadius),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(shadowStrength),
+          blurRadius: 12,
+          offset: const Offset(0, 6),
+        ),
+      ],
+    ),
+    child: fullWidth
+        ? AspectRatio(
+            aspectRatio: aspectRatio,
+            child: tappableImage,
+          )
+        : tappableImage,
+  );
+}
+  
+  // More fun image stuff - but just for the measurements tab
+  static Widget buildMeasurementFieldWithImage({
+  required BuildContext context,
+  required String title,
+  required String hintText,
+  required String imagePath,
+  required TextEditingController controller,
+  String? subHint,
+  double aspectRatio = 1.2,
+  int leftFlex = 3,
+  int rightFlex = 3,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left: Text label + input
+          Expanded(
+            flex: leftFlex,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                CommonWidgets.buildTextField(hintText, controller),
+                if (subHint != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subHint,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          // Right: Image
+          Expanded(
+            flex: rightFlex,
+            child: CommonWidgets.buildImageDisplayEnhanced(
+              AssetImage(imagePath),
+              fullWidth: true,
+              aspectRatio: aspectRatio,
+              enableZoom: true,
+              context: context,
+            ),
+          ),
+        ],
+      ),
+      CommonWidgets.buildSectionDivider(),
+    ],
   );
 }
 

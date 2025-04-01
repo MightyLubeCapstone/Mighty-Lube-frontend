@@ -20,6 +20,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^4.0.0
   flutter_svg: ^2.0.4
+  photo_view: ^0.14.0
 
 flutter:
   uses-material-design: true
@@ -125,3 +126,12 @@ flutter:
     - assets/industrial/PFOOI(17)/CLS/ES.png
     - assets/industrial/PFOOI(17)/CLS/OP55.png
     - assets/industrial/PFOOI(17)/CLS/OP139A.png
+
+    - assets/Measurements/1/A1.png
+    - assets/Measurements/1/B1.png
+    - assets/Measurements/1/D1.png
+    - assets/Measurements/1/G.png
+    - assets/Measurements/1/H.png
+    - assets/Measurements/1/M1.png
+    - assets/Measurements/1/Y1.png
+    - assets/Measurements/1/Z1.png

@@ -21,6 +21,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
   final TextEditingController specialOptions = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController a1 = TextEditingController();
+  final TextEditingController b1Width = TextEditingController();
+  final TextEditingController d1Thickness = TextEditingController();
+  final TextEditingController cc5r = TextEditingController();
+  final TextEditingController y1 = TextEditingController();
+  final TextEditingController z1 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -190,23 +198,90 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   //same as wire. leave for now cause this is the image ones
   Widget buildMeasurements() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildDropdownField('Measurement Unit', [
           'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
+          'Inches', 'm Meter', 'mm Millimeter '
         ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+      // Image G
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Power Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/1/G.png',
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+      // Image H
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Power Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/1/H.png',
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+      // Image A1 
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Roller Wheel (A1)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/1/A1.png',
+        controller: a1,
+        subHint: "(Diameter)",
+      ),
+      // Image B1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Roller Wheel (B1)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/1/B1.png',
+        controller: b1Width,
+        subHint: "(Width)",
+      ),
+      // Image D1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Link (D1)",
+        hintText: "Thickness",
+        imagePath: 'assets/Measurements/1/D1.png',
+        controller: d1Thickness,
+        subHint: "(Thickness)",
+      ),
+      // Image M1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Roller Wheel Pitch (M1)",
+        hintText: "Inside of Left Roller to Inside of Right Roller",
+        imagePath: 'assets/Measurements/1/M1.png',
+        controller: cc5r,
+        subHint: "(Inside of Left Roller to Inside of Right Roller)",
+        ),
+      // Image Y1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Roller Pin (Y1)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/1/Y1.png',
+        controller: y1,
+        subHint: "(Diameter)",
+      ),
+      // Image Z1 
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "CC5 Roller Pin (Z1)",
+        hintText: "Length",
+        imagePath: 'assets/Measurements/1/Z1.png',
+        controller: z1,
+        subHint: "(Length)",
+      ),
+
+    ],
+  );
+}
+
 
 
 }
