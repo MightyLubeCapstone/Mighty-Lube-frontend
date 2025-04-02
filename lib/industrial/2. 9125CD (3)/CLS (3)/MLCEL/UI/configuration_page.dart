@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/2.%209125CD%20(3)/CLS%20(3)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 class ConfigurationSection extends StatefulWidget {
@@ -27,6 +27,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController specialOptions = TextEditingController();
   final TextEditingController jBox = TextEditingController();
   final TextEditingController conductor12 = TextEditingController();
+
+  final TextEditingController aTop = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController jWidth = TextEditingController();
+  final TextEditingController xWidth = TextEditingController();
+  final TextEditingController yThickness = TextEditingController();
+  
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -224,21 +235,73 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
+  
   Widget buildMeasurements() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildDropdownField('Measurement Unit', [
           'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
+          'Inches', 'm Meter', 'mm Millimeter '
         ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+      // Image A
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain on Edge Drag Line Chain Drop (A)",
+        hintText: "Top of Rail to Center of Chain",
+        imagePath: 'assets/Measurements/2/A.png',
+        controller: aTop,
+        subHint: "(Top of Rail to Center of Chain)",
+      ),
+      // Image G
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain on Edge Drag Line Power Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/2/G.png',
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+      // Image H
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain on Edge Drag Line Power Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/2/H.png',
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+      // Image J
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain on Edge Drag Line Rail Offset (J)",
+        hintText: "Inside of Rail Channel to Inside of Rail Channel",
+        imagePath: 'assets/Measurements/2/J.png',
+        controller: jWidth,
+        subHint: "(Inside of Rail Channel to Inside of Rail Channel)",
+      ),
+      // Image X
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain on Edge Drain Line Wear Bar (X)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/2/X.png',
+        controller: xWidth,
+        subHint: "(Width)",
+      ),
+      // Image Y
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain on Edge Drag Line Wear Bar (Y)",
+        hintText: "Thickness",
+        imagePath: 'assets/Measurements/2/Y.png',
+        controller:yThickness,
+        subHint: "(Thickness)",
+        ),
+      
+    ],
+  );
+}
 
 
 }

@@ -196,7 +196,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  //same as wire. leave for now cause this is the image ones
+  
   Widget buildMeasurements() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,

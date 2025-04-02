@@ -5,7 +5,7 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/2.%209125CD%20(3)/CLS%20(3)/products.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {

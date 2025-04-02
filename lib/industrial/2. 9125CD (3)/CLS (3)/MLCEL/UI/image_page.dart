@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/2.%20COEDL%20(3)/CLS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/2.%209125CD%20(3)/CLS%20(3)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 class ImageSection extends StatelessWidget {
