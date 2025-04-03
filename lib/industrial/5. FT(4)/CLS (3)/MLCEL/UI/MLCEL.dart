@@ -33,8 +33,8 @@ class MLCELPageState extends State<MLCELPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.description,
       ),
       drawer: const CustomDrawer(),

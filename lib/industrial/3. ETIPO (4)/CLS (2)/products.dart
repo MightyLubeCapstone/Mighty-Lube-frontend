@@ -43,8 +43,8 @@ class CLSProductsState extends State<CLSProducts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),
@@ -60,8 +60,7 @@ class CLSProductsState extends State<CLSProducts> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Row(
@@ -101,15 +100,13 @@ class CLSProductsState extends State<CLSProducts> {
                 children: [
                   _buildClickableImageCard(
                     context: context,
-                    title:
-                        '9000INVL (Inverted) Series Enclosed Track Conveyor Lubricators',
+                    title: '9000INVL (Inverted) Series Enclosed Track Conveyor Lubricators',
                     imagePath:
                         'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/9000INVL.png',
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const Page900INVL()),
+                        MaterialPageRoute(builder: (context) => const Page900INVL()),
                       );
                     },
                   ),
@@ -121,8 +118,7 @@ class CLSProductsState extends State<CLSProducts> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const OP48EPage()),
+                        MaterialPageRoute(builder: (context) => const OP48EPage()),
                       );
                     },
                   ),
@@ -150,11 +146,9 @@ class CLSProductsState extends State<CLSProducts> {
           children: [
             // Title
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 87, 154, 246), // Same blue as breadcrumb nav
+                color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),

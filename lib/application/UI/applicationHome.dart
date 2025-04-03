@@ -46,8 +46,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ApplicationPage(),
+      appBar: CustomAppBar(
+        link: const ApplicationPage(),
         customIcon: Icons.description,
       ),
       drawer: const CustomDrawer(),
@@ -64,8 +64,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // Navigate to Home
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -84,8 +83,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // Navigate to the Application page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -126,9 +124,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // Vertical list of images with text
             Expanded(
               child: ListView(
-                children: (searchQuery == "")
-                    ? _buildDefaultCards()
-                    : _buildDynamicList(),
+                children: (searchQuery == "") ? _buildDefaultCards() : _buildDynamicList(),
               ),
             ),
           ],
@@ -210,11 +206,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // Title
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 87, 154, 246), // Same blue as breadcrumb nav
+                color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),

@@ -48,8 +48,8 @@ class CMSProductsState extends State<CMSProducts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class CommonWidgets {
   // Nice looking button
-  static Widget buildGradientButton(
-      BuildContext context, String title, Widget content, {bool isError = false} ) {
+  static Widget buildGradientButton(BuildContext context, String title, Widget content,
+      {bool isError = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,
@@ -46,8 +47,7 @@ class CommonWidgets {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
@@ -162,61 +162,59 @@ class CommonWidgets {
   }
 
   // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein<T>(String label, List<String> options,
-      int? dropdownSelection, Function(dynamic) onChanged,
-      {String? errorText}) {
+  static Widget buildDropdownFieldProtein<T>(
+      String label, List<String> options, int? dropdownSelection, Function(int) onChanged,
+      {String? errorText, bool? isEditable = true}) {
     String? assessedValue;
-
-    if (dropdownSelection != null &&
-        dropdownSelection > 0 &&
-        dropdownSelection <= options.length) {
+    if (dropdownSelection != null && dropdownSelection > 0 && dropdownSelection <= options.length) {
       assessedValue = options[dropdownSelection - 1];
+    }
+
+    OutlineInputBorder borderStyle(Color color) {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: color,
+          width: 2.0, // Explicitly set width to match TextField
+        ),
+      );
     }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
-      child: DropdownButtonFormField<String>(
-        value: assessedValue,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.black),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorText != null ? Colors.red : Colors.grey,
-              width: 2.0,
+      child: GestureDetector(
+        onTap: (isEditable ?? false) ? null : () {}, // Ensure isEditable is not null
+        behavior: HitTestBehavior.opaque, // Prevents taps from propagating
+        child: AbsorbPointer(
+          absorbing: !(isEditable ?? false), // Ensure isEditable is not null
+          child: DropdownButtonFormField<String>(
+            value: assessedValue,
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: const TextStyle(color: Colors.black),
+              border: borderStyle(Colors.grey),
+              enabledBorder: borderStyle(Colors.grey),
+              focusedBorder: borderStyle(Colors.grey),
+              errorBorder: borderStyle(Colors.red),
+              focusedErrorBorder: borderStyle(Colors.red),
+              errorText: errorText, // No need for `!`, it's nullable already
             ),
+            items: options
+                .map((option) => DropdownMenuItem<String>(
+                      value: option,
+                      child: Text(option,
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
+                    ))
+                .toList(),
+            onChanged: (isEditable ?? false)
+                ? (value) {
+                    if (value != null) {
+                      onChanged(options.indexOf(value) + 1);
+                    }
+                  }
+                : null, // Prevents value change
           ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorText != null ? Colors.red : Colors.grey,
-              width: 2.0,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorText != null ? Colors.red : Colors.blue,
-              width: 2.0,
-            ),
-          ),
-          errorText: errorText,
         ),
-        items: options
-            .map((option) => DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option),
-                ))
-            .toList(),
-        onChanged: (value) {
-          if (value != null) {
-            dynamic newValue;
-            // number range
-            newValue = options.indexOf(value) + 1;
-            onChanged(newValue);
-          }
-        },
       ),
     );
   }
@@ -261,88 +259,264 @@ class CommonWidgets {
     );
   }
 
+  // Configurator Button with Counter
+  static Widget buildCounter(int numRequested, {void Function(int)? callback}) {
+    return _Counter(
+      callback: callback,
+      initialValue: numRequested,
+    );
+  }
+
   // Text Field
-  static Widget buildTextField(
-      String hintText, TextEditingController controller,
-      {String? errorText}) {
+  static Widget buildTextField(String hintText, TextEditingController controller,
+      {String? errorText, bool isEditable = true, Function(String)? callback}) {
+    OutlineInputBorder borderStyle(Color color) {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: color,
+          width: 2.0, // Explicitly set width to match TextField
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: TextField(
+        onChanged: (value) => {
+          if (callback != null) {callback(value)}
+        },
+        enabled: isEditable,
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,
         decoration: InputDecoration(
-          hintText: hintText,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.grey,
-                width: 2.0,
-              )),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.grey,
-                width: 2.0,
-              )),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                  color: errorText != null ? Colors.red : Colors.blue,
-                  width: 2.0)),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black),
+          border: borderStyle(Colors.grey),
+          enabledBorder: borderStyle(Colors.grey),
+          focusedBorder: borderStyle(Colors.grey),
+          errorBorder: borderStyle(Colors.red), // Ensure error thickness matches
+          focusedErrorBorder: borderStyle(Colors.red), // Ensure when focused with error
+          errorText: errorText,
         ),
       ),
     );
   }
 
-  // breadcrumb nav
+  // Breadcrumb nav
   static Widget buildBreadcrumbNavigation(
-    BuildContext context, String text, Widget page, String text2, Widget page2) {
+      BuildContext context, String text, Widget page, String text2, Widget page2) {
     return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.home, color: Colors.blue),
-          onPressed: () {
-            // Navigate to the home page dynamically
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page),
-            );
-          },
-        ),
-        const SizedBox(width: 8), // Spacing
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-            color: Colors.black54,
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.blue),
+            onPressed: () {
+              // Navigate to the home page dynamically
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page),
+              );
+            },
           ),
-        ),
-        const SizedBox(width: 8), // Spacing
-        GestureDetector(
-          onTap: () {
-            // Navigate to the second page dynamically
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page2),
-            );
-          },
-          child: Text(
-            text2,
+          const SizedBox(width: 8), // Spacing
+          Text(
+            text,
             style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              fontWeight: FontWeight.normal,
+              color: Colors.black54,
             ),
           ),
+          const SizedBox(width: 8), // Spacing
+          GestureDetector(
+            onTap: () {
+              // Navigate to the second page dynamically
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page2),
+              );
+            },
+            child: Text(
+              text2,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Fun image stuff
+  static Widget buildImageDisplayEnhanced(
+    ImageProvider imageProvider, {
+    double width = 300,
+    double height = 300,
+    BoxFit fit = BoxFit.contain,
+    double borderRadius = 12,
+    Color backgroundColor = const Color(0xFFF3F4F6),
+    double shadowStrength = 0.2,
+    bool fullWidth = false,
+    double aspectRatio = 1.3,
+    bool enableZoom = false,
+    BuildContext? context, // required for zoom modal
+  }) {
+    final Widget imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image(
+              image: imageProvider,
+              fit: fit,
+              filterQuality: FilterQuality.high,
+            ),
+          ),
+          // Zoom hint icon
+          if (enableZoom)
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.zoom_in,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+
+    Widget tappableImage = enableZoom && context != null
+        ? GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                    backgroundColor: Colors.black,
+                    appBar: AppBar(
+                      backgroundColor: Colors.black,
+                      iconTheme: const IconThemeData(color: Colors.white),
+                    ),
+                    body: Center(
+                      child: PhotoView(
+                        imageProvider: imageProvider,
+                        backgroundDecoration: const BoxDecoration(color: Colors.black),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered * 2.5,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            child: imageWidget,
+          )
+        : imageWidget;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.all(8),
+      width: fullWidth ? double.infinity : width,
+      height: fullWidth ? null : height,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(shadowStrength),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: fullWidth
+          ? AspectRatio(
+              aspectRatio: aspectRatio,
+              child: tappableImage,
+            )
+          : tappableImage,
+    );
+  }
+
+  // More fun image stuff - but just for the measurements tab
+  static Widget buildMeasurementFieldWithImage({
+    required BuildContext context,
+    required String title,
+    required String hintText,
+    required String imagePath,
+    required TextEditingController controller,
+    String? subHint,
+    double aspectRatio = 1.2,
+    int leftFlex = 3,
+    int rightFlex = 3,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left: Text label + input
+            Expanded(
+              flex: leftFlex,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  CommonWidgets.buildTextField(hintText, controller),
+                  if (subHint != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subHint,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 16),
+
+            // Right: Image
+            Expanded(
+              flex: rightFlex,
+              child: CommonWidgets.buildImageDisplayEnhanced(
+                AssetImage(imagePath),
+                fullWidth: true,
+                aspectRatio: aspectRatio,
+                enableZoom: true,
+                context: context,
+              ),
+            ),
+          ],
         ),
+        CommonWidgets.buildSectionDivider(),
       ],
-    ),
-  );
-}
-
-
+    );
+  }
 }
 
 // Internal StatefulWidget for managing the counter state
@@ -350,8 +524,7 @@ class _ConfiguratorWithCounter extends StatefulWidget {
   final void Function(int)? callback;
   const _ConfiguratorWithCounter({this.callback});
   @override
-  _ConfiguratorWithCounterState createState() =>
-      _ConfiguratorWithCounterState();
+  _ConfiguratorWithCounterState createState() => _ConfiguratorWithCounterState();
 }
 
 class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
@@ -372,15 +545,13 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   if (itemCount > 1) itemCount--;
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -389,8 +560,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   itemCount++;
                 });
               },
-              icon: const Icon(Icons.add_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
             ),
           ],
         ),
@@ -436,6 +606,69 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
               ),
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+// Internal StatefulWidget for managing the counter state
+class _Counter extends StatefulWidget {
+  final void Function(int)? callback;
+  final int initialValue;
+  const _Counter({this.callback, required this.initialValue});
+  @override
+  _CounterState createState() => _CounterState();
+}
+
+class _CounterState extends State<_Counter> {
+  int itemCount = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      itemCount = widget.initialValue;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Counter Section
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  if (itemCount > 1) {
+                    itemCount--;
+                    widget.callback!(itemCount);
+                  }
+                });
+              },
+              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                '$itemCount',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  itemCount++;
+                  widget.callback!(itemCount);
+                });
+              },
+              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
+            ),
+          ],
         ),
       ],
     );

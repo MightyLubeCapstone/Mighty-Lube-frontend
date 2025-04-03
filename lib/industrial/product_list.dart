@@ -4,8 +4,8 @@ import '../protien/FGCO/UI/FGCO.dart';
 import '../protien/FGLM/UI/FGLM.dart';
 import '1. CC5C (2)/CLS (2)/MLCC5CL/UI/MLCC5CL.dart';
 import '1. CC5C (2)/CLS (2)/OP40E/UI/OP40E.dart';
-import '2. COEDL (3)/CLS (3)/CDL/UI/CDL.dart';
-import '2. COEDL (3)/CLS (3)/MLCEL/UI/MLCEL.dart';
+import '2. 9125CD (3)/CLS (3)/CDL/UI/CDL.dart';
+import '2. 9125CD (3)/CLS (3)/MLCEL/UI/MLCEL.dart';
 import '3. ETIPO (4)/CCS (2)/O8074/UI/O8074.dart';
 import '3. ETIPO (4)/CCS (2)/OUN91/UI/OUN91.dart';
 import '3. ETIPO (4)/CLS (2)/9000INVL/UI/9000INVL.dart';
@@ -280,4 +280,10 @@ final Map<String, Product> productList = {
     imagePath: 'assets/FGLM.png',
     callback: FGLMPage(),
   ),
+};
+
+final Map<String, String> imageList = {
+  // protein
+  'FGCO': 'assets/FGCO.png',
+  'FGLM': 'assets/FGLM.png',
 };

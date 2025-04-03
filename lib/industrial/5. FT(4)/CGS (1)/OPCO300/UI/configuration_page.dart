@@ -26,6 +26,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController greaseGrade = TextEditingController();
   final TextEditingController otherInfo = TextEditingController();
 
+  final TextEditingController fOutside = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController a1Diameter = TextEditingController();
+  final TextEditingController b1Width = TextEditingController();
+  final TextEditingController h1Width = TextEditingController();
+  final TextEditingController j1Thickness = TextEditingController();
+  final TextEditingController k1Thickness = TextEditingController();
+  final TextEditingController l1Flat = TextEditingController();
+  final TextEditingController m1Inside = TextEditingController();
+  final TextEditingController n1Width = TextEditingController();
+  final TextEditingController p1Outside = TextEditingController();
+  final TextEditingController r1Center = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -300,19 +313,146 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Widget buildMeasurements() { //leave alone for now - Coming back to do later
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
+  Widget buildMeasurements() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildDropdownField('Measurement Unit', [
           'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
+          'Inches', 'm Meter', 'mm Millimeter '
         ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+      
+      // Image F
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Zerk Fitting Horizontal Location (F)",
+        hintText: "Outside fo Rail ftg. to Zerk ftg. ",
+        imagePath: 'assets/Measurements/5/CGS/F.png',
+        controller: fOutside,
+        subHint: "(Outside fo Rail ftg. to Zerk ftg.)",
+      ),
+      
+      // Image G
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Power Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/5/CGS/G.png',
+        controller: gWidth,
+        subHint: "(Height)",
+      ),
+      
+      // Image H
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Power Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/5/CGS/H.png',
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+      
+      // Image A1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Roller Wheel (A1)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/5/CGS/A1.png',
+        controller: a1Diameter,
+        subHint: "(Diameter)",
+      ),
+      
+      // Image B1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Roller Wheel (B1)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/5/CGS/B1.png',
+        controller: b1Width,
+        subHint: "(Width)",
+      ),
+      
+      // Image H1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Roller Sleeve (H1)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/5/CGS/H1.png',
+        controller: h1Width,
+        subHint: "(Width)",
+        ),
+      
+      // Image J1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Rail (J1)",
+        hintText: "Thickness",
+        imagePath: 'assets/Measurements/5/CGS/J1.png',
+        controller: j1Thickness,
+        subHint: "(Thickness)",
+      ),
+      
+      // Image K1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Support Plate (K1)",
+        hintText: "Thickness",
+        imagePath: 'assets/Measurements/5/CGS/K1.png',
+        controller: k1Thickness,
+        subHint: "(Thickness)",
+      ),
+
+      // Image L1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Double Chain Pitch (L1)",
+        hintText: "Center of Chain to Center of Chain",
+        imagePath: 'assets/Measurements/5/CGS/L1.png',
+        controller: l1Flat,
+        subHint: "(Center of Chain to Center of Chain)",
+      ),
+
+      // Image M1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Roller Wheel Pitch (M1)",
+        hintText: "Inside of Left Roller of Inside of Right Roller",
+        imagePath: 'assets/Measurements/5/CGS/M1.png',
+        controller: m1Inside,
+        subHint: "(Inside of Left Roller of Inside of Right Roller)",
+      ),
+
+      // Image N1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Mounting Plate (N1)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/5/CGS/N1.png',
+        controller: n1Width,
+        subHint: "(Width)",
+      ),
+
+      // Image P1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Rail Pitch (P1)",
+        hintText: "Outside of Left Rail to Outside fo Right Rail",
+        imagePath: 'assets/Measurements/5/CGS/P1.png',
+        controller: p1Outside,
+        subHint: "(Outside of Left Rail to Outside fo Right Rail)",
+      ),
+      
+      // Image R1
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Flat Top Double Strand Pitch (R1)",
+        hintText: "Center of Strand to Center of Strand",
+        imagePath: 'assets/Measurements/5/CGS/R1.png',
+        controller: r1Center,
+        subHint: "(Center of Strand to Center of Strand)",
+      ),
+    ],
+  );
+}
+
 }

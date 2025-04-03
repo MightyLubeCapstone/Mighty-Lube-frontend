@@ -45,8 +45,8 @@ class PAFOOINavState extends State<PAFOOINav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),

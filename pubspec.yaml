@@ -1,7 +1,7 @@
 name: mighty_lube
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+3
 
 environment:
   sdk: ^3.5.2
@@ -14,12 +14,32 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.3.4
   dropdown_search: ^5.0.2
+  badges: ^3.1.2
+  intl: ^0.18.0
+  flutter_svg: ^2.0.9
+  url_launcher: ^6.1.14
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  flutter_svg: ^2.0.4
+  flutter_native_splash: ^2.3.10
+  flutter_launcher_icons: ^0.13.1
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/ML_Logo_square.png
+  android_12:
+    image: assets/ML_Logo_square.png
+    icon_background_color: "#ffffff"
+  
+flutter_icons:
+  android: false
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/ML_Logo_square.png"
+  adaptive_icon_background: "#ffffff"
 
 flutter:
   uses-material-design: true
