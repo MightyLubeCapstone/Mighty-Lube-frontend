@@ -145,3 +145,55 @@ flutter:
     - assets/industrial/PFOOI(17)/CLS/ES.png
     - assets/industrial/PFOOI(17)/CLS/OP55.png
     - assets/industrial/PFOOI(17)/CLS/OP139A.png
+
+    - assets/Measurements/1/A1.png
+    - assets/Measurements/1/B1.png
+    - assets/Measurements/1/D1.png
+    - assets/Measurements/1/G.png
+    - assets/Measurements/1/H.png
+    - assets/Measurements/1/M1.png
+    - assets/Measurements/1/Y1.png
+    - assets/Measurements/1/Z1.png
+ 
+    - assets/Measurements/2/A.png
+    - assets/Measurements/2/G.png
+    - assets/Measurements/2/H.png
+    - assets/Measurements/2/J.png
+    - assets/Measurements/2/X.png
+    - assets/Measurements/2/Y.png
+    - assets/Measurements/2/Z_OP40E.png
+ 
+    - assets/Measurements/5/CGS/F.png
+    - assets/Measurements/5/CGS/G.png
+    - assets/Measurements/5/CGS/H.png
+    - assets/Measurements/5/CGS/A1.png
+    - assets/Measurements/5/CGS/B1.png
+    - assets/Measurements/5/CGS/H1.png
+    - assets/Measurements/5/CGS/J1.png
+    - assets/Measurements/5/CGS/K1.png
+    - assets/Measurements/5/CGS/L1.png
+    - assets/Measurements/5/CGS/M1.png
+    - assets/Measurements/5/CGS/N1.png
+    - assets/Measurements/5/CGS/P1.png
+    - assets/Measurements/5/CGS/R1.png
+ 
+    - assets/Measurements/5/CLS/G.png
+    - assets/Measurements/5/CLS/H.png
+    - assets/Measurements/5/CLS/A1.png
+    - assets/Measurements/5/CLS/B1.png
+    - assets/Measurements/5/CLS/H1.png
+    - assets/Measurements/5/CLS/J1.png
+    - assets/Measurements/5/CLS/L1.png
+    - assets/Measurements/5/CLS/M1.png
+    - assets/Measurements/5/CLS/N1.png
+    - assets/Measurements/5/CLS/P1.png
+    - assets/Measurements/5/CLS/R1.png
+ 
+    - assets/Measurements/6/314/E.png
+    - assets/Measurements/6/314/G.png
+    - assets/Measurements/6/314/H.png
+    - assets/Measurements/6/314/K.png
+    - assets/Measurements/6/314/T.png
+    - assets/Measurements/6/314/U.png
+    - assets/Measurements/6/314/V.png
+    - assets/Measurements/6/314/W.png
