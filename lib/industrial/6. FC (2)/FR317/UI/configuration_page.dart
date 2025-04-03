@@ -27,12 +27,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   final TextEditingController eCenter = TextEditingController();
   final TextEditingController gWidth = TextEditingController();
+  final TextEditingController fCenter = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
-  final TextEditingController kCenter = TextEditingController();
-  final TextEditingController tLead = TextEditingController();
-  final TextEditingController uLoad = TextEditingController();
-  final TextEditingController vLoad = TextEditingController();
-  final TextEditingController wOutside = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -254,9 +251,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         context: context,
         title: "Greaser - Free Carrier Zerk Fitting Vertical Location (E)",
         hintText: "Center OF Free Trolley Wheel to Zerk Fitting ",
-        imagePath: 'assets/Measurements/6/314/E.png',
+        imagePath: 'assets/Measurements/6/317/E.png',
         controller: eCenter,
         subHint: "(Center OF Free Trolley Wheel to Zerk Fitting)",
+      ),
+
+      // Image F
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Greaser - Free Carrier Zerk Fitting Horizontal Location (F)",
+        hintText: "Center of Zerk Ftg. to Center of Zerk Ftg. ",
+        imagePath: 'assets/Measurements/6/317/F.png',
+        controller: fCenter,
+        subHint: "(Center of Zerk Ftg. to Center of Zerk Ftg.)",
       ),
       
       // Image G
@@ -264,7 +271,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         context: context,
         title: "Greaser - Free Carrier Rail (G)",
         hintText: "Width",
-        imagePath: 'assets/Measurements/6/314/G.png',
+        imagePath: 'assets/Measurements/6/317/G.png',
         controller: gWidth,
         subHint: "(Width)",
       ),
@@ -274,60 +281,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         context: context,
         title: "Greaser - Free Carrier Rail (H)",
         hintText: "Height",
-        imagePath: 'assets/Measurements/6/314/H.png',
+        imagePath: 'assets/Measurements/6/317/H.png',
         controller: hHeight,
         subHint: "(Height)",
       ),
       
-      // Image K
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Trolley Wheel Pitch (K)",
-        hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
-        imagePath: 'assets/Measurements/6/314/K.png',
-        controller: kCenter,
-        subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
-      ),
-      
-      // Image T
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Free Rail Carrier Trolley Pitch (T)",
-        hintText: "Lead to Load",
-        imagePath: 'assets/Measurements/6/314/T.png',
-        controller: tLead,
-        subHint: "(Lead to Load)",
-      ),
-      
-      // Image U
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Free Rail Carrier Trolley Pitch (U)",
-        hintText: "Load to Load",
-        imagePath: 'assets/Measurements/6/314/U.png',
-        controller: uLoad,
-        subHint: "(Load to Load)",
-        ),
-      
-      // Image V
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Free Rail Carrier Trolley Pitch (V",
-        hintText: "Load to Trailing",
-        imagePath: 'assets/Measurements/6/314/V.png',
-        controller: vLoad,
-        subHint: "(Load to Trailing)",
-      ),
-      
-      // Image W
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Free Trolley Wheel Offset (W)",
-        hintText: "Outside to Outside of Free Trolley Wheels",
-        imagePath: 'assets/Measurements/6/314/W.png',
-        controller: wOutside,
-        subHint: "(Outside to Outside of Free Trolley Wheels)",
-      ),
     ],
   );
 }
