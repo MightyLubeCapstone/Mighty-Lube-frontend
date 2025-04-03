@@ -70,11 +70,9 @@ class _IndustrialHomeState extends State<IndustrialHome> {
           children: [
             // Title
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 87, 154, 246), // Same blue as breadcrumb nav
+                color: Color.fromARGB(255, 87, 154, 246), // Same blue as breadcrumb nav
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
@@ -144,8 +142,8 @@ class _IndustrialHomeState extends State<IndustrialHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),
@@ -161,8 +159,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -180,8 +177,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -225,9 +221,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
                 children:
                     // if search hasn't been activated...
                     // else build dynamic list
-                    (searchQuery == '')
-                        ? _buildDefaultCards()
-                        : _buildDynamicList(),
+                    (searchQuery == '') ? _buildDefaultCards() : _buildDynamicList(),
               ),
             ),
           ],

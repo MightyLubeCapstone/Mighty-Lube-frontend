@@ -10,7 +10,6 @@ import '../application/UI/applicationHome.dart';
 import '../dashboard/UI/dashboard.dart';
 import '../industrial/product_list.dart';
 
-
 class HeaderLogo extends StatelessWidget {
   const HeaderLogo({super.key});
 
@@ -49,8 +48,8 @@ class _ProteinHomeState extends State<ProteinHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.person,
       ),
       drawer: const CustomDrawer(),
@@ -65,8 +64,7 @@ class _ProteinHomeState extends State<ProteinHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardPage()),
+                      MaterialPageRoute(builder: (context) => const DashboardPage()),
                     );
                   },
                   child: const Row(
@@ -84,8 +82,7 @@ class _ProteinHomeState extends State<ProteinHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ApplicationPage()),
+                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
                     );
                   },
                   child: const Text(
@@ -125,9 +122,7 @@ class _ProteinHomeState extends State<ProteinHome> {
             // Stacked vertical list of images with titles
             Expanded(
               child: ListView(
-                children: (searchQuery == '')
-                    ? _buildDefaultCards()
-                    : _buildDynamicList(),
+                children: (searchQuery == '') ? _buildDefaultCards() : _buildDynamicList(),
               ),
             ),
           ],
@@ -135,7 +130,6 @@ class _ProteinHomeState extends State<ProteinHome> {
       ),
     );
   }
-
 
   // Reusable widget for image cards
   Widget _buildClickableImageCard({
@@ -153,11 +147,9 @@ class _ProteinHomeState extends State<ProteinHome> {
           children: [
             // Title
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 87, 154, 246), 
+                color: Color.fromARGB(255, 87, 154, 246),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),

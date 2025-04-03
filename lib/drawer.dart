@@ -1,13 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:mighty_lube/LoginPage/API/apicalls.dart';
+import 'package:mighty_lube/LoginPage/UI/loginPage.dart';
+import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart' as logo;
 
 import 'dashboard/UI/configurations.dart';
 import 'dashboard/UI/drafts.dart';
 import 'dashboard/UI/profile.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  bool loading = false;
+
+  Future<void> logoutUser() async {
+    bool? confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm logout"),
+          content: const Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Cancel deletion
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Confirm deletion
+              child: const Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmDelete != true) return; // Exit if user cancels
+    setState(() {
+      loading = true;
+    });
+    bool status = await UserAPI().logoutUser();
+    setState(() {
+      loading = false;
+    });
+    if (!mounted) return;
+    if (status) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully logged out!')),
+      );
+      Navigator.push(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error when logging out!')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +72,7 @@ class CustomDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Color(0xFF579AF6),
             ),
-            child: logo.HeaderLogo(),
+            child: logo.HeaderLogo(pressable: false),
           ),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -27,8 +80,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const ConfigurationsPage()),
+                MaterialPageRoute(builder: (context) => ConfigurationsPage()),
               );
             },
           ),
@@ -38,28 +90,27 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const DraftsPage()),
+                MaterialPageRoute(builder: (context) => DraftsPage()),
               );
             },
           ),
           ListTile(
             leading: const Icon(Icons.account_circle),
-            title: const Text('Account Details'),
-            onTap: () async {
+            title: const Text('Account Settings'),
+            onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfilePage(),
-                  ));
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout),
+            leading: (loading == false)
+                ? const Icon(Icons.logout)
+                : const CircularProgressIndicator.adaptive(),
             title: const Text('Logout'),
-            onTap: () async {
-              await ApiState().logoutUser();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (route) => false);
+            onTap: () {
+              logoutUser();
             },
           ),
         ],

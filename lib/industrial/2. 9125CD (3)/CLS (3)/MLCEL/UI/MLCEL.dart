@@ -33,15 +33,14 @@ class MLCELPageState extends State<MLCELPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        link: ProfilePage(),
+      appBar: CustomAppBar(
+        link: const ProfilePage(),
         customIcon: Icons.description,
       ),
       drawer: const CustomDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: 5.0), // Add padding to the top and bottom
+        padding: const EdgeInsets.symmetric(vertical: 5.0), // Add padding to the top and bottom
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
