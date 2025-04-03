@@ -5,10 +5,10 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/products.dart';
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CGS%20(1)/products.dart';
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/products.dart';
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CMS%20(4)/products.dart';
+import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CCS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CGS%20(3)/products.dart';
+import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CLS%20(7)/products.dart';
+import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CMS%20(4)/products.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
 
 class HeaderLogo extends StatelessWidget {
