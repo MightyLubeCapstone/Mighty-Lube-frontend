@@ -35,6 +35,7 @@
             android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="false"/>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <queries>
         <intent>
