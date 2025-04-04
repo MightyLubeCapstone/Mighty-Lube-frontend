@@ -1,0 +1,2 @@
+C:/Users/wesat/Documents/Code/CSC4610/MightyLubeProject/Mighty-Lube-frontend/android/app/.cxx/Debug/734p6h1q/x86/CMakeFiles/edit_cache.dir
+C:/Users/wesat/Documents/Code/CSC4610/MightyLubeProject/Mighty-Lube-frontend/android/app/.cxx/Debug/734p6h1q/x86/CMakeFiles/rebuild_cache.dir

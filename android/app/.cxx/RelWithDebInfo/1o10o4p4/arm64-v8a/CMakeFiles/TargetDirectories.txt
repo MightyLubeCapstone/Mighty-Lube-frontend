@@ -1,0 +1,2 @@
+C:/Users/wesat/Documents/Code/CSC4610/MightyLubeProject/Mighty-Lube-frontend/android/app/.cxx/RelWithDebInfo/1o10o4p4/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/wesat/Documents/Code/CSC4610/MightyLubeProject/Mighty-Lube-frontend/android/app/.cxx/RelWithDebInfo/1o10o4p4/arm64-v8a/CMakeFiles/rebuild_cache.dir
