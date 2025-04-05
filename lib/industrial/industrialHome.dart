@@ -15,7 +15,7 @@ import 'package:mighty_lube/industrial/3.%20ETIPO%20(4)/subfolders.dart';
 import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/subfolders.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/subfolders.dart';
 import 'package:mighty_lube/industrial/6.%20FC%20(2)/products.dart';
-import 'package:mighty_lube/industrial/7.%20FROOI%20(6)/subfolders.dart';
+import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/subfolders.dart';
 import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/subfolder.dart';
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/subfolders.dart';
 

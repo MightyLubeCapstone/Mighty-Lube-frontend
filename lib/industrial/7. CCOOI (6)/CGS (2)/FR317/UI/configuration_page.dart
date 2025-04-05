@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/6.%20FC%20(2)/products.dart';
+import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CGS%20(2)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 
@@ -12,6 +12,7 @@ class ConfigurationSection extends StatefulWidget {
 }
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
+  int itemCount = 1; // Default count
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
   final TextEditingController conveyorSpeed = TextEditingController();
@@ -25,17 +26,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController greaseType = TextEditingController();
   final TextEditingController greaseGrade = TextEditingController();
 
-  final TextEditingController eCenter = TextEditingController();
-  final TextEditingController gWidth = TextEditingController();
-  final TextEditingController fCenter = TextEditingController();
-  final TextEditingController hHeight = TextEditingController();
-  
+
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const FCProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CGSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -45,7 +42,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
-              CommonWidgets.buildGradientButton(context, 'Greaser Free Carrier: Measurements',buildMeasurements()),
+              CommonWidgets.buildGradientButton(context, 'Inverted P&F: Measurements',buildMeasurements()),
             ],
           ),
         ),
@@ -237,58 +234,21 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Widget buildMeasurements() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildDropdownField('Measurement Unit', [
+  Widget buildMeasurements() { //leave alone will come back and do later
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Measurement Units', [
           'Feet',
-          'Inches', 'm Meter', 'mm Millimeter '
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
         ]),
-      
-      // Image E
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Zerk Fitting Vertical Location (E)",
-        hintText: "Center OF Free Trolley Wheel to Zerk Fitting ",
-        imagePath: 'assets/Measurements/6/317/E.png',
-        controller: eCenter,
-        subHint: "(Center OF Free Trolley Wheel to Zerk Fitting)",
-      ),
-
-      // Image F
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Zerk Fitting Horizontal Location (F)",
-        hintText: "Center of Zerk Ftg. to Center of Zerk Ftg. ",
-        imagePath: 'assets/Measurements/6/317/F.png',
-        controller: fCenter,
-        subHint: "(Center of Zerk Ftg. to Center of Zerk Ftg.)",
-      ),
-      
-      // Image G
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Rail (G)",
-        hintText: "Width",
-        imagePath: 'assets/Measurements/6/317/G.png',
-        controller: gWidth,
-        subHint: "(Width)",
-      ),
-      
-      // Image H
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Rail (H)",
-        hintText: "Height",
-        imagePath: 'assets/Measurements/6/317/H.png',
-        controller: hHeight,
-        subHint: "(Height)",
-      ),
-      
-    ],
-  );
-}
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
 
 
 }

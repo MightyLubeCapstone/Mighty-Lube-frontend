@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/6.%20FC%20(2)/products.dart';
+import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CLS%20(3)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 
@@ -12,6 +12,7 @@ class ConfigurationSection extends StatefulWidget {
 }
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
+  int itemCount = 1; // Default count
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
   final TextEditingController conveyorSpeed = TextEditingController();
@@ -21,21 +22,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController currentType = TextEditingController();
   final TextEditingController currentGrade = TextEditingController();
   final TextEditingController chainMaster = TextEditingController();
+  final TextEditingController specialOP = TextEditingController();
   final TextEditingController optionalInfo = TextEditingController();
-  final TextEditingController greaseType = TextEditingController();
-  final TextEditingController greaseGrade = TextEditingController();
-
-  final TextEditingController eCenter = TextEditingController();
-  final TextEditingController gWidth = TextEditingController();
-  final TextEditingController fCenter = TextEditingController();
-  final TextEditingController hHeight = TextEditingController();
-  
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const FCProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CLSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -45,7 +39,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
-              CommonWidgets.buildGradientButton(context, 'Greaser Free Carrier: Measurements',buildMeasurements()),
+              CommonWidgets.buildGradientButton(context, 'Free Rail: Measurements',buildMeasurements()),
             ],
           ),
         ),
@@ -65,30 +59,41 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
         CommonWidgets.buildTextField('Enter Name of Conveyor System',conveyorSystem),
-        CommonWidgets.buildDropdownField('Wheel Manufacturer', [
-          'Green Line',
-          'Frost',
-          'M&M',
-          'Stork',
-          'Meyn',
-          'Linco',
-          'DC',
-          'Merel',
-          'D&F',
+        CommonWidgets.buildDropdownField('Conveyor Chain Size', [
+          'X348 Chain (3”)',
+          'X458 Chain (4”)',
+          'X678 Chain (6”)',
+          '3/8" Log Chain',
           'Other'
+        ]),
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
+          'Daifuku',
+          'Frost',
+          'NKC',
+          'Pacline',
+          'Rapid',
+          'WEBB',
+          'Webb-Stiles',
+          'Wilkie Brothers',
+          'Other'
+        ]),
+        CommonWidgets.buildTextField('Enter Conveyor Length',conveyorLength),
+        CommonWidgets.buildDropdownField('Conveyor Length Unit', [
+          'Feet',
+          'Inches',
+          'm Meter',
+          'mm Milimeter',
         ]),
         CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
         CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
           'Feet/Minute',
           'Meters/Minute',
         ]),
-       
         CommonWidgets.buildTextField('Enter Indexing or Variable Speed Conditions',conveyorIndex),
         CommonWidgets.buildDropdownField('Direction of Travel', [
           'Right to Left',
           'Left to Right',
         ]),
-        
         CommonWidgets.buildDropdownField('Application Environment ', [
           'Ambient',
           'Caustic (i.e. Phosphate/E-Coast, etc.)',
@@ -99,12 +104,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Yes',
           'No',
         ]),
-        CommonWidgets.buildDropdownField('Is the Conveyor Overhead, Inverted, or Inverted/Inverted? ', [
-          'Overhead',
-          'Inverted',
-          'Inverted/Inverted'
+        CommonWidgets.buildDropdownField('Is the Conveyor Loaded or Unloaded at Planned Install Location?', [
+          'Loaded',
+          'Unloaded',
+        ]),
+        CommonWidgets.buildDropdownField('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side', [
+          'Yes',
+          'No',
         ]),
         CommonWidgets.buildSectionDivider(),
+      
       ],
     );
   }
@@ -115,12 +124,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField('Operating Voltage - 3 Phase: (Volts/hz)',operatingVoltage),
-        CommonWidgets.buildDropdownField('Compresses Air Supply Unit', [
-          'PSI',
-          'KPI','Bar'
-        ]),
         CommonWidgets.buildSectionDivider(),
-      ],
+       ],
     );
   }
 
@@ -146,8 +151,41 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
         CommonWidgets. buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Wheel: Open Race Style', [
+          'Not Applicable',
+          'Open Inside',
+          'Open Outside '
+        ]),
+        CommonWidgets.buildDropdownField('Wheel: Sealed Style', [
+          'Extended',
+          'Flush',
+          'Recessed'
+        ]),
+        CommonWidgets.buildDropdownField('Open Inside/ Shielded Outside', [
+          'Yes',
+          'No'
+        ]),
         CommonWidgets.buildDropdownField('Free Trolley Wheels', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Guide Rollers', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Guide Rollers Open Race Style', [
+          'Not Applicable ',
+          'Open Inside',
+          'Open Outside'
+        ]),
+        CommonWidgets.buildDropdownField('Guide Rollers Sealed Styles', [
+          'Extended',
+          'Flush',
+          'Recessed'
+        ]),
+        CommonWidgets.buildDropdownField('Open Hole', [
           'Yes',
           'No'
         ]),
@@ -163,29 +201,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Yes',
           'No'
         ]),
+        CommonWidgets.buildDropdownField('Outboard Wheels', [
+          'Yes',
+          'No'
+        ]),
+        CommonWidgets.buildDropdownField('Rail Lubrication', [
+          'Yes',
+          'No'
+        ]),
         CommonWidgets.buildTextField('Enter Current Lubrication Equipment (Brand)',equipBrand),
         CommonWidgets.buildTextField('Enter Current Lubricant Type',currentType),
         CommonWidgets.buildTextField('Enter Current Lubricant Viscosity/Grade',currentGrade),
-
-        CommonWidgets.buildTextField('Enter Current Grease Type',greaseType),
-        CommonWidgets.buildTextField('Enter Current Grease NLGI Grade',greaseGrade),
-        CommonWidgets.buildDropdownField('Zerk Ftg Location [Left or Right: Facing Direction of Travel)', [
-          'Left',
-          'Right'
-        ]),
-        CommonWidgets.buildDropdownField('Zerk Ftg Location (Orientation)', [
-          'Center',
-          '12 O-Clock',
-          '3 O-Clock',
-          '6 O-Clock',
-          '9 O-Clock'
-
-        ]),
-        
-
         CommonWidgets.buildSectionDivider(),
-
-
 
 
       ],
@@ -198,18 +225,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField('Enter ChainMaster Controller',chainMaster),
-        CommonWidgets.buildDropdownField('Remote', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Mounted on Greaser', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Controls other units (list):', [
-          'Yes',
-          'No'
-        ]),
         CommonWidgets.buildDropdownField('Timer', [
           'Yes',
           'No'
@@ -232,63 +247,28 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ]),
        
         CommonWidgets.buildTextField('Enter Other Details',optionalInfo),
+        CommonWidgets.buildTextField('Enter Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',specialOP),
+
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildMeasurements() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildDropdownField('Measurement Unit', [
+  Widget buildMeasurements() { // leave alone will come back and add 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Measurement Units', [
           'Feet',
-          'Inches', 'm Meter', 'mm Millimeter '
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
         ]),
-      
-      // Image E
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Zerk Fitting Vertical Location (E)",
-        hintText: "Center OF Free Trolley Wheel to Zerk Fitting ",
-        imagePath: 'assets/Measurements/6/317/E.png',
-        controller: eCenter,
-        subHint: "(Center OF Free Trolley Wheel to Zerk Fitting)",
-      ),
-
-      // Image F
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Zerk Fitting Horizontal Location (F)",
-        hintText: "Center of Zerk Ftg. to Center of Zerk Ftg. ",
-        imagePath: 'assets/Measurements/6/317/F.png',
-        controller: fCenter,
-        subHint: "(Center of Zerk Ftg. to Center of Zerk Ftg.)",
-      ),
-      
-      // Image G
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Rail (G)",
-        hintText: "Width",
-        imagePath: 'assets/Measurements/6/317/G.png',
-        controller: gWidth,
-        subHint: "(Width)",
-      ),
-      
-      // Image H
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Greaser - Free Carrier Rail (H)",
-        hintText: "Height",
-        imagePath: 'assets/Measurements/6/317/H.png',
-        controller: hHeight,
-        subHint: "(Height)",
-      ),
-      
-    ],
-  );
+        
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
 }
 
-
-}
