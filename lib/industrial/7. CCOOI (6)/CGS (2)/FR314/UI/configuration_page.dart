@@ -27,6 +27,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController greaseType = TextEditingController();
   final TextEditingController greaseGrade = TextEditingController();
 
+  final TextEditingController bDiameter = TextEditingController();
+  final TextEditingController eInverted = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController kCenter = TextEditingController();
+  final TextEditingController tLead = TextEditingController();
+  final TextEditingController uLead = TextEditingController();
+  final TextEditingController vLoad = TextEditingController();
+  final TextEditingController wOutside = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -230,20 +240,107 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Widget buildMeasurements() { //leave alone will come back and do later
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
+  Widget buildMeasurements() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildDropdownField('Measurement Unit', [
           'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
+          'Inches', 'm Meter', 'mm Millimeter '
         ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+      
+      // Image B
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Power Trolley Wheel (B)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/7/CGS/314/B.png',
+        controller: bDiameter,
+        subHint: "(Diameter)",
+      ),
+
+      // Image E
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Zerk Fitting Vertical Location (E)",
+        hintText: "Bottom of Rail to Zerk Fitting",
+        imagePath: 'assets/Measurements/7/CGS/314/E.png',
+        controller: eInverted,
+        subHint: "(Bottom of Rail to Zerk Fitting)",
+      ),
+      
+      // Image G
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/7/CGS/314/G.png',
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+      
+      // Image H
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/7/CGS/314/H.png',
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+      
+      // Image K
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Trolley Wheel Pitch (K)",
+        hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
+        imagePath: 'assets/Measurements/7/CGS/314/K.png',
+        controller: kCenter,
+        subHint: "(Center of Tolley Wheel to Center of Trolley Wheel)",
+      ),
+      
+      // Image T
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail Carrier Trolley Pitch (T)",
+        hintText: "Lead to Load",
+        imagePath: 'assets/Measurements/7/CGS/314/T.png',
+        controller: tLead,
+        subHint: "(Lead to Load)",
+      ),
+      
+      // Image U
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail Carrier Trolley Pitch (U)",
+        hintText: "Lead to Load",
+        imagePath: 'assets/Measurements/7/CGS/314/U.png',
+        controller: uLead,
+        subHint: "(Lead to Load)",
+      ),
+      
+      // Image V
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail Carrier Trolley Pitch (V)",
+        hintText: "Load to Trailing",
+        imagePath: 'assets/Measurements/7/CGS/314/V.png',
+        controller: vLoad,
+        subHint: "(Load to Trailing)",
+      ),
+      
+      // Image W
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Trolley Wheel Offset (W)",
+        hintText: "Outside to Outside of Free Trolley Wheels",
+        imagePath: 'assets/Measurements/7/CGS/314/W.png',
+        controller: wOutside,
+        subHint: "(Outside to Outside of Free Trolley Wheels)",
+      ),
+      
+    ],
+  );
+}
 
 }
