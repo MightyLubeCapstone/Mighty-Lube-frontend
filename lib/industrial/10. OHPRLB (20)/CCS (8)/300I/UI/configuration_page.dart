@@ -90,7 +90,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Yes',
           'No'
         ]),
-      
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }

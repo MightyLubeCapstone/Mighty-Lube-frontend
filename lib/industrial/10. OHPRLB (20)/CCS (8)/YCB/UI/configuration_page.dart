@@ -78,7 +78,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Oven',
           'Wash Down', 'Intrinsic','Food Grade', 'Other'
         ]),
-        
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }

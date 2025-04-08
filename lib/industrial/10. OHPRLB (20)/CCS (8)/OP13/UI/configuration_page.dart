@@ -90,7 +90,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Loaded',
           'Unloaded'
         ]),
-      
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
