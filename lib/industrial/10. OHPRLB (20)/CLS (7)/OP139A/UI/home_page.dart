@@ -3,7 +3,6 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
-
 class HomeSection extends StatelessWidget {
   const HomeSection({super.key});
 
@@ -12,7 +11,8 @@ class HomeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CLSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const CLSProducts()),
         const Padding(
           padding: EdgeInsets.fromLTRB(
               15.0, 30.0, 15.0, 20.0), // Adjusted top padding
@@ -20,7 +20,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'OP-139A:',
+                'OP-139A',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -29,8 +29,7 @@ class HomeSection extends StatelessWidget {
               ),
               SizedBox(height: 25), // Space between the title and description
               Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+                'The OP-139A oiler is a simple, yet effective and clean precision lubrication system for all types of conveyors.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -43,5 +42,4 @@ class HomeSection extends StatelessWidget {
       ],
     );
   }
-
 }
