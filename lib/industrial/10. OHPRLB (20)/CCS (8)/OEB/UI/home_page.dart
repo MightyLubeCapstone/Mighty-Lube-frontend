@@ -29,8 +29,8 @@ class HomeSection extends StatelessWidget {
               ),
               SizedBox(height: 25), // Space between the title and description
               Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+                'The Overspray Eliminator Brush is also known as the part saver brush because it prevents contamination of parts by lubricant overspray. '
+                'The part saver brush assembly mounts on the conveyor at the location of the lubricator.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
