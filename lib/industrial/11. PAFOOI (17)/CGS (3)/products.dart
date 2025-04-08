@@ -4,7 +4,7 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CGS%20(3)/CR317/UI/CR317.dart';
+import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CGS%20(3)/FR317/UI/CR317.dart';
 import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CGS%20(3)/FR314/UI/FR314.dart';
 import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CGS%20(3)/GPC/UI/GPC.dart';
 import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/subfolders.dart';
