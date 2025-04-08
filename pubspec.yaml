@@ -241,4 +241,10 @@ flutter:
     - assets/Measurements/10/CGS/GPC/H.png
     - assets/Measurements/10/CGS/GPC/S.png
 
+    - assets/Measurements/11/CCS/L.png
+    - assets/Measurements/11/CCS/G.png
+    - assets/Measurements/11/CCS/H.png
+    - assets/Measurements/11/CCS/A.png
+    - assets/Measurements/11/CCS/G2.png
+    - assets/Measurements/11/CCS/H2.png
 
