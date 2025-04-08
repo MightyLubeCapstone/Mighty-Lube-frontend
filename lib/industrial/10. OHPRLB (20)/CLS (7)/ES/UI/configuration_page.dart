@@ -54,7 +54,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   'Conveyor Specifications', buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(
                   context, 'Controller', buildController()),
-              CommonWidgets.buildGradientButton(context, 'Wire', buildWire()),
             ],
           ),
         ),
@@ -203,24 +202,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             "Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)",
             specialOptions),
         CommonWidgets.buildTextField("Please Specify", specs),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
-  Widget buildWire() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
-        CommonWidgets.buildTextField(
-            'Enter 4 Conductor Number Here', conductor4),
-        CommonWidgets.buildTextField(
-            'Enter 7 Conductor Number Here', conductor7),
-        CommonWidgets.buildTextField(
-            'Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
