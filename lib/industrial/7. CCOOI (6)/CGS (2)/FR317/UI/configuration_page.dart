@@ -26,7 +26,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController greaseType = TextEditingController();
   final TextEditingController greaseGrade = TextEditingController();
 
-
+  final TextEditingController aInverted = TextEditingController();
+  final TextEditingController bDiameter = TextEditingController();
+  final TextEditingController eBottom = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController sInverted = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -234,21 +239,77 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Widget buildMeasurements() { //leave alone will come back and do later
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
+  Widget buildMeasurements() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildDropdownField('Measurement Unit', [
           'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
+          'Inches', 'm Meter', 'mm Millimeter '
         ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+      
+      // Image A
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Chain Drop (A)",
+        hintText: "Center of Chain to Opposite Edge of Rail",
+        imagePath: 'assets/Measurements/7/CGS/317/A.png',
+        controller: aInverted,
+        subHint: "(Center of Chain to Opposide Edge of Rail)",
+      ),
+
+      // Image B
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Power Trolley Wheel (B)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/7/CGS/317/B.png',
+        controller: bDiameter,
+        subHint: "(Diameter)",
+      ),
+      
+      // Image E
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Zerk Fitting Vertical Location (E)",
+        hintText: "Bottom of Rail to Zerk Fitting",
+        imagePath: 'assets/Measurements/7/CGS/317/E.png',
+        controller: eBottom,
+        subHint: "(Bottom of Rail to Zerk Fitting)",
+      ),
+      
+      // Image G
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/7/CGS/317/G.png',
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+      
+      // Image H
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/7/CGS/317/H.png',
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+      
+      // Image S
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Trolley Pitch [Spacing] Minimum - For Variables pitch chain, Provide the Minimum Pitch Dimensions (S)",
+        hintText: "Center of Power Wheel to Center of Power Wheel",
+        imagePath: 'assets/Measurements/7/CGS/317/S.png',
+        controller: sInverted,
+        subHint: "(Center of Power Wheel to Center of Power Wheel)",
+      ),  
+    ],
+  );
+}
 
 
 }

@@ -3,7 +3,6 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CMS%20(4)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
-
 class HomeSection extends StatelessWidget {
   const HomeSection({super.key});
 
@@ -12,7 +11,8 @@ class HomeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CMSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const CMSProducts()),
         const Padding(
           padding: EdgeInsets.fromLTRB(
               15.0, 30.0, 15.0, 20.0), // Adjusted top padding
@@ -29,8 +29,9 @@ class HomeSection extends StatelessWidget {
               ),
               SizedBox(height: 25), // Space between the title and description
               Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+                "The Next Generation Permanent Conveyor Monitoring System is connected to the network and provides chain wear data and projections for up to 100 conveyor lines measuring wear in Link by Link and 10’ sections. "
+                "This system monitors drive amps, chain speed, take-up pressure and drive hours. It also provides data on lube cycles, reservoir levels, "
+                "head voltage and pump cycles when combined with Mighty Lube or OPCO lubrication systems.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

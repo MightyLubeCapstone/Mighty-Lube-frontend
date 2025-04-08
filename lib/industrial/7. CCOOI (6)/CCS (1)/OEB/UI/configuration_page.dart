@@ -97,7 +97,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ],
     );
   }
-Widget buildMeasurements() {
+  
+  Widget buildMeasurements() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
