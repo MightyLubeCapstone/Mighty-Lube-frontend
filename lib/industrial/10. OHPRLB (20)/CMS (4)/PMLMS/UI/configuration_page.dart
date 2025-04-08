@@ -17,9 +17,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController conveyorIndex = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
-  final TextEditingController conductor4 = TextEditingController();
-  final TextEditingController conductor7 = TextEditingController();
-  final TextEditingController conductor2 = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
   final TextEditingController bDiameter = TextEditingController();
   final TextEditingController gWidth = TextEditingController();
@@ -144,42 +141,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownField(
             'Is the Conveyor Chain Clean?', ['Yes', 'No']),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
-  Widget buildController() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
-        CommonWidgets.buildTextField(
-            'Enter 4 Conductor Number Here', conductor4),
-        CommonWidgets.buildTextField(
-            'Enter 7 Conductor Number Here', conductor7),
-        CommonWidgets.buildTextField(
-            'Enter 2 Conductor Number Here', conductor2),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
-  Widget buildWire() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
-        CommonWidgets.buildTextField(
-            'Enter 4 Conductor Number Here', conductor4),
-        CommonWidgets.buildTextField(
-            'Enter 7 Conductor Number Here', conductor7),
-        CommonWidgets.buildTextField(
-            'Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
