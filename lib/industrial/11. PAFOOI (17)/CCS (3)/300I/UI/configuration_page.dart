@@ -47,8 +47,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildTextField('Name of Conveyor System',conveyorSystem),
-        CommonWidgets.buildSectionTitle('Conveyor Details'),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTextField('Enter Name of Conveyor System',conveyorSystem),
         CommonWidgets.buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
           'X458 Chain (4”)',
@@ -56,7 +56,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           '3/8" Log Chain',
           'Other'
         ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
           'Daifuku',
           'Frost',
           'NKC',
@@ -66,20 +66,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'Wilkie Brothers',
           'Other'
         ]),
-        CommonWidgets.buildTextField('Conveyor Length',conveyorLength),
+        CommonWidgets.buildTextField('Enter Conveyor Length',conveyorLength),
         CommonWidgets.buildDropdownField('Conveyor Length Units', [
           'Feet',
           'Inches', 
           'm Meter', 
           'mm Milimeter'
         ]),
-        CommonWidgets.buildTextField('Conveyor Speed',conveyorSpeed),
+        CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
         CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
           'Feet /minute',
           'Meters /minute',
         ]),        
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionTitle('Environmental Details'),
         CommonWidgets.buildDropdownField('Ambient Enviroment', [
           'Ambient',
           'Caustic (i.e. Phosphate/E-Coat,etc.)',
@@ -91,9 +89,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ]),
         CommonWidgets.buildDropdownField('Is the Conveyor Overhead, Inverted, or Inverted/Inverted',
             ['Overhead', 'Inverted', 'Inverted/Inverted']),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
-
 
 }
