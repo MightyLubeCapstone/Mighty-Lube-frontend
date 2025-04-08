@@ -62,6 +62,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField("Name of Conveyor System", conveyorSystem),
         CommonWidgets.buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
@@ -93,6 +94,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           "Food Grade",
           "Other"
         ]),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
@@ -101,8 +103,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField(
             'Control Voltage - (Volts/hz)', controlVoltage),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }

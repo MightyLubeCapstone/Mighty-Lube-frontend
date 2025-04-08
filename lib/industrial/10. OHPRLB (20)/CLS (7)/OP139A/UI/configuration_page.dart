@@ -126,11 +126,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField(
             'Control Voltage - (Volts/hz)', controlVoltage),
         CommonWidgets.buildTextField('Compressed Air Supply', compressedAir),
         CommonWidgets.buildDropdownField(
             "Compressed Air Supply Unit", ["PSI", "KPI", "Bar"]),
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }

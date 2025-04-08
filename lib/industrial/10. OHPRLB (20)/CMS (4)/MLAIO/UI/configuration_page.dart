@@ -124,10 +124,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildTextField(
             "Operating Voltage - Single Phase: (Volts/hz)", operatingVoltage),
         CommonWidgets.buildTextField(
             "Control Voltage (Volts/hz)", controlVoltage),
+
+        CommonWidgets.buildSectionDivider(),
       ],
     );
   }
