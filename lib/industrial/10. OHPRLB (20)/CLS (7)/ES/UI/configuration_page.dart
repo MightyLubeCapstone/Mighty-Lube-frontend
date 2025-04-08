@@ -18,19 +18,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorIndex = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
   final TextEditingController controlVoltage = TextEditingController();
-  final TextEditingController catDriveQuantity = TextEditingController();
   final TextEditingController lubeEquipment = TextEditingController();
   final TextEditingController lubeType = TextEditingController();
   final TextEditingController lubeGrade = TextEditingController();
-  final TextEditingController conductor4 = TextEditingController();
-  final TextEditingController conductor7 = TextEditingController();
-  final TextEditingController conductor2 = TextEditingController();
-  final TextEditingController conductor12 = TextEditingController();
-  final TextEditingController junctBoxQuant = TextEditingController();
-  final TextEditingController reservoirQuant = TextEditingController();
   final TextEditingController specialOptions = TextEditingController();
   final TextEditingController specs = TextEditingController();
   final TextEditingController other = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController bDiameter = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController aRail = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +51,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   'Conveyor Specifications', buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(
                   context, 'Controller', buildController()),
+              CommonWidgets.buildGradientButton(
+                  context, 'Overhead Power Rail: Measurements', buildMeasurements())
             ],
           ),
         ),
@@ -208,4 +207,61 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+  Widget buildMeasurements() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownField('Measurement Units', [
+          'Feet',
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
+        ]),
+        
+        // Image A
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain Drop (A)",
+        hintText: "Rail to Center of Chain",
+        imagePath: '', // there is no image on the site for this one
+        controller: aRail,
+        subHint: "(Rail to Center of Chain)",
+      ),
+        
+        // Image B
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead Power MonoRail Power Trolley Wheel (B)",
+        hintText: "Diameter",
+        imagePath: '', // there is no image on the site for this one
+        controller: bDiameter,
+        subHint: "(Diameter)",
+      ),
+
+        // Image G
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead Power MonoRail Power Rail (G)",
+        hintText: "Width",
+        imagePath: '', // there is no image on the site for this one
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+
+        // Image H
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead Power MonoRail Power Rail (H)",
+        hintText: "Height",
+        imagePath: '', // there is no image on the site for this one
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
+
 }
