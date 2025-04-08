@@ -15,8 +15,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   final TextEditingController systemName = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
+  final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController bDiameter = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController aRail = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +75,22 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'm Meter',
           'mm Milimeter'
         ]),
+        CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',conveyorSpeed),
+        CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
+          'Feet /minute',
+          'Meters /minute'
+        ]),
         CommonWidgets.buildDropdownField('Application Environment', [
           'Ambient',
           'Caustic (i.e. Phosphate/ E-Coat, etc.)',
           'Oven',
           'Wash Down', 'Intrinsic','Food Grade', 'Other'
         ]),
+        CommonWidgets.buildDropdownField('Temperature of Surrounding Area at Planned Location of Lubrication System is below 30F or above 120F', [
+          'Yes',
+          'No'
+        ]),
+      
       ],
     );
   }
@@ -94,6 +107,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'mm Milimeter'
         ]),
         
+        // Image A
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Chain Drop (A)",
+        hintText: "Rail to Center of Chain",
+        imagePath: '', // there is no image on the site for this one
+        controller: aRail,
+        subHint: "(Rail to Center of Chain)",
+      ),
+        
         // Image B
         CommonWidgets.buildMeasurementFieldWithImage(
         context: context,
@@ -103,7 +126,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         controller: bDiameter,
         subHint: "(Diameter)",
       ),
-        
+
+        // Image G
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead Power MonoRail Power Rail (G)",
+        hintText: "Width",
+        imagePath: '', // there is no image on the site for this one
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+
         // Image H
         CommonWidgets.buildMeasurementFieldWithImage(
         context: context,
@@ -113,6 +146,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         controller: hHeight,
         subHint: "(Height)",
       ),
+
+
+
 
         CommonWidgets.buildSectionDivider(),
       ],
