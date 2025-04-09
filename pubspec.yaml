@@ -44,9 +44,7 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets:
-    - assets/industrial/
-    - assets/Measurements/ 
-    
+
     - assets/countries.json
     - assets/ML_Logo-w-tag-vector.svg
     - assets/WhiteML_Logo-w-tag-vector.svg
@@ -247,4 +245,24 @@ flutter:
     - assets/Measurements/11/CCS/A.png
     - assets/Measurements/11/CCS/G2.png
     - assets/Measurements/11/CCS/H2.png
+
+    - assets/Measurements/11/CGS/314/B.png
+    - assets/Measurements/11/CGS/314/E.png
+    - assets/Measurements/11/CGS/314/G.png
+    - assets/Measurements/11/CGS/314/H.png
+    - assets/Measurements/11/CGS/314/K.png
+    - assets/Measurements/11/CGS/314/T.png
+    - assets/Measurements/11/CGS/314/U.png
+    - assets/Measurements/11/CGS/314/V.png
+    - assets/Measurements/11/CGS/314/W.png
+
+    - assets/Measurements/11/CGS/317/A.png
+    - assets/Measurements/11/CGS/317/B.png
+    - assets/Measurements/11/CGS/317/E.png
+    - assets/Measurements/11/CGS/317/G.png
+    - assets/Measurements/11/CGS/317/H.png
+    - assets/Measurements/11/CGS/317/S.png
+
+
+
 
