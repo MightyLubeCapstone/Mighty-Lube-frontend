@@ -44,6 +44,7 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets:
+
     - assets/countries.json
     - assets/ML_Logo-w-tag-vector.svg
     - assets/WhiteML_Logo-w-tag-vector.svg
@@ -213,3 +214,55 @@ flutter:
     - assets/Measurements/7/CCS/G2.png
     - assets/Measurements/7/CCS/H2.png
     - assets/Measurements/7/CCS/K.png
+
+    - assets/Measurements/10/CCS/OP13/A.png
+    - assets/Measurements/10/CCS/OP13/C.png
+    - assets/Measurements/10/CCS/OP13/A2.png
+    - assets/Measurements/10/CCS/OP13/B2.png
+    - assets/Measurements/10/CCS/OP13/C2.png
+    - assets/Measurements/10/CCS/OP13/D2.png
+    - assets/Measurements/10/CCS/OP13/E2.png
+    - assets/Measurements/10/CCS/OP13/F2.png
+    - assets/Measurements/10/CCS/OP13/G2.png
+    - assets/Measurements/10/CCS/OP13/H2.png
+    - assets/Measurements/10/CCS/OP13/J2.png
+    - assets/Measurements/10/CCS/OP13/L2.png
+    - assets/Measurements/10/CCS/OP13/M2.png
+
+    - assets/Measurements/10/CGS/GPC/A.png
+    - assets/Measurements/10/CGS/GPC/B.png
+    - assets/Measurements/10/CGS/GPC/C.png
+    - assets/Measurements/10/CGS/GPC/D.png
+    - assets/Measurements/10/CGS/GPC/E.png
+    - assets/Measurements/10/CGS/GPC/F.png
+    - assets/Measurements/10/CGS/GPC/G.png
+    - assets/Measurements/10/CGS/GPC/H.png
+    - assets/Measurements/10/CGS/GPC/S.png
+
+    - assets/Measurements/11/CCS/L.png
+    - assets/Measurements/11/CCS/G.png
+    - assets/Measurements/11/CCS/H.png
+    - assets/Measurements/11/CCS/A.png
+    - assets/Measurements/11/CCS/G2.png
+    - assets/Measurements/11/CCS/H2.png
+
+    - assets/Measurements/11/CGS/314/B.png
+    - assets/Measurements/11/CGS/314/E.png
+    - assets/Measurements/11/CGS/314/G.png
+    - assets/Measurements/11/CGS/314/H.png
+    - assets/Measurements/11/CGS/314/K.png
+    - assets/Measurements/11/CGS/314/T.png
+    - assets/Measurements/11/CGS/314/U.png
+    - assets/Measurements/11/CGS/314/V.png
+    - assets/Measurements/11/CGS/314/W.png
+
+    - assets/Measurements/11/CGS/317/A.png
+    - assets/Measurements/11/CGS/317/B.png
+    - assets/Measurements/11/CGS/317/E.png
+    - assets/Measurements/11/CGS/317/G.png
+    - assets/Measurements/11/CGS/317/H.png
+    - assets/Measurements/11/CGS/317/S.png
+
+
+
+

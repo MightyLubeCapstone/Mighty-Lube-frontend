@@ -3,7 +3,6 @@ import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
-
 class HomeSection extends StatelessWidget {
   const HomeSection({super.key});
 
@@ -12,7 +11,8 @@ class HomeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CLSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const CLSProducts()),
         const Padding(
           padding: EdgeInsets.fromLTRB(
               15.0, 30.0, 15.0, 20.0), // Adjusted top padding
@@ -20,7 +20,7 @@ class HomeSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'OP-52/OP-53:',
+                'OP-52 Caterpillar Drive Lubricator',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -29,8 +29,7 @@ class HomeSection extends StatelessWidget {
               ),
               SizedBox(height: 25), // Space between the title and description
               Text(
-                'The Aluminum and Stainless Steel OP-8SS Powered Brush assembly cleans the chains and trolley for conveyors in food industry plants. '
-                'The OP-8SS powered brush assembly cleans conveyor chains, trolley wheels and trolley brackets. It fits every size of overhead monorail or power & free conveyor.',
+                'The OPCO® Models OP-52 / OP-53 drive chain lubricators provide cost-effective orifice lubrication for conveyor drive, short transfer and machine chains.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -43,5 +42,4 @@ class HomeSection extends StatelessWidget {
       ],
     );
   }
-
 }

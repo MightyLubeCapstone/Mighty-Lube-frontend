@@ -184,99 +184,119 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-
+  
   Widget buildMeasurements() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildDropdownField(
-          'Measurement Unit',
-          ['Feet', 'Inches', 'm Meter', 'mm Millimeter '],
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Overhead P&F Free Rail Chain Drop (A)",
-          hintText: "Top of Rail to Center of Chain",
-          imagePath: 'assets/Measurements/7/CCS/A.png',
-          controller: aTop,
-          subHint: "(Top of Rail to Center of Chain)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Overhead P&F Free Rail Power Trolley Wheel (B)",
-          hintText: "Diameter",
-          imagePath: 'assets/Measurements/7/CCS/B.png',
-          controller: bDiameter,
-          subHint: "Diameter",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Overhead P&F Free Rail (G)",
-          hintText: "Width",
-          imagePath: 'assets/Measurements/7/CCS/G.png',
-          controller: gWidth,
-          subHint: "(Width)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Overhead P&F Free Rail (H)",
-          hintText: "Height",
-          imagePath: 'assets/Measurements/7/CCS/H.png',
-          controller: hHeight,
-          subHint: "(Height)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title:
-              "Overhead P&F Free Rail Free Trolley Wheel Position (Vertical - L)",
-          hintText: "Center of Free Trolley Wheel to Bottom of Rail",
-          imagePath: 'assets/Measurements/7/CCS/L.png',
-          controller: lCenter,
-          subHint: "(Center of Free Trolley Wheel to Bottom of Rail)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Inverted Power and Free Chain Drop (A)",
-          hintText: "Center of Chain to Opposite Edge of Rail",
-          imagePath: 'assets/Measurements/7/CCS/A_Color.png',
-          controller: aCenter,
-          subHint: "(Center of Chain to Opposite Edge of Rail)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Inverted Power and Free Power Trolley Wheel (B)",
-          hintText: "Diameter",
-          imagePath: 'assets/Measurements/7/CCS/B2.png',
-          controller: bDiameter2,
-          subHint: "(Diameter)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Inverted Power and Free Rail (G)",
-          hintText: "Width",
-          imagePath: 'assets/Measurements/7/CCS/G2.png',
-          controller: gWidth2,
-          subHint: "(Width)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Inverted Power and Free Rail (H)",
-          hintText: "Height",
-          imagePath: 'assets/Measurements/7/CCS/H2.png',
-          controller: hHeight2,
-          subHint: "(Height)",
-        ),
-        CommonWidgets.buildMeasurementFieldWithImage(
-          context: context,
-          title: "Inverted Power and Free Trolley Wheel Pitch (K)",
-          hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
-          imagePath: 'assets/Measurements/7/CCS/K.png',
-          controller: kCenter,
-          subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
-        ),
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildDropdownField('Measurement Unit', [
+          'Feet',
+          'Inches', 'm Meter', 'mm Millimeter '
+        ]),
+      
+      // Image A
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead P&F Free Rail Chain Drop (A)",
+        hintText: "Top of Rail to Center of Chain",
+        imagePath: 'assets/Measurements/7/CCS/A.png',
+        controller: aTop,
+        subHint: "(Top of Rail to Center of Chain)",
+      ),
+
+      // Image B
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead P&F Free Rail Power Trolley Wheel (B)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/7/CCS/B.png',
+        controller: bDiameter,
+        subHint: "Diameter",
+      ),
+      
+      // Image G
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead P&F Free Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/7/CCS/G.png',
+        controller: gWidth,
+        subHint: "(Width)",
+      ),
+      
+      // Image H
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead P&F Free Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/7/CCS/H.png',
+        controller: hHeight,
+        subHint: "(Height)",
+      ),
+      
+      // Image L
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Overhead P&F Free Rail Free Trolley Wheel Position (Vertical - L)",
+        hintText: "Center of Free Trolley Wheel to Bottom of Rail",
+        imagePath: 'assets/Measurements/7/CCS/L.png',
+        controller: lCenter,
+        subHint: "(Center of Free Tolley Wheel to Bottom of Rail)",
+      ),
+      
+      // Image A
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Chain Drop (A)",
+        hintText: "Center of Chain to Opposite Edge of Rail",
+        imagePath: 'assets/Measurements/7/CCS/A_Color.png',
+        controller: aCenter,
+        subHint: "(Center of Chain to Opposite Edge of Rail)",
+      ),
+      
+      // Image B2
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Power Trolley Wheel (B)",
+        hintText: "Diameter",
+        imagePath: 'assets/Measurements/7/CCS/B2.png',
+        controller: bDiameter2,
+        subHint: "(Diameter)",
+      ),
+      
+      // Image G2
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail (G)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/7/CCS/G2.png',
+        controller: gWidth2,
+        subHint: "(Width)",
+      ),
+      
+      // Image H2
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Rail (H)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/7/CCS/H2.png',
+        controller: hHeight2,
+        subHint: "(Height)",
+      ),
+      
+      // Image K
+      CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Inverted Power and Free Trolley Wheel Pitch (K)",
+        hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
+        imagePath: 'assets/Measurements/7/CCS/K.png',
+        controller: kCenter,
+        subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
+      ),
+      
+    ],
+  );
+}
 
   VoidCallback? addOEBConfiguration(int numRequested) {
     if (validForm()) {

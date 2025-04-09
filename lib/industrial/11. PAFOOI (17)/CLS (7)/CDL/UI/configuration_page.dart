@@ -16,6 +16,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorLength = TextEditingController();
   final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController conveyorIndex = TextEditingController();
+  final TextEditingController controlVoltage = TextEditingController();
+  final TextEditingController conveyorLubeBrand = TextEditingController();
+  final TextEditingController conveyorLubeType = TextEditingController();
+  final TextEditingController conveyorLubeVisc = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
@@ -53,29 +57,44 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionTitle('Conveyor Details'),
+        CommonWidgets.buildTextField('Name of Conveyor System',conveyorSystem),
         CommonWidgets.buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
           'X458 Chain (4”)',
-          'OX678 Chain (6”)',
+          'X678 Chain (6”)',
+          '3/8" Log Chain',
           'Other'
         ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
-          'Green Line',
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
+          'Daifuku',
           'Frost',
-          'M&M',
-          'Stork',
-          'Meyn',
-          'Linco',
-          'DC',
-          'Merel',
-          'D&F',
+          'NKC',
+          'Pacline',
+          'Rapid',
+          'WEBB',
+          'Webb-Stiles'
+          'Wilkie Brothers',
+          'Other'
+        ]),
+        CommonWidgets.buildTextField('Conveyor Length',conveyorLength),
+        CommonWidgets.buildDropdownField('Conveyor Length Units', [
+          'Feet',
+          'Inches', 
+          'm Meter', 
+          'mm Milimeter'
+        ]),       
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildSectionTitle('Environmental Details'),
+        CommonWidgets.buildDropdownField('Ambient Enviroment', [
+          'Ambient',
+          'Caustic (i.e. Phosphate/E-Coat,etc.)',
+          'Oven',
+          'Wash Down',
+          'Intrinsic',
+          'Food Grade',
           'Other'
         ]),
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionTitle('Environmental Details'),
-        CommonWidgets.buildDropdownField('Is the Conveyor "__" at Planned Install Location',
-            ['Loaded', 'Unloaded']),
-        CommonWidgets.buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
   }
@@ -84,13 +103,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3']),
-        CommonWidgets.buildDropdownField(
-          'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
-          ['Yes', 'No'],
-        ),
-        CommonWidgets.buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
+        CommonWidgets.buildSectionTitle('Customer Power Utilities'),
+        CommonWidgets.buildTextField('Control Voltage (Volts/hz)', controlVoltage),
       ],
     );
   }
@@ -99,12 +113,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Connecting to Existing Monitoring', [
+        CommonWidgets.buildTextField('Current Lubrication Equipment (Brand)', conveyorLubeBrand),
+        CommonWidgets.buildTextField('Current Lubrication Lubricant Type', conveyorLubeType),
+        CommonWidgets.buildTextField('Current Lubrication Viscosity/Grade', conveyorLubeVisc),
+        CommonWidgets.buildDropdownField('Lubrication from the Side of Chain', [
           'Yes',
           'No'
         ]),
-        CommonWidgets.buildDropdownField('Add New Monitoring System', [
+        CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
           'Yes',
           'No'
         ]),

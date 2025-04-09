@@ -13,14 +13,24 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  final TextEditingController conveyorSystem = TextEditingController();
-  final TextEditingController conveyorLength = TextEditingController();
-  final TextEditingController conveyorSpeed = TextEditingController();
-  final TextEditingController conveyorIndex = TextEditingController();
+  final TextEditingController systemName = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
-  final TextEditingController conductor4 = TextEditingController();
-  final TextEditingController conductor7 = TextEditingController();
-  final TextEditingController conductor2 = TextEditingController();
+  final TextEditingController controlVoltage = TextEditingController();
+
+  final TextEditingController aTop = TextEditingController();
+  final TextEditingController cOutside = TextEditingController();
+  final TextEditingController a2Center = TextEditingController();
+  final TextEditingController b2Height = TextEditingController();
+  final TextEditingController c2Outside = TextEditingController();
+
+  final TextEditingController d2Center = TextEditingController();
+  final TextEditingController e2Thickness = TextEditingController();
+  final TextEditingController f2Diameter = TextEditingController();
+  final TextEditingController g2Width = TextEditingController();
+  final TextEditingController h2Height = TextEditingController();
+  final TextEditingController j2Hook = TextEditingController();
+  final TextEditingController l2Width = TextEditingController();
+  final TextEditingController m2Height = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +42,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             padding: const EdgeInsets.all(20.0),
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent()),
-              CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent()),
-              CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildMonitoringFeatures()),
-              CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
-              CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
-              CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
+              CommonWidgets.buildGradientButton(context, 'Customer Power Utilites',buildCustomerPowerUtilitiesContent()),
+              CommonWidgets.buildGradientButton(context, 'Overhead Power Rail: Measurements',buildMeasurements()),
             ],
           ),
         ),
@@ -53,30 +60,37 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionTitle('Conveyor Details'),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTextField('Enter Name of Conveyor System Here',systemName),
         CommonWidgets.buildDropdownField('Conveyor Chain Size', [
           'X348 Chain (3”)',
           'X458 Chain (4”)',
           'OX678 Chain (6”)',
+          '3/8" Log Chain',
           'Other'
         ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
-          'Green Line',
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
+          'Daifuku',
           'Frost',
-          'M&M',
-          'Stork',
-          'Meyn',
-          'Linco',
-          'DC',
-          'Merel',
-          'D&F',
+          'NKC',
+          'Pacline',
+          'Rapid',
+          'WEBB',
+          'Webb-Stilies',
+          'Wilkie Brothers',
           'Other'
+        ]),
+        CommonWidgets.buildDropdownField('Application Environment', [
+          'Ambient',
+          'Caustic (i.e. Phosphate/ E-Coat, etc.)',
+          'Oven',
+          'Wash Down', 'Intrinsic','Food Grade', 'Other'
+        ]),
+        CommonWidgets.buildDropdownField('Is the Conveyor Loaded or Unloaded at Planned Install Location?', [
+          'Loaded',
+          'Unloaded'
         ]),
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionTitle('Environmental Details'),
-        CommonWidgets.buildDropdownField('Is the Conveyor "__" at Planned Install Location',
-            ['Loaded', 'Unloaded']),
-        CommonWidgets.buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
   }
@@ -85,92 +99,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildDropdownField('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3']),
-        CommonWidgets.buildDropdownField(
-          'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
-          ['Yes', 'No'],
-        ),
-        CommonWidgets.buildDropdownField('3-Station Push Button Switch', ['Yes', 'No']),
-      ],
-    );
-  }
-
-  Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Connecting to Existing Monitoring', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Add New Monitoring System', [
-          'Yes',
-          'No'
-        ]),
+        CommonWidgets.buildTextField('Operating Voltage - 3 Phase: (Volts/hz)',operatingVoltage),
+        CommonWidgets.buildTextField('Enter Control Voltage (Volts/hz)',controlVoltage),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
-  Widget buildMonitoringFeatures() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Drive Motor Amp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Take-up-Air', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Take-Up Distance', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Temp', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Drive Motor Vibration', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Bent or Missing Trolley detect', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-
-  Widget buildConveyorSpecifications() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-       CommonWidgets. buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Lubrication from the Side of Chain', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Lubrication from the Top of Chain', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildDropdownField('Is the Conveyor Chain Clean?', [
-          'Yes',
-          'No'
-        ]),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
-  
-  Widget buildController() {
+  Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -181,28 +118,137 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'm Meter', 
           'mm Milimeter'
         ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+        
+        // Image A
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Chain Drop (A)",
+        hintText: "Top of Rail to Center of Chain",
+        imagePath: 'assets/Measurements/10/CCS/OP13/A.png', 
+        controller: aTop,
+        subHint: "(Top of Rail to Center of Chain)",
+      ),
+        
+        // Image C
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Trolley Wheel Bracket Width @ Trolley Wheel (C)",
+        hintText: "Outside of Left Bracket to Outside of Right Bracket",
+        imagePath: 'assets/Measurements/10/CCS/OP13/C.png', 
+        controller: cOutside,
+        subHint: "(Outside of Left Bracket to Outside of Right Bracket)",
+      ),
 
-  Widget buildWire() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        // Image A2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary C-Hook Drop (A2)",
+        hintText: "Center of Chain to Top of C-Hook",
+        imagePath: 'assets/Measurements/10/CCS/OP13/A2.png', 
+        controller: a2Center,
+        subHint: "(Center of Chain to Top of C-Hook)",
+      ),
+
+        // Image B2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary C-Hook (B2)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/10/CCS/OP13/B2.png', 
+        controller: b2Height,
+        subHint: "(Height)",
+      ),
+
+        // Image C2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Trolley Wheel Bracket Max. Width (C2)",
+        hintText: "Outside of Left Bracket to Outside of Right Bracket)",
+        imagePath: 'assets/Measurements/10/CCS/OP13/C2.png', 
+        controller: c2Outside,
+        subHint: "(Outside of Left Bracket to Outside of Right Bracket))",
+      ),
+
+        // Image D2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary C-Hook Offset (D2)",
+        hintText: "Center of Conveyor to Outside Edge of C-Hook",
+        imagePath: 'assets/Measurements/10/CCS/OP13/D2.png', 
+        controller: d2Center,
+        subHint: "(Center of Conveyor to Outside Edge of C-Hook)",
+      ),
+        
+        // Image E2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary C-Hook Drop (E2)",
+        hintText: "Thickness",
+        imagePath: 'assets/Measurements/10/CCS/OP13/C.png', 
+        controller: e2Thickness,
+        subHint: "(Thickness)",
+      ),
+
+        // Image F2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary C-Hook Support Pin (F2)",
+        hintText: "Diameter / Thickness",
+        imagePath: 'assets/Measurements/10/CCS/OP13/F2.png', 
+        controller: f2Diameter,
+        subHint: "(Diameter / Thickness)",
+      ),
+
+        // Image G2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Carrier Support Bracket (G2)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/10/CCS/OP13/G2.png', 
+        controller: g2Width,
+        subHint: "(Width)",
+      ),
+
+        // Image H2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Carrier Support Bracket (H2)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/10/CCS/OP13/H2.png', 
+        controller: h2Height,
+        subHint: "(Height)",
+      ),
+
+        // Image J2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Carrier Support Bracket (J2)",
+        hintText: "C-Hook to Bottom of Carrier Support Bracket",
+        imagePath: 'assets/Measurements/10/CCS/OP13/J2.png', 
+        controller: j2Hook,
+        subHint: "(C-Hook to Bottom of Carrier Support Bracket))",
+      ),
+        
+        // Image L2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Free Rail (L2)",
+        hintText: "Width",
+        imagePath: 'assets/Measurements/10/CCS/OP13/L2.png', 
+        controller: l2Width,
+        subHint: "(Width)",
+      ),
+
+        // Image M2
+        CommonWidgets.buildMeasurementFieldWithImage(
+        context: context,
+        title: "Sanitary Free Rail (M2)",
+        hintText: "Height",
+        imagePath: 'assets/Measurements/10/CCS/OP13/M2.png', 
+        controller: m2Height,
+        subHint: "(Height)",
+      ),
+
         CommonWidgets.buildSectionDivider(),
       ],
     );
