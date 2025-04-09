@@ -93,10 +93,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   final Map<String, List<String>> sections = {
-    "general" : ['conveyorName', 'conveyorChainSize', 'chainManufacturer', 'conveyorLoaded'],
-    "customerPowerUtilities" : ['operatingVoltage'],
-    "opss" : ['installationClearance'],
-    "additional" : ['pushButton']
+    "general": [
+      'conveyorName',
+      'conveyorChainSize',
+      'chainManufacturer',
+      'conveyorLoaded'
+    ],
+    "customerPowerUtilities": ['operatingVoltage'],
+    "opss": ['installationClearance'],
+    "additional": ['pushButton']
   };
 
   bool sectionError(String section) {
@@ -107,20 +112,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(), isError: sectionError("general")),
+                  buildGeneralInformationContent(),
+                  isError: sectionError("general")),
               CommonWidgets.buildGradientButton(
                   context,
                   'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(), isError: sectionError("customerPowerUtilities")),
-              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(), isError: sectionError("opss")),
+                  buildCustomerPowerUtilitiesContent(),
+                  isError: sectionError("customerPowerUtilities")),
+              CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(),
+                  isError: sectionError("opss")),
               CommonWidgets.buildGradientButton(
-                  context, 'Additional Options Avaliable', buildAdditional(), isError: sectionError("additional")),
+                  context, 'Additional Options Avaliable', buildAdditional(),
+                  isError: sectionError("additional")),
             ],
           ),
         ),
@@ -147,7 +157,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildErrorText(errors['conveyorName']!),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Conveyor Chain Size',
                 [
                   'X348 Chain (3”)',
@@ -163,7 +173,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Protein: Chain Manufacturer',
                 [
                   'Green Line',
@@ -184,7 +194,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
                 ['Loaded', 'Unloaded'],
                 conveyorLoaded,
@@ -196,7 +206,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorLoaded'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Is this a Drip Line?',
                 ['Yes', 'No'],
                 dripLine,
@@ -237,14 +247,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Confirm Installation Clearance of: Minimum of 2" (.61m) for Clearance fo Moter Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'],
           installationClearance,
           (value) {
             setState(() {
               installationClearance = (value); // Update state properly
-              _validateDropdownField(installationClearance, 'installationClearance');
+              _validateDropdownField(
+                  installationClearance, 'installationClearance');
             });
           },
           errorText: errors['installationClearance'],
@@ -259,7 +270,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           ' 3-Station Push Button Switch',
           ['Yes', 'No'],
           pushButton,
@@ -271,7 +282,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['pushButton'],
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Totally Enclosed Food-Grade Metal Shroud',
           ['Yes', 'No'],
           enclosedShroud,

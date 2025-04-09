@@ -262,7 +262,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildErrorText(errors['conveyorName']!),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Conveyor Chain Size',
                 [
                   'X348 Chain (3”)',
@@ -280,7 +280,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorChainSize'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Protein: Chain Manufacturer',
                 [
                   'Green Line',
@@ -304,7 +304,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['chainManufacturer'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Chain Pin Type *',
                 ['Bolts', 'Pin', 'Log'],
                 chainPinType,
@@ -317,7 +317,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 errorText: errors['chainPinType'],
               ),
               CommonWidgets.buildTextField('Enter Number Here', conveyorLength),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Conveyor Length Unit',
                 ['Feet', 'Inches', 'm Meter', 'mm Milimeter'],
                 conveyorLengthUnit,
@@ -329,7 +329,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               ),
               CommonWidgets.buildTextField(
                   'Enter Conveyor Speed (Min/Max)', conveyorSpeed),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Conveyor Speed Unit',
                 [
                   'Feet/Minute',
@@ -344,7 +344,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               ),
               CommonWidgets.buildTextField(
                   'Indexing or Variable Speed Conditions', conveyorIndex),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Direction of Travel',
                 [
                   'Right to Left',
@@ -357,7 +357,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'What Type of Metal *',
                 ['Stainless Steel', 'Zinc', 'Mild Steel', 'Other'],
                 metalType,
@@ -369,7 +369,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['metalType'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Style of Conveyor *',
                 ['I-Beam', 'Meyn', 'Sani Track', 'T Rail', 'Other'],
                 conveyorStyle,
@@ -381,7 +381,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorStyle'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Color of Trolley *',
                 ['Blue', 'Green', 'Grey', 'Other'],
                 trolleyColor,
@@ -393,7 +393,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['trolleyColor'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Type of Trolley',
                 [
                   'Meyn Trolley Halve Green Wheel Bolt Version',
@@ -412,7 +412,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['trolleyType'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
                 ['Yes', 'No'],
                 surroundingTemp,
@@ -422,7 +422,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
                 ['Loaded', 'Unloaded'],
                 conveyorLoaded,
@@ -434,7 +434,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorLoaded'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
                 ['Yes', 'No'],
                 conveyorSwing,
@@ -446,7 +446,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorSwing'],
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'I Have A Plant Layout To Attach',
                 ['Yes - Will Attach', 'No - Do Not Have'],
                 plantLayout,
@@ -456,7 +456,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   });
                 },
               ),
-              CommonWidgets.buildDropdownFieldProtein(
+              CommonWidgets.buildDropdownFieldError(
                 'I Have The Required Pictures Of Each Chain To Attach',
                 ['Yes - Will Attach', 'No - Do Not Have'],
                 requiredPics,
@@ -498,7 +498,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Connecting to Existing Monitoring',
           ['Yes', 'No'],
           existingMonitor,
@@ -508,7 +508,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Add New Monitoring System',
           ['Yes', 'No'],
           newMonitor,
@@ -528,7 +528,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Drive Motor Amp',
           ['Yes', 'No'],
           motorAmp,
@@ -540,7 +540,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['motorAmp'],
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Drive Take-up-Air',
           ['Yes', 'No'],
           takeUpAir,
@@ -552,7 +552,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['takeUpAir'],
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Take-Up Distance',
           ['Yes', 'No'],
           takeUpDist,
@@ -564,7 +564,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['takeUpDist'],
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Drive Motor Temp',
           ['Yes', 'No'],
           motorTemp,
@@ -574,7 +574,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Drive Motor Vibration',
           ['Yes', 'No'],
           motorVib,
@@ -584,7 +584,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Bent or Missing Trolley detect',
           ['Yes', 'No'],
           detectFaultyTrolley,
@@ -607,7 +607,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Lubrication from the Side of Chain',
           ['Yes', 'No'],
           sideLube,
@@ -619,7 +619,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['sideLube'],
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Lubrication from the Top of Chain',
           ['Yes', 'No'],
           topLube,
@@ -631,7 +631,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['topLube'],
         ),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Is the Conveyor Chain Clean?',
           ['Yes', 'No'],
           cleanChain,
@@ -651,7 +651,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldProtein(
+        CommonWidgets.buildDropdownFieldError(
           'Measurement Units',
           ['Feet', 'Inches', 'm Meter', 'mm Milimeter'],
           measureUnits,
