@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/protien/protein_home.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 import 'package:mighty_lube/api.dart';
 import 'dart:async';
 
 class ConfigurationSection extends StatefulWidget {
-  const ConfigurationSection({super.key});
+  final void Function(int) updateCartItemCount;
+  const ConfigurationSection({super.key, required this.updateCartItemCount});
 
   @override
   State<ConfigurationSection> createState() => _ConfigurationSectionState();
@@ -14,7 +15,7 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  Future<bool>? status;
+  bool? status = false;
   Timer? _delay;
 
   final TextEditingController conveyorSystemName = TextEditingController();
@@ -30,9 +31,21 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   Map<String, String?> errors = {};
 
-  void _validateTextField(String value, String field) {
+  void _validateTextField(String value, String field,
+      {bool isNum = false, bool decimal = false}) {
     setState(() {
-      errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
+      if (value.trim().isEmpty) {
+        errors[field] = 'This field is required.';
+      } else if (isNum) {
+        RegExp num = decimal ? RegExp(r'^\d+(\.\d+)?$') : RegExp(r'^\d+$');
+        if (!num.hasMatch(value)) {
+          errors[field] = 'Please enter a valid number.';
+        } else {
+          errors[field] = null;
+        }
+      } else {
+        errors[field] = null;
+      }
     });
   }
 
@@ -43,13 +56,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
   }
 
-  void _validatorDelay(String value, String field) {
+  void _validatorDelay(String value, String field,
+      {bool isNum = false, bool decimal = false}) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
     // manual delay so its not a constant spam of requirements (hopefully)
     _delay = Timer(const Duration(milliseconds: 0), () {
-      _validateTextField(value, field);
+      _validateTextField(value, field, isNum: isNum, decimal: decimal);
     });
   }
 
@@ -61,10 +75,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     _validateTextField(conveyorSystemName.text, 'conveyorName');
     _validateDropdownField(chainManufacturer, 'chainManufacturer');
+    _validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     _validateDropdownField(installationClearance, 'installationClearance');
     _validateDropdownField(pushButton, 'pushButton');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage');
+    _validateTextField(operatingVoltage.text, 'operatingVoltage',
+        isNum: true, decimal: true);
 
     setState(() {});
   }
@@ -89,7 +105,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage');
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage',
+        isNum: true, decimal: true);
   }
 
   final Map<String, List<String>> sections = {
@@ -134,9 +151,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             ],
           ),
         ),
-        CommonWidgets.buildConfiguratorWithCounter(callback: (int value) {
-          addFGCOinfo(value);
-        }),
+        if (status == null)
+          // loading spinner instead of add button
+          const Center(
+            child: CircularProgressIndicator(),
+          )
+        else
+          CommonWidgets.buildConfiguratorWithCounter(callback: (int value) {
+            addFGCOinfo(value);
+          }),
         const SizedBox(height: 20),
       ],
     );
@@ -153,12 +176,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildTextField(
                   'Name of Conveyor System *', conveyorSystemName,
                   errorText: errors['conveyorName']),
-              if (errors['conveyorName'] != null)
-                buildErrorText(errors['conveyorName']!),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
               CommonWidgets.buildDropdownFieldError(
-                'Conveyor Chain Size',
+                'Conveyor Chain Size *',
                 [
                   'X348 Chain (3”)',
                   'X458 Chain (4”)',
@@ -170,11 +191,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorChainSize = (value); // Update state properly
+                    _validateDropdownField(
+                        conveyorChainSize, 'conveyorChainSize');
                   });
                 },
+                errorText: errors['conveyorChainSize'],
               ),
               CommonWidgets.buildDropdownFieldError(
-                'Protein: Chain Manufacturer',
+                'Protein: Chain Manufacturer *',
                 [
                   'Green Line',
                   'Frost',
@@ -191,8 +215,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainManufacturer = (value); // Update state properly
+                    _validateDropdownField(
+                        chainManufacturer, 'chainManufacturer');
                   });
                 },
+                errorText: errors['chainManufacturer'],
               ),
               CommonWidgets.buildDropdownFieldError(
                 'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
@@ -234,8 +261,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildTextField(
                   'Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage,
                   errorText: errors['operatingVoltage']),
-              if (errors['operatingVoltage'] != null)
-                buildErrorText(errors['operatingVoltage']!),
               CommonWidgets.buildSectionDivider(),
             ],
           );
@@ -271,7 +296,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownFieldError(
-          ' 3-Station Push Button Switch',
+          '3-Station Push Button Switch *',
           ['Yes', 'No'],
           pushButton,
           (value) {
@@ -299,23 +324,42 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addFGCOinfo(int numRequested) {
+  Future<VoidCallback?> addFGCOinfo(int numRequested) async {
     if (validForm()) {
       dynamic fgcoData = {
         "conveyorSystemName": conveyorSystemName.text,
         "conveyorChainSize": conveyorChainSize,
         "chainManufacturer": chainManufacturer,
         "conveyorLoaded": conveyorLoaded,
-        "dripLine": dripLine,
-        "operatingVoltTriple": (operatingVoltage.text != "")
-            ? int.parse(operatingVoltage.text)
-            : -1, // remove this once validation is here
+        if (dripLine != -1) "dripLine": dripLine,
+        "operatingVoltTriple": num.parse(operatingVoltage.text),
         "installationClearance": installationClearance,
         "pushButton": pushButton,
-        "enclosedShroud": enclosedShroud,
-        "additionalOtherInfo": additionalOtherInfo.text
+        if (enclosedShroud != -1) "enclosedShroud": enclosedShroud,
+        "additionalOtherInfo": additionalOtherInfo.text,
       };
-      status = FormAPI().addOrder("fgco", fgcoData, numRequested);
+      setState(() {
+        status = null;
+      });
+      status = await FormAPI().addOrder("fgco", fgcoData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
+      setState(() {});
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
