@@ -35,8 +35,8 @@ import '10. OHPRLB (20)/CLS (7)/OP4A/UI/OP4A.dart';
 import '10. OHPRLB (20)/CLS (7)/OP52/UI/OP52.dart';
 import '10. OHPRLB (20)/CMS (4)/PMMS/UI/PMMS.dart';
 import '10. OHPRLB (20)/CMS (4)/SLMLMS/UI/SLMLMS.dart';
-import '11. PAFOOI (17)/CLS (7)/9000LFCCCL/UI/9000LFCCCL.dart';
-import '11. PAFOOI (17)/CLS (7)/9000LTCL/UI/9000LTCL.dart';
+import '11. PAFOOI (16)/CLS (7)/9000LFCCCL/UI/9000LFCCCL.dart';
+import '11. PAFOOI (16)/CLS (7)/9000LTCL/UI/9000LTCL.dart';
 
 class Product {
   final String title;
