@@ -558,50 +558,74 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addESConfiguration(int numRequested) {
-    if (validForm()) {
-      dynamic configurationData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorIndex': conveyorIndex.text,
-        'operatingVoltage': operatingVoltage.text,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'surroundingTemp': surroundingTemp,
-        'conveyorLoaded': conveyorLoaded,
-        'conveyorSwing': conveyorSwing,
-        'wheelOpenRace': wheelOpenRace,
-        'wheelSealedStyle': wheelSealedStyle,
-        'openInsideShielded': openInsideShielded,
-        'freeTrolleyWheels': freeTrolleyWheels,
-        'guideRollers': guideRollers,
-        'guideRollersOpenRace': guideRollersOpenRace,
-        'guideRollersSealedStyle': guideRollersSealedStyle,
-        'openHole': openHole,
-        'dogActuator': dogActuator,
-        'pivotPoints': pivotPoints,
-        'kingPin': kingPin,
-        'outboardWheels': outboardWheels,
-        'railLubrication': railLubrication,
-        'equipBrand': equipBrand.text,
-        'currentType': currentType.text,
-        'currentGrade': currentGrade.text,
-        'chainMaster': chainMaster.text,
-        'specialOP': specialOP.text,
-        'optionalInfo': optionalInfo.text,
-        'measurementUnits': measurementUnits,
-      };
-      status = FormAPI().addOrder("es", configurationData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic configurationData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherChainManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': conveyorLengthUnit,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': conveyorSpeedUnit,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'monitorData': {
+        'existingMonitor': null,
+        'newMonitor': null,
+      },
+      'conveyorLoaded': conveyorLoaded,
+      'conveyorSwing': conveyorSwing,
+      'operatingVoltage': operatingVoltage.text,
+      'controlVoltage': null,
+      'wheelOpenType': wheelOpenRace,
+      'wheelClosedType': wheelSealedStyle,
+      'openStatus': openInsideShielded,
+      'freeWheelStatus': freeTrolleyWheels,
+      'guideRollerStatus': guideRollers,
+      'openRaceStyle': guideRollersOpenRace,
+      'closedRaceStyle': guideRollersSealedStyle,
+      'holeStatus': openHole,
+      'actuatorStatus': dogActuator,
+      'pivotStatus': pivotPoints,
+      'kingPinStatus': kingPin,
+      'outboardWheels': outboardWheels,
+      'railLubeStatus': railLubrication,
+      'externalLubeStatus': null,
+      'lubeBrand': equipBrand.text,
+      'lubeType': currentType.text,
+      'lubeViscosity': currentGrade.text,
+      'sideLubeStatus': null,
+      'topLubeStatus': null,
+      'chainMaster': chainMaster.text,
+      'timerStatus': null,
+      'electricStatus': null,
+      'pneumaticStatus': null,
+      'mightyLubeMonitoring': null,
+      'plcConnection': null,
+      'otherControllerInfo': optionalInfo.text,
+      'frUnitType': null,
+      'frOverheadG': null,
+      'frOverheadH': null,
+      'frOverheadK': null,
+      'frInvertedA': null,
+      'frInvertedB': null,
+      'frInvertedG': null,
+      'frInvertedH': null,
+      'frInvertedK': null,
+      'frInvertedL': null,
+    };
+    status = FormAPI().addOrder("FRO_ES", configurationData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   buildErrorText(String message) {
     return Padding(

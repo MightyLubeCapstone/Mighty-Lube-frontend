@@ -620,46 +620,63 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP40E(int numRequested) {
-    if (validForm()) {
-      dynamic opData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorIndex': conveyorIndex.text,
-        'operatingVoltage': operatingVoltage.text,
-        'existingMonitoring': existingMonitoring,
-        'outboardWheels': outboardWheels,
-        'highRollers': highRollers,
-        'equipBrand': equipBrand.text,
-        'currentType': currentType.text,
-        'currentGrade': currentGrade.text,
-        'lubricationSide': lubricationSide,
-        'lubricationTop': lubricationTop,
-        'chainMasterController': chainMasterController,
-        'timer': timer,
-        'electricOnOff': electricOnOff,
-        'pneumaticOnOff': pneumaticOnOff,
-        'mightyLubeMonitoring': mightyLubeMonitoring,
-        'plcConnection': plcConnection,
-        'otherInfo': otherInfo.text,
-        'specialOptions': specialOptions.text,
-        'measurementUnits': measurementUnits,
-        'conveyorSpeedUnit': conveyorSpeedUnit,
-        'conveyorLengthUnit': conveyorLengthUnit,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'temperatureOfSurroundingArea': temperatureOfSurroundingArea,
-        'conveyorSingleDouble': conveyorSingleDouble,
-      };
-      status = FormAPI().addOrder("op40e", opData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic opData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize, 
+      'industrialChainManufacturer': chainManufacturer,
+      'otherIndustrialChainManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': conveyorLengthUnit,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': conveyorSpeedUnit,
+      'conveyorIndex': conveyorIndex.text,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null, 
+      'surroundingTemp': temperatureOfSurroundingArea, 
+      'conveyorLoaded': null,
+      'conveyorSwing': null,
+      'plantLayout': null,
+      'requiredPics': null, 
+      'operatingVoltage': operatingVoltage.text,
+      'templateB': {
+        'existingMonitor': existingMonitoring, 
+      },
+      'wheelOpenType': null,
+      'wheelClosedType': null,
+      'openStatus': null, 
+      'catDriveStatus': null, 
+      'railLubeStatus': lubricationSide,
+      'externalLubeStatus': lubricationTop, 
+      'lubeBrand': equipBrand.text,
+      'lubeType': currentType.text,
+      'lubeViscosity': currentGrade.text,
+      'chainMaster': chainMasterController,
+      'timerStatus': timer,
+      'electricStatus': electricOnOff,
+      'pneumaticStatus': pneumaticOnOff, 
+      'mightyLubeMonitoring': mightyLubeMonitoring,
+      'plcConnection': plcConnection,
+      'otherControllerInfo': otherInfo.text,
+      'specialControllerOptions': specialOptions.text,
+      'coeUnitType': null, 
+      'coeLineA': aTop.text,
+      'coeLineG': gWidth.text,
+      'coeLineH': hHeight.text,
+      'coeLineJ': jWidth.text,
+      'coeLineX': xWidth.text, 
+      'coeLineY': yThickness.text, 
+      'coeLineZ': zInside.text,
+    };
+    status = FormAPI().addOrder("COE_OP4OE", opData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 }

@@ -299,25 +299,40 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 }
 
   VoidCallback? addOEBConfiguration(int numRequested) {
-    if (validForm()) {
-      dynamic oebData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorLength': conveyorLength.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'conveyorLengthUnit': conveyorLengthUnit,
-        'applicationEnvironment': applicationEnvironment,
-        'surroundingTemp': surroundingTemp,
-      };
-      status = FormAPI().addOrder("oeb", oebData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic oebData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'otherChainSize': null,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherChainManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': conveyorLengthUnit,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'surroundingTemp': surroundingTemp,
+      'frUnitType': null,
+      'frOverheadA': aTop.text,
+      'frOverheadB': bDiameter.text,
+      'frOverheadG': gWidth.text,
+      'frOverheadH': hHeight.text,
+      'frOverheadL': lCenter.text,
+      'frInvertedA': aCenter.text,
+      'frInvertedB': bDiameter2.text,
+      'frInvertedG': gWidth2.text,
+      'frInvertedH': hHeight2.text,
+      'frInvertedK': kCenter.text,
+    };
+    status = FormAPI().addOrder("FRO_OEB", oebData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

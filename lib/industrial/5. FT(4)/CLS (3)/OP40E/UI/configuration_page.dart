@@ -486,31 +486,78 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP40EConfiguration(int numRequested) {
-    if (validForm()) {
-      dynamic op40eData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'operatingVoltage': operatingVoltage.text,
-        'equipBrand': equipBrand.text,
-        'currentType': currentType.text,
-        'currentGrade': currentGrade.text,
-        'otherInfo': otherInfo.text,
-        'specialOptions': specialOptions.text,
-      };
-      status = FormAPI().addOrder("op40e", op40eData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic op40eData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherIndustrialChainManufacturer': null,
+      'wheelManufacturer': null,
+      'otherWheelManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': null,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': null,
+      'conveyorIndex': null,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'surroundingTemp': null,
+      'conveyorLoaded': null,
+      'conveyorSwing': null,
+      'strandStatus': null,
+      'plantLayout': null,
+      'requiredPics': null,
+      'operatingVoltage': operatingVoltage.text,
+      'templateB': {
+        'existingMonitor': null,
+        'newMonitor': null,
+      },
+      'wheelOpenType': null,
+      'wheelClosedType': null,
+      'openStatus': null,
+      'freeWheelStatus': null,
+      'guideRollerStatus': null,
+      'openRaceStyleType': null,
+      'closedRaceStyleType': null,
+      'holeStatus': null,
+      'actuatorStatus': null,
+      'pivotStatus': null,
+      'kingPinStatus': null,
+      'outboardStatus': null,
+      'lubeBrand': equipBrand.text,
+      'lubeType': currentType.text,
+      'lubeViscosity': currentGrade.text,
+      'chainMaster': null,
+      'timerStatus': null,
+      'electricStatus': null,
+      'pneumaticStatus': null,
+      'mightyLubeMonitoring': null,
+      'plcConnection': null,
+      'otherControllerInfo': otherInfo.text,
+      'ftUnitType': null,
+      'ftTopG': gWidth.text,
+      'ftTopH': hHeight.text,
+      'ftTopA1': a1Diameter.text,
+      'ftTopB1': b1Width.text,
+      'ftTopH1': h1Width.text,
+      'ftTopJ1': j1Thickness.text,
+      'ftTopL1': l1Flat.text,
+      'ftTopM1': m1Inside.text,
+      'ftTopN1': n1Width.text,
+      'ftTopP1': p1Outside.text,
+      'ftTopR1': r1Center.text,
+    };
+    status = FormAPI().addOrder("FT_OP4OE", op40eData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

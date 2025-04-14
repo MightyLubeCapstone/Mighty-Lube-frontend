@@ -539,41 +539,88 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addConfiguration(int numRequested) {
-    if (validForm()) {
-      dynamic configurationData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'wheelManufacturer': wheelManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorLengthUnit': conveyorLengthUnit,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorSpeedUnit': conveyorSpeedUnit,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'surroundingTemp': surroundingTemp,
-        'conveyorLoaded': conveyorLoaded,
-        'conveyorSwing': conveyorSwing,
-        'conveyorStrand': conveyorStrand,
-        'operatingVoltage': operatingVoltage.text,
-        'compressedAir': compressedAir.text,
-        'compressedAirUnit': compressedAirUnit,
-        'equipBrand': equipBrand.text,
-        'lubricationType': lubricationType.text,
-        'lubricationGrade': lubricationGrade.text,
-        'greaseType': greaseType.text,
-        'greaseGrade': greaseGrade.text,
-        'otherInfo': otherInfo.text,
-      };
-      FormAPI().addOrder("opco300", configurationData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic configurationData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherIndustrialChainManufacturer': null,
+      'wheelManufacturer': wheelManufacturer,
+      'otherWheelManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': conveyorLengthUnit,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': conveyorSpeedUnit,
+      'conveyorIndex': null,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'surroundingTemp': surroundingTemp,
+      'conveyorLoaded': conveyorLoaded,
+      'conveyorSwing': conveyorSwing,
+      'strandStatus': conveyorStrand,
+      'plantLayout': null,
+      'requiredPics': null,
+      'operatingVoltage': operatingVoltage.text,
+      'compressedAir': compressedAir.text,
+      'compressedAirUnit': compressedAirUnit,
+      'templateB': {
+        'existingMonitor': null,
+        'newMonitor': null,
+      },
+      'wheelOpenType': null,
+      'wheelClosedType': null,
+      'openStatus': null,
+      'freeWheelStatus': null,
+      'guideRollerStatus': null,
+      'openRaceStyleType': null,
+      'closedRaceStyleType': null,
+      'holeStatus': null,
+      'rollerChainStatus': null,
+      'brushStatus': null,
+      'outboardStatus': null,
+      'lubeBrand': equipBrand.text,
+      'currentLube': lubricationType.text,
+      'oilOrGrease': lubricationGrade.text,
+      'lubeViscosity': greaseType.text,
+      'greaseNGLIGrade': greaseGrade.text,
+      'zerkDirection': zerkOrientation,
+      'zerkLocationType': zerkLocation,
+      'chainMaster': null,
+      'remoteStatus': null,
+      'mountStatus': null,
+      'otherUnitStatus': null,
+      'timerStatus': null,
+      'electricStatus': null,
+      'mightyLubeMonitoring': null,
+      'preMountType': null,
+      'plcConnection': null,
+      'otherControllerInfo': otherInfo.text,
+      'ftUnitType': null,
+      'ftTopF': fOutside.text,
+      'ftTopG': gWidth.text,
+      'ftTopH': hHeight.text,
+      'ftTopA1': a1Diameter.text,
+      'ftTopB1': b1Width.text,
+      'ftTopH1': h1Width.text,
+      'ftTopJ1': j1Thickness.text,
+      'ftTopK1': k1Thickness.text,
+      'ftTopL1': l1Flat.text,
+      'ftTopM1': m1Inside.text,
+      'ftTopN1': n1Width.text,
+      'ftTopP1': p1Outside.text,
+      'ftTopR1': r1Center.text,
+    };
+    FormAPI().addOrder("FT_OPCO", configurationData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

@@ -43,6 +43,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? lubricationTopChain = -1;
   int? chainClean = -1;
   int? measurementUnits = -1;
+  final TextEditingController equipBrand = TextEditingController();
+  final TextEditingController lubricationType = TextEditingController();
+  final TextEditingController lubricationGrade = TextEditingController();
+
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -382,44 +386,62 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addMLRFC(int numRequested) {
-    if (validForm()) {
-      dynamic rfcData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'conveyorChainManufacturer': conveyorChainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorIndex': conveyorIndex.text,
-        'operatingVoltage': operatingVoltage,
-        'conductor4': conductor4.text,
-        'conductor7': conductor7.text,
-        'conductor2': conductor2.text,
-        'conveyorLoaded': conveyorLoaded,
-        'dripLine': dripLine,
-        'installationClearance': installationClearance,
-        'pushButtonSwitch': pushButtonSwitch,
-        'existingMonitoring': existingMonitoring,
-        'newMonitoring': newMonitoring,
-        'driveMotorAmp': driveMotorAmp,
-        'driveTakeUpAir': driveTakeUpAir,
-        'takeUpDistance': takeUpDistance,
-        'driveMotorTemp': driveMotorTemp,
-        'driveMotorVibration': driveMotorVibration,
-        'bentOrMissingTrolley': bentOrMissingTrolley,
-        'lubricationSideChain': lubricationSideChain,
-        'lubricationTopChain': lubricationTopChain,
-        'chainClean': chainClean,
-        'measurementUnits': measurementUnits,
-      };
-      status = FormAPI().addOrder('mlrfc', rfcData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic rfcData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': conveyorChainManufacturer,
+      'otherChainManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'measurementUnit': measurementUnits,
+      'conveyorSpeed': conveyorSpeed.text,
+      'speedUnit': null,
+      'conveyorIndex': conveyorIndex.text,
+      'travelDirection': null,
+      'appEnviroment': null,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'monitorData': {
+        'existingMonitor': existingMonitoring,
+        'newMonitor': newMonitoring,
+      },
+      'surrondingTemp': null,
+      'conveyorLoaded': conveyorLoaded,
+      'conveyorSwing': null,
+      'strandStatus': null,
+      'plantLayout': null,
+      'requiredPics': null,
+      'operatingVoltage': operatingVoltage.text,
+      'controlVoltage': null,
+      'wheelOpenType': null,
+      'wheelClosedType': null,
+      'openStatus': null,
+      'powerChainStatus': null,
+      'chainPinStatus': null,
+      'catDriveStatus': null,
+      'catDriveNum': null,
+      'railLubeStatus': null,
+      'externalLubeStatus': null,
+      'lubeBrand': equipBrand.text,
+      'lubeType': lubricationType.text,
+      'lubeViscosity': lubricationGrade.text,
+      'chainCleanStatus': null,
+      'ibrUnitType': null,
+      'ibrChainA1': null,
+      'ibrChainB1': null,
+      'ibrChainC1': null,
+      'ibrChainD1': null,
+      'ibrChainF1': null,
+    };
+    status = FormAPI().addOrder("IBR_RFC", rfcData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

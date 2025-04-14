@@ -527,49 +527,63 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addMLCEL(int numRequested) {
-    if (validForm()) {
-      dynamic mlcelData = {
-        "conveyorSystem": conveyorSystem.text,
-        "conveyorChainSize": conveyorChainSize,
-        "conveyorChainManufacturer": conveyorChainManufacturer,
-        "conveyorLength": conveyorLength.text,
-        "conveyorSpeed": conveyorSpeed.text,
-        "conveyorIndex": conveyorIndex.text,
-        "operatingVoltage": operatingVoltage.text,
-        "conductor4": conductor4.text,
-        "conductor7": conductor7.text,
-        "conductor2": conductor2.text,
-        "equipBrand": equipBrand.text,
-        "currentType": currentType.text,
-        "currentGrade": currentGrade.text,
-        "specialOptions": specialOptions.text,
-        "jBox": jBox.text,
-        "conductor12": conductor12.text,
-        "conveyorDirection": conveyorDirection,
-        "conveyorEnvironment": conveyorEnvironment,
-        "conveyorTemperature": conveyorTemperature,
-        "conveyorStrand": conveyorStrand,
-        "wheelOpenRace": wheelOpenRace,
-        "wheelSealedStyle": wheelSealedStyle,
-        "openInsideShielded": openInsideShielded,
-        "openOutsideShielded": openOutsideShielded,
-        "railLubrication": railLubrication,
-        "externalLubrication": externalLubrication,
-        "reservoirSize": reservoirSize,
-        "chainClean": chainClean,
-        "measurementUnits": measurementUnits,
-        "conveyorLengthUnit": conveyorLengthUnit,
-        "conveyorSpeedUnit": conveyorSpeedUnit,
-      };
-      status = FormAPI().addOrder("mlcel", mlcelData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic mlcelData = {
+      "conveyorName": conveyorSystem.text, 
+      "chainSize": conveyorChainSize, 
+      "industrialChainManufacturer": conveyorChainManufacturer,
+      "otherIndustrialChainManufacturer": null,
+      "conveyorLength": conveyorLength.text,
+      "conveyorLengthUnit": conveyorLengthUnit,
+      "conveyorSpeed": conveyorSpeed.text,
+      "conveyorSpeedUnit": conveyorSpeedUnit,
+      "conveyorIndex": conveyorIndex.text,
+      "travelDirection": conveyorDirection,
+      "appEnviroment": conveyorEnvironment,
+      "ovenStatus": null,
+      "ovenTemp": null, 
+      "surroundingTemp": conveyorTemperature, 
+      "conveyorLoaded": null, 
+      "conveyorSwing": null,
+      "plantLayout": null, 
+      "requiredPics": null, 
+      "operatingVoltage": operatingVoltage.text,
+      "templateB": {
+        "existingMonitor": existingMonitoring,
+      },
+      "wheelOpenType": wheelOpenRace, 
+      "wheelClosedType": wheelSealedStyle,
+      "openStatus": null,
+      "catDriveStatus": null,
+      "railLubeStatus": railLubrication, 
+      "externalLubeStatus": externalLubrication, 
+      "lubeBrand": equipBrand.text,
+      "lubeType": currentType.text,
+      "lubeViscosity": currentGrade.text,
+      "chainCleanStatus": chainClean,
+      "wireMeasurementUnit": measurementUnits,
+      "conductor2": conductor2.text,
+      "conductor4": conductor4.text,
+      "conductor7": conductor7.text,
+      "conductor12": conductor12.text,
+      "junctionBoxNum": jBox.text, 
+      "coeUnitType": null, 
+      "coeLineA": aTop.text, 
+      "coeLineG": gWidth.text,
+      "coeLineH": hHeight.text,
+      "coeLineJ": jWidth.text, 
+      "coeLineX": xWidth.text,
+      "coeLineY": yThickness.text,
+    };
+    status = FormAPI().addOrder("COE_CEL", mlcelData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

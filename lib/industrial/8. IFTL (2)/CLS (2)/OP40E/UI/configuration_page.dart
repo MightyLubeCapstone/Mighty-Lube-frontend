@@ -46,6 +46,28 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorChainClean = -1;
   int? measurementUnits = -1;
   int? pushButtonSwitch = -1;
+  int? conveyorSpeedUnit = -1;
+  int? directionOfTravel = -1;
+  int? applicationEnvironment = -1;
+  int? conveyorLoaded = -1;
+  int? conveyorSwing = -1;
+  int? strandStatus = -1;
+  int? plantLayout = -1;
+  int? requiredPics = -1;
+  int? wheelOpenRace = -1;
+  int? wheelSealedStyle = -1;
+  int? openInsideShielded = -1;
+  int? freeTrolleyWheels = -1;
+  int? guideRollers = -1;
+  int? guideRollersOpenRace = -1;
+  int? guideRollersSealedStyle = -1;
+  int? openHole = -1;
+  int? dogActuator = -1;
+  int? pivotPoints = -1;
+  int? kingPin = -1;
+  int? outboardStatus = -1;
+  int? railLubrication = -1;
+ 
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -448,43 +470,79 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP40E(int numRequested) {
-    if (validForm()) {
-      dynamic opData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorIndex': conveyorIndex.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'installationClearance': installationClearance,
-        'dripLine': dripLine,
-        'operatingVoltage': operatingVoltage,
-        'conductor4': conductor4.text,
-        'conductor7': conductor7.text,
-        'conductor2': conductor2.text,
-        'monitoringSystem': monitoringSystem,
-        'newMonitoringSystem': newMonitoringSystem,
-        'driveMotorAmp': driveMotorAmp,
-        'driveTakeUpAir': driveTakeUpAir,
-        'takeUpDistance': takeUpDistance,
-        'driveMotorTemp': driveMotorTemp,
-        'driveMotorVibration': driveMotorVibration,
-        'bentOrMissingTrolley': bentOrMissingTrolley,
-        'lubricationFromSide': lubricationFromSide,
-        'lubricationFromTop': lubricationFromTop,
-        'conveyorChainClean': conveyorChainClean,
-        'measurementUnits': measurementUnits,
-        'pushButtonSwitch': pushButtonSwitch,
-      };
-      status = FormAPI().addOrder("op40e", opData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic opData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherChainManufacturer': null,
+      'wheelManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'measurementUnit': measurementUnits,
+      'conveyorSpeed': conveyorSpeed.text,
+      'speedUnit': conveyorSpeedUnit,
+      'conveyorIndex': conveyorIndex.text,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'monitorData': {
+        'existingMonitor': null,
+        'newMonitor': null,
+      },
+      'surroundingTemp': null,
+      'conveyorLoaded': conveyorLoaded,
+      'conveyorSwing': conveyorSwing,
+      'strandStatus': null,
+      'plantLayout': null,
+      'requiredPics': null,
+      'operatingVoltage': operatingVoltage.text,
+      'controlVoltage': null,
+      'wheelOpenType': wheelOpenRace,
+      'wheelClosedType': wheelSealedStyle,
+      'openStatus': openInsideShielded,
+      'freeWheelStatus': freeTrolleyWheels,
+      'guideRollerStatus': guideRollers,
+      'openRaceStyle': guideRollersOpenRace,
+      'closedRaceStyle': guideRollersSealedStyle,
+      'holeStatus': openHole,
+      'actuatorStatus': dogActuator,
+      'pivotStatus': pivotPoints,
+      'kingPinStatus': kingPin,
+      'outboardStatus': null,
+      'railLubeStatus': railLubrication,
+      'lubeBrand': equipBrand.text,
+      'lubeType': currentType.text,
+      'lubeViscosity': currentGrade.text,
+      'chainMaster': chainMaster.text,
+      'timerStatus': null,
+      'electricStatus': null,
+      'pneumaticStatus': null,
+      'mightyLubeMonitoring': null,
+      'plcConnection': null,
+      'otherControllerInfo': optionalInfo.text,
+      'iftUnitType': null,
+      'iftPowerA': null,
+      'iftPowerB': null,
+      'iftPowerG': null,
+      'iftPowerH': null,
+      'iftPowerJ': null,
+      'iftPowerS1': null,
+      'iftPowerT1': null,
+      'iftPowerU1': null,
+      'iftPowerV1': null,
+      'iftPowerW1': null,
+      'iftPowerX1': null,
+    };
+    status = FormAPI().addOrder("IFT_OP4OE", opData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

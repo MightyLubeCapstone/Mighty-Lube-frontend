@@ -440,44 +440,21 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addCDL(int numRequested) {
-    if (validForm()) {
-      dynamic cdlData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'conveyorChainManufacturer': conveyorChainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'operatingVoltage': operatingVoltage,
-        'conveyorLoaded': conveyorLoaded,
-        'dripLine': dripLine,
-        'installationClearance': installationClearance,
-        'pushButtonSwitch': pushButtonSwitch,
-        'existingMonitoring': existingMonitoring,
-        'newMonitoring': newMonitoring,
-        'driveMotorAmp': driveMotorAmp,
-        'driveTakeUpAir': driveTakeUpAir,
-        'takeUpDistance': takeUpDistance,
-        'driveMotorTemp': driveMotorTemp,
-        'driveMotorVibration': driveMotorVibration,
-        'bentOrMissingTrolley': bentOrMissingTrolley,
-        'lubricationSideChain': lubricationSideChain,
-        'lubricationTopChain': lubricationTopChain,
-        'chainClean': chainClean,
-        'measurementUnits': measurementUnits,
-        'conductorNumber4': conductorNumber4.text,
-        'conductorNumber7': conductorNumber7.text,
-        'conductorNumber2': conductorNumber2.text,
-        'wireConductorNumber4': wireConductorNumber4.text,
-        'wireConductorNumber7': wireConductorNumber7.text,
-        'wireConductorNumber2': wireConductorNumber2.text,
-      };
-      status = FormAPI().addOrder("COE_CDL", cdlData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic cdlData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'ovenStatus': null, 
+      'ovenTemp': null,
+      'controlVoltSingle': operatingVoltage,
+    };
+    status = FormAPI().addOrder("COE_CDL", cdlData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 }

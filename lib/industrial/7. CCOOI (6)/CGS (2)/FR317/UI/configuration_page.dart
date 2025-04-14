@@ -641,50 +641,70 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 }
 
   VoidCallback? addFR317Configuration(int numRequested) {
-    if (validForm()) {
-      dynamic fr317Data = {
-        'conveyorSystem': conveyorSystem.text,
-        'wheelManufacturer': wheelManufacturer,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorSpeedUnit': conveyorSpeedUnit,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'surroundingTemp': surroundingTemp,
-        'conveyorType': conveyorType,
-        'operatingVoltage': operatingVoltage.text,
-        'compressedAirUnit': compressedAirUnit,
-        'freeTrolleyWheels': freeTrolleyWheels,
-        'dogActuator': dogActuator,
-        'pivotPoints': pivotPoints,
-        'kingPin': kingPin,
-        'equipBrand': equipBrand.text,
-        'currentType': currentType.text,
-        'currentGrade': currentGrade.text,
-        'greaseType': greaseType.text,
-        'greaseGrade': greaseGrade.text,
-        'zerkLocationSide': zerkLocationSide,
-        'zerkLocationOrientation': zerkLocationOrientation,
-        'chainMaster': chainMaster.text,
-        'remote': remote,
-        'mountedOnGreaser': mountedOnGreaser,
-        'controlsOtherUnits': controlsOtherUnits,
-        'timer': timer,
-        'electricOnOff': electricOnOff,
-        'pneumaticOnOff': pneumaticOnOff,
-        'mightyLubeMonitoring': mightyLubeMonitoring,
-        'plcConnection': plcConnection,
-        'optionalInfo': optionalInfo.text,
-        'measurementUnits': measurementUnits,
-      };
-      status = FormAPI().addOrder("fr317", fr317Data, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic fr317Data = {
+      'conveyorName': conveyorSystem.text,
+      'wheelManufacturer': wheelManufacturer,
+      'otherWheelManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': null,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': conveyorSpeedUnit,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'surroundingTemp': surroundingTemp,
+      'conveyorSwing': null,
+      'orientation': conveyorType,
+      'operatingVoltage': operatingVoltage.text,
+      'controlVoltage': null,
+      'compressedAir': null,
+      'airSupply': compressedAirUnit,
+      'templateB': {
+        'existingMonitor': null,
+        'newMonitor': null,
+      },
+      'freeWheelStatus': freeTrolleyWheels,
+      'guideRollerStatus': null,
+      'openRaceStyle': null,
+      'closedRaceStyle': null,
+      'openStatus': null,
+      'lubeBrand': equipBrand.text,
+      'lubeType': currentType.text,
+      'lubeViscosity': currentGrade.text,
+      'currentGrease': greaseType.text,
+      'currentGreaseGrade': greaseGrade.text,
+      'zerkDirection': zerkLocationOrientation,
+      'zerkLocation': zerkLocationSide,
+      'chainMaster': chainMaster.text,
+      'remoteStatus': remote,
+      'mountStatus': mountedOnGreaser,
+      'otherUnitStatus': controlsOtherUnits,
+      'timerStatus': timer,
+      'electricStatus': electricOnOff,
+      'pneumaticStatus': pneumaticOnOff,
+      'mightyLubeMonitoring': mightyLubeMonitoring,
+      'preMountType': null,
+      'plcConnection': plcConnection,
+      'otherControllerInfo': optionalInfo.text,
+      'frUnitType': null,
+      'frInvertedA': null,
+      'frInvertedB': null,
+      'frInvertedE': null,
+      'frInvertedG': gWidth.text,
+      'frInvertedH': hHeight.text,
+      'frInvertedS': null,
+    };
+    status = FormAPI().addOrder("FRO_317", fr317Data, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   buildErrorText(String message) {
     return Padding(

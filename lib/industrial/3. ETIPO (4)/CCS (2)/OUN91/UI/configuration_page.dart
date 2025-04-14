@@ -209,15 +209,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addConfiguration(int numRequested) {
-    if (errors.values.every((error) => error == null)) {
+    if (validForm()) {
       dynamic configurationData = {
         'conveyorSystem': conveyorSystem.text,
-        'chainManufacturer': chainManufacturer,
+        'industrialChainManufacturer': chainManufacturer,
         'conveyorLength': conveyorLength.text,
         'conveyorLengthUnit': conveyorLengthUnit,
-        'conveyorSpeedUnit': conveyorSpeedUnit,
       };
-      FormAPI().addOrder("configuration", configurationData, numRequested);
+      FormAPI().addOrder("ETI_91", configurationData, numRequested);
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

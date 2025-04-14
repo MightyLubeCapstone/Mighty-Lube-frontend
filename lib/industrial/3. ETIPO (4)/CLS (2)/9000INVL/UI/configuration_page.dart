@@ -531,34 +531,67 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addConfiguration(int numRequested) {
-    if (validForm()) {
-      dynamic configurationData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'surroundingTemp': surroundingTemp,
-        'conveyorLoaded': conveyorLoaded,
-        'conveyorSwing': conveyorSwing,
-        'operatingVoltage': operatingVoltage.text,
-        'measurementUnits': measurementUnits,
-        'conductor4': conductor4.text,
-        'conductor7': conductor7.text,
-        'conductor2': conductor2.text,
-        'conductor12': conductor12.text,
-      };
-      status = FormAPI().addOrder("9000invl", configurationData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic configurationData = {
+      'conveyorName': conveyorSystem.text,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherIndustrialChainManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': conveyorLengthUnit,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': conveyorSpeedUnit,
+      'conveyorIndex': conveyorIndex.text,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'surroundingTemp': surroundingTemp,
+      'conveyorLoaded': conveyorLoaded,
+      'conveyorSwing': conveyorSwing,
+      'operatingVoltage': operatingVoltage.text,
+      'templateB': {
+        'newMonitor': null,
+      },
+      'freeCarrierSystem': null,
+      'catDriveStatus': null,
+      'catDriveNum': null,
+      'externalLubeStatus': null,
+      'lubeBrand': null,
+      'lubeType': null,
+      'lubeViscosity': null,
+      'sideLubeStatus': null,
+      'chainCleanStatus': null,
+      'mightyLubeMonitoring': null,
+      'ctrStatus': null,
+      'plcConnection': null,
+      'monitorControlStatus': null,
+      'otherControllerInfo': null,
+      'wireMeasurementUnit': measurementUnits,
+      'conductor2': conductor2.text,
+      'conductor4': conductor4.text,
+      'conductor7': conductor7.text,
+      'conductor12': conductor12.text,
+      'junctionBoxNum': null,
+      'enclosedUnitType': null,
+      'enclosedTrackB': null,
+      'enclosedTrackG': null,
+      'enclosedTrackH': null,
+      'enclosedTrackS': null,
+      'enclosedTrackK2': null,
+      'enclosedTrackL2': null,
+      'enclosedTrackM2': null,
+      'enclosedTrackN2': null,
+      'enclosedTrackS2': null,
+    };
+    status = FormAPI().addOrder("ETI_9000INVL", configurationData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   buildErrorText(String message) {
     return Padding(

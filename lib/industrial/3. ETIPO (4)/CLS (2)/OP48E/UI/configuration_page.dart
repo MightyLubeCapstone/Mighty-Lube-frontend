@@ -448,33 +448,60 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP48EConfiguration(int numRequested) {
-    if (validForm()) {
-      dynamic op48eData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'directionOfTravel': directionOfTravel,
-        'applicationEnvironment': applicationEnvironment,
-        'operatingVoltage': operatingVoltage.text,
-        'lubricationSide': lubricationSide,
-        'lubricationTop': lubricationTop,
-        'cleanChain': cleanChain,
-        'measurementUnits': measurementUnits,
-        'conductor4': conductor4.text,
-        'conductor7': conductor7.text,
-        'conductor2': conductor2.text,
-      };
-      status = FormAPI().addOrder("op48e", op48eData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic op48eData = {
+      'conveyorName': conveyorSystem.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherIndustrialChainManufacturer': null,
+      'conveyorLength': conveyorLength.text,
+      'conveyorLengthUnit': null,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorSpeedUnit': null,
+      'conveyorIndex': null,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'surroundingTemp': null,
+      'conveyorLoaded': null,
+      'conveyorSwing': null,
+      'plantLayout': null,
+      'requiredPics': null,
+      'operatingVoltage': operatingVoltage.text,
+      'templateB': {
+        'existingMonitor': null,
+        'newMonitor': null,
+      },
+      'wheelOpenType': null,
+      'wheelClosedType': null,
+      'openStatus': null,
+      'holeStatus': null,
+      'railLubeStatus': lubricationSide,
+      'lubeBrand': null,
+      'lubeType': null,
+      'lubeViscosity': null,
+      'chainMaster': null,
+      'timerStatus': null,
+      'electricStatus': null,
+      'pneumaticStatus': null,
+      'mightyLubeMonitoring': null,
+      'plcConnection': null,
+      'otherControllerInfo': null,
+      'measurementUnits': measurementUnits,
+      'conductor4': conductor4.text,
+      'conductor7': conductor7.text,
+      'conductor2': conductor2.text,
+    };
+    status = FormAPI().addOrder("COE_OP4OE", op48eData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 
   Widget buildErrorText(String message) {
     return Padding(

@@ -42,6 +42,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorChainClean = -1;
   int? measurementUnits = -1;
   int? pushButtonSwitch = -1;
+  int? directionOfTravel = -1;
+  int? applicationEnvironment = -1;
+  final TextEditingController equipBrand = TextEditingController();
+  final TextEditingController currentType = TextEditingController();
+  final TextEditingController currentGrade = TextEditingController();
+  int? railLubrication = -1;
+  int? conveyorSwing = -1;
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -466,41 +473,75 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addMLIFTL(int numRequested) {
-    if (validForm()) {
-      dynamic mlData = {
-        'conveyorSystem': conveyorSystem.text,
-        'conveyorLength': conveyorLength.text,
-        'conveyorSpeed': conveyorSpeed.text,
-        'conveyorIndex': conveyorIndex.text,
-        'conveyorChainSize': conveyorChainSize,
-        'chainManufacturer': chainManufacturer,
-        'installationClearance': installationClearance,
-        'dripLine': dripLine,
-        'operatingVoltage': operatingVoltage,
-        'conductor4': conductor4.text,
-        'conductor7': conductor7.text,
-        'conductor2': conductor2.text,
-        'monitoringSystem': monitoringSystem,
-        'newMonitoringSystem': newMonitoringSystem,
-        'driveMotorAmp': driveMotorAmp,
-        'driveTakeUpAir': driveTakeUpAir,
-        'takeUpDistance': takeUpDistance,
-        'driveMotorTemp': driveMotorTemp,
-        'driveMotorVibration': driveMotorVibration,
-        'bentOrMissingTrolley': bentOrMissingTrolley,
-        'lubricationFromSide': lubricationFromSide,
-        'lubricationFromTop': lubricationFromTop,
-        'conveyorChainClean': conveyorChainClean,
-        'measurementUnits': measurementUnits,
-        'pushButtonSwitch': pushButtonSwitch,
-      };
-      status = FormAPI().addOrder("mliftl", mlData, numRequested);
-      return null;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
-      );
-    }
+  if (validForm()) {
+    dynamic mlData = {
+      'conveyorName': conveyorSystem.text,
+      'conveyorLength': conveyorLength.text,
+      'conveyorSpeed': conveyorSpeed.text,
+      'conveyorIndex': conveyorIndex.text,
+      'chainSize': conveyorChainSize,
+      'industrialChainManufacturer': chainManufacturer,
+      'otherChainManufacturer': null,
+      'speedUnit': measurementUnits,
+      'travelDirection': directionOfTravel,
+      'appEnviroment': applicationEnvironment,
+      'ovenStatus': null,
+      'ovenTemp': null,
+      'monitorData': {
+        'existingMonitor': monitoringSystem,
+        'newMonitor': newMonitoringSystem,
+      },
+      'surroundingTemp': null,
+      'conveyorLoaded': conveyorChainClean,
+      'conveyorSwing': conveyorSwing,
+      'strandStatus': null,
+      'plantLayout': null,
+      'requiredPics': null,
+      'operatingVoltage': operatingVoltage.text,
+      'wheelOpenType': null,
+      'wheelClosedType': null,
+      'sliderPlateStatus': dripLine,
+      'freeWheelStatus': lubricationFromSide,
+      'guideRollerStatus': lubricationFromTop,
+      'openRaceStyle': null,
+      'closedRaceStyle': null,
+      'actuatorStatus': null,
+      'pivotStatus': null,
+      'kingPinStatus': null,
+      'rollerChainStatus': null,
+      'brushingsStatus': null,
+      'riderPlatesStatus': null,
+      'outboardStatus': null,
+      'catDriveStatus': null,
+      'catDriveNum': null,
+      'railLubeStatus': railLubrication,
+      'externalLubeStatus': null,
+      'lubeBrand': equipBrand.text,
+      'lubeType': currentType.text,
+      'lubeViscosity': currentGrade.text,
+      'sideLubeStatus': lubricationFromSide,
+      'topLubeStatus': lubricationFromTop,
+      'chainCleanStatus': conveyorChainClean,
+      'washdownStatus': null,
+      'iftUnitType': null,
+      'iftPowerA': conductor4.text,
+      'iftPowerB': conductor7.text,
+      'iftPowerG': conductor2.text,
+      'iftPowerH': null,
+      'iftPowerJ': null,
+      'iftPowerS1': null,
+      'iftPowerT1': null,
+      'iftPowerU1': null,
+      'iftPowerW1': null,
+      'iftPowerX1': null,
+    };
+    status = FormAPI().addOrder("IFT_IFTL", mlData, numRequested);
     return null;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill out all required fields.')),
+    );
   }
+  return null;
+}
 }
