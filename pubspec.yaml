@@ -1,7 +1,7 @@
 name: mighty_lube
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0+4
+version: 0.1.0+3
 
 environment:
   sdk: ^3.5.2
@@ -18,6 +18,7 @@ dependencies:
   intl: ^0.18.0
   flutter_svg: ^2.0.9
   url_launcher: ^6.1.14
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:
@@ -43,6 +44,7 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets:
+
     - assets/countries.json
     - assets/ML_Logo-w-tag-vector.svg
     - assets/WhiteML_Logo-w-tag-vector.svg
@@ -144,3 +146,123 @@ flutter:
     - assets/industrial/PFOOI(17)/CLS/ES.png
     - assets/industrial/PFOOI(17)/CLS/OP55.png
     - assets/industrial/PFOOI(17)/CLS/OP139A.png
+
+    - assets/Measurements/1/A1.png
+    - assets/Measurements/1/B1.png
+    - assets/Measurements/1/D1.png
+    - assets/Measurements/1/G.png
+    - assets/Measurements/1/H.png
+    - assets/Measurements/1/M1.png
+    - assets/Measurements/1/Y1.png
+    - assets/Measurements/1/Z1.png
+ 
+    - assets/Measurements/2/A.png
+    - assets/Measurements/2/G.png
+    - assets/Measurements/2/H.png
+    - assets/Measurements/2/J.png
+    - assets/Measurements/2/X.png
+    - assets/Measurements/2/Y.png
+    - assets/Measurements/2/Z_OP40E.png
+ 
+    - assets/Measurements/5/CGS/F.png
+    - assets/Measurements/5/CGS/G.png
+    - assets/Measurements/5/CGS/H.png
+    - assets/Measurements/5/CGS/A1.png
+    - assets/Measurements/5/CGS/B1.png
+    - assets/Measurements/5/CGS/H1.png
+    - assets/Measurements/5/CGS/J1.png
+    - assets/Measurements/5/CGS/K1.png
+    - assets/Measurements/5/CGS/L1.png
+    - assets/Measurements/5/CGS/M1.png
+    - assets/Measurements/5/CGS/N1.png
+    - assets/Measurements/5/CGS/P1.png
+    - assets/Measurements/5/CGS/R1.png
+ 
+    - assets/Measurements/5/CLS/G.png
+    - assets/Measurements/5/CLS/H.png
+    - assets/Measurements/5/CLS/A1.png
+    - assets/Measurements/5/CLS/B1.png
+    - assets/Measurements/5/CLS/H1.png
+    - assets/Measurements/5/CLS/J1.png
+    - assets/Measurements/5/CLS/L1.png
+    - assets/Measurements/5/CLS/M1.png
+    - assets/Measurements/5/CLS/N1.png
+    - assets/Measurements/5/CLS/P1.png
+    - assets/Measurements/5/CLS/R1.png
+ 
+    - assets/Measurements/6/314/E.png
+    - assets/Measurements/6/314/G.png
+    - assets/Measurements/6/314/H.png
+    - assets/Measurements/6/314/K.png
+    - assets/Measurements/6/314/T.png
+    - assets/Measurements/6/314/U.png
+    - assets/Measurements/6/314/V.png
+    - assets/Measurements/6/314/W.png
+
+    - assets/Measurements/6/317/E.png
+    - assets/Measurements/6/317/F.png
+    - assets/Measurements/6/317/G.png
+    - assets/Measurements/6/317/H.png
+
+    - assets/Measurements/7/CCS/A.png
+    - assets/Measurements/7/CCS/B.png
+    - assets/Measurements/7/CCS/G.png
+    - assets/Measurements/7/CCS/H.png
+    - assets/Measurements/7/CCS/L.png
+    - assets/Measurements/7/CCS/A_Color.png
+    - assets/Measurements/7/CCS/B2.png
+    - assets/Measurements/7/CCS/G2.png
+    - assets/Measurements/7/CCS/H2.png
+    - assets/Measurements/7/CCS/K.png
+
+    - assets/Measurements/10/CCS/OP13/A.png
+    - assets/Measurements/10/CCS/OP13/C.png
+    - assets/Measurements/10/CCS/OP13/A2.png
+    - assets/Measurements/10/CCS/OP13/B2.png
+    - assets/Measurements/10/CCS/OP13/C2.png
+    - assets/Measurements/10/CCS/OP13/D2.png
+    - assets/Measurements/10/CCS/OP13/E2.png
+    - assets/Measurements/10/CCS/OP13/F2.png
+    - assets/Measurements/10/CCS/OP13/G2.png
+    - assets/Measurements/10/CCS/OP13/H2.png
+    - assets/Measurements/10/CCS/OP13/J2.png
+    - assets/Measurements/10/CCS/OP13/L2.png
+    - assets/Measurements/10/CCS/OP13/M2.png
+
+    - assets/Measurements/10/CGS/GPC/A.png
+    - assets/Measurements/10/CGS/GPC/B.png
+    - assets/Measurements/10/CGS/GPC/C.png
+    - assets/Measurements/10/CGS/GPC/D.png
+    - assets/Measurements/10/CGS/GPC/E.png
+    - assets/Measurements/10/CGS/GPC/F.png
+    - assets/Measurements/10/CGS/GPC/G.png
+    - assets/Measurements/10/CGS/GPC/H.png
+    - assets/Measurements/10/CGS/GPC/S.png
+
+    - assets/Measurements/11/CCS/L.png
+    - assets/Measurements/11/CCS/G.png
+    - assets/Measurements/11/CCS/H.png
+    - assets/Measurements/11/CCS/A.png
+    - assets/Measurements/11/CCS/G2.png
+    - assets/Measurements/11/CCS/H2.png
+
+    - assets/Measurements/11/CGS/314/B.png
+    - assets/Measurements/11/CGS/314/E.png
+    - assets/Measurements/11/CGS/314/G.png
+    - assets/Measurements/11/CGS/314/H.png
+    - assets/Measurements/11/CGS/314/K.png
+    - assets/Measurements/11/CGS/314/T.png
+    - assets/Measurements/11/CGS/314/U.png
+    - assets/Measurements/11/CGS/314/V.png
+    - assets/Measurements/11/CGS/314/W.png
+
+    - assets/Measurements/11/CGS/317/A.png
+    - assets/Measurements/11/CGS/317/B.png
+    - assets/Measurements/11/CGS/317/E.png
+    - assets/Measurements/11/CGS/317/G.png
+    - assets/Measurements/11/CGS/317/H.png
+    - assets/Measurements/11/CGS/317/S.png
+
+
+
+

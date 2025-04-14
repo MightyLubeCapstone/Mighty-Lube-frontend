@@ -5,7 +5,7 @@ import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/protien/FGCO/UI/FGCO.dart';
 import 'package:mighty_lube/protien/FGLM/UI/FGLM.dart';
 
-import '../application/UI/application_home.dart';
+import '../application/UI/applicationHome.dart';
 import '../dashboard/UI/dashboard.dart';
 import '../product_list.dart';
 

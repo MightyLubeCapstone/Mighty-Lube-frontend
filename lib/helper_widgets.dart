@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
+import 'dart:async';
 
 class CommonWidgets {
   // Nice looking button
-  static Widget buildGradientButton(BuildContext context, String title, Widget content,
+  static Widget buildGradientButton(
+      BuildContext context, String title, Widget content,
       {bool isError = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -10,9 +13,7 @@ class CommonWidgets {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: isError
-              ? Colors.red
-              : const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.3),
+          color: isError ? Colors.red : Colors.white.withOpacity(0.8),
           width: 2,
         ),
         gradient: const LinearGradient(
@@ -22,12 +23,12 @@ class CommonWidgets {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color.fromARGB(25, 54, 53, 53).withValues(alpha: 0.3),
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
           BoxShadow(
-            color: const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.3),
+            color: Colors.white.withOpacity(0.2),
             blurRadius: 5,
             offset: const Offset(-2, -2),
           ),
@@ -48,10 +49,11 @@ class CommonWidgets {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromARGB(25, 54, 53, 53).withValues(alpha: 0.2),
+                    color: Colors.black.withOpacity(0.2),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -162,12 +164,14 @@ class CommonWidgets {
     );
   }
 
-  // Dropdown list - protein (temporary until industrial is finished API-wise)
-  static Widget buildDropdownFieldProtein<T>(
-      String label, List<String> options, int? dropdownSelection, Function(int) onChanged,
+  static Widget buildDropdownFieldError<T>(String label, List<String> options,
+      int? dropdownSelection, Function(dynamic) onChanged,
       {String? errorText, bool? isEditable = true}) {
     String? assessedValue;
-    if (dropdownSelection != null && dropdownSelection > 0 && dropdownSelection <= options.length) {
+
+    if (dropdownSelection != null &&
+        dropdownSelection > 0 &&
+        dropdownSelection <= options.length) {
       assessedValue = options[dropdownSelection - 1];
     }
 
@@ -184,7 +188,9 @@ class CommonWidgets {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: GestureDetector(
-        onTap: (isEditable ?? false) ? null : () {}, // Ensure isEditable is not null
+        onTap: (isEditable ?? false)
+            ? null
+            : () {}, // Ensure isEditable is not null
         behavior: HitTestBehavior.opaque, // Prevents taps from propagating
         child: AbsorbPointer(
           absorbing: !(isEditable ?? false), // Ensure isEditable is not null
@@ -204,7 +210,9 @@ class CommonWidgets {
                 .map((option) => DropdownMenuItem<String>(
                       value: option,
                       child: Text(option,
-                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400)),
                     ))
                 .toList(),
             onChanged: (isEditable ?? false)
@@ -269,7 +277,8 @@ class CommonWidgets {
   }
 
   // Text Field
-  static Widget buildTextField(String hintText, TextEditingController controller,
+  static Widget buildTextField(
+      String hintText, TextEditingController controller,
       {String? errorText, bool isEditable = true, Function(String)? callback}) {
     OutlineInputBorder borderStyle(Color color) {
       return OutlineInputBorder(
@@ -288,7 +297,8 @@ class CommonWidgets {
           if (callback != null) {callback(value)}
         },
         enabled: isEditable,
-        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,
         decoration: InputDecoration(
           labelText: hintText,
@@ -296,17 +306,19 @@ class CommonWidgets {
           border: borderStyle(Colors.grey),
           enabledBorder: borderStyle(Colors.grey),
           focusedBorder: borderStyle(Colors.grey),
-          errorBorder: borderStyle(Colors.red), // Ensure error thickness matches
-          focusedErrorBorder: borderStyle(Colors.red), // Ensure when focused with error
+          errorBorder:
+              borderStyle(Colors.red), // Ensure error thickness matches
+          focusedErrorBorder:
+              borderStyle(Colors.red), // Ensure when focused with error
           errorText: errorText,
         ),
       ),
     );
   }
 
-  // breadcrumb nav
-  static Widget buildBreadcrumbNavigation(
-      BuildContext context, String text, Widget page, String text2, Widget page2) {
+  // Breadcrumb nav
+  static Widget buildBreadcrumbNavigation(BuildContext context, String text,
+      Widget page, String text2, Widget page2) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -352,6 +364,173 @@ class CommonWidgets {
       ),
     );
   }
+
+  // Fun image stuff
+  static Widget buildImageDisplayEnhanced(
+    ImageProvider imageProvider, {
+    double width = 300,
+    double height = 300,
+    BoxFit fit = BoxFit.contain,
+    double borderRadius = 12,
+    Color backgroundColor = const Color(0xFFF3F4F6),
+    double shadowStrength = 0.2,
+    bool fullWidth = false,
+    double aspectRatio = 1.3,
+    bool enableZoom = false,
+    BuildContext? context, // required for zoom modal
+  }) {
+    final Widget imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image(
+              image: imageProvider,
+              fit: fit,
+              filterQuality: FilterQuality.high,
+            ),
+          ),
+          // Zoom hint icon
+          if (enableZoom)
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.zoom_in,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+
+    Widget tappableImage = enableZoom && context != null
+        ? GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                    backgroundColor: Colors.black,
+                    appBar: AppBar(
+                      backgroundColor: Colors.black,
+                      iconTheme: const IconThemeData(color: Colors.white),
+                    ),
+                    body: Center(
+                      child: PhotoView(
+                        imageProvider: imageProvider,
+                        backgroundDecoration:
+                            const BoxDecoration(color: Colors.black),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered * 2.5,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            child: imageWidget,
+          )
+        : imageWidget;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.all(8),
+      width: fullWidth ? double.infinity : width,
+      height: fullWidth ? null : height,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(shadowStrength),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: fullWidth
+          ? AspectRatio(
+              aspectRatio: aspectRatio,
+              child: tappableImage,
+            )
+          : tappableImage,
+    );
+  }
+
+  // More fun image stuff - but just for the measurements tab
+  static Widget buildMeasurementFieldWithImage({
+    required BuildContext context,
+    required String title,
+    required String hintText,
+    required String imagePath,
+    required TextEditingController controller,
+    String? subHint,
+    double aspectRatio = 1.2,
+    int leftFlex = 3,
+    int rightFlex = 3,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left: Text label + input
+            Expanded(
+              flex: leftFlex,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  CommonWidgets.buildTextField(hintText, controller),
+                  if (subHint != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subHint,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 16),
+
+            // Right: Image
+            Expanded(
+              flex: rightFlex,
+              child: CommonWidgets.buildImageDisplayEnhanced(
+                AssetImage(imagePath),
+                fullWidth: true,
+                aspectRatio: aspectRatio,
+                enableZoom: true,
+                context: context,
+              ),
+            ),
+          ],
+        ),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
 }
 
 // Internal StatefulWidget for managing the counter state
@@ -359,7 +538,8 @@ class _ConfiguratorWithCounter extends StatefulWidget {
   final void Function(int)? callback;
   const _ConfiguratorWithCounter({this.callback});
   @override
-  _ConfiguratorWithCounterState createState() => _ConfiguratorWithCounterState();
+  _ConfiguratorWithCounterState createState() =>
+      _ConfiguratorWithCounterState();
 }
 
 class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
@@ -380,13 +560,15 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   if (itemCount > 1) itemCount--;
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline,
+                  color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -395,7 +577,8 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   itemCount++;
                 });
               },
-              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline,
+                  color: Colors.blue, size: 30),
             ),
           ],
         ),
@@ -413,7 +596,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color.fromARGB(25, 54, 53, 53).withValues(alpha: 0.1),
+                color: Colors.black.withOpacity(0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -485,13 +668,15 @@ class _CounterState extends State<_Counter> {
                   }
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline,
+                  color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -501,11 +686,61 @@ class _CounterState extends State<_Counter> {
                   widget.callback!(itemCount);
                 });
               },
-              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline,
+                  color: Colors.blue, size: 30),
             ),
           ],
         ),
       ],
     );
+  }
+}
+
+class Validators {
+  Map<String, String?> errors = {};
+  Map<String, List<String>> sections = {};
+  Timer? delay;
+
+  void mapErrors(Map<String, String?> newErrors) {
+    errors = newErrors;
+  }
+
+  void mapSections(Map<String, List<String>> newSections) {
+    sections = newSections;
+  }
+
+  bool sectionError(String section) {
+    List<String>? fields = sections[section];
+    if (fields == null || fields.isEmpty) {
+      return false;
+    }
+    return sections[section]!.any((field) => errors[field] != null);
+  }
+
+  void validateTextField(String value, String field) {
+    errors[field] = value.trim().isEmpty ? 'This field is required.' : null;
+  }
+
+  void validateDropdownField(int? value, String field) {
+    errors[field] =
+        (value == null || value == -1) ? 'This field is required.' : null;
+  }
+
+  void validatorDelay(String value, String field) {
+    if (delay?.isActive ?? false) {
+      delay!.cancel();
+    }
+    // manual delay so its not a constant spam of requirements (hopefully)
+    delay = Timer(const Duration(milliseconds: 0), () {
+      validateTextField(value, field);
+    });
+  }
+
+  void onNameOpChanged(name, field) {
+    validatorDelay(name, field);
+  }
+
+  void onNum247Changed(name, field) {
+    validatorDelay(name, field);
   }
 }

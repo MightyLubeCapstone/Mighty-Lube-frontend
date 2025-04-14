@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/application_home.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 import 'package:mighty_lube/product_list.dart';
@@ -511,7 +511,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         itemCount: numberOfFields,
                         itemBuilder: (context, index) {
                           if (stateHolders[index]["controller"] is int) {
-                            return CommonWidgets.buildDropdownFieldProtein(
+                            return CommonWidgets.buildDropdownFieldError(
                               isEditable: isEditable,
                               labels[index],
                               options[index],

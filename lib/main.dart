@@ -21,7 +21,7 @@ import 'protien/FGCO/UI/FGCO.dart';
 import 'protien/protein_home.dart';
 
 // application pages
-import 'application/UI/application_home.dart';
+import 'application/UI/applicationHome.dart';
 
 // industrial pages
 import 'industrial_home.dart';

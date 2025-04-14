@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:mighty_lube/LoginPage/UI/login_page.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/application_home.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/configurations.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/env.dart';
