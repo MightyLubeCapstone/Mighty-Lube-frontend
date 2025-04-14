@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 //import 'package:mighty_lube/industrial_home.dart';
 import 'package:mighty_lube/product_list.dart';
 import 'package:mighty_lube/protien/protein_home.dart';
@@ -116,18 +117,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   List<Widget> _buildDefaultCards() {
     return [
-      // _buildClickableImageCard(
-      //   context: context,
-      //   title: 'Industrial (77)',
-      //   imagePath: 'assets/Industrial.png',
-      //   onTap: () {
-      //     // Navigate to Industrial page
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const IndustrialHome()),
-      //     );
-      //   },
-      // ),
+      _buildClickableImageCard(
+        context: context,
+        title: 'Industrial (77)',
+        imagePath: 'assets/Industrial.png',
+        onTap: () {
+          // Navigate to Industrial page
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const IndustrialHome()),
+          );
+        },
+      ),
       _buildClickableImageCard(
         context: context,
         title: 'Protein (2)',
@@ -140,18 +141,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
           );
         },
       ),
-      // _buildClickableImageCard(
-      //   context: context,
-      //   title: 'Technician (1)',
-      //   imagePath: 'assets/Technician.png',
-      //   onTap: () {
-      //     // Navigate to Technician page
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const IndustrialHome()),
-      //     );
-      //   },
-      // ),
+      _buildClickableImageCard(
+        context: context,
+        title: 'Technician (1)',
+        imagePath: 'assets/Technician.png',
+        onTap: () {
+          // Navigate to Technician page
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const IndustrialHome()),
+          );
+        },
+      ),
     ];
   }
 
