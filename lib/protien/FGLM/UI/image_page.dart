@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/protien/protein_home.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 class ImageSection extends StatelessWidget {
@@ -12,7 +12,8 @@ class ImageSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Title Section
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(

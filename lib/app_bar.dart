@@ -12,14 +12,15 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   bool? reload;
   void Function(int)? callback;
 
-  CustomAppBar(
-      {super.key,
-      required this.link,
-      this.height = 100,
-      required this.customIcon,
-      this.cartItemCount,
-      this.reload,
-      this.callback});
+  CustomAppBar({
+    super.key,
+    required this.link,
+    this.height = 100,
+    required this.customIcon,
+    this.cartItemCount,
+    this.reload,
+    this.callback,
+  });
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -58,6 +59,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
       child: AppBar(
         backgroundColor: const Color(0xFF579AF6),
         elevation: 0,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu, color: Colors.white), // white drawer icon
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
         flexibleSpace: Stack(
           children: [
             const HeaderLogo(
@@ -113,3 +124,4 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 }
+

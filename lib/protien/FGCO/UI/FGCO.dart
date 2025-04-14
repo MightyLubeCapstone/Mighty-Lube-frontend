@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
@@ -15,13 +17,27 @@ class FGCOPage extends StatefulWidget {
 
 class FGCOPageState extends State<FGCOPage> {
   int _selectedIndex = 0;
+  int cartItemCount = 0;
+
+  // Function to update the cart count
+  void updateCartItemCount(int newCount) {
+    setState(() {
+      cartItemCount += newCount;
+    });
+  }
 
   // Pages for bottom navigation
-  final List<Widget> _pages = [
-    const HomeSection(),
-    const ImageSection(),
-    const ConfigurationSection(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomeSection(),
+      const ImageSection(),
+      ConfigurationSection(updateCartItemCount: updateCartItemCount),
+    ];
+  }
 
   // Update the page on bottom navigation tap
   void _onItemTapped(int index) {
@@ -36,11 +52,14 @@ class FGCOPageState extends State<FGCOPage> {
       appBar: CustomAppBar(
         link: const ProfilePage(),
         customIcon: Icons.description,
+        cartItemCount: cartItemCount, // Pass cart count to AppBar
+        callback: updateCartItemCount,
       ),
       drawer: const CustomDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0), // Add padding to the top and bottom
+        padding: const EdgeInsets.symmetric(
+            vertical: 5.0), // Add padding to the top and bottom
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,

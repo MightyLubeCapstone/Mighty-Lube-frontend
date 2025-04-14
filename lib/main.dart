@@ -1,10 +1,15 @@
 // just flutter pages
 import 'package:flutter/material.dart';
+import 'package:mighty_lube/api.dart';
+import 'package:mighty_lube/application/UI/applicationHome.dart';
+import 'package:mighty_lube/env.dart';
+import 'package:mighty_lube/industrial/industrialHome.dart';
 
 // login in pages
-import 'LoginPage/UI/createAccount.dart';
-import 'LoginPage/UI/forgotPassword.dart';
-import 'LoginPage/UI/loginPage.dart';
+import 'LoginPage/UI/create_account.dart';
+import 'LoginPage/UI/forgot_password.dart';
+import 'LoginPage/UI/login_page.dart';
+import 'package:mighty_lube/LoginPage/UI/home.dart';
 
 // dashboard pages
 import 'dashboard/UI/dashboard.dart';
@@ -15,15 +20,11 @@ import 'dashboard/UI/profile.dart';
 // protien pages
 import 'protien/FGLM/UI/FGLM.dart';
 import 'protien/FGCO/UI/FGCO.dart';
-import 'protien/protienHome.dart';
+import 'protien/protein_home.dart';
 
 // application pages
-import 'application/UI/applicationHome.dart';
 
 // industrial pages
-import 'industrial/industrialHome.dart';
-
-// api imports
 
 void main() {
   runApp(const MainApp());
@@ -35,15 +36,19 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
+      // this checks the session any time that the navigator is used (aka all the time pretty much)
+      navigatorObservers: [SessionObserver(checkSession: UserAPI().checkSession)],
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/idustrial', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages
+        '/': (context) => const Home(),
         '/login': (context) => const LoginPage(),
-        '/createAccount': (context) => const CreateAccountPage(),
-        '/forgotPassword': (context) => const ForgotPasswordPage(),
+        '/create_account': (context) => const CreateAccountPage(),
+        '/forgot_password': (context) => const ForgotPasswordPage(),
 
         // dashboard pages
         '/dashboard': (context) => const DashboardPage(),
@@ -52,15 +57,15 @@ class MainApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
 
         // protien pages
-        '/protienHome': (context) => const ProteinHome(),
+        '/protein_home': (context) => const ProteinHome(),
         '/FGLM': (context) => const FGLMPage(),
         '/FGCO': (context) => const FGCOPage(),
 
         // application pages
         '/application': (context) => const ApplicationPage(),
 
-        // industrial pages
-        '/idustrial': (context) => const IndustrialHome(),
+        //industrial page
+        '/industrial': (context) => const IndustrialHome(),
       },
       debugShowCheckedModeBanner: false,
     );

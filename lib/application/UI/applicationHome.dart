@@ -4,7 +4,7 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/dashboard.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/protien/protein_home.dart';
 
 import '../../industrial/product_list.dart';
 

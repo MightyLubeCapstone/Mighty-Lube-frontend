@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/protien/protienHome.dart';
+import 'package:mighty_lube/protien/protein_home.dart';
 import 'package:mighty_lube/helper_widgets.dart';
 
 class HomeSection extends StatelessWidget {
@@ -11,7 +11,8 @@ class HomeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>',
+            const ApplicationPage(), 'Products', const ProteinHome()),
         const Padding(
           padding: EdgeInsets.fromLTRB(
               15.0, 30.0, 15.0, 20.0), // Adjusted top padding
