@@ -173,13 +173,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonWidgets.buildTextField(
-                  'Name of Conveyor System *', conveyorSystemName,
-                  errorText: errors['conveyorName']),
+              CommonWidgets.buildTextField('Name of Conveyor System *', conveyorSystemName, errorText: errors['conveyorName']),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
-              CommonWidgets.buildDropdownFieldError(
-                'Conveyor Chain Size *',
+              CommonWidgets.buildDropdownFieldError('Conveyor Chain Size *',
                 [
                   'X348 Chain (3”)',
                   'X458 Chain (4”)',
@@ -197,8 +194,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorChainSize'],
               ),
-              CommonWidgets.buildDropdownFieldError(
-                'Protein: Chain Manufacturer *',
+              CommonWidgets.buildDropdownFieldError('Protein: Chain Manufacturer *',
                 [
                   'Green Line',
                   'Frost',
@@ -221,8 +217,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['chainManufacturer'],
               ),
-              CommonWidgets.buildDropdownFieldError(
-                'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
+              CommonWidgets.buildDropdownFieldError('Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
                 ['Loaded', 'Unloaded'],
                 conveyorLoaded,
                 (value) {
@@ -233,8 +228,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorLoaded'],
               ),
-              CommonWidgets.buildDropdownFieldError(
-                'Is this a Drip Line?',
+              CommonWidgets.buildDropdownFieldError('Is this a Drip Line?',
                 ['Yes', 'No'],
                 dripLine,
                 (value) {
@@ -258,8 +252,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommonWidgets.buildSectionDivider(),
-              CommonWidgets.buildTextField(
-                  'Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage,
+              CommonWidgets.buildTextField('Operating Voltage - 3 Phase: (Volts/hz] *', operatingVoltage,
                   errorText: errors['operatingVoltage']),
               CommonWidgets.buildSectionDivider(),
             ],
@@ -272,8 +265,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError(
-          'Confirm Installation Clearance of: Minimum of 2" (.61m) for Clearance fo Moter Height from Rail AND Motor Gear Housing assembly width',
+        CommonWidgets.buildDropdownFieldError('Confirm Installation Clearance of: Minimum of 2" (.61m) for Clearance fo Moter Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'],
           installationClearance,
           (value) {
@@ -295,8 +287,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError(
-          '3-Station Push Button Switch *',
+        CommonWidgets.buildDropdownFieldError('3-Station Push Button Switch *',
           ['Yes', 'No'],
           pushButton,
           (value) {
@@ -307,8 +298,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
           errorText: errors['pushButton'],
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Totally Enclosed Food-Grade Metal Shroud',
+        CommonWidgets.buildDropdownFieldError('Totally Enclosed Food-Grade Metal Shroud',
           ['Yes', 'No'],
           enclosedShroud,
           (value) {
@@ -317,8 +307,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildTextField(
-            'Enter Other Information Here: ', additionalOtherInfo),
+        CommonWidgets.buildTextField('Enter Other Information Here: ', additionalOtherInfo),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -368,47 +357,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     }
     return null;
   }
-}
-
-Widget buildBreadcrumbNavigation(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        IconButton(
-          icon: const Icon(
-            Icons.home,
-            color: Color(0xFF579AF6),
-          ),
-          onPressed: () {
-            // Navigate to the home page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ApplicationPage()),
-            );
-          },
-        ),
-        const Text(' > '),
-        GestureDetector(
-          onTap: () {
-            // Navigate to the Protein page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProteinHome()),
-            ); // Replace with navigation to your Protein page
-          },
-          child: const Text(
-            'Products',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 Widget buildErrorText(String message) {
