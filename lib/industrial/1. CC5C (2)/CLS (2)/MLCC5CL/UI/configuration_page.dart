@@ -32,6 +32,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
   final TextEditingController specialOptions = TextEditingController();
+
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController aDiameter = TextEditingController();
+  final TextEditingController bWidth = TextEditingController();
+  final TextEditingController dThickness = TextEditingController();
+  final TextEditingController mInside = TextEditingController();
+  final TextEditingController yDiameter = TextEditingController();
+  final TextEditingController zLength = TextEditingController();
+
+ 
   int? conveyorSpeedUnit = -1;
   int? conveyorLengthUnit = -1;
   int? directionOfTravel = -1;
@@ -184,6 +195,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       setState(() {});
     });
     validate.delay?.cancel();
+    gWidth.dispose();
+    hHeight.dispose();
+    aDiameter.dispose();
+    bWidth.dispose();
+    dThickness.dispose();
+    mInside.dispose();
+    yDiameter.dispose();
+    zLength.dispose();
     super.dispose();
   }
 
@@ -503,32 +522,86 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-
-  //same as wire. leave for now cause this is the image ones
+  
   Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ] , measurementUnits,
-                (value) {
-                  setState(() {
-                    measurementUnits = value; // Update state properly
-                    validate.validateDropdownField(
-                        measurementUnits, 'measurementUnits');
-                  });
-                },
-                errorText: errors['measurementUnits'],
-              ),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
-        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+            });
+          },
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Power Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/1/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Power Rail (H)",
+          hintText: "Height ",
+          imagePath: 'assets/Measurements/1/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Wheel (A1)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/1/A1.png',
+          controller: aDiameter,
+          subHint: "(Diameter)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Wheel (B1)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/1/B1.png',
+          controller: bWidth,
+          subHint: "(Width)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Link (D1)",
+          hintText: "Thickness",
+          imagePath: 'assets/Measurements/1/D1.png',
+          controller: dThickness,
+          subHint: "(Thickness)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Wheel Pitch (M1)",
+          hintText: " Inside of Left Roller to Inside of Right Roller",
+          imagePath: 'assets/Measurements/1/M1.png',
+          controller: mInside,
+          subHint: "(Inside of Left Roller to Inside of Right Roller)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Pin (Y1)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/1/Y1.png',
+          controller: yDiameter,
+          subHint: "(Diameter)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Pin (Z1)",
+          hintText: "Length",
+          imagePath: 'assets/Measurements/1/Z1.png',
+          controller: zLength,
+          subHint: "(Length)",
+        ),
+      
       ],
     );
   }
@@ -561,6 +634,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conductor4': conductor4.text,
       'conductor7': conductor7.text,
       'specialControllerOptions': specialOptions.text, 
+ 
+      "coeLineG": gWidth.text,
+      "coeLineH": hHeight.text,
+      "coeLinea": aDiameter.text, 
+      "coeLineb": bWidth.text,
+      "coeLined": dThickness.text,
+      "coeLinem": mInside.text,
+      "coeLiney": yDiameter.text,
+      "coeLinez": zLength.text,
+      
     };
       status = FormAPI().addOrder("CC5_CL", mlData, numRequested);
       return null;
@@ -572,7 +655,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return null;
     }
 
-Widget buildErrorText(String message) {
+  Widget buildErrorText(String message) {
   return Padding(
     padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
     child: Text(

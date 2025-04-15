@@ -34,6 +34,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController equipBrand = TextEditingController();
   final TextEditingController currentType = TextEditingController();
   final TextEditingController currentGrade = TextEditingController();
+
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController aDiameter = TextEditingController();
+  final TextEditingController bWidth = TextEditingController();
+  final TextEditingController dThickness = TextEditingController();
+  final TextEditingController mInside = TextEditingController();
+  final TextEditingController yDiameter = TextEditingController();
+  final TextEditingController zLength = TextEditingController();
+
   int? existingMonitoring = -1;
   int? outboardWheels = -1;
   int? highRollers = -1;
@@ -192,6 +202,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       setState(() {});
     });
 
+
+    gWidth.dispose();
+    hHeight.dispose();
+    aDiameter.dispose();
+    bWidth.dispose();
+    dThickness.dispose();
+    mInside.dispose();
+    yDiameter.dispose();
+    zLength.dispose();
     validate.delay?.cancel();
     super.dispose();
   }
@@ -576,23 +595,81 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ], measurementUnits,
-                (value) {
-                  setState(() {
-                    measurementUnits = value; // Update state properly
-                    validate.validateDropdownField(
-                        measurementUnits, 'measurementUnits');
-                  });
-                },
-                errorText: errors['measurementUnits'],
-              ),
-        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+            });
+          },
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Power Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/1/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Power Rail (H)",
+          hintText: "Height ",
+          imagePath: 'assets/Measurements/1/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Wheel (A1)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/1/A1.png',
+          controller: aDiameter,
+          subHint: "(Diameter)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Wheel (B1)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/1/B1.png',
+          controller: bWidth,
+          subHint: "(Width)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Link (D1)",
+          hintText: "Thickness",
+          imagePath: 'assets/Measurements/1/D1.png',
+          controller: dThickness,
+          subHint: "(Thickness)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Wheel Pitch (M1)",
+          hintText: " Inside of Left Roller to Inside of Right Roller",
+          imagePath: 'assets/Measurements/1/M1.png',
+          controller: mInside,
+          subHint: "(Inside of Left Roller to Inside of Right Roller)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Pin (Y1)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/1/Y1.png',
+          controller: yDiameter,
+          subHint: "(Diameter)",
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "CC5 Roller Pin (Z1)",
+          hintText: "Length",
+          imagePath: 'assets/Measurements/1/Z1.png',
+          controller: zLength,
+          subHint: "(Length)",
+        ),
+      
       ],
     );
   }
@@ -658,6 +735,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'wheelPitchM1': null,
       'rollerPinY1': null,
       'rollerPinZ1': null,
+      
+      "coeLineG": gWidth.text,
+      "coeLineH": hHeight.text,
+      "coeLinea": aDiameter.text, 
+      "coeLineb": bWidth.text,
+      "coeLined": dThickness.text,
+      "coeLinem": mInside.text,
+      "coeLiney": yDiameter.text,
+      "coeLinez": zLength.text,
     };
     status = FormAPI().addOrder("CC5_OP40E", opData, numRequested);
     return null;
