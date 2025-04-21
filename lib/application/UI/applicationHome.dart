@@ -119,7 +119,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return [
       _buildClickableImageCard(
         context: context,
-        title: 'Industrial (77)',
+        title: 'Industrial (76)',
         imagePath: 'assets/Industrial.png',
         onTap: () {
           // Navigate to Industrial page

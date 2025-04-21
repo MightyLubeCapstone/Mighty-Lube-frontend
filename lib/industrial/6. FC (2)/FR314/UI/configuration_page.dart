@@ -164,6 +164,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     compAir.dispose();
     greaseType.dispose();
     greaseGrade.dispose();
+    
     eCenter.dispose();
     gWidth.dispose();
     hHeight.dispose();

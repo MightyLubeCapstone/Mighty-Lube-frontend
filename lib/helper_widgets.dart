@@ -468,69 +468,70 @@ class CommonWidgets {
 
   // More fun image stuff - but just for the measurements tab
   static Widget buildMeasurementFieldWithImage({
-    required BuildContext context,
-    required String title,
-    required String hintText,
-    required String imagePath,
-    required TextEditingController controller,
-    String? subHint,
-    double aspectRatio = 1.2,
-    int leftFlex = 3,
-    int rightFlex = 3,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Left: Text label + input
-            Expanded(
-              flex: leftFlex,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+  required BuildContext context,
+  required String title,
+  required String hintText,
+  required String imagePath,
+  required TextEditingController controller,
+  String? subHint,
+  String? errorText, // NEW
+  double aspectRatio = 1.2,
+  int leftFlex = 3,
+  int rightFlex = 3,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left: Text label + input
+          Expanded(
+            flex: leftFlex,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(height: 8),
-                  CommonWidgets.buildTextField(hintText, controller),
-                  if (subHint != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      subHint,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
+                ),
+                const SizedBox(height: 8),
+                CommonWidgets.buildTextField(hintText, controller, errorText: errorText), // Pass error
+                if (subHint != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subHint,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
                 ],
-              ),
+              ],
             ),
+          ),
 
-            const SizedBox(width: 16),
+          const SizedBox(width: 16),
 
-            // Right: Image
-            Expanded(
-              flex: rightFlex,
-              child: CommonWidgets.buildImageDisplayEnhanced(
-                AssetImage(imagePath),
-                fullWidth: true,
-                aspectRatio: aspectRatio,
-                enableZoom: true,
-                context: context,
-              ),
+          // Right: Image
+          Expanded(
+            flex: rightFlex,
+            child: CommonWidgets.buildImageDisplayEnhanced(
+              AssetImage(imagePath),
+              fullWidth: true,
+              aspectRatio: aspectRatio,
+              enableZoom: true,
+              context: context,
             ),
-          ],
-        ),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+          ),
+        ],
+      ),
+      CommonWidgets.buildSectionDivider(),
+    ],
+  );
+}
 }
 
 // Internal StatefulWidget for managing the counter state
