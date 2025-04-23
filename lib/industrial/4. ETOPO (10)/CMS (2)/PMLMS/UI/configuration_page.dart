@@ -21,6 +21,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
 
+  final TextEditingController bDiameter = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController sCenter = TextEditingController();
+  final TextEditingController kDiameter = TextEditingController();
+  final TextEditingController lWidth = TextEditingController();
+  final TextEditingController mDiameter = TextEditingController();
+  final TextEditingController nTop = TextEditingController();
+  final TextEditingController s2Center = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,6 +46,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
               CommonWidgets.buildGradientButton(context, 'Wire',buildWire()),
+              CommonWidgets.buildGradientButton(context, 'Measurements',buildMeasurements()),
             ],
           ),
         ),
@@ -59,7 +70,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           'OX678 Chain (6”)',
           'Other'
         ]),
-        CommonWidgets.buildDropdownField('Protein: Chain Manufacturer', [
+        CommonWidgets.buildDropdownField('Chain Manufacturer', [
           'Green Line',
           'Frost',
           'M&M',
@@ -206,6 +217,110 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+  Widget buildMeasurements() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildDropdownField(
+        'Measurement Unit',
+        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+        /*
+        measurementUnits,
+        (value) {
+          setState(() {
+            measurementUnits = value;
+            validate.validateDropdownField(measurementUnits, 'measurementUnits');
+          });
+        },
+        //errorText: errors['measurementUnits'], */
+      ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Power Trolley Wheel (B)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/4/CMS/B.png',
+          controller: bDiameter,
+          subHint: "(Diameter)",
+          //errorText: errors['bDiameter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Power Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/4/CMS/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+          //errorText: errors['gWidth'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Power Rail (H)",
+          hintText: "Height",
+          imagePath: 'assets/Measurements/4/CMS/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+          //errorText: errors['hHeight'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
+          hintText: "Center of Power Wheel to Center of Power Wheel",
+          imagePath: 'assets/Measurements/4/CMS/S.png',
+          controller: sCenter,
+          subHint: "(Center of Power Wheel to Center of Power Wheel)",
+          //errorText: errors['sCenter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Free Trolley Wheel (K2)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/4/CMS/K2.png',
+          controller: kDiameter,
+          subHint: "(Diameter)",
+          //errorText: errors['kDiameter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Free Rail (L2)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/4/CMS/L2.png',
+          controller: lWidth,
+          subHint: "(Width)",
+          //errorText: errors['lWidth'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Free Rail (M2)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/4/CMS/M2.png',
+          controller: mDiameter,
+          subHint: "(Diameter)",
+          //errorText: errors['mDiameter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)",
+          hintText: "Top of Power Rail to Bottom of Free Rail",
+          imagePath: 'assets/Measurements/4/CMS/N2.png',
+          controller: nTop,
+          subHint: "(Top of Power Rail to Bottom of Free Rail)",
+          //errorText: errors['nTop'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)",
+          hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
+          imagePath: 'assets/Measurements/4/CMS/S2.png',
+          controller: s2Center,
+          subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
+          //errorText: errors['s2Center'],
+        ),
+      
+      ],
+    );
+  }
+
 }
 
 Widget buildBreadcrumbNavigation(BuildContext context) {
