@@ -114,7 +114,7 @@ class ETIPONavState extends State<ETIPONav> {
                   ),
                   _buildClickableImageCard(
                     context: context,
-                    title: 'Conveyor Lubrication Systems (3)',
+                    title: 'Conveyor Lubrication Systems (2)',
                     imagePath:
                         'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/Title.png',
                     onTap: () {

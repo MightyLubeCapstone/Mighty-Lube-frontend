@@ -256,7 +256,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
       ),
       _buildClickableImageCard(
         context: context,
-        title: 'Enclosed Track Inverted Power Only and PF (8)',
+        title: 'Enclosed Track Inverted Power Only and PF (4)',
         imagePath: 'assets/industrial/Title.png',
         onTap: () {
           Navigator.push(

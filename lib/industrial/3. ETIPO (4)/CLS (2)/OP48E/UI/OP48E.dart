@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
 
@@ -18,7 +17,6 @@ class OP48EPageState extends State<OP48EPage> {
 
   // Pages for bottom navigation
   final List<Widget> _pages = [
-    const HomeSection(),
     const ImageSection(),
     const ConfigurationSection(),
   ];
@@ -49,10 +47,6 @@ class OP48EPageState extends State<OP48EPage> {
           selectedItemColor: Colors.blueAccent,
           unselectedItemColor: const Color.fromARGB(255, 68, 66, 66),
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.image),
               label: 'Product',

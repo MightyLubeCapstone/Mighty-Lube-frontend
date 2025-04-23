@@ -25,6 +25,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor2 = TextEditingController();
   final TextEditingController conductor12 = TextEditingController();
 
+  final TextEditingController bDiameter = TextEditingController();
+  final TextEditingController gWidth = TextEditingController();
+  final TextEditingController hHeight = TextEditingController();
+  final TextEditingController sCenter = TextEditingController();
+  final TextEditingController kDiameter = TextEditingController();
+  final TextEditingController lWidth = TextEditingController();
+  final TextEditingController mDiameter = TextEditingController();
+  final TextEditingController nTop = TextEditingController();
+  final TextEditingController s2Center = TextEditingController();
+
+
   // Dropdown values
   int? conveyorChainSize = -1;
   int? chainManufacturer = -1;
@@ -75,7 +86,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conductor2',
       'conductor12',
     ],
-    'Enclosed Track Inverted: Measurements': [],
+    'Measurements': ['measurementUnits','bDiameter','gWidth','hHeight','sCenter','kDiameter','lWidth','mDiameter','nTop','s2Center'],
   };
 
   @override
@@ -106,6 +117,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     conveyorSpeed.dispose();
     conveyorIndex.dispose();
     operatingVoltage.dispose();
+
+    bDiameter.dispose();
+    gWidth.dispose();
+    hHeight.dispose();
+    sCenter.dispose();
+    kDiameter.dispose();
+    lWidth.dispose();
+    mDiameter.dispose();
+    nTop.dispose();
+    s2Center.dispose();
     super.dispose();
   }
 
@@ -129,6 +150,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conductor4.text, 'conductor4');
     validate.validateTextField(conductor7.text, 'conductor7');
     validate.validateTextField(conductor2.text, 'conductor2');
+
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+    validate.validateTextField(bDiameter.text, 'bDiameter');
+    validate.validateTextField(gWidth.text, 'gWidth');
+    validate.validateTextField(hHeight.text, 'hHeight');
+    validate.validateTextField(sCenter.text, 'sCenter');
+    validate.validateTextField(kDiameter.text, 'kDiameter');
+    validate.validateTextField(lWidth.text, 'lWidth');
+    validate.validateTextField(mDiameter.text, 'mDiameter');
+    validate.validateTextField(nTop.text, 'nTop');
+    validate.validateTextField(s2Center.text, 's2Center');
 
     setState(() {});
   }
@@ -187,10 +219,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               ),
               CommonWidgets.buildGradientButton(
                 context,
-                'Enclosed Track Inverted: Measurements',
+                'Measurements',
                 buildMeasurements(),
                 isError: validate
-                    .sectionError('Enclosed Track Inverted: Measurements'),
+                    .sectionError('Measurements'),
               ),
             ],
           ),
@@ -524,8 +556,100 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+        'Measurement Unit',
+        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+        measurementUnits,
+        (value) {
+          setState(() {
+            measurementUnits = value;
+            validate.validateDropdownField(measurementUnits, 'measurementUnits');
+          });
+        },
+        errorText: errors['measurementUnits'], 
+      ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Power Trolley Wheel (B)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/3/CLS/b.png',
+          controller: bDiameter,
+          subHint: "(Diameter)",
+          errorText: errors['bDiameter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Power Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/3/CLS/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+          errorText: errors['gWidth'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Power Rail (H)",
+          hintText: "Height",
+          imagePath: 'assets/Measurements/3/CLS/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+          errorText: errors['hHeight'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
+          hintText: "Center of Power Wheel to Center of Power Wheel",
+          imagePath: 'assets/Measurements/3/CLS/S.png',
+          controller: sCenter,
+          subHint: "(Center of Power Wheel to Center of Power Wheel)",
+          errorText: errors['sCenter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Free Trolley Wheel (K2)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/3/CLS/K2.png',
+          controller: kDiameter,
+          subHint: "(Diameter)",
+          errorText: errors['kDiameter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Free Rail (L2)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/3/CLS/L2.png',
+          controller: lWidth,
+          subHint: "(Width)",
+          errorText: errors['lWidth'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Free Rail (M2)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/3/CLS/M2.png',
+          controller: mDiameter,
+          subHint: "(Diameter)",
+          errorText: errors['mDiameter'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Free Rail Vertical Position (Height) (N2)",
+          hintText: "Top of Power Rail to Bottom of Free Rail",
+          imagePath: 'assets/Measurements/3/CLS/N2.png',
+          controller: nTop,
+          subHint: "(Top of Power Rail to Bottom of Free Rail)",
+          errorText: errors['nTop'],
+        ),
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Enclosed Track (Inverted) Power Trolley Wheel Pitch (S2)",
+          hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
+          imagePath: 'assets/Measurements/3/CLS/S2.png',
+          controller: s2Center,
+          subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
+          errorText: errors['s2Center'],
+        ),
+      
       ],
     );
   }
