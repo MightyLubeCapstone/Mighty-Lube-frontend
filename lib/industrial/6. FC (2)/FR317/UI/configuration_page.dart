@@ -725,8 +725,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
+          errorText: errors['measurementUnits'], 
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -735,6 +737,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/6/317/E.png',
           controller: eCenter,
           subHint: "(Center OF Free Trolley Wheel to Zerk Fitting)",
+          errorText: errors['eCenter'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -743,6 +746,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/6/317/F.png',
           controller: fCenter,
           subHint: "(Center of Zerk Ftg. to Center of Zerk Ftg.)",
+          errorText: errors['fCenter'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -751,6 +755,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/6/317/G.png',
           controller: gWidth,
           subHint: "(Width)",
+          errorText: errors['gWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -759,6 +764,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/6/317/H.png',
           controller: hHeight,
           subHint: "(Height)",
+          errorText: errors['hHeight'],
         ),
       ],
     );
