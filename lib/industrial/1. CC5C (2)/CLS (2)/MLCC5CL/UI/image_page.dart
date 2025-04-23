@@ -16,7 +16,7 @@ class ImageSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'Mighty Lube CC5 Chain Lubricator',
+            'Mighty Lube CC5 Chain Lubricator:',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

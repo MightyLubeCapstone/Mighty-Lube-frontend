@@ -49,6 +49,9 @@ flutter:
     - assets/ML_Logo-w-tag-vector.svg
     - assets/WhiteML_Logo-w-tag-vector.svg
 
+    - assets/Measurements/
+    - assets/industrial/
+
     - assets/FGLM.png
     - assets/FGCO.png
 
@@ -121,31 +124,32 @@ flutter:
     - assets/industrial/OHPRLB(20)/CLS/OP52.png
     - assets/industrial/OHPRLB(20)/CLS/OP139A.png
 
-    - assets/industrial/PFOOI(17)/CMS/CMS.png
-    - assets/industrial/PFOOI(17)/CMS/MLAIO.png
-    - assets/industrial/PFOOI(17)/CMS/PMLMS.png
-    - assets/industrial/PFOOI(17)/CMS/PMMS.png
-    - assets/industrial/PFOOI(17)/CMS/SLMLMS.png
+    - assets/industrial/PFOOI/CMS/CMS.png
+    - assets/industrial/PFOOI/CMS/MLAIO.png
+    - assets/industrial/PFOOI/CMS/PMLMS.png
+    - assets/industrial/PFOOI/CMS/PMMS.png
+    - assets/industrial/PFOOI/CMS/SLMLMS.png
 
     - assets/industrial/IBRC(3)/CLS.png
     - assets/industrial/IBRC(3)/CGS.png
     - assets/industrial/IBRC(3)/MLRFC.png
-    - assets/industrial/PFOOI(17)/CCS/300I.png
-    - assets/industrial/PFOOI(17)/CCS/CCS.png
-    - assets/industrial/PFOOI(17)/CCS/OP8.png
-    - assets/industrial/PFOOI(17)/CCS/OP8NP.png
-    - assets/industrial/PFOOI(17)/CGS/CGS.png
-    - assets/industrial/PFOOI(17)/CGS/FR314.png
-    - assets/industrial/PFOOI(17)/CGS/FR317.png
-    - assets/industrial/PFOOI(17)/CGS/GPC.png
-    - assets/industrial/PFOOI(17)/CLS/CLS.png
-    - assets/industrial/PFOOI(17)/CLS/9000L.png
-    - assets/industrial/PFOOI(17)/CLS/9000LFCCCL.png
-    - assets/industrial/PFOOI(17)/CLS/9000LTCL.png
-    - assets/industrial/PFOOI(17)/CLS/CDL.png
-    - assets/industrial/PFOOI(17)/CLS/ES.png
-    - assets/industrial/PFOOI(17)/CLS/OP55.png
-    - assets/industrial/PFOOI(17)/CLS/OP139A.png
+
+    - assets/industrial/PFOOI/CCS/300I.png
+    - assets/industrial/PFOOI/CCS/CCS.png
+    - assets/industrial/PFOOI/CCS/OP8.png
+    - assets/industrial/PFOOI/CCS/OP8NP.png
+    - assets/industrial/PFOOI/CGS/CGS.png
+    - assets/industrial/PFOOI/CGS/FR314.png
+    - assets/industrial/PFOOI/CGS/FR317.png
+    - assets/industrial/PFOOI/CGS/GPC.png
+    - assets/industrial/PFOOI/CLS/CLS.png
+    - assets/industrial/PFOOI/CLS/9000L.png
+    - assets/industrial/PFOOI/CLS/9000LFCCCL.png
+    - assets/industrial/PFOOI/CLS/9000LTCL.png
+    - assets/industrial/PFOOI/CLS/CDL.png
+    - assets/industrial/PFOOI/CLS/ES.png
+    - assets/industrial/PFOOI/CLS/OP55.png
+    - assets/industrial/PFOOI/CLS/OP139A.png
 
     - assets/Measurements/1/A1.png
     - assets/Measurements/1/B1.png

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/products.dart';
+import 'package:mighty_lube/industrial/11.%20PAFOOI%20(17)/CLS%20(7)/products.dart';
 import 'package:mighty_lube/helper_widgets.dart';
+
 
 class ImageSection extends StatelessWidget {
   const ImageSection({super.key});
@@ -11,11 +12,11 @@ class ImageSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProductsHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CLSProducts()),
         const Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'OP-40E:',
+            '9000L Series Central System Enclosed Track Conveyor Lubricators',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -39,7 +40,7 @@ class ImageSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
-                  'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png', // Path to your image
+                  'assets/industrial/PFOOI/CLS/9000LTCL.png', // Path to your image
                   fit: BoxFit.cover,
                 ),
               ),
@@ -49,5 +50,4 @@ class ImageSection extends StatelessWidget {
       ],
     );
   }
-
 }

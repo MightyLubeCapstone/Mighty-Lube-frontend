@@ -13,20 +13,11 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
-  final Validators validate = Validators();
-  Future<bool>? status;
-
+  
+  // Text Controllers
   final TextEditingController conveyorSystem = TextEditingController();
-  int? conveyorChainSize = -1;
-  int? chainManufacturer = -1;
   final TextEditingController conveyorLength = TextEditingController();
-  int? conveyorLengthUnit = -1;
   final TextEditingController conveyorSpeed = TextEditingController();
-  int? conveyorSpeedUnit = -1;
-  int? directionOfTravel = -1;
-  int? applicationEnvironment = -1;
-  int? temperature = -1;
-  int? singleOrDoubleStrand = -1;
   final TextEditingController conveyorIndex = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
   final TextEditingController otherInfo = TextEditingController();
@@ -34,7 +25,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController equipBrand = TextEditingController();
   final TextEditingController currentType = TextEditingController();
   final TextEditingController currentGrade = TextEditingController();
-
   final TextEditingController gWidth = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
   final TextEditingController aDiameter = TextEditingController();
@@ -44,6 +34,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController yDiameter = TextEditingController();
   final TextEditingController zLength = TextEditingController();
 
+  //Dropdown Values
   int? existingMonitoring = -1;
   int? outboardWheels = -1;
   int? highRollers = -1;
@@ -56,6 +47,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? mightyLubeMonitoring = -1;
   int? plcConnection = -1;
   int? measurementUnits = -1;
+  int? conveyorChainSize = -1;
+  int? chainManufacturer = -1;
+  int? conveyorSpeedUnit = -1;
+  int? directionOfTravel = -1;
+  int? applicationEnvironment = -1;
+  int? temperature = -1;
+  int? singleOrDoubleStrand = -1;
+  int? conveyorLengthUnit = -1;
+
+  final Validators validate = Validators();
+  Future<bool>? status;
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -69,50 +71,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'equipBrand': null,
     'currentType': null,
     'currentGrade': null,
+    'gWidth': null,
+    'hHeight': null,
+    'aDiameter': null,
+    'bWidth': null,
+    'dThickness': null,
+    'mInside': null,
+    'yDiameter': null,
+    'zLength': null,
+
   };
 
-  bool validForm() {
-    validate.mapSections(sections);
-    validate.mapErrors(errors);
-    _validateForm();
-    return errors.values.every((error) => error == null);
-  }
-
-  void _validateForm() {
-    validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
-    validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
-    validate.validateTextField(conveyorIndex.text, 'conveyorIndex');
-    validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
-    validate.validateTextField(otherInfo.text, 'otherInfo');
-    validate.validateTextField(specialOptions.text, 'specialOptions');
-    validate.validateTextField(equipBrand.text, 'equipBrand');
-    validate.validateTextField(currentType.text, 'currentType');
-    validate.validateTextField(currentGrade.text, 'currentGrade');
-
-    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
-    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
-    validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
-    validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
-    validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
-    validate.validateDropdownField(applicationEnvironment, 'applicationEnvironment');
-    validate.validateDropdownField(temperature, 'temperature');
-    validate.validateDropdownField(singleOrDoubleStrand, 'singleOrDoubleStrand');
-    validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
-    validate.validateDropdownField(outboardWheels, 'outboardWheels');
-    validate.validateDropdownField(highRollers, 'highRollers');
-    validate.validateDropdownField(lubricationSideChain, 'lubricationSideChain');
-    validate.validateDropdownField(lubricationTopChain, 'lubricationTopChain');
-    validate.validateDropdownField(chainMasterController, 'chainMasterController');
-    validate.validateDropdownField(timer, 'timer');
-    validate.validateDropdownField(electricOnOff, 'electricOnOff');
-    validate.validateDropdownField(pneumaticOnOff, 'pneumaticOnOff');
-    validate.validateDropdownField(mightyLubeMonitoring, 'mightyLubeMonitoring');
-    validate.validateDropdownField(plcConnection, 'plcConnection');
-    validate.validateDropdownField(measurementUnits, 'measurementUnits');
-
-    setState(() {});
-  }
+  final Map<String, List<String>> sections = {
+    "general":["conveyorSystem", "conveyorChainSize", "chainManufacturer", "conveyorLength", "conveyorLengthUnit", "conveyorSpeed", "conveyorSpeedUnit", "directionOfTravel", "applicationEnvironment", "temperature", "singleOrDoubleStrand", "conveyorIndex"],
+    "customer":["operatingVoltage"],
+    "monitoring":["existingMonitoring"],
+    "specifications":["outboardWheels", "highRollers", "equipBrand", "currentType", "currentGrade", "lubricationSideChain", "lubricationTopChain"],
+    "controller":["chainMasterController", "timer", "electricOnOff", "pneumaticOnOff", "mightyLubeMonitoring", "plcConnection", "otherInfo", "specialOptions"],
+    "measurements": ["gWidth","hHeight","aDiameter","bWidth","dThickness","mInside", "yDiameter", "zLength"],
+  };
 
   @override
   void initState() {
@@ -215,14 +192,55 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     super.dispose();
   }
 
-  final Map<String, List<String>> sections = {
-    "general":["conveyorSystem", "conveyorChainSize", "chainManufacturer", "conveyorLength", "conveyorLengthUnit", "conveyorSpeed", "conveyorSpeedUnit", "directionOfTravel", "applicationEnvironment", "temperature", "singleOrDoubleStrand", "conveyorIndex"],
-    "customer":["operatingVoltage"],
-    "monitoring":["existingMonitoring"],
-    "specifications":["outboardWheels", "highRollers", "equipBrand", "currentType", "currentGrade", "lubricationSideChain", "lubricationTopChain"],
-    "controller":["chainMasterController", "timer", "electricOnOff", "pneumaticOnOff", "mightyLubeMonitoring", "plcConnection", "otherInfo", "specialOptions"],
-    "measurements":["measurementUnits"]
-  };
+  bool validForm() {
+    validate.mapSections(sections);
+    validate.mapErrors(errors);
+    _validateForm();
+    return errors.values.every((error) => error == null);
+  }
+
+  Future<void> _validateForm() async{
+    validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
+    validate.validateTextField(conveyorLength.text, 'conveyorLength');
+    validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
+    validate.validateTextField(conveyorIndex.text, 'conveyorIndex');
+    validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
+    validate.validateTextField(otherInfo.text, 'otherInfo');
+    validate.validateTextField(specialOptions.text, 'specialOptions');
+    validate.validateTextField(equipBrand.text, 'equipBrand');
+    validate.validateTextField(currentType.text, 'currentType');
+    validate.validateTextField(currentGrade.text, 'currentGrade');
+
+    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
+    validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
+    validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
+    validate.validateDropdownField(applicationEnvironment, 'applicationEnvironment');
+    validate.validateDropdownField(temperature, 'temperature');
+    validate.validateDropdownField(singleOrDoubleStrand, 'singleOrDoubleStrand');
+    validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+    validate.validateDropdownField(outboardWheels, 'outboardWheels');
+    validate.validateDropdownField(highRollers, 'highRollers');
+    validate.validateDropdownField(lubricationSideChain, 'lubricationSideChain');
+    validate.validateDropdownField(lubricationTopChain, 'lubricationTopChain');
+    validate.validateDropdownField(chainMasterController, 'chainMasterController');
+    validate.validateDropdownField(timer, 'timer');
+    validate.validateDropdownField(electricOnOff, 'electricOnOff');
+    validate.validateDropdownField(pneumaticOnOff, 'pneumaticOnOff');
+    validate.validateDropdownField(mightyLubeMonitoring, 'mightyLubeMonitoring');
+    validate.validateDropdownField(plcConnection, 'plcConnection');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+    validate.validateTextField(gWidth.text, 'gWidth');
+    validate.validateTextField(hHeight.text, 'hHeight');
+    validate.validateTextField(aDiameter.text, 'aDiameter');
+    validate.validateTextField(bWidth.text, 'bWidth');
+    validate.validateTextField(dThickness.text, 'dThickness');
+    validate.validateTextField(mInside.text, 'mInside');
+    validate.validateTextField(yDiameter.text, 'yDiameter');
+    validate.validateTextField(zLength.text, 'zLength');
+    setState(() {});
+  }
 
   //currentGrade
 
@@ -590,21 +608,22 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-
-  Widget buildMeasurements() {
+Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-          'Measurement Unit',
-          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-          measurementUnits,
-          (value) {
-            setState(() {
-              measurementUnits = value;
-            });
-          },
-        ),
+        'Measurement Unit',
+        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+        measurementUnits,
+        (value) {
+          setState(() {
+            measurementUnits = value;
+            validate.validateDropdownField(measurementUnits, 'measurementUnits');
+          });
+        },
+        errorText: errors['measurementUnits'], 
+      ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "CC5 Power Rail (G)",
@@ -612,6 +631,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/G.png',
           controller: gWidth,
           subHint: "(Width)",
+          errorText: errors['gWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -620,6 +640,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/H.png',
           controller: hHeight,
           subHint: "(Height)",
+          errorText: errors['hHeight'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -628,6 +649,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/A1.png',
           controller: aDiameter,
           subHint: "(Diameter)",
+          errorText: errors['aDiameter'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -636,6 +658,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/B1.png',
           controller: bWidth,
           subHint: "(Width)",
+          errorText: errors['bWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -644,6 +667,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/D1.png',
           controller: dThickness,
           subHint: "(Thickness)",
+          errorText: errors['dThickness'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -652,6 +676,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/M1.png',
           controller: mInside,
           subHint: "(Inside of Left Roller to Inside of Right Roller)",
+          errorText: errors['mInside'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -660,6 +685,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/Y1.png',
           controller: yDiameter,
           subHint: "(Diameter)",
+          errorText: errors['yDiameter'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -668,12 +694,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/1/Z1.png',
           controller: zLength,
           subHint: "(Length)",
+          errorText: errors['zLength'],
         ),
       
       ],
     );
   }
-
   Widget buildErrorText(String message) {
   return Padding(
     padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
