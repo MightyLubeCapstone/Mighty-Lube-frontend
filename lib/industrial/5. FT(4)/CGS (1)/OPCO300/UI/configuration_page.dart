@@ -41,6 +41,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController n1Width = TextEditingController();
   final TextEditingController p1Outside = TextEditingController();
   final TextEditingController r1Center = TextEditingController();
+  
 
   // Dropdown values
   int? conveyorChainSize = -1;
@@ -57,6 +58,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? compressedAirUnit = -1;
   int? zerkLocation = -1;
   int? zerkOrientation = -1;
+  int? measurementUnits = -1;
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -101,6 +103,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'greaseGrade',
     ],
     'Controller': ['otherInfo'],
+    'Measurements':['measurementUnits','fOutside','gWidth','hHeight','a1Diameter','b1Width','h1Width','j1Thickness','k1Thickness','l1Flat','m1Inside','n1Width','p1Outside','r1Center'] //*************************** */
   };
 
   @override
@@ -175,6 +178,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(greaseType.text, 'greaseType');
     validate.validateTextField(greaseGrade.text, 'greaseGrade');
     validate.validateTextField(otherInfo.text, 'otherInfo');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
     validate.validateTextField(fOutside.text, 'fOutside');
     validate.validateTextField(gWidth.text, 'gWidth');
     validate.validateTextField(hHeight.text, 'hHeight');
@@ -235,6 +239,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 context,
                 'Flat Top: Measurements',
                 buildMeasurements(),
+                isError: validate.sectionError("Measurements"),
               ),
             ],
           ),
@@ -430,6 +435,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CommonWidgets.buildDropdownFieldError(
+        'Measurement Unit',
+        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+        measurementUnits,
+        (value) {
+          setState(() {
+            measurementUnits = value;
+            validate.validateDropdownField(measurementUnits, 'measurementUnits');
+          });
+        },
+        errorText: errors['measurementUnits'], 
+      ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Flat Top Zerk Fitting Horizontal Location (F)",
@@ -437,6 +454,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/F.png',
           controller: fOutside,
           subHint: "(Outside of Rail ftg. to Zerk ftg.)",
+          errorText: errors['fOutside'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -445,6 +463,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/G.png',
           controller: gWidth,
           subHint: "(Width)",
+          errorText: errors['gWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -453,6 +472,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/H.png',
           controller: hHeight,
           subHint: "(Height)",
+          errorText: errors['hHeight'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -461,6 +481,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/A1.png',
           controller: a1Diameter,
           subHint: "(Diameter)",
+          errorText: errors['a1Diameter'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -469,6 +490,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/B1.png',
           controller: b1Width,
           subHint: "(Width)",
+          errorText: errors['b1Width'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -477,6 +499,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/H1.png',
           controller: h1Width,
           subHint: "(Width)",
+          errorText: errors['h1Width'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -485,6 +508,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/J1.png',
           controller: j1Thickness,
           subHint: "(Thickness)",
+          errorText: errors['j1Thickness'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -493,6 +517,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/K1.png',
           controller: k1Thickness,
           subHint: "(Thickness)",
+          errorText: errors['k1Thickness'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -501,6 +526,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/L1.png',
           controller: l1Flat,
           subHint: "(Center of Chain to Center of Chain)",
+          errorText: errors['l1Flat'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -509,6 +535,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/M1.png',
           controller: m1Inside,
           subHint: "(Inside of Left Roller to Inside of Right Roller)",
+          errorText: errors['m1Inside'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -517,6 +544,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/N1.png',
           controller: n1Width,
           subHint: "(Width)",
+          errorText: errors['n1Width'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -525,6 +553,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/P1.png',
           controller: p1Outside,
           subHint: "(Outside of Left Rail to Outside of Right Rail)",
+          errorText: errors['p1Outside'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -533,6 +562,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/5/CGS/R1.png',
           controller: r1Center,
           subHint: "(Center of Strand to Center of Strand)",
+          errorText: errors['r1Center'],
         ),
       ],
     );

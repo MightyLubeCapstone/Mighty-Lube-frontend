@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
-import 'home_page.dart'; // Main home
 import 'configuration_page.dart'; // Configuration section
 import 'image_page.dart';
 
@@ -17,7 +16,6 @@ class OPCP300PageState extends State<OPCP300Page> {
 
   // Pages for bottom navigation
   final List<Widget> _pages = [
-    const HomeSection(),
     const ImageSection(),
     const ConfigurationSection(),
   ];
@@ -90,10 +88,6 @@ class OPCP300PageState extends State<OPCP300Page> {
           selectedItemColor: Colors.blueAccent,
           unselectedItemColor: const Color.fromARGB(255, 68, 66, 66),
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.image),
               label: 'Product',
