@@ -15,14 +15,24 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   final Validators validate = Validators();
   Future<bool>? status;
+
+  // Text Controllers
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
   final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController conveyorIndex = TextEditingController();
-  int? operatingVoltage = -1;
+  final TextEditingController conductorNumber4 = TextEditingController();
+  final TextEditingController conductorNumber7 = TextEditingController();
+  final TextEditingController conductorNumber2 = TextEditingController();
+  final TextEditingController wireConductorNumber4 = TextEditingController();
+  final TextEditingController wireConductorNumber7 = TextEditingController();
+  final TextEditingController wireConductorNumber2 = TextEditingController();
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
+
+  // Dropdown Values
+  int? operatingVoltage = -1;
   int? conveyorChainSize = -1;
   int? conveyorChainManufacturer = -1;
   int? conveyorLoaded = -1;
@@ -41,12 +51,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? lubricationTopChain = -1;
   int? chainClean = -1;
   int? measurementUnits = -1;
-  final TextEditingController conductorNumber4 = TextEditingController();
-  final TextEditingController conductorNumber7 = TextEditingController();
-  final TextEditingController conductorNumber2 = TextEditingController();
-  final TextEditingController wireConductorNumber4 = TextEditingController();
-  final TextEditingController wireConductorNumber7 = TextEditingController();
-  final TextEditingController wireConductorNumber2 = TextEditingController();
+ 
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -204,7 +209,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 errorText: errors['conveyorChainSize'],
               ),
               CommonWidgets.buildDropdownFieldError(
-                'Protein: Chain Manufacturer',
+                'Chain Manufacturer',
                 [
                   'Green Line',
                   'Frost',

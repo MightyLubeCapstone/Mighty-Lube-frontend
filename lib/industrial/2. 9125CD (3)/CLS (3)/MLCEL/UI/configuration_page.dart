@@ -56,6 +56,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorEnvironment = -1;
   int? conveyorTemperature = -1;
   int? conveyorStrand = -1;
+  int? measurementsUnits = -1;
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -69,28 +70,62 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSpeed': null,
     'operatingVoltage': null,
     'existingMonitoring': null,
+    'measurementsUnits': null,
+    'aTop': null,
+    'gWidth': null,
+    'hHeight': null, 
+    'jWidth': null,
+    'xWidth': null,
+    'yThickness': null,
   };
 
-  bool validForm() {
-    validate.mapErrors(errors);
-    validate.mapSections(sections);
-    _validateForm();
-    return errors.values.every((error) => error == null);
-  }
-
-  Future<void> _validateForm() async {
-    validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
-    validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
-    validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
-
-    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
-    validate.validateDropdownField(
-        conveyorChainManufacturer, 'conveyorChainManufacturer');
-    validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
-
-    setState(() {});
-  }
+  final Map<String, List<String>> sections = {
+    'general': [
+      'conveyorSystem',
+      'conveyorChainSize',
+      'conveyorChainManufacturer',
+      'conveyorLength',
+      'conveyorSpeed',
+      'conveyorIndex',
+      'conveyorDirection',
+      'conveyorEnvironment',
+      'conveyorTemperature',
+      'conveyorStrand',
+    ],
+    'customerPowerUtilities': [
+      'operatingVoltage',
+    ],
+    'newExistingMonitoringSystem': [
+      'existingMonitoring',
+    ],
+    'conveyorSpecifications': [
+      'wheelOpenRace',
+      'wheelSealedStyle',
+      'openInsideShielded',
+      'openOutsideShielded',
+      'railLubrication',
+      'externalLubrication',
+      'equipBrand',
+      'currentType',
+      'currentGrade',
+      'reservoirSize',
+      'chainClean',
+    ],
+    'controller': [
+      'specialOptions',
+    ],
+    'wire': [
+      'measurementUnits',
+      'conductor2',
+      'conductor4',
+      'conductor7',
+      'conductor12',
+      'jBox',
+    ],
+    'measurements': [
+      'measurementsUnits','aTop','gWidth','hHeight','jWidth','xWidth','yThickness'
+    ],
+  };
 
   @override
   void initState() {
@@ -137,53 +172,34 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     super.dispose();
   }
 
-  final Map<String, List<String>> sections = {
-    'General Information': [
-      'conveyorSystem',
-      'conveyorChainSize',
-      'conveyorChainManufacturer',
-      'conveyorLength',
-      'conveyorSpeed',
-      'conveyorIndex',
-      'conveyorDirection',
-      'conveyorEnvironment',
-      'conveyorTemperature',
-      'conveyorStrand',
-    ],
-    'Customer Power Utilities': [
-      'operatingVoltage',
-    ],
-    'New/Existing Monitoring System': [
-      'existingMonitoring',
-    ],
-    'Conveyor Specifications': [
-      'wheelOpenRace',
-      'wheelSealedStyle',
-      'openInsideShielded',
-      'openOutsideShielded',
-      'railLubrication',
-      'externalLubrication',
-      'equipBrand',
-      'currentType',
-      'currentGrade',
-      'reservoirSize',
-      'chainClean',
-    ],
-    'Controller': [
-      'specialOptions',
-    ],
-    'Wire': [
-      'measurementUnits',
-      'conductor2',
-      'conductor4',
-      'conductor7',
-      'conductor12',
-      'jBox',
-    ],
-    'Chain on Edge Drag Line: Measurements': [
-      'measurementUnits',
-    ],
-  };
+  bool validForm() {
+    validate.mapErrors(errors);
+    validate.mapSections(sections);
+    _validateForm();
+    return errors.values.every((error) => error == null);
+  }
+
+  Future<void> _validateForm() async {
+    validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
+    validate.validateTextField(conveyorLength.text, 'conveyorLength');
+    validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
+    validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
+
+    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
+    validate.validateDropdownField(conveyorChainManufacturer, 'conveyorChainManufacturer');
+    validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+    validate.validateDropdownField(measurementsUnits, 'measurementsUnits');
+    validate.validateTextField(aTop.text, 'aTop');
+    validate.validateTextField(gWidth.text, 'gWidth');
+    validate.validateTextField(hHeight.text, 'hHeight');
+    validate.validateTextField(jWidth.text, 'jWidth');
+    validate.validateTextField(xWidth.text, 'xWidth');
+    validate.validateTextField(yThickness.text, 'yThickness');
+
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -216,8 +232,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: validate.sectionError("wire")),
               CommonWidgets.buildGradientButton(
-                  context, 'Flat Top: Measurements', buildMeasurements(),
-                  isError: validate.sectionError("flatTopMeasurements")),
+                  context, 'Measurements', buildMeasurements(),
+                  isError: validate.sectionError("measurements")),
             ],
           ),
         ),
@@ -465,15 +481,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-          'Measurement Unit',
-          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-          measurementUnits,
-          (value) {
-            setState(() {
-              measurementUnits = value;
-            });
-          },
-        ),
+        'Measurement Unit',
+        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+        measurementsUnits,
+        (value) {
+          setState(() {
+            measurementsUnits = value;
+            validate.validateDropdownField(measurementsUnits, 'measurementsUnits');
+          });
+        },
+        errorText: errors['measurementsUnits'], // ✅ Add this!
+      ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Chain on Edge Drag Line Chain Drop (A)",
@@ -481,6 +499,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/2/A.png',
           controller: aTop,
           subHint: "(Top of Rail to Center of Chain)",
+          errorText: errors['aTop'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -489,6 +508,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/2/G.png',
           controller: gWidth,
           subHint: "(Width)",
+          errorText: errors['gWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -497,6 +517,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/2/H.png',
           controller: hHeight,
           subHint: "(Height)",
+          errorText: errors['hHeight'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -505,6 +526,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/2/J.png',
           controller: jWidth,
           subHint: "(Inside of Rail Channel to Inside of Rail Channel)",
+          errorText: errors['jWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -513,6 +535,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/2/X.png',
           controller: xWidth,
           subHint: "(Width)",
+          errorText: errors['xWidth'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -521,6 +544,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           imagePath: 'assets/Measurements/2/Y.png',
           controller: yThickness,
           subHint: "(Thickness)",
+          errorText: errors['yThickness'],
         ),
       ],
     );

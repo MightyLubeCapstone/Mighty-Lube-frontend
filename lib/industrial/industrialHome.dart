@@ -245,7 +245,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
       ),
       _buildClickableImageCard(
         context: context,
-        title: 'Chain On Edge Drag Line (3)',
+        title: '9125/9126 Caterpillar Drive (3)',
         imagePath: 'assets/industrial/Title.png',
         onTap: () {
           Navigator.push(
