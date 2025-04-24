@@ -300,7 +300,7 @@ class _IndustrialHomeState extends State<IndustrialHome> {
       ),
       _buildClickableImageCard(
         context: context,
-        title: 'Free Rail Overhead Or Inverted (6)',
+        title: 'C Channel Overhead Or Inverted (6)',
         imagePath: 'assets/industrial/FreeRail.png',
         onTap: () {
           Navigator.push(

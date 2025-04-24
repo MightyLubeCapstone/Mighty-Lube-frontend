@@ -33,7 +33,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController eBottom = TextEditingController();
   final TextEditingController gWidth = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
-  final TextEditingController sInverted = TextEditingController();  // Dropdown values
+  final TextEditingController sInverted = TextEditingController();  
+  
+  // Dropdown values
   int? wheelManufacturer = -1;
   int? conveyorSpeedUnit = -1;
   int? directionOfTravel = -1;
@@ -114,7 +116,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'optionalInfo',
     ],
     'Inverted P&F: Measurements': [
-      'measurementUnits',
+      'measurementUnits','sInverted','hHeight','gWidth','eBottom','bDiameter','aInverted'
     ],
   };
 
@@ -167,6 +169,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(greaseType.text, 'greaseType');
     validate.validateTextField(greaseGrade.text, 'greaseGrade');
 
+    validate.validateTextField(sInverted.text, 'sInverted');
+    validate.validateTextField(hHeight.text, 'hHeight');
+    validate.validateTextField(gWidth.text, 'gWidth');
+    validate.validateTextField(eBottom.text, 'eBottom');
+    validate.validateTextField(bDiameter.text, 'bDiameter');
+    validate.validateTextField(aInverted.text, 'aInverted');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+  
     setState(() {});
   }
 
@@ -572,11 +582,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      CommonWidgets.buildDropdownField('Measurement Unit', [
-          'Feet',
-          'Inches', 'm Meter', 'mm Millimeter '
-        ]),
-      
+      CommonWidgets.buildDropdownFieldError(
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'], 
+        ),
       // Image A
       CommonWidgets.buildMeasurementFieldWithImage(
         context: context,
@@ -585,6 +602,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/317/A.png',
         controller: aInverted,
         subHint: "(Center of Chain to Opposide Edge of Rail)",
+        errorText: errors['aInverted'],
       ),
 
       // Image B
@@ -595,6 +613,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/317/B.png',
         controller: bDiameter,
         subHint: "(Diameter)",
+        errorText: errors['bDiameter'],
       ),
       
       // Image E
@@ -605,6 +624,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/317/E.png',
         controller: eBottom,
         subHint: "(Bottom of Rail to Zerk Fitting)",
+        errorText: errors['eBottom'],
       ),
       
       // Image G
@@ -615,6 +635,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/317/G.png',
         controller: gWidth,
         subHint: "(Width)",
+        errorText: errors['gWidth'],
       ),
       
       // Image H
@@ -625,6 +646,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/317/H.png',
         controller: hHeight,
         subHint: "(Height)",
+        errorText: errors['hHeight'],
       ),
       
       // Image S
@@ -635,6 +657,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/317/S.png',
         controller: sInverted,
         subHint: "(Center of Power Wheel to Center of Power Wheel)",
+        errorText: errors['sInverted'],
       ),  
     ],
   );

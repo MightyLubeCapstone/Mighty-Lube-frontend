@@ -36,6 +36,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorLengthUnit = -1;
   int? applicationEnvironment = -1;
   int? surroundingTemp = -1;
+  int? measurementUnits = -1;
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -46,6 +47,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorLength': null,
     'conveyorChainSize': null,
     'chainManufacturer': null,
+    'aTop': null,
+    'bDiameter': null,
+    'gWidth': null,
+    'hHeight': null,
+    'lCenter': null,
+    'aCenter': null,
+    'bDiameter2': null,
+    'gWidth2': null,
+    'hHeight2': null,
+    'kCenter': null,
+    'measurementUnits': null,
   };
 
   @override
@@ -68,6 +80,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   bool validForm() {
     validate.mapErrors(errors);
+    validate.mapSections(sections); 
     _validateForm();
     return errors.values.every((error) => error == null);
   }
@@ -77,8 +90,44 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+
+    validate.validateTextField(aTop.text, 'aTop');
+    validate.validateTextField(bDiameter.text, 'bDiameter');
+    validate.validateTextField(gWidth.text, 'gWidth');
+    validate.validateTextField(hHeight.text, 'hHeight');
+    validate.validateTextField(lCenter.text, 'lCenter');
+    validate.validateTextField(aCenter.text, 'aCenter');
+    validate.validateTextField(bDiameter2.text, 'bDiameter2');
+    validate.validateTextField(gWidth2.text, 'gWidth2');
+    validate.validateTextField(hHeight2.text, 'hHeight2');
+    validate.validateTextField(kCenter.text, 'kCenter');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+
     setState(() {});
   }
+
+  // Sections map
+  final Map<String, List<String>> sections = {
+    'General Information': [
+      'conveyorSystem',
+      'wheelManufacturer',
+      'conveyorSpeed',
+      'conveyorSpeedUnit',
+      'directionOfTravel',
+      'applicationEnvironment',
+      'surroundingTemp',
+      'conveyorType',
+    ],
+    'Measurements': [
+      'measurementUnits',
+      'aTop',
+      'bDiameter',
+      'gWidth',
+      'hHeight',
+      'lCenter','aCenter','bDiameter2','gWidth2','hHeight2','kCenter'
+    ],
+  };
+
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +143,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   buildGeneralInformationContent(),
                   isError: validate.sectionError("General Information")),
               CommonWidgets.buildGradientButton(
-                  context, 'Free Rail: Measurements', buildMeasurements()),
+                  context, 'Free Rail: Measurements', buildMeasurements(),
+                  isError: validate.sectionError("Measurements")),
             ],
           ),
         ),
@@ -189,10 +239,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      CommonWidgets.buildDropdownField('Measurement Unit', [
-          'Feet',
-          'Inches', 'm Meter', 'mm Millimeter '
-        ]),
+      CommonWidgets.buildDropdownFieldError(
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'], 
+        ),
       
       // Image A
       CommonWidgets.buildMeasurementFieldWithImage(
@@ -202,6 +260,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/A.png',
         controller: aTop,
         subHint: "(Top of Rail to Center of Chain)",
+        errorText: errors['aTop'],
       ),
 
       // Image B
@@ -212,6 +271,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/B.png',
         controller: bDiameter,
         subHint: "Diameter",
+        errorText: errors['bDiameter'],
       ),
       
       // Image G
@@ -222,6 +282,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/G.png',
         controller: gWidth,
         subHint: "(Width)",
+        errorText: errors['gWidth'],
       ),
       
       // Image H
@@ -232,6 +293,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/H.png',
         controller: hHeight,
         subHint: "(Height)",
+        errorText: errors['hHeight'],
       ),
       
       // Image L
@@ -242,6 +304,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/L.png',
         controller: lCenter,
         subHint: "(Center of Free Tolley Wheel to Bottom of Rail)",
+        errorText: errors['lCenter'],
       ),
       
       // Image A
@@ -252,6 +315,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/A_Color.png',
         controller: aCenter,
         subHint: "(Center of Chain to Opposite Edge of Rail)",
+        errorText: errors['aCenter'],
       ),
       
       // Image B2
@@ -262,6 +326,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/B2.png',
         controller: bDiameter2,
         subHint: "(Diameter)",
+        errorText: errors['bDiameter2'],
       ),
       
       // Image G2
@@ -272,6 +337,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/G2.png',
         controller: gWidth2,
         subHint: "(Width)",
+        errorText: errors['gWidth2'],
       ),
       
       // Image H2
@@ -282,6 +348,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/H2.png',
         controller: hHeight2,
         subHint: "(Height)",
+        errorText: errors['hHeight2'],
       ),
       
       // Image K
@@ -292,6 +359,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CCS/K.png',
         controller: kCenter,
         subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
+        errorText: errors['kCenter'],
       ),
       
     ],

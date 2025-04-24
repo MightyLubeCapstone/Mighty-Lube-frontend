@@ -286,8 +286,23 @@ flutter:
     - assets/Measurements/4/CMS/N2.png
     - assets/Measurements/4/CMS/S.png
     - assets/Measurements/4/CMS/S2.png
+    
+    - assets/Measurements/7/CGS/314/B.png
+    - assets/Measurements/7/CGS/314/E.png
+    - assets/Measurements/7/CGS/314/G.png
+    - assets/Measurements/7/CGS/314/H.png
+    - assets/Measurements/7/CGS/314/K.png
+    - assets/Measurements/7/CGS/314/T.png
+    - assets/Measurements/7/CGS/314/U.png
+    - assets/Measurements/7/CGS/314/V.png
+    - assets/Measurements/7/CGS/314/W.png
 
-
+    - assets/Measurements/7/CGS/317/A.png
+    - assets/Measurements/7/CGS/317/B.png
+    - assets/Measurements/7/CGS/317/E.png
+    - assets/Measurements/7/CGS/317/G.png
+    - assets/Measurements/7/CGS/317/H.png
+    - assets/Measurements/7/CGS/317/S.png
 
 
 

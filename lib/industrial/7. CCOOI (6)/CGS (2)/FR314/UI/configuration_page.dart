@@ -119,7 +119,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'optionalInfo',
     ],
     'Inverted P&F: Measurements': [
-      'measurementUnits',
+      'measurementUnits','bDiameter','eInverted','gWidth','hHeight','kCenter','tLead','uLead','vLoad','wOutside'
     ],
   };
 
@@ -156,6 +156,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(currentGrade.text, 'currentGrade');
     validate.validateTextField(greaseType.text, 'greaseType');
     validate.validateTextField(greaseGrade.text, 'greaseGrade');
+
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+    validate.validateTextField(bDiameter.text, 'bDiameter');
+    validate.validateTextField(eInverted.text, 'eInverted');
+    validate.validateTextField(gWidth.text, 'gWidth');
+    validate.validateTextField(hHeight.text, 'hHeight');
+    validate.validateTextField(kCenter.text, 'kCenter');
+    validate.validateTextField(uLead.text, 'uLead');
+    validate.validateTextField(tLead.text, 'tLead');
+    validate.validateTextField(greaseGrade.text, 'greaseGrade');
+    validate.validateTextField(vLoad.text, 'vLoad');
+    validate.validateTextField(wOutside.text, 'wOutside');
+
 
     setState(() {});
   }
@@ -570,10 +583,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      CommonWidgets.buildDropdownField('Measurement Unit', [
-          'Feet',
-          'Inches', 'm Meter', 'mm Millimeter '
-        ]),
+      CommonWidgets.buildDropdownFieldError(
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'], 
+        ),
       
       // Image B
       CommonWidgets.buildMeasurementFieldWithImage(
@@ -583,6 +604,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/B.png',
         controller: bDiameter,
         subHint: "(Diameter)",
+        errorText: errors['bDiameter'],
       ),
 
       // Image E
@@ -593,6 +615,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/E.png',
         controller: eInverted,
         subHint: "(Bottom of Rail to Zerk Fitting)",
+        errorText: errors['eInverted'],
       ),
       
       // Image G
@@ -603,6 +626,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/G.png',
         controller: gWidth,
         subHint: "(Width)",
+        errorText: errors['gWidth'],
       ),
       
       // Image H
@@ -613,6 +637,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/H.png',
         controller: hHeight,
         subHint: "(Height)",
+        errorText: errors['hHeight'],
       ),
       
       // Image K
@@ -623,6 +648,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/K.png',
         controller: kCenter,
         subHint: "(Center of Tolley Wheel to Center of Trolley Wheel)",
+        errorText: errors['kCenter'],
       ),
       
       // Image T
@@ -633,6 +659,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/T.png',
         controller: tLead,
         subHint: "(Lead to Load)",
+        errorText: errors['tLead'],
       ),
       
       // Image U
@@ -643,6 +670,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/U.png',
         controller: uLead,
         subHint: "(Lead to Load)",
+        errorText: errors['uLead'],
       ),
       
       // Image V
@@ -653,6 +681,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/V.png',
         controller: vLoad,
         subHint: "(Load to Trailing)",
+        errorText: errors['vLoad'],
       ),
       
       // Image W
@@ -663,6 +692,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         imagePath: 'assets/Measurements/7/CGS/314/W.png',
         controller: wOutside,
         subHint: "(Outside to Outside of Free Trolley Wheels)",
+        errorText: errors['wOutside'],
       ),
       
     ],
