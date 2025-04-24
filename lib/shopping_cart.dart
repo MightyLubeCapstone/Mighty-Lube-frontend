@@ -57,6 +57,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       cartLoading = false;
     });
+    totalQuantities = 0;
     for (var order in cartItems) {
       totalQuantities += order["quantity"] as int;
     }
@@ -89,7 +90,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         );
       },
     );
-    if (draftName.isEmpty) {
+    if (draftName == null || draftName.trim().isEmpty){
       return Future(() {
         return false;
       }); // User canceled or entered empty name
@@ -177,7 +178,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         );
       },
     );
-    if (configName.isEmpty) {
+    if (configName == null || configName.isEmpty) {
       return Future(() {
         return false;
       }); // User canceled or entered empty name
