@@ -254,32 +254,30 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Connecting to Existing Monitoring', [
-          'Yes',
-          'No'
-        ], existingMonitoring, (value) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
           setState(() {
             existingMonitoring = value;
-            validate.validateDropdownField(existingMonitoring, 'existingMonitoringSystem');
+            validate.validateDropdownField(
+                existingMonitoring, 'existingMonitoring');
           });
-        }),
-        CommonWidgets.buildDropdownFieldError('Add New Monitoring System', [
-          'Yes',
-          'No'
-        ], newMonitoring, (value) {
-          setState(() {
-            newMonitoring = value;
-            validate.validateDropdownField(newMonitoring, 'newMonitoringSystem');
-          });
-        }),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1)
+        CommonWidgets.buildTemplateA(validate),
+    ],
+  );
+}
 
   Widget buildMonitoringFeatures() {
     return Column(
@@ -346,41 +344,62 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildConveyorSpecifications() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-       CommonWidgets. buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Lubrication from the Side of Chain', [
-          'Yes',
-          'No'
-        ], lubricationSide, (value) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+
+      CommonWidgets.buildDropdownFieldError(
+        'Lubrication from the Side of Chain',
+        ['Yes', 'No'],
+        lubricationSide,
+        (value) {
           setState(() {
             lubricationSide = value;
-            validate.validateDropdownField(lubricationSide, 'lubricationSide');
+            validate.validateDropdownField(
+                lubricationSide, 'lubricationSide');
           });
-        }),
-        CommonWidgets.buildDropdownFieldError('Lubrication from the Top of Chain', [
-          'Yes',
-          'No'
-        ], lubricationTop, (value) {
+        },
+        errorText: errors['lubricationSide'],
+      ),
+
+      CommonWidgets.buildDropdownFieldError(
+        'Lubrication from the Top of Chain',
+        ['Yes', 'No'],
+        lubricationTop,
+        (value) {
           setState(() {
             lubricationTop = value;
-            validate.validateDropdownField(lubricationTop, 'lubricationTop');
+            validate.validateDropdownField(
+                lubricationTop, 'lubricationTop');
           });
-        }),
-        CommonWidgets.buildDropdownFieldError('Is the Conveyor Chain Clean?', [
-          'Yes',
-          'No'
-        ], cleanChain, (value) {
+        },
+        errorText: errors['lubricationTop'],
+      ),
+
+      CommonWidgets.buildDropdownFieldError(
+        'Is the Conveyor Chain Clean?',
+        ['Yes', 'No'],
+        cleanChain,
+        (value) {
           setState(() {
             cleanChain = value;
-            validate.validateDropdownField(cleanChain, 'cleanChain');
+            validate.validateDropdownField(
+                cleanChain, 'cleanChain');
           });
-        }),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+        },
+        errorText: errors['cleanChain'],
+      ),
+
+      CommonWidgets.buildSectionDivider(),
+
+      CommonWidgets.buildTemplateB(validate),
+      CommonWidgets.buildTemplateC(validate),
+      CommonWidgets.buildTemplateE(validate)
+    ],
+  );
+}
+
   
   Widget buildController() {
     return Column(

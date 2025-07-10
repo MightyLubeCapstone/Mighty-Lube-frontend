@@ -4,7 +4,6 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/CDL/UI/CDL.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/MLCEL/UI/MLCEL.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/OP40E/UI/OP40E.dart';
 import 'package:mighty_lube/industrial/5.%20FT(4)/subfolders.dart';
@@ -102,19 +101,6 @@ class CLSProductsState extends State<CLSProducts> {
             Expanded(
               child: ListView(
                 children: [
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Caterpillar Drive Lubricators',
-                      imagePath:
-                          'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CDLPage()),
-                        );
-                      },
-                    ),
                     _buildClickableImageCard(
                       context: context,
                       title: 'Mighty Lube Flat Top Lubricator',

@@ -48,7 +48,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorSwing = -1;
   int? conveyorStrand = -1;
   int? measurementUnits = -1;
-  
+  int? existingMonitoring = -1;
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -393,6 +393,32 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+  Widget buildNewMonitoringSystem() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
+          setState(() {
+            existingMonitoring = value;
+            validate.validateDropdownField(
+                existingMonitoring, 'existingMonitoring');
+          });
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1)
+        CommonWidgets.buildTemplateA(validate),
+    ],
+  );
+}
 
   Widget buildMeasurements() {
     return Column(

@@ -53,6 +53,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? directionOfTravel = -1;
   int? applicationEnvironment = -1;
   int? temperature = -1;
+  int? swing = -1;
   int? singleOrDoubleStrand = -1;
   int? conveyorLengthUnit = -1;
 
@@ -83,7 +84,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   };
 
   final Map<String, List<String>> sections = {
-    "general":["conveyorSystem", "conveyorChainSize", "chainManufacturer", "conveyorLength", "conveyorLengthUnit", "conveyorSpeed", "conveyorSpeedUnit", "directionOfTravel", "applicationEnvironment", "temperature", "singleOrDoubleStrand", "conveyorIndex"],
+    "general":["conveyorSystem", "conveyorChainSize", "chainManufacturer", "conveyorLength", "conveyorLengthUnit", "conveyorSpeed", "conveyorSpeedUnit", "directionOfTravel", "applicationEnvironment", "temperature","swing", "singleOrDoubleStrand", "conveyorIndex"],
     "customer":["operatingVoltage"],
     "monitoring":["existingMonitoring"],
     "specifications":["outboardWheels", "highRollers", "equipBrand", "currentType", "currentGrade", "lubricationSideChain", "lubricationTopChain"],
@@ -217,6 +218,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
     validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
     validate.validateDropdownField(applicationEnvironment, 'applicationEnvironment');
+        validate.validateDropdownField(swing, 'swing');
     validate.validateDropdownField(temperature, 'temperature');
     validate.validateDropdownField(singleOrDoubleStrand, 'singleOrDoubleStrand');
     validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
@@ -280,10 +282,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Conveyor Details'),
         CommonWidgets.buildDropdownFieldError('Conveyor Chain Size', [
-          'CC5 3”',
-          'CC5 4”',
-          'CC5 6”',
-          'RC60', 'RC80', 'RC 2080', 'RC 2060',
+          'a. CC5 3”',
+          'b. CC5 4”',
+          'c. CC5 6”',
+          'e. RC60', 'f. RC80', 'g. RC 2080', 'h. RC 2060',
           'Other'
         ],  conveyorChainSize,
                 (value) {
@@ -401,6 +403,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['singleOrDoubleStrand'],
               ),
+        CommonWidgets.buildDropdownFieldError('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side', [
+          'Yes',
+          'No',
+        ],  swing,
+                (value) {
+                  setState(() {
+                    swing = value; // Update state properly
+                    validate.validateDropdownField(
+                        swing, 'swing');
+                  });
+                },
+                errorText: errors['swing'],
+              ),
         CommonWidgets.buildSectionDivider(),
         
       
@@ -430,27 +445,30 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Connecting to Existing Monitoring', [
-          'Yes',
-          'No'
-        ], existingMonitoring,
-                (value) {
-                  setState(() {
-                    existingMonitoring = value; // Update state properly
-                    validate.validateDropdownField(
-                        existingMonitoring, 'existingMonitoring');
-                  });
-                },
-                errorText: errors['existingMonitoring'],
-              ),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
+          setState(() {
+            existingMonitoring = value;
+            validate.validateDropdownField(
+                existingMonitoring, 'existingMonitoring');
+          });
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1)
+        CommonWidgets.buildTemplateA(validate),
+    ],
+  );
+}
 
   Widget buildConveyorSpecifications() {
     return Column(
@@ -483,7 +501,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['highRollers'],
               ),
-        
         CommonWidgets.buildTextField('Enter Rail Lubrication Equipment (Brand)',equipBrand),
         CommonWidgets.buildTextField('Enter Current Lubricant Type',currentType),
         CommonWidgets.buildTextField('Enter Current Lubricant Viscosity/Grade',currentGrade),
@@ -608,7 +625,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-Widget buildMeasurements() {
+  
+  Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -700,6 +718,7 @@ Widget buildMeasurements() {
       ],
     );
   }
+  
   Widget buildErrorText(String message) {
   return Padding(
     padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),

@@ -6,7 +6,6 @@ import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/2100L/UI/2100L.dart';
 import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/9000L/UI/9000L.dart';
-import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/OP41A/UI/OP41A.dart';
 import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/OP48E/UI/OP48E.dart';
 import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/subfolders.dart';
 
@@ -120,18 +119,6 @@ class CLSProductsState extends State<CLSProducts> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const Page9000L()),
-                      );
-                    },
-                  ),
-                  _buildClickableImageCard(
-                    context: context,
-                    title: 'OP- 41A Conveyor Lubricators',
-                    imagePath:
-                        'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Conveyor Lub. Systems (4)/OP-41A.png',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const OP41APage()),
                       );
                     },
                   ),

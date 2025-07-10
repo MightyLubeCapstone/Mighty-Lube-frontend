@@ -359,27 +359,40 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError(
-          'Connecting to Existing Monitoring',
-          ['Yes', 'No'],
-          existingMonitoring,
-          (value) {
-            setState(() {
-              existingMonitoring = value;
-              validate.validateDropdownField(
-                  existingMonitoring, 'existingMonitoring');
-            });
-          },
-          errorText: errors['existingMonitoring'],
-        ),
-        CommonWidgets.buildSectionDivider(),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'New Monitoring System or Adding to Existing Monitoring System',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 8),
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
+          setState(() {
+            existingMonitoring = value;
+            validate.validateDropdownField(
+              existingMonitoring,
+              'existingMonitoring',
+            );
+          });
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1) ...[
+          CommonWidgets.buildTemplateA(validate),
+          CommonWidgets.buildTemplateD(validate),
+          CommonWidgets.buildTemplateE(validate),
       ],
-    );
-  }
+    ],
+  );
+}
 
   Widget buildConveyorSpecifications() {
     return Column(

@@ -240,40 +240,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField(
-          'Enter Name of Conveyor System',
+        CommonWidgets.buildTextField('Enter Name of Conveyor System',
           conveyorSystem,
           errorText: errors['conveyorSystem'],
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Conveyor Chain Size',
+        CommonWidgets.buildDropdownFieldError('Chain Manufacturer',
           [
-            'X348 Chain (3")',
-            'X458 Chain (4")',
-            'OX678 Chain (6")',
-            'Other',
-          ],
-          conveyorChainSize,
-          (value) {
-            setState(() {
-              conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
-            });
-          },
-        ),
-        CommonWidgets.buildDropdownFieldError(
-          'Chain Manufacturer',
-          [
-            'Daifuku',
-            'Frost',
-            'NKC',
-            'Pacline',
+            'Webb',
+            'Richard-Wilcox',
             'Rapid',
-            'WEBB',
-            'Webb-Stiles',
-            'Wilkie Brothers',
-            'Others',
+            'Pacline',
+            'Other',
           ],
           chainManufacturer,
           (value) {
@@ -284,13 +261,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildTextField(
-          'Enter Conveyor Length',
+        CommonWidgets.buildTextField('Enter Conveyor Length',
           conveyorLength,
           errorText: errors['conveyorLength'],
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Conveyor Length Unit',
+        CommonWidgets.buildDropdownFieldError( 'Conveyor Length Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeters'],
           conveyorLengthUnit,
           (value) {
@@ -301,13 +276,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildTextField(
-          'Enter Conveyor Speed (Min/Max)',
+        CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)',
           conveyorSpeed,
           errorText: errors['conveyorSpeed'],
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Conveyor Speed Unit',
+        CommonWidgets.buildDropdownFieldError('Conveyor Speed Unit',
           ['Feet/Minute', 'Meters/Minute'],
           conveyorSpeedUnit,
           (value) {
@@ -318,8 +291,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Direction of Travel',
+        CommonWidgets.buildDropdownFieldError('Direction of Travel',
           ['Right to Left', 'Left to Right'],
           directionOfTravel,
           (value) {
@@ -330,8 +302,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Application Environment',
+        CommonWidgets.buildDropdownFieldError('Application Environment',
           [
             'Ambient',
             'Caustic (i.e. Phosphate/E-Coat, etc.)',
@@ -350,8 +321,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+        CommonWidgets.buildDropdownFieldError('Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
           ['Yes', 'No'],
           surroundingTemp,
           (value) {
@@ -362,8 +332,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+        CommonWidgets.buildDropdownFieldError('Is the Conveyor Loaded or Unloaded at Planned Install Location?',
           ['Unloaded', 'Loaded'],
           conveyorLoaded,
           (value) {
@@ -373,8 +342,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildDropdownFieldError(
-          'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side?',
+        CommonWidgets.buildDropdownFieldError('Does Conveyor Swing, Sway, Surge, or Move Side-to-Side?',
           ['Yes', 'No'],
           conveyorSwing,
           (value) {

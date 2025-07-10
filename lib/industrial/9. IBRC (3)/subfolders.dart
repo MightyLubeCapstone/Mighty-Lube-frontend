@@ -4,7 +4,6 @@ import 'package:mighty_lube/app_bar.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/dashboard/UI/profile.dart';
 import 'package:mighty_lube/drawer.dart';
-import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CGS%20(1)/products.dart';
 import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/products.dart';
 import 'package:mighty_lube/industrial/industrialHome.dart';
 
@@ -100,19 +99,6 @@ class IBRCNavState extends State<IBRCNav> {
             Expanded(
               child: ListView(
                 children: [
-                    _buildClickableImageCard(
-                      context: context,
-                      title: 'Conveyor Greaser Systems (1)',
-                      imagePath:
-                          'assets/industrial/IBRC(3)/CGS.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const IBRCProducts()),
-                        );
-                      },
-                    ),
                     _buildClickableImageCard(
                       context: context,
                       title: 'Conveyor Lubrication Systems (2)',

@@ -33,6 +33,6 @@ class SessionObserver extends NavigatorObserver {
 }
 
 String get baseUrl {
-  return 'https://mighty-lube-backend.azurewebsites.net';
+  return 'http://34.46.191.207:8080';
   //return 'http://10.0.2.2:8000';
 }

@@ -50,6 +50,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? driveVibration = -1;
   int? trolleyDetect = -1;
   int? operatingVoltage = -1;
+  int? existingMonitoring = -1;
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -276,22 +277,30 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-          'Connecting to Existing Monitoring',
-          ['Yes', 'No'],
-        ),
-        CommonWidgets.buildDropdownField(
-          'Add New Monitoring System',
-          ['Yes', 'No']
-        ),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
+          setState(() {
+            existingMonitoring = value;
+            validate.validateDropdownField(
+                existingMonitoring, 'existingMonitoring');
+          });
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1)
+        CommonWidgets.buildTemplateA(validate),
+    ],
+  );
+}
 
   Widget buildMonitoringFeatures() {
     return Column(
@@ -358,47 +367,61 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildConveyorSpecifications() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError(
-          'Lubrication from the Side of Chain',
-          ['Yes', 'No'],
-          lubricationSide,
-          (value) {
-            setState(() {
-              lubricationSide = value;
-              validate.validateDropdownField(lubricationSide, 'lubricationSide');
-            });
-          },
-        ),
-        CommonWidgets.buildDropdownFieldError(
-          'Lubrication from the Top of Chain',
-          ['Yes', 'No'],
-          lubricationTop,
-          (value) {
-            setState(() {
-              lubricationTop = value;
-              validate.validateDropdownField(lubricationTop, 'lubricationTop');
-            });
-          },
-        ),
-        CommonWidgets.buildDropdownFieldError(
-          'Is the Conveyor Chain Clean?',
-          ['Yes', 'No'],
-          cleanChain,
-          (value) {
-            setState(() {
-              cleanChain = value;
-              validate.validateDropdownField(cleanChain, 'cleanChain');
-            });
-          },
-        ),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+
+      CommonWidgets.buildDropdownFieldError(
+        'Lubrication from the Side of Chain',
+        ['Yes', 'No'],
+        lubricationSide,
+        (value) {
+          setState(() {
+            lubricationSide = value;
+            validate.validateDropdownField(
+                lubricationSide, 'lubricationSide');
+          });
+        },
+        errorText: errors['lubricationSide'],
+      ),
+
+      CommonWidgets.buildDropdownFieldError(
+        'Lubrication from the Top of Chain',
+        ['Yes', 'No'],
+        lubricationTop,
+        (value) {
+          setState(() {
+            lubricationTop = value;
+            validate.validateDropdownField(
+                lubricationTop, 'lubricationTop');
+          });
+        },
+        errorText: errors['lubricationTop'],
+      ),
+
+      CommonWidgets.buildDropdownFieldError(
+        'Is the Conveyor Chain Clean?',
+        ['Yes', 'No'],
+        cleanChain,
+        (value) {
+          setState(() {
+            cleanChain = value;
+            validate.validateDropdownField(
+                cleanChain, 'cleanChain');
+          });
+        },
+        errorText: errors['cleanChain'],
+      ),
+
+      CommonWidgets.buildSectionDivider(),
+
+      CommonWidgets.buildTemplateB(validate),
+      CommonWidgets.buildTemplateC(validate),
+      CommonWidgets.buildTemplateE(validate)
+    ],
+  );
+}
 
   Widget buildController() {
     return Column(

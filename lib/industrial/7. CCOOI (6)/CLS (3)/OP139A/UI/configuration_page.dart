@@ -51,6 +51,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? kingPin = -1;
   int? outboardWheels = -1;
   int? railLubrication = -1;
+  int? existingMonitoring = -1;
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -349,18 +350,42 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Connecting to Existing Monitoring', ['Yes', 'No']),
-        CommonWidgets.buildDropdownField(
-            'Add New Monitoring System', ['Yes', 'No']),
-        CommonWidgets.buildSectionDivider(),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'New Monitoring System or Adding to Existing Monitoring System',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 8),
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
+          setState(() {
+            existingMonitoring = value;
+            validate.validateDropdownField(
+              existingMonitoring,
+              'existingMonitoring',
+            );
+          });
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1) ...[
+          CommonWidgets.buildTemplateA(validate),
+          CommonWidgets.buildTemplateB(validate),
+          CommonWidgets.buildTemplateC(validate),
+          CommonWidgets.buildTemplateD(validate),
+          CommonWidgets.buildTemplateF(validate),
       ],
-    );
-  }
+    ],
+  );
+}
 
   Widget buildConveyorSpecifications() {
     return Column(

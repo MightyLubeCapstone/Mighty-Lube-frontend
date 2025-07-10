@@ -12,6 +12,7 @@ class ConfigurationSection extends StatefulWidget {
 
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
+  int existingMonitoring = -1;
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
   final TextEditingController conveyorSpeed = TextEditingController();
@@ -47,8 +48,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   context,
                   'Customer Power Utilities',
                   buildCustomerPowerUtilitiesContent()),
-              CommonWidgets.buildGradientButton(context,
-                  'New/Existing Monitoring System', buildNewMonitoringSystem()),
+              //CommonWidgets.buildGradientButton(context,'New/Existing Monitoring System', buildNewMonitoringSystem()),
               CommonWidgets.buildGradientButton(context,
                   'Conveyor Specifications', buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire()),
@@ -135,19 +135,32 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  Widget buildNewMonitoringSystem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Connecting to Existing Monitoring', ['Yes', 'No']),
-        CommonWidgets.buildDropdownField(
-            'Add New Monitoring System', ['Yes', 'No']),
-        CommonWidgets.buildSectionDivider(),
-      ],
-    );
-  }
+// this is broken because of the validation?
+  /*Widget buildNewMonitoringSystem() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CommonWidgets.buildSectionDivider(),
+      CommonWidgets.buildDropdownFieldError(
+        'Connecting to Existing Monitoring',
+        ['Yes', 'No'],
+        existingMonitoring,
+        (value) {
+          setState(() {
+            existingMonitoring = value;
+            validate.validateDropdownField(
+                existingMonitoring, 'existingMonitoring');
+          });
+        },
+        errorText: errors['existingMonitoring'],
+      ),
+      CommonWidgets.buildSectionDivider(),
+
+      if (existingMonitoring == 1)
+        CommonWidgets.buildTemplateA(validate),
+    ],
+  );
+}*/
 
   Widget buildConveyorSpecifications() {
     return Column(

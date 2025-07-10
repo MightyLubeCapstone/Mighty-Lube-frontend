@@ -35,8 +35,6 @@ import 'industrial/10. OHPRLB (20)/CLS (7)/OP4A/UI/OP4A.dart';
 import 'industrial/10. OHPRLB (20)/CLS (7)/OP52/UI/OP52.dart';
 import 'industrial/10. OHPRLB (20)/CMS (4)/PMMS/UI/PMMS.dart';
 import 'industrial/10. OHPRLB (20)/CMS (4)/SLMLMS/UI/SLMLMS.dart';
-import 'industrial/11. PAFOOI (17)/CLS (7)/9000LFCCCL/UI/9000LFCCCL.dart';
-import 'industrial/11. PAFOOI (17)/CLS (7)/9000LTCL/UI/9000LTCL.dart';
 
 class Product {
   final String title;
@@ -254,20 +252,7 @@ final Map<String, Product> productList = {
     imagePath: 'assets/industrial/PFOOI(17)/CMS/SLMLMS.png',
     callback: SLMLMSPage(),
   ),
-  // 11. PAFOOI (17)
-  '9000L Series Central System Power and Free C-Channel Conveyor Lubricators':
-      const Product(
-    title:
-        '9000L Series Central System Power and Free C-Channel Conveyor Lubricators',
-    imagePath: 'assets/industrial/PFOOI/CLS/9000LFCCCL.png',
-    callback: Page9000LFCCCL(),
-  ),
-  '9000L Series Central System Enclosed Track Conveyor Lubricators':
-      const Product(
-    title: '9000L Series Central System Enclosed Track Conveyor Lubricators',
-    imagePath: 'assets/industrial/PFOOI/CLS/9000LTCL.png',
-    callback: Page9000LTCL(),
-  ),
+  
 
   // protein
   'Food Grade Cleaner OP-8SS': const Product(
