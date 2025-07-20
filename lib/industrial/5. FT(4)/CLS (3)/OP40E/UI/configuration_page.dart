@@ -51,6 +51,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  final GlobalKey<TemplateFWidgetState> templateFKey = GlobalKey();
   Future<bool>? status;
 
   // Error messages
@@ -260,8 +262,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
             });
           },
         ),
@@ -282,8 +283,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               chainManufacturer = value;
-              validate.validateDropdownField(
-                  chainManufacturer, 'chainManufacturer');
+              validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
             });
           },
         ),
@@ -304,8 +304,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               directionOfTravel = value;
-              validate.validateDropdownField(
-                  directionOfTravel, 'directionOfTravel');
+              validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
             });
           },
         ),
@@ -324,8 +323,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               applicationEnvironment = value;
-              validate.validateDropdownField(
-                  applicationEnvironment, 'applicationEnvironment');
+              validate.validateDropdownField(applicationEnvironment, 'applicationEnvironment');
             });
           },
         ),
@@ -395,47 +393,44 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Flat Top Power Rail (G)",
@@ -540,78 +535,76 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP40EConfiguration(int numRequested) {
-  if (validForm()) {
-    dynamic op40eData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'industrialChainManufacturer': chainManufacturer,
-      'otherIndustrialChainManufacturer': null,
-      'wheelManufacturer': null,
-      'otherWheelManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': null,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': null,
-      'conveyorIndex': null,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': null,
-      'conveyorLoaded': null,
-      'conveyorSwing': null,
-      'strandStatus': null,
-      'plantLayout': null,
-      'requiredPics': null,
-      'operatingVoltage': operatingVoltage.text,
-      'templateB': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'wheelOpenType': null,
-      'wheelClosedType': null,
-      'openStatus': null,
-      'freeWheelStatus': null,
-      'guideRollerStatus': null,
-      'openRaceStyleType': null,
-      'closedRaceStyleType': null,
-      'holeStatus': null,
-      'actuatorStatus': null,
-      'pivotStatus': null,
-      'kingPinStatus': null,
-      'outboardStatus': null,
-      'lubeBrand': equipBrand.text,
-      'lubeType': currentType.text,
-      'lubeViscosity': currentGrade.text,
-      'chainMaster': null,
-      'timerStatus': null,
-      'electricStatus': null,
-      'pneumaticStatus': null,
-      'mightyLubeMonitoring': null,
-      'plcConnection': null,
-      'otherControllerInfo': otherInfo.text,
-      'ftUnitType': null,
-      'ftTopG': gWidth.text,
-      'ftTopH': hHeight.text,
-      'ftTopA1': a1Diameter.text,
-      'ftTopB1': b1Width.text,
-      'ftTopH1': h1Width.text,
-      'ftTopJ1': j1Thickness.text,
-      'ftTopL1': l1Flat.text,
-      'ftTopM1': m1Inside.text,
-      'ftTopN1': n1Width.text,
-      'ftTopP1': p1Outside.text,
-      'ftTopR1': r1Center.text,
-    };
-    status = FormAPI().addOrder("FT_OP4OE", op40eData, numRequested);
+    if (validForm()) {
+      dynamic op40eData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherIndustrialChainManufacturer': null,
+        'wheelManufacturer': null,
+        'otherWheelManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': null,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': null,
+        'conveyorIndex': null,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': null,
+        'conveyorLoaded': null,
+        'conveyorSwing': null,
+        'strandStatus': null,
+        'plantLayout': null,
+        'requiredPics': null,
+        'operatingVoltage': operatingVoltage.text,
+        'wheelOpenType': null,
+        'wheelClosedType': null,
+        'openStatus': null,
+        'freeWheelStatus': null,
+        'guideRollerStatus': null,
+        'openRaceStyleType': null,
+        'closedRaceStyleType': null,
+        'holeStatus': null,
+        'actuatorStatus': null,
+        'pivotStatus': null,
+        'kingPinStatus': null,
+        'outboardStatus': null,
+        'lubeBrand': equipBrand.text,
+        'lubeType': currentType.text,
+        'lubeViscosity': currentGrade.text,
+        'chainMaster': null,
+        'timerStatus': null,
+        'electricStatus': null,
+        'pneumaticStatus': null,
+        'mightyLubeMonitoring': null,
+        'plcConnection': null,
+        'otherControllerInfo': otherInfo.text,
+        'ftUnitType': null,
+        'ftTopG': gWidth.text,
+        'ftTopH': hHeight.text,
+        'ftTopA1': a1Diameter.text,
+        'ftTopB1': b1Width.text,
+        'ftTopH1': h1Width.text,
+        'ftTopJ1': j1Thickness.text,
+        'ftTopL1': l1Flat.text,
+        'ftTopM1': m1Inside.text,
+        'ftTopN1': n1Width.text,
+        'ftTopP1': p1Outside.text,
+        'ftTopR1': r1Center.text,
+        "templateA": templateAKey.currentState?.getData(),
+        "templateF": templateFKey.currentState?.getData()
+      };
+      status = FormAPI().addOrder("FT_OP4OE", op40eData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
   Widget buildErrorText(String message) {
     return Padding(

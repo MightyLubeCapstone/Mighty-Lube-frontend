@@ -64,6 +64,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
   Future<bool>? status;
 
   // Error messages
@@ -165,7 +166,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     compAir.dispose();
     greaseType.dispose();
     greaseGrade.dispose();
-    
+
     eCenter.dispose();
     gWidth.dispose();
     hHeight.dispose();
@@ -201,7 +202,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(uLoad.text, 'uLoad');
     validate.validateTextField(vLoad.text, 'vLoad');
     validate.validateTextField(wOutside.text, 'wOutside');
-    validate.validateDropdownField(measurementUnits,'measurementUnits');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
 
     setState(() {});
   }
@@ -237,8 +238,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 context,
                 'New/Existing Monitoring System',
                 buildNewMonitoringSystem(),
-                isError:
-                    validate.sectionError('New/Existing Monitoring System'),
+                isError: validate.sectionError('New/Existing Monitoring System'),
               ),
               CommonWidgets.buildGradientButton(
                 context,
@@ -256,8 +256,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 context,
                 'Greaser Free Carrier: Measurements',
                 buildMeasurements(),
-                isError:
-                    validate.sectionError('Greaser Free Carrier: Measurements'),
+                isError: validate.sectionError('Greaser Free Carrier: Measurements'),
               ),
             ],
           ),
@@ -399,31 +398,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
-
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildConveyorSpecifications() {
     return Column(
@@ -622,7 +617,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         CommonWidgets.buildDropdownFieldError(
+        CommonWidgets.buildDropdownFieldError(
           'Measurement Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
           measurementUnits,
@@ -632,7 +627,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
-          errorText: errors['measurementUnits'], 
+          errorText: errors['measurementUnits'],
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
@@ -711,72 +706,69 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addFR314Configuration(int numRequested) {
-  if (validForm()) {
-    dynamic fr314Data = {
-      'conveyorName': conveyorSystem.text,
-      'wheelManufacturer': wheelManufacturer,
-      'otherWheelManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': null,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': surroundingTemp,
-      'conveyorSwing': null,
-      'orientation': conveyorType,
-      'operatingVoltage': operatingVoltage.text,
-      'controlVoltage': null,
-      'compressedAir': compAir.text,
-      'airSupply': compressedAirUnit,
-      'templateB': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'freeWheelStatus': freeTrolleyWheels,
-      'actuatorStatus': dogActuator,
-      'pivotStatus': pivotPoints,
-      'kingPinStatus': kingPin,
-      'lubeBrand': equipBrand.text,
-      'lubeType': currentType.text,
-      'lubeViscosity': currentGrade.text,
-      'currentGrease': greaseType.text,
-      'currentGreaseGrade': greaseGrade.text,
-      'zerkDirection': zerkLocationOrientation,
-      'zerkLocation': zerkLocationSide,
-      'chainMaster': chainMaster.text,
-      'remoteStatus': remote,
-      'mountStatus': mountedOnGreaser,
-      'otherUnitStatus': controlsOtherUnits,
-      'timerStatus': timer,
-      'electricStatus': electricOnOff,
-      'pneumaticStatus': pneumaticOnOff,
-      'mightyLubeMonitoring': mightyLubeMonitoring,
-      'preMountType': null,
-      'plcConnection': plcConnection,
-      'otherControllerInfo': optionalInfo.text,
-      'frUnitType': null,
-      'frInvertedB': null,
-      'frInvertedE': eCenter.text,
-      'frInvertedG': gWidth.text,
-      'frInvertedH': hHeight.text,
-      'frInvertedK': kCenter.text,
-      'frInvertedT': tLead.text,
-      'frInvertedU': uLoad.text,
-      'frInvertedV': vLoad.text,
-      'frInvertedW': wOutside.text,
-    };
-    status = FormAPI().addOrder("FC_314", fr314Data, numRequested);
+    if (validForm()) {
+      dynamic fr314Data = {
+        'conveyorName': conveyorSystem.text,
+        'wheelManufacturer': wheelManufacturer,
+        'otherWheelManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': null,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': conveyorSpeedUnit,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': surroundingTemp,
+        'conveyorSwing': null,
+        'orientation': conveyorType,
+        'operatingVoltage': operatingVoltage.text,
+        'controlVoltage': null,
+        'compressedAir': compAir.text,
+        'airSupply': compressedAirUnit,
+        'freeWheelStatus': freeTrolleyWheels,
+        'actuatorStatus': dogActuator,
+        'pivotStatus': pivotPoints,
+        'kingPinStatus': kingPin,
+        'lubeBrand': equipBrand.text,
+        'lubeType': currentType.text,
+        'lubeViscosity': currentGrade.text,
+        'currentGrease': greaseType.text,
+        'currentGreaseGrade': greaseGrade.text,
+        'zerkDirection': zerkLocationOrientation,
+        'zerkLocation': zerkLocationSide,
+        'chainMaster': chainMaster.text,
+        'remoteStatus': remote,
+        'mountStatus': mountedOnGreaser,
+        'otherUnitStatus': controlsOtherUnits,
+        'timerStatus': timer,
+        'electricStatus': electricOnOff,
+        'pneumaticStatus': pneumaticOnOff,
+        'mightyLubeMonitoring': mightyLubeMonitoring,
+        'preMountType': null,
+        'plcConnection': plcConnection,
+        'otherControllerInfo': optionalInfo.text,
+        'frUnitType': null,
+        'frInvertedB': null,
+        'frInvertedE': eCenter.text,
+        'frInvertedG': gWidth.text,
+        'frInvertedH': hHeight.text,
+        'frInvertedK': kCenter.text,
+        'frInvertedT': tLead.text,
+        'frInvertedU': uLoad.text,
+        'frInvertedV': vLoad.text,
+        'frInvertedW': wOutside.text,
+        "templateA": templateAKey.currentState?.getData()
+      };
+      status = FormAPI().addOrder("FC_314", fr314Data, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
   buildErrorText(String message) {
     return Padding(

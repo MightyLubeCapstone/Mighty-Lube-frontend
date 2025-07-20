@@ -59,6 +59,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? measurementsUnits = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  final GlobalKey<TemplateDWidgetState> templateDKey = GlobalKey();
+  final GlobalKey<TemplateEWidgetState> templateEKey = GlobalKey();
+
   Future<bool>? status;
 
   // Error messages
@@ -73,7 +77,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'measurementsUnits': null,
     'aTop': null,
     'gWidth': null,
-    'hHeight': null, 
+    'hHeight': null,
     'jWidth': null,
     'xWidth': null,
     'yThickness': null,
@@ -123,7 +127,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'jBox',
     ],
     'measurements': [
-      'measurementsUnits','aTop','gWidth','hHeight','jWidth','xWidth','yThickness'
+      'measurementsUnits',
+      'aTop',
+      'gWidth',
+      'hHeight',
+      'jWidth',
+      'xWidth',
+      'yThickness'
     ],
   };
 
@@ -197,7 +207,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(xWidth.text, 'xWidth');
     validate.validateTextField(yThickness.text, 'yThickness');
 
-
     setState(() {});
   }
 
@@ -205,34 +214,29 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const ProductsCOEDL()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const ProductsCOEDL()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
                   isError: validate.sectionError("general")),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
                   isError: validate.sectionError("customerPowerUtilities")),
-              CommonWidgets.buildGradientButton(context,
-                  'New/Existing Monitoring System', buildNewMonitoringSystem(),
-                  isError:
-                      validate.sectionError("newExistingMonitoringSystem")),
-              CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications(),
-                  isError: validate.sectionError("conveyorSpecifications")),
               CommonWidgets.buildGradientButton(
-                  context, 'Controller', buildController(),
+                  context, 'New/Existing Monitoring System', buildNewMonitoringSystem(),
+                  isError: validate.sectionError("newExistingMonitoringSystem")),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError("conveyorSpecifications")),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
                   isError: validate.sectionError("controller")),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: validate.sectionError("wire")),
-              CommonWidgets.buildGradientButton(
-                  context, 'Measurements', buildMeasurements(),
+              CommonWidgets.buildGradientButton(context, 'Measurements', buildMeasurements(),
                   isError: validate.sectionError("measurements")),
             ],
           ),
@@ -255,26 +259,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           conveyorSystem,
           errorText: errors['conveyorSystem'],
         ),
-        if (errors['conveyorSystem'] != null)
-          buildErrorText(errors['conveyorSystem']!),
+        if (errors['conveyorSystem'] != null) buildErrorText(errors['conveyorSystem']!),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Chain Size',
-          [
-            'CC5 3”',
-            'CC5 4”',
-            'CC5 6”',
-            'RC60',
-            'RC80',
-            'RC 2080',
-            'RC 2060',
-            'Other'
-          ],
+          ['CC5 3”', 'CC5 4”', 'CC5 6”', 'RC60', 'RC80', 'RC 2080', 'RC 2060', 'Other'],
           conveyorChainSize,
           (value) {
             setState(() {
               conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
             });
           },
           errorText: errors['conveyorChainSize'],
@@ -307,8 +300,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           conveyorLength,
           errorText: errors['conveyorLength'],
         ),
-        if (errors['conveyorLength'] != null)
-          buildErrorText(errors['conveyorLength']!),
+        if (errors['conveyorLength'] != null) buildErrorText(errors['conveyorLength']!),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Length Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
@@ -324,8 +316,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           conveyorSpeed,
           errorText: errors['conveyorSpeed'],
         ),
-        if (errors['conveyorSpeed'] != null)
-          buildErrorText(errors['conveyorSpeed']!),
+        if (errors['conveyorSpeed'] != null) buildErrorText(errors['conveyorSpeed']!),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Speed Unit',
           ['Feet/Minute', 'Meters/Minute'],
@@ -351,48 +342,46 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           operatingVoltage,
           errorText: errors['operatingVoltage'],
         ),
-        if (errors['operatingVoltage'] != null)
-          buildErrorText(errors['operatingVoltage']!),
+        if (errors['operatingVoltage'] != null) buildErrorText(errors['operatingVoltage']!),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'New Monitoring System or Adding to Existing Monitoring System',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 8),
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-              existingMonitoring,
-              'existingMonitoring',
-            );
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1) ...[
-          CommonWidgets.buildTemplateA(validate),
-          CommonWidgets.buildTemplateD(validate),
-          CommonWidgets.buildTemplateE(validate),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'New Monitoring System or Adding to Existing Monitoring System',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(
+                existingMonitoring,
+                'existingMonitoring',
+              );
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) ...[
+          CommonWidgets.buildTemplateA(templateAKey, validate),
+          CommonWidgets.buildTemplateD(templateDKey, validate),
+          CommonWidgets.buildTemplateE(templateEKey, validate),
+        ],
       ],
-    ],
-  );
-}
+    );
+  }
 
   Widget buildConveyorSpecifications() {
     return Column(
@@ -475,14 +464,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildTextField(
-            'Enter 2 Conductor Number Here', conductor2),
-        CommonWidgets.buildTextField(
-            'Enter 4 Conductor Number Here', conductor4),
-        CommonWidgets.buildTextField(
-            'Enter 7 Conductor Number Here', conductor7),
-        CommonWidgets.buildTextField(
-            'Enter 12 Conductor Number Here', conductor12),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here', conductor2),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField('Enter 12 Conductor Number Here', conductor12),
         CommonWidgets.buildTextField('Enter Junction Box Quantities', jBox),
         CommonWidgets.buildSectionDivider(),
       ],
@@ -494,17 +479,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        measurementsUnits,
-        (value) {
-          setState(() {
-            measurementsUnits = value;
-            validate.validateDropdownField(measurementsUnits, 'measurementsUnits');
-          });
-        },
-        errorText: errors['measurementsUnits'], // ✅ Add this!
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementsUnits,
+          (value) {
+            setState(() {
+              measurementsUnits = value;
+              validate.validateDropdownField(measurementsUnits, 'measurementsUnits');
+            });
+          },
+          errorText: errors['measurementsUnits'], // ✅ Add this!
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Chain on Edge Drag Line Chain Drop (A)",
@@ -564,63 +549,63 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addMLCEL(int numRequested) {
-  if (validForm()) {
-    dynamic mlcelData = {
-      "conveyorName": conveyorSystem.text, 
-      "chainSize": conveyorChainSize, 
-      "industrialChainManufacturer": conveyorChainManufacturer,
-      "otherIndustrialChainManufacturer": null,
-      "conveyorLength": conveyorLength.text,
-      "conveyorLengthUnit": conveyorLengthUnit,
-      "conveyorSpeed": conveyorSpeed.text,
-      "conveyorSpeedUnit": conveyorSpeedUnit,
-      "conveyorIndex": conveyorIndex.text,
-      "travelDirection": conveyorDirection,
-      "appEnviroment": conveyorEnvironment,
-      "ovenStatus": null,
-      "ovenTemp": null, 
-      "surroundingTemp": conveyorTemperature, 
-      "conveyorLoaded": null, 
-      "conveyorSwing": null,
-      "plantLayout": null, 
-      "requiredPics": null, 
-      "operatingVoltage": operatingVoltage.text,
-      "templateB": {
-        "existingMonitor": existingMonitoring,
-      },
-      "wheelOpenType": wheelOpenRace, 
-      "wheelClosedType": wheelSealedStyle,
-      "openStatus": null,
-      "catDriveStatus": null,
-      "railLubeStatus": railLubrication, 
-      "externalLubeStatus": externalLubrication, 
-      "lubeBrand": equipBrand.text,
-      "lubeType": currentType.text,
-      "lubeViscosity": currentGrade.text,
-      "chainCleanStatus": chainClean,
-      "wireMeasurementUnit": measurementUnits,
-      "conductor2": conductor2.text,
-      "conductor4": conductor4.text,
-      "conductor7": conductor7.text,
-      "conductor12": conductor12.text,
-      "junctionBoxNum": jBox.text, 
-      "coeUnitType": null, 
-      "coeLineA": aTop.text, 
-      "coeLineG": gWidth.text,
-      "coeLineH": hHeight.text,
-      "coeLineJ": jWidth.text, 
-      "coeLineX": xWidth.text,
-      "coeLineY": yThickness.text,
-    };
-    status = FormAPI().addOrder("COE_CEL", mlcelData, numRequested);
+    if (validForm()) {
+      dynamic mlcelData = {
+        "conveyorName": conveyorSystem.text,
+        "chainSize": conveyorChainSize,
+        "industrialChainManufacturer": conveyorChainManufacturer,
+        "otherIndustrialChainManufacturer": null,
+        "conveyorLength": conveyorLength.text,
+        "conveyorLengthUnit": conveyorLengthUnit,
+        "conveyorSpeed": conveyorSpeed.text,
+        "conveyorSpeedUnit": conveyorSpeedUnit,
+        "conveyorIndex": conveyorIndex.text,
+        "travelDirection": conveyorDirection,
+        "appEnviroment": conveyorEnvironment,
+        "ovenStatus": null,
+        "ovenTemp": null,
+        "surroundingTemp": conveyorTemperature,
+        "conveyorLoaded": null,
+        "conveyorSwing": null,
+        "plantLayout": null,
+        "requiredPics": null,
+        "operatingVoltage": operatingVoltage.text,
+        "wheelOpenType": wheelOpenRace,
+        "wheelClosedType": wheelSealedStyle,
+        "openStatus": null,
+        "catDriveStatus": null,
+        "railLubeStatus": railLubrication,
+        "externalLubeStatus": externalLubrication,
+        "lubeBrand": equipBrand.text,
+        "lubeType": currentType.text,
+        "lubeViscosity": currentGrade.text,
+        "chainCleanStatus": chainClean,
+        "wireMeasurementUnit": measurementUnits,
+        "conductor2": conductor2.text,
+        "conductor4": conductor4.text,
+        "conductor7": conductor7.text,
+        "conductor12": conductor12.text,
+        "junctionBoxNum": jBox.text,
+        "coeUnitType": null,
+        "coeLineA": aTop.text,
+        "coeLineG": gWidth.text,
+        "coeLineH": hHeight.text,
+        "coeLineJ": jWidth.text,
+        "coeLineX": xWidth.text,
+        "coeLineY": yThickness.text,
+        "templateA": templateAKey.currentState?.getData(),
+        "templateD": templateDKey.currentState?.getData(),
+        "templateE": templateEKey.currentState?.getData(),
+      };
+      status = FormAPI().addOrder("COE_CEL", mlcelData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
   Widget buildErrorText(String message) {
     return Padding(

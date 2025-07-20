@@ -41,7 +41,7 @@ class MainApp extends StatelessWidget {
       navigatorObservers: [SessionObserver(checkSession: UserAPI().checkSession)],
       // Set the initial route to any of the pages by changing the value here
       initialRoute:
-          '/industrial', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
+          '/', // Change this to '/createAccount', '/forgotPassword', or '/dashboard' to start at a different page
 
       routes: {
         // login pages

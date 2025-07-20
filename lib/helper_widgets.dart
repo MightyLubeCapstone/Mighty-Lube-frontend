@@ -4,8 +4,7 @@ import 'dart:async';
 
 class CommonWidgets {
   // Nice looking button
-  static Widget buildGradientButton(
-      BuildContext context, String title, Widget content,
+  static Widget buildGradientButton(BuildContext context, String title, Widget content,
       {bool isError = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -49,8 +48,7 @@ class CommonWidgets {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
@@ -164,14 +162,12 @@ class CommonWidgets {
     );
   }
 
-  static Widget buildDropdownFieldError<T>(String label, List<String> options,
-      int? dropdownSelection, Function(dynamic) onChanged,
+  static Widget buildDropdownFieldError<T>(
+      String label, List<String> options, int? dropdownSelection, Function(dynamic) onChanged,
       {String? errorText, bool? isEditable = true}) {
     String? assessedValue;
 
-    if (dropdownSelection != null &&
-        dropdownSelection > 0 &&
-        dropdownSelection <= options.length) {
+    if (dropdownSelection != null && dropdownSelection > 0 && dropdownSelection <= options.length) {
       assessedValue = options[dropdownSelection - 1];
     }
 
@@ -188,9 +184,7 @@ class CommonWidgets {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: GestureDetector(
-        onTap: (isEditable ?? false)
-            ? null
-            : () {}, // Ensure isEditable is not null
+        onTap: (isEditable ?? false) ? null : () {}, // Ensure isEditable is not null
         behavior: HitTestBehavior.opaque, // Prevents taps from propagating
         child: AbsorbPointer(
           absorbing: !(isEditable ?? false), // Ensure isEditable is not null
@@ -210,9 +204,7 @@ class CommonWidgets {
                 .map((option) => DropdownMenuItem<String>(
                       value: option,
                       child: Text(option,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400)),
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
                     ))
                 .toList(),
             onChanged: (isEditable ?? false)
@@ -277,8 +269,7 @@ class CommonWidgets {
   }
 
   // Text Field
-  static Widget buildTextField(
-      String hintText, TextEditingController controller,
+  static Widget buildTextField(String hintText, TextEditingController controller,
       {String? errorText, bool isEditable = true, Function(String)? callback}) {
     OutlineInputBorder borderStyle(Color color) {
       return OutlineInputBorder(
@@ -297,8 +288,7 @@ class CommonWidgets {
           if (callback != null) {callback(value)}
         },
         enabled: isEditable,
-        style:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         controller: controller,
         decoration: InputDecoration(
           labelText: hintText,
@@ -306,10 +296,8 @@ class CommonWidgets {
           border: borderStyle(Colors.grey),
           enabledBorder: borderStyle(Colors.grey),
           focusedBorder: borderStyle(Colors.grey),
-          errorBorder:
-              borderStyle(Colors.red), // Ensure error thickness matches
-          focusedErrorBorder:
-              borderStyle(Colors.red), // Ensure when focused with error
+          errorBorder: borderStyle(Colors.red), // Ensure error thickness matches
+          focusedErrorBorder: borderStyle(Colors.red), // Ensure when focused with error
           errorText: errorText,
         ),
       ),
@@ -317,8 +305,8 @@ class CommonWidgets {
   }
 
   // Breadcrumb nav
-  static Widget buildBreadcrumbNavigation(BuildContext context, String text,
-      Widget page, String text2, Widget page2) {
+  static Widget buildBreadcrumbNavigation(
+      BuildContext context, String text, Widget page, String text2, Widget page2) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -427,8 +415,7 @@ class CommonWidgets {
                     body: Center(
                       child: PhotoView(
                         imageProvider: imageProvider,
-                        backgroundDecoration:
-                            const BoxDecoration(color: Colors.black),
+                        backgroundDecoration: const BoxDecoration(color: Colors.black),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2.5,
                       ),
@@ -468,99 +455,100 @@ class CommonWidgets {
 
   // More fun image stuff - but just for the measurements tab
   static Widget buildMeasurementFieldWithImage({
-  required BuildContext context,
-  required String title,
-  required String hintText,
-  required String imagePath,
-  required TextEditingController controller,
-  String? subHint,
-  String? errorText, // NEW
-  double aspectRatio = 1.2,
-  int leftFlex = 3,
-  int rightFlex = 3,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left: Text label + input
-          Expanded(
-            flex: leftFlex,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                CommonWidgets.buildTextField(hintText, controller, errorText: errorText), // Pass error
-                if (subHint != null) ...[
-                  const SizedBox(height: 4),
+    required BuildContext context,
+    required String title,
+    required String hintText,
+    required String imagePath,
+    required TextEditingController controller,
+    String? subHint,
+    String? errorText, // NEW
+    double aspectRatio = 1.2,
+    int leftFlex = 3,
+    int rightFlex = 3,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left: Text label + input
+            Expanded(
+              flex: leftFlex,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    subHint,
-                    style: const TextStyle(color: Colors.grey),
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
+                  const SizedBox(height: 8),
+                  CommonWidgets.buildTextField(hintText, controller,
+                      errorText: errorText), // Pass error
+                  if (subHint != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subHint,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
 
-          const SizedBox(width: 16),
+            const SizedBox(width: 16),
 
-          // Right: Image
-          Expanded(
-            flex: rightFlex,
-            child: CommonWidgets.buildImageDisplayEnhanced(
-              AssetImage(imagePath),
-              fullWidth: true,
-              aspectRatio: aspectRatio,
-              enableZoom: true,
-              context: context,
+            // Right: Image
+            Expanded(
+              flex: rightFlex,
+              child: CommonWidgets.buildImageDisplayEnhanced(
+                AssetImage(imagePath),
+                fullWidth: true,
+                aspectRatio: aspectRatio,
+                enableZoom: true,
+                context: context,
+              ),
             ),
-          ),
-        ],
-      ),
-      CommonWidgets.buildSectionDivider(),
-    ],
-  );
-}
+          ],
+        ),
+        CommonWidgets.buildSectionDivider(),
+      ],
+    );
+  }
 
   // TemplateA Widget
-  static Widget buildTemplateA(Validators validators) {
-    return _TemplateAWidget(validators: validators);
+  static Widget buildTemplateA(GlobalKey<TemplateAWidgetState>? key, Validators validators) {
+    return TemplateAWidget(dataKey: key, validators: validators);
   }
 
   // TemplateB Widget
-  static Widget buildTemplateB(Validators validators) {
-    return _TemplateBWidget(validators: validators);
+  static Widget buildTemplateB(GlobalKey<TemplateBWidgetState>? key, Validators validators) {
+    return TemplateBWidget(dataKey: key, validators: validators);
   }
 
   // TemplateC Widget
-  static Widget buildTemplateC(Validators validators) {
-    return _TemplateCWidget(validators: validators);
+  static Widget buildTemplateC(GlobalKey<TemplateCWidgetState>? key, Validators validators) {
+    return TemplateCWidget(dataKey: key, validators: validators);
   }
 
   // TemplateD Widget
-  static Widget buildTemplateD(Validators validators) {
-    return _TemplateDWidget(validators: validators);
+  static Widget buildTemplateD(GlobalKey<TemplateDWidgetState>? key, Validators validators) {
+    return TemplateDWidget(dataKey: key, validators: validators);
   }
 
   // TemplateE Widget for Mighty Lube Caterpillar Drive Lubricators
-  static Widget buildTemplateE(Validators validators) {
-    return _TemplateEWidget(validators: validators);
+  static Widget buildTemplateE(GlobalKey<TemplateEWidgetState>? key, Validators validators) {
+    return TemplateEWidget(dataKey: key, validators: validators);
   }
 
-   // TemplateF Widget for OP-52
-  static Widget buildTemplateF(Validators validators) {
-    return _TemplateFWidget(validators: validators);
+  // TemplateF Widget for OP-52
+  static Widget buildTemplateF(GlobalKey<TemplateFWidgetState>? key, Validators validators) {
+    return TemplateFWidget(dataKey: key, validators: validators);
   }
 }
 
@@ -569,8 +557,7 @@ class _ConfiguratorWithCounter extends StatefulWidget {
   final void Function(int)? callback;
   const _ConfiguratorWithCounter({this.callback});
   @override
-  _ConfiguratorWithCounterState createState() =>
-      _ConfiguratorWithCounterState();
+  _ConfiguratorWithCounterState createState() => _ConfiguratorWithCounterState();
 }
 
 class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
@@ -591,15 +578,13 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   if (itemCount > 1) itemCount--;
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -608,8 +593,7 @@ class _ConfiguratorWithCounterState extends State<_ConfiguratorWithCounter> {
                   itemCount++;
                 });
               },
-              icon: const Icon(Icons.add_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
             ),
           ],
         ),
@@ -699,15 +683,13 @@ class _CounterState extends State<_Counter> {
                   }
                 });
               },
-              icon: const Icon(Icons.remove_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.remove_circle_outline, color: Colors.blue, size: 30),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '$itemCount',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
@@ -717,8 +699,7 @@ class _CounterState extends State<_Counter> {
                   widget.callback!(itemCount);
                 });
               },
-              icon: const Icon(Icons.add_circle_outline,
-                  color: Colors.blue, size: 30),
+              icon: const Icon(Icons.add_circle_outline, color: Colors.blue, size: 30),
             ),
           ],
         ),
@@ -753,8 +734,7 @@ class Validators {
   }
 
   void validateDropdownField(int? value, String field) {
-    errors[field] =
-        (value == null || value == -1) ? 'This field is required.' : null;
+    errors[field] = (value == null || value == -1) ? 'This field is required.' : null;
   }
 
   void validatorDelay(String value, String field) {
@@ -776,15 +756,16 @@ class Validators {
   }
 }
 
-class _TemplateAWidget extends StatefulWidget {
+class TemplateAWidget extends StatefulWidget {
   final Validators validators;
-  const _TemplateAWidget({Key? key, required this.validators}) : super(key: key);
+  GlobalKey<TemplateAWidgetState>? dataKey;
+  TemplateAWidget({super.key, this.dataKey, required this.validators});
 
   @override
-  _TemplateAWidgetState createState() => _TemplateAWidgetState();
+  TemplateAWidgetState createState() => TemplateAWidgetState();
 }
 
-class _TemplateAWidgetState extends State<_TemplateAWidget> {
+class TemplateAWidgetState extends State<TemplateAWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
   final Map<String, bool> _toggles = {};
@@ -834,6 +815,23 @@ class _TemplateAWidgetState extends State<_TemplateAWidget> {
       'controllerOptions',
       'operatingVoltage'
     ].forEach(_initField);
+  }
+
+  Map<String, dynamic> getData() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    return data;
   }
 
   @override
@@ -891,7 +889,8 @@ class _TemplateAWidgetState extends State<_TemplateAWidget> {
           _buildSwitch("Adding Reservoir?", 'addReservoir'),
           if (_toggles['addReservoir']!) ...[
             _buildDropdown("Reservoir Size", 'reservoirSize', ["10 Gallon", "65 Gallon", "Other"]),
-            _buildDropdown("Reservoir Quantity", 'reservoirQty', ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]),
+            _buildDropdown("Reservoir Quantity", 'reservoirQty',
+                ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]),
           ],
         ],
         _buildDropdown("Type of Monitoring System", 'monitoringType', ["Permanent", "Portable"]),
@@ -917,24 +916,26 @@ class _TemplateAWidgetState extends State<_TemplateAWidget> {
           _buildTextField("Distance Switch to CTR (add if over 100')", 'distanceSwitchToCTR'),
           _buildTextField("Distance from AMP Pickup (add if over 100')", 'distanceAmpPickup'),
           _buildTextField("Distance from Air Take-Up (add if over 100')", 'distanceAirTakeup'),
-          _buildTextField("Special Controller Options (I/O Link, Plug and Play, Dry Contacts)", 'controllerOptions'),
+          _buildTextField("Special Controller Options (I/O Link, Plug and Play, Dry Contacts)",
+              'controllerOptions'),
         ],
         _buildTextField("Notes", 'notes'),
         _buildTextField("Operating Voltage - Single Phase (Volts/Hz)", 'operatingVoltage'),
       ],
     );
   }
-} 
-
-class _TemplateBWidget extends StatefulWidget {
-  final Validators validators;
-  const _TemplateBWidget({Key? key, required this.validators}) : super(key: key);
-
-  @override
-  State<_TemplateBWidget> createState() => _TemplateBWidgetState();
 }
 
-class _TemplateBWidgetState extends State<_TemplateBWidget> {
+class TemplateBWidget extends StatefulWidget {
+  final Validators validators;
+  GlobalKey<TemplateBWidgetState>? dataKey;
+  TemplateBWidget({super.key, this.dataKey, required this.validators});
+
+  @override
+  State<TemplateBWidget> createState() => TemplateBWidgetState();
+}
+
+class TemplateBWidgetState extends State<TemplateBWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
   final Map<String, bool> _toggles = {};
@@ -974,6 +975,23 @@ class _TemplateBWidgetState extends State<_TemplateBWidget> {
     ].forEach(_initField);
   }
 
+  Map<String, dynamic> getData() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    return data;
+  }
+
   @override
   void dispose() {
     for (var c in _controllers.values) {
@@ -1010,21 +1028,21 @@ class _TemplateBWidgetState extends State<_TemplateBWidget> {
         _field("Wheel Manufacturer", 'wheelManufacturer'),
         _field("Conveyor Speed (Min/Max)", 'speedRange'),
         _dropdown("Speed Type", 'speedType', ['Indexing', 'Variable']),
-
         CommonWidgets.buildSectionTitle("Application Environment"),
-        _dropdown("Temperature of Area", 'tempCondition', ['Below 30°F', 'Above 120°F', 'Normal Range']),
-        _dropdown("Mounting Orientation", 'mountOrientation', ['Overhead', 'Inverted', 'Inverted/Inverted']),
-
+        _dropdown(
+            "Temperature of Area", 'tempCondition', ['Below 30°F', 'Above 120°F', 'Normal Range']),
+        _dropdown("Mounting Orientation", 'mountOrientation',
+            ['Overhead', 'Inverted', 'Inverted/Inverted']),
         CommonWidgets.buildSectionTitle("Customer Power Utilities"),
         _field("Operating Voltage (Volts/Hz)", 'operatingVoltage'),
         _field("Control Voltage (Volts/Hz)", 'controlVoltage'),
         _dropdown("Compressed Air Supply Available?", 'airSupply', ['Yes', 'No']),
-
         CommonWidgets.buildSectionTitle("Monitoring System"),
         _dropdown("Connect to Existing Monitoring?", 'connectExistingMonitoring', ['Yes', 'No']),
         _dropdown("Add New Monitoring System?", 'addNewMonitoring', ['Yes', 'No']),
-        if (_dropdowns['addNewMonitoring'] == 1) CommonWidgets.buildTemplateA(widget.validators),
-
+        // Can see the "null" giving us MAJOR issues in the future, but one problem at a time...
+        if (_dropdowns['addNewMonitoring'] == 1)
+          CommonWidgets.buildTemplateA(null, widget.validators),
         CommonWidgets.buildSectionTitle("Conveyor Specifications"),
         _field("Free Trolley Wheels", 'freeTrolleyWheels'),
         _field("Dog Actuator", 'dogActuator'),
@@ -1037,7 +1055,6 @@ class _TemplateBWidgetState extends State<_TemplateBWidget> {
         _field("Zerk Ftg Orientation", 'zerkOrientation'),
         _field("Wheel Diameter", 'wheelDiameter'),
         _field("Does Conveyor/Chain Move Side-to-Side?", 'swayDetect'),
-
         if (_controllers['currentEquip']!.text.trim().toLowerCase() == 'mighty lube')
           CommonWidgets.buildSectionTitle("Controller Info (Mighty Lube Detected)")
       ],
@@ -1045,15 +1062,16 @@ class _TemplateBWidgetState extends State<_TemplateBWidget> {
   }
 }
 
-class _TemplateCWidget extends StatefulWidget {
+class TemplateCWidget extends StatefulWidget {
   final Validators validators;
-  const _TemplateCWidget({Key? key, required this.validators}) : super(key: key);
+  GlobalKey<TemplateCWidgetState>? dataKey;
+  TemplateCWidget({super.key, this.dataKey, required this.validators});
 
   @override
-  State<_TemplateCWidget> createState() => _TemplateCWidgetState();
+  State<TemplateCWidget> createState() => TemplateCWidgetState();
 }
 
-class _TemplateCWidgetState extends State<_TemplateCWidget> {
+class TemplateCWidgetState extends State<TemplateCWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
   final Map<String, bool> _toggles = {};
@@ -1094,6 +1112,23 @@ class _TemplateCWidgetState extends State<_TemplateCWidget> {
     ].forEach(_initField);
   }
 
+  Map<String, dynamic> getData() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    return data;
+  }
+
   @override
   void dispose() {
     for (var c in _controllers.values) {
@@ -1130,24 +1165,23 @@ class _TemplateCWidgetState extends State<_TemplateCWidget> {
         _field("Wheel Manufacturer", 'wheelManufacturerC'),
         _field("Conveyor Speed (Min/Max)", 'speedRangeC'),
         _dropdown("Speed Type", 'speedTypeC', ['Indexing', 'Variable']),
-
         CommonWidgets.buildSectionTitle("Application Environment"),
-        _dropdown("Temperature of Area", 'tempConditionC', ['Below 30°F', 'Above 120°F', 'Normal Range']),
-        _dropdown("Mounting Orientation", 'mountOrientationC', ['Overhead', 'Inverted', 'Inverted/Inverted']),
+        _dropdown(
+            "Temperature of Area", 'tempConditionC', ['Below 30°F', 'Above 120°F', 'Normal Range']),
+        _dropdown("Mounting Orientation", 'mountOrientationC',
+            ['Overhead', 'Inverted', 'Inverted/Inverted']),
         _dropdown("Are guide wheels evenly spaced?", 'guideWheelSpacingC', ['Yes', 'No']),
         if (_dropdowns['guideWheelSpacingC'] == 2)
           CommonWidgets.buildSectionTitle("Please provide trolley mechanical diagrams"),
-
         CommonWidgets.buildSectionTitle("Customer Power Utilities"),
         _field("Operating Voltage (Volts/Hz)", 'operatingVoltageC'),
         _field("Control Voltage (Volts/Hz)", 'controlVoltageC'),
         _dropdown("Compressed Air Supply Available?", 'airSupplyC', ['Yes', 'No']),
-
         CommonWidgets.buildSectionTitle("Monitoring System"),
         _dropdown("Connect to Existing Monitoring?", 'connectExistingMonitoringC', ['Yes', 'No']),
         _dropdown("Add New Monitoring System?", 'addNewMonitoringC', ['Yes', 'No']),
-        if (_dropdowns['addNewMonitoringC'] == 1) CommonWidgets.buildTemplateA(widget.validators),
-
+        if (_dropdowns['addNewMonitoringC'] == 1)
+          CommonWidgets.buildTemplateA(null, widget.validators),
         CommonWidgets.buildSectionTitle("Conveyor Specifications"),
         _field("Free Trolley Wheels", 'freeTrolleyWheelsC'),
         _field("Dog Actuator", 'dogActuatorC'),
@@ -1159,7 +1193,6 @@ class _TemplateCWidgetState extends State<_TemplateCWidget> {
         _dropdown("Zerk Ftg Location (Side)", 'zerkSideC', ['Left', 'Right']),
         _field("Zerk Ftg Orientation", 'zerkOrientationC'),
         _field("Wheel Diameter", 'wheelDiameterC'),
-
         if (_controllers['currentEquipC']!.text.trim().toLowerCase() == 'mighty lube')
           CommonWidgets.buildSectionTitle("Controller Info (Mighty Lube Detected)")
       ],
@@ -1167,15 +1200,16 @@ class _TemplateCWidgetState extends State<_TemplateCWidget> {
   }
 }
 
-class _TemplateDWidget extends StatefulWidget {
+class TemplateDWidget extends StatefulWidget {
   final Validators validators;
-  const _TemplateDWidget({Key? key, required this.validators}) : super(key: key);
+  GlobalKey<TemplateDWidgetState>? dataKey;
+  TemplateDWidget({super.key, this.dataKey, required this.validators});
 
   @override
-  State<_TemplateDWidget> createState() => _TemplateDWidgetState();
+  State<TemplateDWidget> createState() => TemplateDWidgetState();
 }
 
-class _TemplateDWidgetState extends State<_TemplateDWidget> {
+class TemplateDWidgetState extends State<TemplateDWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
   final Map<String, bool> _toggles = {};
@@ -1190,14 +1224,52 @@ class _TemplateDWidgetState extends State<_TemplateDWidget> {
   void initState() {
     super.initState();
     [
-      'nameConveyorD', 'wheelManufacturerD', 'conveyorLengthD', 'chainSizeD', 'chainManufacturerD',
-      'speedRangeD', 'speedTypeD', 'tempConditionD', 'mountOrientationD', 'loadStatusD',
-      'swayConditionD', 'operatingVoltageD', 'controlVoltageD', 'airSupplyD',
-      'connectExistingMonitoringD', 'addNewMonitoringD', 'currentGreaseTypeD', 'currentNLGID',
-      'wheelDiameterD', 'currentEquipD', 'chainMasterControllerD', 'remoteControlledD',
-      'mountedOnGreaserD', 'controlsOtherUnitsD', 'timerD', 'mightyLubeMonitoringD', 'preMountingD',
+      'nameConveyorD',
+      'wheelManufacturerD',
+      'conveyorLengthD',
+      'chainSizeD',
+      'chainManufacturerD',
+      'speedRangeD',
+      'speedTypeD',
+      'tempConditionD',
+      'mountOrientationD',
+      'loadStatusD',
+      'swayConditionD',
+      'operatingVoltageD',
+      'controlVoltageD',
+      'airSupplyD',
+      'connectExistingMonitoringD',
+      'addNewMonitoringD',
+      'currentGreaseTypeD',
+      'currentNLGID',
+      'wheelDiameterD',
+      'currentEquipD',
+      'chainMasterControllerD',
+      'remoteControlledD',
+      'mountedOnGreaserD',
+      'controlsOtherUnitsD',
+      'timerD',
+      'mightyLubeMonitoringD',
+      'preMountingD',
       'otherDescribeD'
     ].forEach(_initField);
+  }
+
+  Map<String, dynamic> getData() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    return data;
   }
 
   @override
@@ -1231,7 +1303,6 @@ class _TemplateDWidgetState extends State<_TemplateDWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionTitle("Template D - OPCO OP-201 Greaser Power Chain"),
-
         _field("Name of Conveyor System", 'nameConveyorD'),
         _field("Wheel Manufacturer", 'wheelManufacturerD'),
         _field("Conveyor Length", 'conveyorLengthD'),
@@ -1239,28 +1310,26 @@ class _TemplateDWidgetState extends State<_TemplateDWidget> {
         _field("Chain Manufacturer", 'chainManufacturerD'),
         _field("Conveyor Speed (Min/Max)", 'speedRangeD'),
         _dropdown("Speed Type", 'speedTypeD', ['Indexing', 'Variable']),
-
         CommonWidgets.buildSectionTitle("Application Environment"),
-        _dropdown("Temperature of Area", 'tempConditionD', ['Below 30°F', 'Above 120°F', 'Normal Range']),
-        _dropdown("Mounting Orientation", 'mountOrientationD', ['Overhead', 'Inverted Chain Under', 'Inverted Chain Over']),
+        _dropdown(
+            "Temperature of Area", 'tempConditionD', ['Below 30°F', 'Above 120°F', 'Normal Range']),
+        _dropdown("Mounting Orientation", 'mountOrientationD',
+            ['Overhead', 'Inverted Chain Under', 'Inverted Chain Over']),
         _dropdown("Is Conveyor Loaded?", 'loadStatusD', ['Loaded', 'Unloaded']),
         _dropdown("Does Conveyor/Chain Sway/Surge?", 'swayConditionD', ['Yes', 'No']),
-
         CommonWidgets.buildSectionTitle("Customer Power Utilities"),
         _field("Operating Voltage (Volts/Hz)", 'operatingVoltageD'),
         _field("Control Voltage (Volts/Hz)", 'controlVoltageD'),
         _dropdown("Compressed Air Supply Available?", 'airSupplyD', ['Yes', 'No']),
-
         CommonWidgets.buildSectionTitle("Monitoring System"),
         _dropdown("Connect to Existing Monitoring?", 'connectExistingMonitoringD', ['Yes', 'No']),
         _dropdown("Add New Monitoring System?", 'addNewMonitoringD', ['Yes', 'No']),
-        if (_dropdowns['addNewMonitoringD'] == 1) CommonWidgets.buildTemplateA(widget.validators),
-
+        if (_dropdowns['addNewMonitoringD'] == 1)
+          CommonWidgets.buildTemplateA(null, widget.validators),
         CommonWidgets.buildSectionTitle("Conveyor Specifications"),
         _field("Current Grease Type", 'currentGreaseTypeD'),
         _field("Current Grease NLGI Grade", 'currentNLGID'),
         _field("Wheel Diameter", 'wheelDiameterD'),
-
         if (_controllers['currentEquipD']!.text.trim().toLowerCase() == 'mighty lube') ...[
           CommonWidgets.buildSectionTitle("Controller Info - Mighty Lube Detected"),
           _field("ChainMaster Controller", 'chainMasterControllerD'),
@@ -1277,15 +1346,16 @@ class _TemplateDWidgetState extends State<_TemplateDWidget> {
   }
 }
 
-class _TemplateEWidget extends StatefulWidget {
+class TemplateEWidget extends StatefulWidget {
   final Validators validators;
-  const _TemplateEWidget({Key? key, required this.validators}) : super(key: key);
+  GlobalKey<TemplateEWidgetState>? dataKey;
+  TemplateEWidget({super.key, this.dataKey, required this.validators});
 
   @override
-  State<_TemplateEWidget> createState() => _TemplateEWidgetState();
+  State<TemplateEWidget> createState() => TemplateEWidgetState();
 }
 
-class _TemplateEWidgetState extends State<_TemplateEWidget> {
+class TemplateEWidgetState extends State<TemplateEWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
 
@@ -1298,6 +1368,19 @@ class _TemplateEWidgetState extends State<_TemplateEWidget> {
   void initState() {
     super.initState();
     ['nameConveyorE', 'chainSizeE'].forEach(_initField);
+  }
+
+  Map<String, dynamic> getData() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    return data;
   }
 
   @override
@@ -1332,28 +1415,23 @@ class _TemplateEWidgetState extends State<_TemplateEWidget> {
       children: [
         CommonWidgets.buildSectionTitle("Template E - Mighty Lube Caterpillar Drive Lubricators"),
         _field("Name of Conveyor System", 'nameConveyorD2'),
-        _dropdown("Conveyor Chain Size", 'chainSizeD2', [
-          '3-inch',
-          '4-inch',
-          '6-inch',
-          '8-inch',
-          'X-Type',
-          'I-Beam'
-        ])
+        _dropdown("Conveyor Chain Size", 'chainSizeD2',
+            ['3-inch', '4-inch', '6-inch', '8-inch', 'X-Type', 'I-Beam'])
       ],
     );
   }
 }
 
-class _TemplateFWidget extends StatefulWidget {
+class TemplateFWidget extends StatefulWidget {
   final Validators validators;
-  const _TemplateFWidget({Key? key, required this.validators}) : super(key: key);
+  GlobalKey<TemplateFWidgetState>? dataKey;
+  TemplateFWidget({super.key, this.dataKey, required this.validators});
 
   @override
-  State<_TemplateFWidget> createState() => _TemplateFWidgetState();
+  State<TemplateFWidget> createState() => TemplateFWidgetState();
 }
 
-class _TemplateFWidgetState extends State<_TemplateFWidget> {
+class TemplateFWidgetState extends State<TemplateFWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
 
@@ -1366,9 +1444,28 @@ class _TemplateFWidgetState extends State<_TemplateFWidget> {
   void initState() {
     super.initState();
     [
-      'nameConveyorF', 'chainSizeF', 'chainManufacturerF', 'wheelManufacturerF',
-      'conveyorLengthF', 'brushApplicatorsF', 'm12PlugsF', 'mainBackupF'
+      'nameConveyorF',
+      'chainSizeF',
+      'chainManufacturerF',
+      'wheelManufacturerF',
+      'conveyorLengthF',
+      'brushApplicatorsF',
+      'm12PlugsF',
+      'mainBackupF'
     ].forEach(_initField);
+  }
+
+  Map<String, dynamic> getData() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    return data;
   }
 
   @override
@@ -1403,9 +1500,8 @@ class _TemplateFWidgetState extends State<_TemplateFWidget> {
       children: [
         CommonWidgets.buildSectionTitle("Template F - OP-52"),
         _field("Name of Conveyor System", 'nameConveyorF'),
-        _dropdown("Conveyor Chain Size", 'chainSizeF', [
-          '3-inch', '4-inch', '6-inch', '8-inch', 'X-Type', 'I-Beam'
-        ]),
+        _dropdown("Conveyor Chain Size", 'chainSizeF',
+            ['3-inch', '4-inch', '6-inch', '8-inch', 'X-Type', 'I-Beam']),
         _field("Chain Manufacturer", 'chainManufacturerF'),
         _field("Wheel Manufacturer", 'wheelManufacturerF'),
         _field("Conveyor Length", 'conveyorLengthF'),
@@ -1416,4 +1512,3 @@ class _TemplateFWidgetState extends State<_TemplateFWidget> {
     );
   }
 }
-

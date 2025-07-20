@@ -41,7 +41,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController n1Width = TextEditingController();
   final TextEditingController p1Outside = TextEditingController();
   final TextEditingController r1Center = TextEditingController();
-  
 
   // Dropdown values
   int? conveyorChainSize = -1;
@@ -62,6 +61,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
   Future<bool>? status;
 
   // Error messages
@@ -104,7 +104,22 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'greaseGrade',
     ],
     'Controller': ['otherInfo'],
-    'Measurements':['measurementUnits','fOutside','gWidth','hHeight','a1Diameter','b1Width','h1Width','j1Thickness','k1Thickness','l1Flat','m1Inside','n1Width','p1Outside','r1Center'] //*************************** */
+    'Measurements': [
+      'measurementUnits',
+      'fOutside',
+      'gWidth',
+      'hHeight',
+      'a1Diameter',
+      'b1Width',
+      'h1Width',
+      'j1Thickness',
+      'k1Thickness',
+      'l1Flat',
+      'm1Inside',
+      'n1Width',
+      'p1Outside',
+      'r1Center'
+    ] //*************************** */
   };
 
   @override
@@ -168,7 +183,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate .validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
     validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
     validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
     validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
@@ -279,8 +294,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
             });
           },
           errorText: errors['conveyorChainSize'],
@@ -302,8 +316,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               chainManufacturer = value;
-              validate.validateDropdownField(
-                  chainManufacturer, 'chainManufacturer');
+              validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
             });
           },
           errorText: errors['chainManufacturer'],
@@ -320,8 +333,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorLengthUnit = value;
-              validate.validateDropdownField(
-                  conveyorLengthUnit, 'conveyorLengthUnit');
+              validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
             });
           },
           errorText: errors['conveyorLengthUnit'],
@@ -338,8 +350,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorSpeedUnit = value;
-              validate.validateDropdownField(
-                  conveyorSpeedUnit, 'conveyorSpeedUnit');
+              validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
             });
           },
           errorText: errors['conveyorSpeedUnit'],
@@ -371,8 +382,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               compressedAirUnit = value;
-              validate.validateDropdownField(
-                  compressedAirUnit, 'compressedAirUnit');
+              validate.validateDropdownField(compressedAirUnit, 'compressedAirUnit');
             });
           },
           errorText: errors['compressedAirUnit'],
@@ -383,30 +393,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildConveyorSpecifications() {
     return Column(
@@ -463,17 +470,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Flat Top Zerk Fitting Horizontal Location (F)",
@@ -596,88 +603,85 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addConfiguration(int numRequested) {
-  if (validForm()) {
-    dynamic configurationData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'industrialChainManufacturer': chainManufacturer,
-      'otherIndustrialChainManufacturer': null,
-      'wheelManufacturer': wheelManufacturer,
-      'otherWheelManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': conveyorLengthUnit,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'conveyorIndex': null,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': surroundingTemp,
-      'conveyorLoaded': conveyorLoaded,
-      'conveyorSwing': conveyorSwing,
-      'strandStatus': conveyorStrand,
-      'plantLayout': null,
-      'requiredPics': null,
-      'operatingVoltage': operatingVoltage.text,
-      'compressedAir': compressedAir.text,
-      'compressedAirUnit': compressedAirUnit,
-      'templateB': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'wheelOpenType': null,
-      'wheelClosedType': null,
-      'openStatus': null,
-      'freeWheelStatus': null,
-      'guideRollerStatus': null,
-      'openRaceStyleType': null,
-      'closedRaceStyleType': null,
-      'holeStatus': null,
-      'rollerChainStatus': null,
-      'brushStatus': null,
-      'outboardStatus': null,
-      'lubeBrand': equipBrand.text,
-      'currentLube': lubricationType.text,
-      'oilOrGrease': lubricationGrade.text,
-      'lubeViscosity': greaseType.text,
-      'greaseNGLIGrade': greaseGrade.text,
-      'zerkDirection': zerkOrientation,
-      'zerkLocationType': zerkLocation,
-      'chainMaster': null,
-      'remoteStatus': null,
-      'mountStatus': null,
-      'otherUnitStatus': null,
-      'timerStatus': null,
-      'electricStatus': null,
-      'mightyLubeMonitoring': null,
-      'preMountType': null,
-      'plcConnection': null,
-      'otherControllerInfo': otherInfo.text,
-      'ftUnitType': null,
-      'ftTopF': fOutside.text,
-      'ftTopG': gWidth.text,
-      'ftTopH': hHeight.text,
-      'ftTopA1': a1Diameter.text,
-      'ftTopB1': b1Width.text,
-      'ftTopH1': h1Width.text,
-      'ftTopJ1': j1Thickness.text,
-      'ftTopK1': k1Thickness.text,
-      'ftTopL1': l1Flat.text,
-      'ftTopM1': m1Inside.text,
-      'ftTopN1': n1Width.text,
-      'ftTopP1': p1Outside.text,
-      'ftTopR1': r1Center.text,
-    };
-    FormAPI().addOrder("FT_OPCO", configurationData, numRequested);
+    if (validForm()) {
+      dynamic configurationData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherIndustrialChainManufacturer': null,
+        'wheelManufacturer': wheelManufacturer,
+        'otherWheelManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': conveyorLengthUnit,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': conveyorSpeedUnit,
+        'conveyorIndex': null,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': surroundingTemp,
+        'conveyorLoaded': conveyorLoaded,
+        'conveyorSwing': conveyorSwing,
+        'strandStatus': conveyorStrand,
+        'plantLayout': null,
+        'requiredPics': null,
+        'operatingVoltage': operatingVoltage.text,
+        'compressedAir': compressedAir.text,
+        'compressedAirUnit': compressedAirUnit,
+        'wheelOpenType': null,
+        'wheelClosedType': null,
+        'openStatus': null,
+        'freeWheelStatus': null,
+        'guideRollerStatus': null,
+        'openRaceStyleType': null,
+        'closedRaceStyleType': null,
+        'holeStatus': null,
+        'rollerChainStatus': null,
+        'brushStatus': null,
+        'outboardStatus': null,
+        'lubeBrand': equipBrand.text,
+        'currentLube': lubricationType.text,
+        'oilOrGrease': lubricationGrade.text,
+        'lubeViscosity': greaseType.text,
+        'greaseNGLIGrade': greaseGrade.text,
+        'zerkDirection': zerkOrientation,
+        'zerkLocationType': zerkLocation,
+        'chainMaster': null,
+        'remoteStatus': null,
+        'mountStatus': null,
+        'otherUnitStatus': null,
+        'timerStatus': null,
+        'electricStatus': null,
+        'mightyLubeMonitoring': null,
+        'preMountType': null,
+        'plcConnection': null,
+        'otherControllerInfo': otherInfo.text,
+        'ftUnitType': null,
+        'ftTopF': fOutside.text,
+        'ftTopG': gWidth.text,
+        'ftTopH': hHeight.text,
+        'ftTopA1': a1Diameter.text,
+        'ftTopB1': b1Width.text,
+        'ftTopH1': h1Width.text,
+        'ftTopJ1': j1Thickness.text,
+        'ftTopK1': k1Thickness.text,
+        'ftTopL1': l1Flat.text,
+        'ftTopM1': m1Inside.text,
+        'ftTopN1': n1Width.text,
+        'ftTopP1': p1Outside.text,
+        'ftTopR1': r1Center.text,
+        "templateA": templateAKey.currentState?.getData()
+      };
+      FormAPI().addOrder("FT_OPCO", configurationData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
   Widget buildErrorText(String message) {
     return Padding(

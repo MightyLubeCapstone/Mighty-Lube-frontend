@@ -53,6 +53,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  final GlobalKey<TemplateCWidgetState> templateCKey = GlobalKey();
+  final GlobalKey<TemplateFWidgetState> templateFKey = GlobalKey();
   Future<bool>? status;
 
   Map<String, String?> errors = {
@@ -111,13 +115,29 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   final Map<String, List<String>> sections = {
-    'General Information': ['conveyorLength', 'conveyorSpeed', 'chainManufacturer', 'conveyorChainSize'],
+    'General Information': [
+      'conveyorLength',
+      'conveyorSpeed',
+      'chainManufacturer',
+      'conveyorChainSize'
+    ],
     'Customer Power Utilities': ['operatingVoltage'],
     'New/Existing Monitoring System': ['newMonitorStatus'],
     'Conveyor Specifications': ['lubricationSide', 'lubricationTop', 'cleanChain'],
     'Controller': ['measurementUnits', 'conductor4', 'conductor7', 'conductor2'],
     'Wire': ['measurementUnits', 'conductor4', 'conductor7', 'conductor2'],
-    'Measurements':['measurementUnit','bDiameter','gWidth','hHeight','sCenter','kDiameter','lWidth','mDiameter','nTop','s2Center']
+    'Measurements': [
+      'measurementUnit',
+      'bDiameter',
+      'gWidth',
+      'hHeight',
+      'sCenter',
+      'kDiameter',
+      'lWidth',
+      'mDiameter',
+      'nTop',
+      's2Center'
+    ]
   };
 
   @override
@@ -131,16 +151,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             padding: const EdgeInsets.all(20.0),
             children: [
               CommonWidgets.buildGradientButton(
-                  context, 'General Information', buildGeneralInformationContent(), isError: validate.sectionError('General Information')),
+                  context, 'General Information', buildGeneralInformationContent(),
+                  isError: validate.sectionError('General Information')),
               CommonWidgets.buildGradientButton(
-                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(), isError: validate.sectionError('Customer Power Utilities')),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
+                  isError: validate.sectionError('Customer Power Utilities')),
               CommonWidgets.buildGradientButton(
-                  context, 'New/Existing Monitoring System', buildNewMonitoringSystem(), isError: validate.sectionError('New/Existing Monitoring System')),
+                  context, 'New/Existing Monitoring System', buildNewMonitoringSystem(),
+                  isError: validate.sectionError('New/Existing Monitoring System')),
               CommonWidgets.buildGradientButton(
-                  context, 'Conveyor Specifications', buildConveyorSpecifications(), isError: validate.sectionError('Conveyor Specifications')),
-              CommonWidgets.buildGradientButton(context, 'Controller', buildController(), isError: validate.sectionError('Controller')),
-              CommonWidgets.buildGradientButton(context, 'Wire', buildWire(), isError: validate.sectionError('Wire')),
-              CommonWidgets.buildGradientButton(context, 'Measurements',buildMeasurements(), isError: validate.sectionError('Measurements')),
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError('Conveyor Specifications')),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
+                  isError: validate.sectionError('Controller')),
+              CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
+                  isError: validate.sectionError('Wire')),
+              CommonWidgets.buildGradientButton(context, 'Measurements', buildMeasurements(),
+                  isError: validate.sectionError('Measurements')),
             ],
           ),
         ),
@@ -248,80 +275,65 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildMonitoringFeatures() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Drive Motor Amp', [
-          'Yes',
-          'No'
-        ], driveMotorAmp, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Motor Amp', ['Yes', 'No'], driveMotorAmp,
+            (value) {
           setState(() {
             driveMotorAmp = value;
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Drive Take-up-Air', [
-          'Yes',
-          'No'
-        ], driveTakeUpAir, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Take-up-Air', ['Yes', 'No'], driveTakeUpAir,
+            (value) {
           setState(() {
             driveTakeUpAir = value;
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Take-Up Distance', [
-          'Yes',
-          'No'
-        ], takeUpDistance, (value) {
+        CommonWidgets.buildDropdownFieldError('Take-Up Distance', ['Yes', 'No'], takeUpDistance,
+            (value) {
           setState(() {
             takeUpDistance = value;
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Drive Motor Temp', [
-          'Yes',
-          'No'
-        ], driveTemp, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Motor Temp', ['Yes', 'No'], driveTemp,
+            (value) {
           setState(() {
             driveTemp = value;
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Drive Motor Vibration', [
-          'Yes',
-          'No'
-        ], driveVibration, (value) {
+        CommonWidgets.buildDropdownFieldError(
+            'Drive Motor Vibration', ['Yes', 'No'], driveVibration, (value) {
           setState(() {
             driveVibration = value;
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Bent or Missing Trolley detect', [
-          'Yes',
-          'No'
-        ], trolleyDetect, (value) {
+        CommonWidgets.buildDropdownFieldError(
+            'Bent or Missing Trolley detect', ['Yes', 'No'], trolleyDetect, (value) {
           setState(() {
             trolleyDetect = value;
           });
@@ -332,62 +344,53 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildConveyorSpecifications() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-
-      CommonWidgets.buildDropdownFieldError(
-        'Lubrication from the Side of Chain',
-        ['Yes', 'No'],
-        lubricationSide,
-        (value) {
-          setState(() {
-            lubricationSide = value;
-            validate.validateDropdownField(
-                lubricationSide, 'lubricationSide');
-          });
-        },
-        errorText: errors['lubricationSide'],
-      ),
-
-      CommonWidgets.buildDropdownFieldError(
-        'Lubrication from the Top of Chain',
-        ['Yes', 'No'],
-        lubricationTop,
-        (value) {
-          setState(() {
-            lubricationTop = value;
-            validate.validateDropdownField(
-                lubricationTop, 'lubricationTop');
-          });
-        },
-        errorText: errors['lubricationTop'],
-      ),
-
-      CommonWidgets.buildDropdownFieldError(
-        'Is the Conveyor Chain Clean?',
-        ['Yes', 'No'],
-        cleanChain,
-        (value) {
-          setState(() {
-            cleanChain = value;
-            validate.validateDropdownField(
-                cleanChain, 'cleanChain');
-          });
-        },
-        errorText: errors['cleanChain'],
-      ),
-
-      CommonWidgets.buildSectionDivider(),
-
-      CommonWidgets.buildTemplateB(validate),
-      CommonWidgets.buildTemplateC(validate),
-      CommonWidgets.buildTemplateF(validate)
-    ],
-  );
-}
-
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Lubrication from the Side of Chain',
+          ['Yes', 'No'],
+          lubricationSide,
+          (value) {
+            setState(() {
+              lubricationSide = value;
+              validate.validateDropdownField(lubricationSide, 'lubricationSide');
+            });
+          },
+          errorText: errors['lubricationSide'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Lubrication from the Top of Chain',
+          ['Yes', 'No'],
+          lubricationTop,
+          (value) {
+            setState(() {
+              lubricationTop = value;
+              validate.validateDropdownField(lubricationTop, 'lubricationTop');
+            });
+          },
+          errorText: errors['lubricationTop'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Is the Conveyor Chain Clean?',
+          ['Yes', 'No'],
+          cleanChain,
+          (value) {
+            setState(() {
+              cleanChain = value;
+              validate.validateDropdownField(cleanChain, 'cleanChain');
+            });
+          },
+          errorText: errors['cleanChain'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTemplateB(templateBKey, validate),
+        CommonWidgets.buildTemplateC(templateCKey, validate),
+        CommonWidgets.buildTemplateF(templateFKey, validate)
+      ],
+    );
+  }
 
   Widget buildController() {
     return Column(
@@ -442,18 +445,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Enclosed Track (Overhead) Power Trolley Wheel (B)",
@@ -483,7 +485,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
-          title: "Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
+          title:
+              "Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
           hintText: "Center of Power Wheel to Center of Power Wheel",
           imagePath: 'assets/Measurements/4/CMS/S.png',
           controller: sCenter,
@@ -535,7 +538,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
           errorText: errors['s2Center'],
         ),
-      
       ],
     );
   }
@@ -559,65 +561,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conveyorLoaded': conveyorLoaded,
         'conveyorSwing': null,
         'operatingVoltage': operatingVoltage,
-        'monitorData': {
-          'existingMonitor': null,
-          'newMonitor': null,
-          'dcuStatus': null,
-          'dcuNum': null,
-          'existingWindows': null,
-          'existingHeadUnit': null,
-          'existingDCU': null,
-          'existingPowerInterface': null,
-          'newReservoir': null,
-          'reservoirSize': null,
-          'otherReservoirSize': null,
-          'newReservoirNum': null,
-          'typeMonitor': null,
-          'driveMotorAmp': driveMotorAmp,
-          'driveMotorAmpNum': null,
-          'driveTakeUpAir': driveTakeUpAir,
-          'driveTakeUpAirNum': null,
-          'takeUpDistance': takeUpDistance,
-          'takeUpDistanceNum': null,
-          'driveTemp': driveTemp,
-          'driveTempNum': null,
-          'driveVibration': driveVibration,
-          'driveVibrationNum': null,
-          'dogPitch': null,
-          'dogPitchNum': null,
-          'paintMarker': null,
-          'paintMarkerNum': null,
-          'chainVision': null,
-          'lubeVision': null,
-          'trolleyVision': null,
-          'trolleyDetect': null,
-          'omniView': null,
-          'dcuUpgradeNum': null,
-          'itNameOne': null,
-          'itIPOne': null,
-          'itGatewayOne': null,
-          'itSubnetOne': null,
-          'itDNSOne': null,
-          'itSMTPOne': null,
-          'itNameTwo': null,
-          'itIPTwo': null,
-          'itGatewayTwo': null,
-          'itSubnetTwo': null,
-          'itDNSTwo': null,
-          'itSMTPTwo': null,
-          'itNameThree': null,
-          'itIPThree': null,
-          'itGatewayThree': null,
-          'itSubnetThree': null,
-          'itDNSThree': null,
-          'itSMTPThree': null,
-          'itAdditionalNotes': null,
-          'piuDistance': null,
-          'switchDistance': null,
-          'ampPickup': null,
-          'fromAirTakeUpDistance': null,
-          'specialControllerOptions': null,
-        },
         'freeCarrierSystem': null,
         'catDriveStatus': null,
         'catDriveNum': null,
@@ -641,6 +584,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'etOverheadM2': null,
         'etOverheadN2': null,
         'etOverheadS2': null,
+        "templateA": templateAKey.currentState?.getData(),
+        "templateB": templateBKey.currentState?.getData(),
+        "templateC": templateCKey.currentState?.getData(),
+        "templateF": templateFKey.currentState?.getData()
       };
 
       status = FormAPI().addOrder("ETO_OP48E", etoData, numRequested);
@@ -668,40 +615,40 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildBreadcrumbNavigation(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.home, color: Colors.blue),
-          onPressed: () {
-            // Navigate to the home page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ApplicationPage()),
-            );
-          },
-        ),
-        const Text(' > '),
-        GestureDetector(
-          onTap: () {
-            // Navigate to the Protein page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CLSProducts()),
-            ); // Replace with navigation to your Protein page
-          },
-          child: const Text(
-            'Products',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.blue),
+            onPressed: () {
+              // Navigate to the home page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ApplicationPage()),
+              );
+            },
+          ),
+          const Text(' > '),
+          GestureDetector(
+            onTap: () {
+              // Navigate to the Protein page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CLSProducts()),
+              ); // Replace with navigation to your Protein page
+            },
+            child: const Text(
+              'Products',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }

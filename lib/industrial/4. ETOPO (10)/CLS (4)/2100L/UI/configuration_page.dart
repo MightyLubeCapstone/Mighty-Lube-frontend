@@ -4,7 +4,6 @@ import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/products.dart
 import 'package:mighty_lube/helper_widgets.dart';
 import 'package:mighty_lube/api.dart';
 
-
 class ConfigurationSection extends StatefulWidget {
   const ConfigurationSection({super.key});
 
@@ -52,10 +51,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? sideLube = -1;
   int? topLube = -1;
   int? conveyorClean = -1;
-  int? conveyorLoaded = -1;     
-
+  int? conveyorLoaded = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  final GlobalKey<TemplateCWidgetState> templateCKey = GlobalKey();
+  final GlobalKey<TemplateEWidgetState> templateEKey = GlobalKey();
+
   Future<bool>? status;
 
   Map<String, String?> errors = {
@@ -92,7 +95,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conductor7',
       'conductor2',
     ],
-    'Measurements':['measurementUnit','bDiameter','gWidth','hHeight','sCenter','kDiameter','lWidth','mDiameter','nTop','s2Center']
+    'Measurements': [
+      'measurementUnit',
+      'bDiameter',
+      'gWidth',
+      'hHeight',
+      'sCenter',
+      'kDiameter',
+      'lWidth',
+      'mDiameter',
+      'nTop',
+      's2Center'
+    ]
   };
 
   @override
@@ -131,7 +145,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate .validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
     validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
@@ -154,22 +168,33 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const CLSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const CLSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent(), isError: validate.sectionError('General Information')),
-              CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent(), isError: validate.sectionError('Customer Power Utilities')),
-              CommonWidgets.buildGradientButton(context, 'New/Existing Monitoring System',buildMonitoringFeatures(), isError: validate.sectionError('New/Existing Monitoring System')),
-              CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications(), isError: validate.sectionError('Conveyor Specifications')),
-              CommonWidgets.buildGradientButton(context, 'Controller',buildController(), isError: validate.sectionError('Controller')),
-              CommonWidgets.buildGradientButton(context, 'Wire',buildWire(), isError: validate.sectionError('Wire')),
-              CommonWidgets.buildGradientButton(context, 'Measurements',buildMeasurements(), isError: validate.sectionError('Measurements')),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
+                  isError: validate.sectionError('General Information')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
+                  isError: validate.sectionError('Customer Power Utilities')),
+              CommonWidgets.buildGradientButton(
+                  context, 'New/Existing Monitoring System', buildMonitoringFeatures(),
+                  isError: validate.sectionError('New/Existing Monitoring System')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError('Conveyor Specifications')),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
+                  isError: validate.sectionError('Controller')),
+              CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
+                  isError: validate.sectionError('Wire')),
+              CommonWidgets.buildGradientButton(context, 'Measurements', buildMeasurements(),
+                  isError: validate.sectionError('Measurements')),
             ],
           ),
         ),
-       
         CommonWidgets.buildConfiguratorWithCounter(callback: (int value) {
           addETO2100(value);
         }),
@@ -178,7 +203,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-//actual buttons w/ the questions :) 
+//actual buttons w/ the questions :)
 
   Widget buildGeneralInformationContent() {
     return Column(
@@ -197,8 +222,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
             });
           },
         ),
@@ -226,8 +250,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildSectionTitle('Environmental Details'),
-        CommonWidgets.buildDropdownField('Is the Conveyor "__" at Planned Install Location',
-            ['Loaded', 'Unloaded']),
+        CommonWidgets.buildDropdownField(
+            'Is the Conveyor "__" at Planned Install Location', ['Loaded', 'Unloaded']),
         CommonWidgets.buildDropdownField('Is this a Drip Line', ['Yes', 'No']),
       ],
     );
@@ -237,13 +261,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildDropdownFieldError('Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3'], operatingVoltage, (value) {
+        CommonWidgets.buildDropdownFieldError(
+          'Operating Voltage - 3 Phase: (Volts/hz)',
+          ['Option 1', 'Option 2', 'Option 3'],
+          operatingVoltage,
+          (value) {
             setState(() {
               operatingVoltage = value;
               validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
             });
-          },),
+          },
+        ),
         CommonWidgets.buildDropdownField(
           'Confirm Installation Clearance of: Minimum of 2\' (.61m) for clearance of Motor Height from Rail AND Motor Gear Housing assembly width',
           ['Yes', 'No'],
@@ -254,85 +282,70 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildMonitoringFeatures() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Drive Motor Amp', [
-          'Yes',
-          'No'
-        ], driveMotorAmp, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Motor Amp', ['Yes', 'No'], driveMotorAmp,
+            (value) {
           setState(() {
             driveMotorAmp = value;
             validate.validateDropdownField(driveMotorAmp, 'driveMotorAmp');
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Drive Take-up-Air', [
-          'Yes',
-          'No'
-        ], driveTakeUpAir, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Take-up-Air', ['Yes', 'No'], driveTakeUpAir,
+            (value) {
           setState(() {
             driveTakeUpAir = value;
             validate.validateDropdownField(driveTakeUpAir, 'driveTakeUpAir');
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Take-Up Distance', [
-          'Yes',
-          'No'
-        ], takeUpDistance, (value) {
+        CommonWidgets.buildDropdownFieldError('Take-Up Distance', ['Yes', 'No'], takeUpDistance,
+            (value) {
           setState(() {
             takeUpDistance = value;
             validate.validateDropdownField(takeUpDistance, 'takeUpDistance');
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Drive Motor Temp', [
-          'Yes',
-          'No'
-        ], driveTemp, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Motor Temp', ['Yes', 'No'], driveTemp,
+            (value) {
           setState(() {
             driveTemp = value;
             validate.validateDropdownField(driveTemp, 'driveTemp');
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Drive Motor Vibration', [
-          'Yes',
-          'No'
-        ], driveVibration, (value) {
+        CommonWidgets.buildDropdownFieldError(
+            'Drive Motor Vibration', ['Yes', 'No'], driveVibration, (value) {
           setState(() {
             driveVibration = value;
             validate.validateDropdownField(driveVibration, 'driveVibration');
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Bent or Missing Trolley detect', [
-          'Yes',
-          'No'
-        ], detectTrolley, (value) {
+        CommonWidgets.buildDropdownFieldError(
+            'Bent or Missing Trolley detect', ['Yes', 'No'], detectTrolley, (value) {
           setState(() {
             detectTrolley = value;
             validate.validateDropdownField(detectTrolley, 'detectTrolley');
@@ -344,77 +357,64 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildConveyorSpecifications() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Lubrication from the Side of Chain',
+          ['Yes', 'No'],
+          lubricationSide,
+          (value) {
+            setState(() {
+              lubricationSide = value;
+              validate.validateDropdownField(lubricationSide, 'lubricationSide');
+            });
+          },
+          errorText: errors['lubricationSide'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Lubrication from the Top of Chain',
+          ['Yes', 'No'],
+          lubricationTop,
+          (value) {
+            setState(() {
+              lubricationTop = value;
+              validate.validateDropdownField(lubricationTop, 'lubricationTop');
+            });
+          },
+          errorText: errors['lubricationTop'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Is the Conveyor Chain Clean?',
+          ['Yes', 'No'],
+          cleanChain,
+          (value) {
+            setState(() {
+              cleanChain = value;
+              validate.validateDropdownField(cleanChain, 'cleanChain');
+            });
+          },
+          errorText: errors['cleanChain'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildTemplateB(templateBKey, validate),
+        CommonWidgets.buildTemplateC(templateCKey, validate),
+        CommonWidgets.buildTemplateE(templateEKey, validate)
+      ],
+    );
+  }
 
-      CommonWidgets.buildDropdownFieldError(
-        'Lubrication from the Side of Chain',
-        ['Yes', 'No'],
-        lubricationSide,
-        (value) {
-          setState(() {
-            lubricationSide = value;
-            validate.validateDropdownField(
-                lubricationSide, 'lubricationSide');
-          });
-        },
-        errorText: errors['lubricationSide'],
-      ),
-
-      CommonWidgets.buildDropdownFieldError(
-        'Lubrication from the Top of Chain',
-        ['Yes', 'No'],
-        lubricationTop,
-        (value) {
-          setState(() {
-            lubricationTop = value;
-            validate.validateDropdownField(
-                lubricationTop, 'lubricationTop');
-          });
-        },
-        errorText: errors['lubricationTop'],
-      ),
-
-      CommonWidgets.buildDropdownFieldError(
-        'Is the Conveyor Chain Clean?',
-        ['Yes', 'No'],
-        cleanChain,
-        (value) {
-          setState(() {
-            cleanChain = value;
-            validate.validateDropdownField(
-                cleanChain, 'cleanChain');
-          });
-        },
-        errorText: errors['cleanChain'],
-      ),
-
-      CommonWidgets.buildSectionDivider(),
-
-      CommonWidgets.buildTemplateB(validate),
-      CommonWidgets.buildTemplateC(validate),
-      CommonWidgets.buildTemplateE(validate)
-    ],
-  );
-}
-
-  
   Widget buildController() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildDropdownField(
+            'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -425,37 +425,32 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ]),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildDropdownField(
+            'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
- 
+
   Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Enclosed Track (Overhead) Power Trolley Wheel (B)",
@@ -485,7 +480,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
-          title: "Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
+          title:
+              "Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
           hintText: "Center of Power Wheel to Center of Power Wheel",
           imagePath: 'assets/Measurements/4/CMS/S.png',
           controller: sCenter,
@@ -537,125 +533,69 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
           errorText: errors['s2Center'],
         ),
-      
       ],
     );
   }
 
   VoidCallback? addETO2100(int numRequested) {
-  if (validForm()) {
-    dynamic etoData = {
-      'chainSize': conveyorChainSize,
-      'industrialChainManufacturer': chainManufacturer,
-      'otherIndustrialChainManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': null,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': null,
-      'conveyorIndex': conveyorIndex.text,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': null,
-      'conveyorLoaded': conveyorLoaded,
-      'conveyorSwing': null,
-      'operatingVoltage': operatingVoltage,
-      'monitorData': {
-        'existingMonitor': existingMonitoring,
-        'newMonitor': newMonitoring,
-        'dcuStatus': null,
-        'dcuNum': null,
-        'existingWindows': null,
-        'existingHeadUnit': null,
-        'existingDCU': null,
-        'existingPowerInterface': null,
-        'newReservoir': null,
-        'reservoirSize': null,
-        'otherReservoirSize': null,
-        'newReservoirNum': null,
-        'typeMonitor': null,
-        'driveMotorAmp': driveMotorAmp,
-        'driveMotorAmpNum': null,
-        'driveTakeUpAir': driveTakeUpAir,
-        'driveTakeUpAirNum': null,
-        'takeUpDistance': takeUpDistance,
-        'takeUpDistanceNum': null,
-        'driveTemp': driveTemp,
-        'driveTempNum':null,
-        'driveVibration': driveVibration,
-        'driveVibrationNum': null,
-        'dogPitch': null,
-        'dogPitchNum': null,
-        'paintMarker': null,
-        'paintMarkerNum': null,
-        'chainVision': null,
-        'lubeVision': null,
-        'trolleyVision': null,
-        'trolleyDetect': null,
-        'omniView': null,
-        'dcuUpgradeNum': null,
-        'itNameOne': null,
-        'itIPOne': null,
-        'itGatewayOne': null,
-        'itSubnetOne': null,
-        'itDNSOne': null,
-        'itSMTPOne': null,
-        'itNameTwo': null,
-        'itIPTwo': null,
-        'itGatewayTwo': null,
-        'itSubnetTwo': null,
-        'itDNSTwo': null,
-        'itSMTPTwo': null,
-        'itNameThree': null,
-        'itIPThree': null,
-        'itGatewayThree': null,
-        'itSubnetThree': null,
-        'itDNSThree': null,
-        'itSMTPThree': null,
-        'itAdditionalNotes': null,
-        'piuDistance': null,
-        'switchDistance': null,
-        'ampPickup': null,
-        'fromAirTakeUpDistance': null,
-        'specialControllerOptions': null,
-      },
-      'freeCarrierSystem': null,
-      'catDriveStatus': null,
-      'catDriveNum': null,
-      'lubeBrand': null,
-      'lubeType': null,
-      'lubeViscosity': null,
-      'chainCleanStatus': null,
-      'wireMeasurementUnit': null,
-      'conductor2': conductor2.text,
-      'conductor4': conductor4.text,
-      'conductor7': conductor7.text,
-      'conductor12': null,
-      'junctionBoxNum': null,
-      'etUnitType': null,
-      'etOverheadB': null,
-      'etOverheadG': null,
-      'etOverheadH': null,
-      'etOverheadS': null,
-      'etOverheadK2': null,
-      'etOverheadLS': null,
-      'etOverheadM2': null,
-      'etOverheadN2': null,
-      'etOverheadS2': null,
-    };
+    if (validForm()) {
+      dynamic etoData = {
+        'chainSize': conveyorChainSize,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherIndustrialChainManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': null,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': null,
+        'conveyorIndex': conveyorIndex.text,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': null,
+        'conveyorLoaded': conveyorLoaded,
+        'conveyorSwing': null,
+        'operatingVoltage': operatingVoltage,
+        'freeCarrierSystem': null,
+        'catDriveStatus': null,
+        'catDriveNum': null,
+        'lubeBrand': null,
+        'lubeType': null,
+        'lubeViscosity': null,
+        'chainCleanStatus': null,
+        'wireMeasurementUnit': null,
+        'conductor2': conductor2.text,
+        'conductor4': conductor4.text,
+        'conductor7': conductor7.text,
+        'conductor12': null,
+        'junctionBoxNum': null,
+        'etUnitType': null,
+        'etOverheadB': null,
+        'etOverheadG': null,
+        'etOverheadH': null,
+        'etOverheadS': null,
+        'etOverheadK2': null,
+        'etOverheadLS': null,
+        'etOverheadM2': null,
+        'etOverheadN2': null,
+        'etOverheadS2': null,
+        "templateA": templateAKey.currentState?.getData(),
+        "templateB": templateBKey.currentState?.getData(),
+        "templateC": templateCKey.currentState?.getData(),
+        "templateE": templateEKey.currentState?.getData()
+      };
 
-    status = FormAPI().addOrder("ETO_2100", etoData, numRequested);
+      status = FormAPI().addOrder("ETO_2100", etoData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
-buildErrorText(String message) {
+  buildErrorText(String message) {
     return Padding(
       padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
       child: Text(
@@ -668,5 +608,4 @@ buildErrorText(String message) {
       ),
     );
   }
-
 }

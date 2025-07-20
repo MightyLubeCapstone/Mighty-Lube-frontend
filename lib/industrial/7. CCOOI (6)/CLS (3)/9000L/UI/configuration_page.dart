@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/application/UI/applicationHome.dart';
 import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CLS%20(3)/products.dart';
@@ -57,6 +59,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  final GlobalKey<TemplateCWidgetState> templateCKey = GlobalKey();
+
   Future<bool>? status;
 
   // Error messages
@@ -166,29 +171,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const CLSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const CLSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
                   isError: validate.sectionError('General Information')),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
                   isError: validate.sectionError('Customer Power Utilities')),
-              CommonWidgets.buildGradientButton(context,
-                  'New/Existing Monitoring System', buildNewMonitoringSystem(),
-                  isError:
-                      validate.sectionError('New/Existing Monitoring System')),
-              CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications(),
-                  isError: validate.sectionError('Conveyor Specifications')),
               CommonWidgets.buildGradientButton(
-                  context, 'Controller', buildController(),
+                  context, 'New/Existing Monitoring System', buildNewMonitoringSystem(),
+                  isError: validate.sectionError('New/Existing Monitoring System')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError('Conveyor Specifications')),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
                   isError: validate.sectionError('Controller')),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: validate.sectionError('Wire')),
@@ -218,13 +219,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Chain Size',
-          [
-            'X348 Chain (3”)',
-            'X458 Chain (4”)',
-            'X678 Chain (6”)',
-            '3/8" Log Chain',
-            'Other'
-          ],
+          ['X348 Chain (3”)', 'X458 Chain (4”)', 'X678 Chain (6”)', '3/8" Log Chain', 'Other'],
           conveyorChainSize,
           (value) {
             setState(() {
@@ -364,41 +359,39 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
- Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'New Monitoring System or Adding to Existing Monitoring System',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 8),
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-              existingMonitoring,
-              'existingMonitoring',
-            );
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1) ...[
-          CommonWidgets.buildTemplateA(validate),
-          CommonWidgets.buildTemplateD(validate),
-          CommonWidgets.buildTemplateE(validate),
+  Widget buildNewMonitoringSystem() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'New Monitoring System or Adding to Existing Monitoring System',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(
+                existingMonitoring,
+                'existingMonitoring',
+              );
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) ...[
+          CommonWidgets.buildTemplateB(templateBKey, validate),
+          CommonWidgets.buildTemplateC(templateCKey, validate),
+        ],
       ],
-    ],
-  );
-}
+    );
+  }
 
   Widget buildConveyorSpecifications() {
     return Column(
@@ -668,6 +661,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'outboardWheels': outboardWheels,
         'railLubrication': railLubrication,
         'measurementUnits': measurementUnits,
+        "templateB": templateBKey.currentState?.getData(),
+        "templateC": templateCKey.currentState?.getData()
       };
       status = FormAPI().addOrder("9000L", configurationData, numRequested);
       return null;

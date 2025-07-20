@@ -15,7 +15,7 @@ class ConfigurationSection extends StatefulWidget {
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
 
-   // Text controllers
+  // Text controllers
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
   final TextEditingController conveyorSpeed = TextEditingController();
@@ -52,6 +52,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoringStr = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+
   Future<bool>? status;
 
   // Error messages
@@ -89,7 +91,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'zLength': null,
   };
 
-   // Sections map
+  // Sections map
   final Map<String, List<String>> sections = {
     "general": [
       "conveyorSystem",
@@ -106,10 +108,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     "monitoring": ["existingMonitoring"],
     "controller": ["specialOptions"],
     "conveyor": ["highRollers", "outboardWheels", "conveyorClean"],
-    "measurements": ["gWidth","hHeight","aDiameter","bWidth","dThickness","mInside", "yDiameter", "zLength"],
+    "measurements": [
+      "gWidth",
+      "hHeight",
+      "aDiameter",
+      "bWidth",
+      "dThickness",
+      "mInside",
+      "yDiameter",
+      "zLength"
+    ],
   };
 
-    @override
+  @override
   void initState() {
     super.initState();
     conveyorSystem.addListener(() {
@@ -207,7 +218,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return errors.values.every((error) => error == null);
   }
 
-  Future<void> _validateForm() async{
+  Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
@@ -242,31 +253,38 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(yDiameter.text, 'yDiameter');
     validate.validateTextField(zLength.text, 'zLength');
 
-    
-
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context,'>',const ApplicationPage(),'Products',const ProductsHome()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const ProductsHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent(), isError: validate.sectionError("general")),
-              CommonWidgets.buildGradientButton(context, 'Customer Power Utilities',buildCustomerPowerUtilitiesContent(), isError: validate.sectionError("custom")),
-              CommonWidgets.buildGradientButton(context, 'New or Existing Monitoring System',buildNewMonitoringSystem(), isError: validate.sectionError("monitoring")),
-              CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications(), isError: validate.sectionError("conveyor")),
-              CommonWidgets.buildGradientButton(context, 'Controller',buildController(), isError: validate.sectionError("controller")),
-              CommonWidgets.buildGradientButton(context, 'CC5: Measurements',buildMeasurements(), isError: validate.sectionError("measurements")),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
+                  isError: validate.sectionError("general")),
+              CommonWidgets.buildGradientButton(
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
+                  isError: validate.sectionError("custom")),
+              CommonWidgets.buildGradientButton(
+                  context, 'New or Existing Monitoring System', buildNewMonitoringSystem(),
+                  isError: validate.sectionError("monitoring")),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError("conveyor")),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
+                  isError: validate.sectionError("controller")),
+              CommonWidgets.buildGradientButton(context, 'CC5: Measurements', buildMeasurements(),
+                  isError: validate.sectionError("measurements")),
             ],
           ),
         ),
-       
         CommonWidgets.buildConfiguratorWithCounter(callback: (int value) {
           addMLCC5CL(value);
         }),
@@ -275,140 +293,160 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-//actual buttons w/ the questions :) 
+//actual buttons w/ the questions :)
 
   Widget buildGeneralInformationContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField('Name of Conveyor System',conveyorSystem, errorText: errors['conveyorSystem']),
-        if (errors['conveyorName'] != null)
-                buildErrorText(errors['conveyorName']!),
-        CommonWidgets.buildDropdownFieldError('Conveyor Chain Size', [
-          'a. CC5 3”',
-          'b. CC5 4”',
-          'c. CC5 6”',
-          'd. RC60', 'e. RC80', 'f. RC 2080', 'g. RC 2060',
-          'h. Other'
-        ], conveyorChainSize,
-                (value) {
-                  setState(() {
-                    conveyorChainSize = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorChainSize, 'conveyorChainSize');
-                  });
-                },
-                errorText: errors['conveyorChainSize'],
-              ),
-        CommonWidgets.buildDropdownFieldError('Chain Manufacturer', [
-          'Daifuku',
-          'Frost',
-          'NKC',
-          'Pacline',
-          'Rapid',
-          'WEBB',
-          'Webb-Stiles',
-          'Wilkie Brothers',
-          'Other'
-        ], chainManufacturer,
-                (value) {
-                  setState(() {
-                    chainManufacturer = (value); // Update state properly
-                    validate.validateDropdownField(
-                        chainManufacturer, 'chainManufacturer');
-                  });
-                },
-                errorText: errors['chainManufacturer'],
-              ),
-        CommonWidgets.buildTextField('Enter Conveyor Length',conveyorLength),
-        CommonWidgets.buildDropdownFieldError('Conveyor Length Unit', [
-          'Feet',
-          'Inches',
-          'm Meter',
-          'mm Millimeter',
-        ], conveyorLengthUnit,
-                (value) {
-                  setState(() {
-                    conveyorLengthUnit = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorLengthUnit, 'conveyorLengthUnit');
-                  });
-                },
-                errorText: errors['conveyorLengthUnit'],
-              ),
-        CommonWidgets.buildTextField('Conveyor Speed (Min/Max)',conveyorSpeed),
-        CommonWidgets.buildDropdownFieldError('Conveyor Speed Unit', [
-          'Feet/Minute',
-          'Meters/Minute',
-        ], conveyorSpeedUnit,
-                (value) {
-                  setState(() {
-                    conveyorSpeedUnit = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorSpeedUnit, 'conveyorSpeedUnit');
-                  });
-                },
-                errorText: errors['conveyorSpeedUnit'],
-              ),
-        CommonWidgets.buildTextField('Indexing or Variable Speed Conditions',conveyorIndex),
-        CommonWidgets.buildDropdownFieldError('Direction of Travel', [
-          'Right to Left',
-          'Left to Right',
-        ], directionOfTravel,
-                (value) {
-                  setState(() {
-                    directionOfTravel = value; // Update state properly
-                    validate.validateDropdownField(
-                        directionOfTravel, 'directionOfTravel');
-                  });
-                },
-                errorText: errors['directionOfTravel'],
-              ),
-        CommonWidgets.buildDropdownFieldError('Application Environment', [
-          'Ambient',
-          'Caustic (i.e. Phospate/E-Coat, etc.)',
-          'Oven',
-          'Wash Down',
-          'Intrinsic','Food Grade', 'Other'
-        ], applicationEnvironment,
-                (value) {
-                  setState(() {
-                    applicationEnvironment = value; // Update state properly
-                    validate.validateDropdownField(
-                        applicationEnvironment, 'applicationEnvironment');
-                  });
-                },
-                errorText: errors['applicationEnvironment'],
-              ),
-        CommonWidgets.buildDropdownFieldError('Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?', [
-          'Yes',
-          'No',
-        ], surroundingTemp,
-                (value) {
-                  setState(() {
-                    surroundingTemp = value; // Update state properly
-                    validate.validateDropdownField(
-                        surroundingTemp, 'surroundingTemp');
-                  });
-                },
-                errorText: errors['surroundingTemp'],
-              ),
-        CommonWidgets.buildDropdownFieldError('Is Conveyor Single or Double Strand', [
-          'Single',
-          'Double',
-        ], conveyorStrand,
-                (value) {
-                  setState(() {
-                    conveyorStrand = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorStrand, 'conveyorStrand');
-                  });
-                },
-                errorText: errors['conveyorStrand'],
-              ),
+        CommonWidgets.buildTextField('Name of Conveyor System', conveyorSystem,
+            errorText: errors['conveyorSystem']),
+        if (errors['conveyorName'] != null) buildErrorText(errors['conveyorName']!),
+        CommonWidgets.buildDropdownFieldError(
+          'Conveyor Chain Size',
+          [
+            'a. CC5 3”',
+            'b. CC5 4”',
+            'c. CC5 6”',
+            'd. RC60',
+            'e. RC80',
+            'f. RC 2080',
+            'g. RC 2060',
+            'h. Other'
+          ],
+          conveyorChainSize,
+          (value) {
+            setState(() {
+              conveyorChainSize = value; // Update state properly
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
+            });
+          },
+          errorText: errors['conveyorChainSize'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Chain Manufacturer',
+          [
+            'Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
+            'Other'
+          ],
+          chainManufacturer,
+          (value) {
+            setState(() {
+              chainManufacturer = (value); // Update state properly
+              validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+            });
+          },
+          errorText: errors['chainManufacturer'],
+        ),
+        CommonWidgets.buildTextField('Enter Conveyor Length', conveyorLength),
+        CommonWidgets.buildDropdownFieldError(
+          'Conveyor Length Unit',
+          [
+            'Feet',
+            'Inches',
+            'm Meter',
+            'mm Millimeter',
+          ],
+          conveyorLengthUnit,
+          (value) {
+            setState(() {
+              conveyorLengthUnit = value; // Update state properly
+              validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
+            });
+          },
+          errorText: errors['conveyorLengthUnit'],
+        ),
+        CommonWidgets.buildTextField('Conveyor Speed (Min/Max)', conveyorSpeed),
+        CommonWidgets.buildDropdownFieldError(
+          'Conveyor Speed Unit',
+          [
+            'Feet/Minute',
+            'Meters/Minute',
+          ],
+          conveyorSpeedUnit,
+          (value) {
+            setState(() {
+              conveyorSpeedUnit = value; // Update state properly
+              validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
+            });
+          },
+          errorText: errors['conveyorSpeedUnit'],
+        ),
+        CommonWidgets.buildTextField('Indexing or Variable Speed Conditions', conveyorIndex),
+        CommonWidgets.buildDropdownFieldError(
+          'Direction of Travel',
+          [
+            'Right to Left',
+            'Left to Right',
+          ],
+          directionOfTravel,
+          (value) {
+            setState(() {
+              directionOfTravel = value; // Update state properly
+              validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
+            });
+          },
+          errorText: errors['directionOfTravel'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Application Environment',
+          [
+            'Ambient',
+            'Caustic (i.e. Phospate/E-Coat, etc.)',
+            'Oven',
+            'Wash Down',
+            'Intrinsic',
+            'Food Grade',
+            'Other'
+          ],
+          applicationEnvironment,
+          (value) {
+            setState(() {
+              applicationEnvironment = value; // Update state properly
+              validate.validateDropdownField(applicationEnvironment, 'applicationEnvironment');
+            });
+          },
+          errorText: errors['applicationEnvironment'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+          [
+            'Yes',
+            'No',
+          ],
+          surroundingTemp,
+          (value) {
+            setState(() {
+              surroundingTemp = value; // Update state properly
+              validate.validateDropdownField(surroundingTemp, 'surroundingTemp');
+            });
+          },
+          errorText: errors['surroundingTemp'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Is Conveyor Single or Double Strand',
+          [
+            'Single',
+            'Double',
+          ],
+          conveyorStrand,
+          (value) {
+            setState(() {
+              conveyorStrand = value; // Update state properly
+              validate.validateDropdownField(conveyorStrand, 'conveyorStrand');
+            });
+          },
+          errorText: errors['conveyorStrand'],
+        ),
         CommonWidgets.buildSectionDivider(),
-        
       ],
     );
   }
@@ -423,11 +461,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             children: [
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildTextField(
-                  'Operating Voltage - Single Phase: (Volts/hz] *',
-                  operatingVoltage,
+                  'Operating Voltage - Single Phase: (Volts/hz] *', operatingVoltage,
                   errorText: errors['operatingVoltage']),
-              if (errors['operatingVoltage'] != null)
-                buildErrorText(errors['operatingVoltage']!),
+              if (errors['operatingVoltage'] != null) buildErrorText(errors['operatingVoltage']!),
               CommonWidgets.buildSectionDivider(),
             ],
           );
@@ -435,86 +471,82 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildConveyorSpecifications() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets. buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Is their High Rollers', [
-          'Yes',
-          'No'
-        ], highRollers,
-                (value) {
-                  setState(() {
-                    highRollers = value; // Update state properly
-                    validate.validateDropdownField(
-                        highRollers, 'highRollers');
-                  });
-                },
-                errorText: errors['highRollers'],
-              ),
-        CommonWidgets.buildDropdownFieldError('Outboard Wheels  ', [
-          'Yes',
-          'No'
-        ] , outboardWheels,
-                (value) {
-                  setState(() {
-                    outboardWheels = value; // Update state properly
-                    validate.validateDropdownField(
-                        outboardWheels, 'outboardWheels');
-                  });
-                },
-                errorText: errors['outboardWheels'],
-              ),
-        CommonWidgets.buildDropdownFieldError('Is the Conveyor Chain Clean?', [
-          'Yes',
-          'No'
-        ] , conveyorClean,
-                (value) {
-                  setState(() {
-                    conveyorClean = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorClean, 'conveyorClean');
-                  });
-                },
-                errorText: errors['conveyorClean'],
-              ),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Is their High Rollers',
+          ['Yes', 'No'],
+          highRollers,
+          (value) {
+            setState(() {
+              highRollers = value; // Update state properly
+              validate.validateDropdownField(highRollers, 'highRollers');
+            });
+          },
+          errorText: errors['highRollers'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Outboard Wheels  ',
+          ['Yes', 'No'],
+          outboardWheels,
+          (value) {
+            setState(() {
+              outboardWheels = value; // Update state properly
+              validate.validateDropdownField(outboardWheels, 'outboardWheels');
+            });
+          },
+          errorText: errors['outboardWheels'],
+        ),
+        CommonWidgets.buildDropdownFieldError(
+          'Is the Conveyor Chain Clean?',
+          ['Yes', 'No'],
+          conveyorClean,
+          (value) {
+            setState(() {
+              conveyorClean = value; // Update state properly
+              validate.validateDropdownField(conveyorClean, 'conveyorClean');
+            });
+          },
+          errorText: errors['conveyorClean'],
+        ),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
-  
+
   Widget buildController() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField('Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',specialOptions),
+        CommonWidgets.buildTextField(
+            'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
+            specialOptions),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -525,45 +557,42 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError('Measurement Units', [
-          'Feet',
-          'Inches', 
-          'm Meter', 
-          'mm Milimeter'
-        ] , measurementUnits,
-                (value) {
-                  setState(() {
-                    measurementUnits = value; // Update state properly
-                    validate.validateDropdownField(
-                        measurementUnits, 'measurementUnits');
-                  });
-                },
-                errorText: errors['measurementUnits'],
-              ),
-        CommonWidgets.buildTextField('Enter 4 Conductor Number Here',conductor4),
-        CommonWidgets.buildTextField('Enter 7 Conductor Number Here',conductor7),
-        CommonWidgets.buildTextField('Enter 2 Conductor Number Here',conductor2),
+        CommonWidgets.buildDropdownFieldError(
+          'Measurement Units',
+          ['Feet', 'Inches', 'm Meter', 'mm Milimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value; // Update state properly
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
-  
+
   Widget buildMeasurements() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "CC5 Power Rail (G)",
@@ -636,7 +665,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           subHint: "(Length)",
           errorText: errors['zLength'],
         ),
-      
       ],
     );
   }
@@ -644,42 +672,38 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   VoidCallback? addMLCC5CL(int numRequested) {
     if (validForm()) {
       dynamic mlData = {
-      'conveyorName': conveyorSystem.text, 
-      'cc5ChainSize': conveyorChainSize, 
-      'industrialChainManufacturer': chainManufacturer,
-      'otherChainManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': conveyorLengthUnit,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'conveyorIndex': conveyorIndex.text,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment, 
-      'surroundingTemp': surroundingTemp,
-      'strandStatus': conveyorStrand,
-      'operatingVoltage': operatingVoltage.text,
-      'templateB': {
-        'existingMonitor': existingMonitoring,
-      },
-      'highRollerStatus': highRollers,
-      'outboardStatus': outboardWheels, 
-      'cleanChain': conveyorClean, 
-      'wireMeasurementUnit': measurementUnits, 
-      'conductor2': conductor2.text,
-      'conductor4': conductor4.text,
-      'conductor7': conductor7.text,
-      'specialControllerOptions': specialOptions.text, 
- 
-      "coeLineG": gWidth.text,
-      "coeLineH": hHeight.text,
-      "coeLinea": aDiameter.text, 
-      "coeLineb": bWidth.text,
-      "coeLined": dThickness.text,
-      "coeLinem": mInside.text,
-      "coeLiney": yDiameter.text,
-      "coeLinez": zLength.text,
-      
-    };
+        'conveyorName': conveyorSystem.text,
+        'cc5ChainSize': conveyorChainSize,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherChainManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': conveyorLengthUnit,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': conveyorSpeedUnit,
+        'conveyorIndex': conveyorIndex.text,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'surroundingTemp': surroundingTemp,
+        'strandStatus': conveyorStrand,
+        'operatingVoltage': operatingVoltage.text,
+        'highRollerStatus': highRollers,
+        'outboardStatus': outboardWheels,
+        'cleanChain': conveyorClean,
+        'wireMeasurementUnit': measurementUnits,
+        'conductor2': conductor2.text,
+        'conductor4': conductor4.text,
+        'conductor7': conductor7.text,
+        'specialControllerOptions': specialOptions.text,
+        "coeLineG": gWidth.text,
+        "coeLineH": hHeight.text,
+        "coeLinea": aDiameter.text,
+        "coeLineb": bWidth.text,
+        "coeLined": dThickness.text,
+        "coeLinem": mInside.text,
+        "coeLiney": yDiameter.text,
+        "coeLinez": zLength.text,
+        "templateA": templateAKey.currentState?.getData()
+      };
       status = FormAPI().addOrder("CC5_CL", mlData, numRequested);
       return null;
     } else {
@@ -688,20 +712,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       );
     }
     return null;
-    }
+  }
 
   Widget buildErrorText(String message) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
-    child: Text(
-      message,
-      style: const TextStyle(
-        color: Colors.red,
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, top: 4, bottom: 8),
+      child: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.red,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

@@ -54,6 +54,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  final GlobalKey<TemplateEWidgetState> templateEKey = GlobalKey();
+
   Future<bool>? status;
 
   // Error messages
@@ -86,7 +89,20 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conductor7',
       'conductor2',
     ],
-    'Measurements':['measurementUnits','gWidth','hHeight','a1Diameter','b1Width','h1Width','j1Thickness','m1Inside','p1Outside','r1Center','l1Flat','n1Width']
+    'Measurements': [
+      'measurementUnits',
+      'gWidth',
+      'hHeight',
+      'a1Diameter',
+      'b1Width',
+      'h1Width',
+      'j1Thickness',
+      'm1Inside',
+      'p1Outside',
+      'r1Center',
+      'l1Flat',
+      'n1Width'
+    ]
   };
 
   @override
@@ -158,7 +174,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conductor7.text, 'conductor7');
     validate.validateTextField(conductor2.text, 'conductor2');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
-    validate.validateDropdownField( chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
     validate.validateDropdownField(lubricationSide, 'lubricationSide');
     validate.validateDropdownField(lubricationTop, 'lubricationTop');
     validate.validateDropdownField(cleanChain, 'cleanChain');
@@ -256,8 +272,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
             });
           },
         ),
@@ -279,8 +294,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               chainManufacturer = value;
-              validate.validateDropdownField(
-                  chainManufacturer, 'chainManufacturer');
+              validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
             });
           },
         ),
@@ -326,8 +340,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               lubricationSide = value;
-              validate.validateDropdownField(
-                  lubricationSide, 'lubricationSide');
+              validate.validateDropdownField(lubricationSide, 'lubricationSide');
             });
           },
         ),
@@ -359,30 +372,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-                existingMonitoring, 'existingMonitoring');
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1)
-        CommonWidgets.buildTemplateA(validate),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+      ],
+    );
+  }
 
   Widget buildWire() {
     return Column(
@@ -396,8 +406,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               measurementUnits = value;
-              validate.validateDropdownField(
-                  measurementUnits, 'measurementUnits');
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
         ),
@@ -426,17 +435,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Flat Top Power Rail (G)",
@@ -556,6 +565,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conductor4': conductor4.text,
         'conductor7': conductor7.text,
         'conductor2': conductor2.text,
+        "templateA": templateAKey.currentState?.getData(),
+        "templateE": templateEKey.currentState?.getData()
       };
       status = FormAPI().addOrder("mlcel", mlcelData, numRequested);
       return null;

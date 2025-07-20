@@ -54,6 +54,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final Validators validate = Validators();
+  final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  final GlobalKey<TemplateCWidgetState> templateCKey = GlobalKey();
   Future<bool>? status;
 
   // Error messages
@@ -151,29 +153,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const CLSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const CLSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
                   isError: validate.sectionError('General Information')),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
                   isError: validate.sectionError('Customer Power Utilities')),
-              CommonWidgets.buildGradientButton(context,
-                  'New/Existing Monitoring System', buildNewMonitoringSystem(),
-                  isError:
-                      validate.sectionError('New/Existing Monitoring System')),
-              CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications(),
-                  isError: validate.sectionError('Conveyor Specifications')),
               CommonWidgets.buildGradientButton(
-                  context, 'Controller', buildController(),
+                  context, 'New/Existing Monitoring System', buildNewMonitoringSystem(),
+                  isError: validate.sectionError('New/Existing Monitoring System')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError('Conveyor Specifications')),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
                   isError: validate.sectionError('Controller')),
               CommonWidgets.buildGradientButton(
                   context, 'Free Rail: Measurements', buildMeasurements(),
@@ -202,13 +200,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Chain Size',
-          [
-            'X348 Chain (3”)',
-            'X458 Chain (4”)',
-            'X678 Chain (6”)',
-            '3/8" Log Chain',
-            'Other'
-          ],
+          ['X348 Chain (3”)', 'X458 Chain (4”)', 'X678 Chain (6”)', '3/8" Log Chain', 'Other'],
           conveyorChainSize,
           (value) {
             setState(() {
@@ -266,8 +258,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildTextField(
-            'Indexing or Variable Speed Conditions', conveyorIndex),
+        CommonWidgets.buildTextField('Indexing or Variable Speed Conditions', conveyorIndex),
         CommonWidgets.buildDropdownFieldError(
           'Direction of Travel',
           ['Right to Left', 'Left to Right'],
@@ -342,50 +333,45 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           errorText: errors['operatingVoltage'],
         ),
         CommonWidgets.buildTextField('Enter Compressed Air Supply', compAir),
-        CommonWidgets.buildDropdownField(
-            'Compressed Air Supply Unit', ['PSI', 'KPI', 'Bar']),
+        CommonWidgets.buildDropdownField('Compressed Air Supply Unit', ['PSI', 'KPI', 'Bar']),
         CommonWidgets.buildSectionDivider(),
       ],
     );
   }
 
   Widget buildNewMonitoringSystem() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'New Monitoring System or Adding to Existing Monitoring System',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 8),
-      CommonWidgets.buildSectionDivider(),
-      CommonWidgets.buildDropdownFieldError(
-        'Connecting to Existing Monitoring',
-        ['Yes', 'No'],
-        existingMonitoring,
-        (value) {
-          setState(() {
-            existingMonitoring = value;
-            validate.validateDropdownField(
-              existingMonitoring,
-              'existingMonitoring',
-            );
-          });
-        },
-        errorText: errors['existingMonitoring'],
-      ),
-      CommonWidgets.buildSectionDivider(),
-
-      if (existingMonitoring == 1) ...[
-          CommonWidgets.buildTemplateA(validate),
-          CommonWidgets.buildTemplateB(validate),
-          CommonWidgets.buildTemplateC(validate),
-          CommonWidgets.buildTemplateD(validate),
-          CommonWidgets.buildTemplateF(validate),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'New Monitoring System or Adding to Existing Monitoring System',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        CommonWidgets.buildSectionDivider(),
+        CommonWidgets.buildDropdownFieldError(
+          'Connecting to Existing Monitoring',
+          ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+              validate.validateDropdownField(
+                existingMonitoring,
+                'existingMonitoring',
+              );
+            });
+          },
+          errorText: errors['existingMonitoring'],
+        ),
+        CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) ...[
+          CommonWidgets.buildTemplateB(templateBKey, validate),
+          CommonWidgets.buildTemplateC(templateCKey, validate),
+        ],
       ],
-    ],
-  );
-}
+    );
+  }
 
   Widget buildConveyorSpecifications() {
     return Column(
@@ -547,13 +533,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField(
-            'Enter ChainMaster Controller', chainMaster),
+        CommonWidgets.buildTextField('Enter ChainMaster Controller', chainMaster),
         CommonWidgets.buildDropdownField('Timer', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Electric On/Off', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Pneumatic On/Off', ['Yes', 'No']),
-        CommonWidgets.buildDropdownField(
-            'Mighty Lube Monitoring', ['Yes', 'No']),
+        CommonWidgets.buildDropdownField('Mighty Lube Monitoring', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('PLC Connection', ['Yes', 'No']),
         CommonWidgets.buildTextField('Enter Other Details', optionalInfo),
         CommonWidgets.buildTextField(
@@ -586,75 +570,73 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP139AConfiguration(int numRequested) {
-  if (validForm()) {
-    dynamic configurationData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'industrialChainManufacturer': chainManufacturer,
-      'otherChainManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': conveyorLengthUnit,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'monitorData': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'surroundingTemp': surroundingTemp,
-      'conveyorLoaded': conveyorLoaded,
-      'conveyorSwing': conveyorSwing,
-      'orientationType': null,
-      'controlVoltage': null,
-      'compressedAir': compAir.text,
-      'airSupplyType': null,
-      'wheelOpenType': wheelOpenRace,
-      'wheelClosedType': wheelSealedStyle,
-      'openStatus': openInsideShielded,
-      'freeWheelStatus': freeTrolleyWheels,
-      'guideRollerStatus': guideRollers,
-      'openRaceStyle': guideRollersOpenRace,
-      'closedRaceStyle': guideRollersSealedStyle,
-      'holeStatus': openHole,
-      'actuatorStatus': dogActuator,
-      'pivotStatus': pivotPoints,
-      'kingPinStatus': kingPin,
-      'railLubeStatus': railLubrication,
-      'externalLubeStatus': null,
-      'lubeBrand': equipBrand.text,
-      'lubeType': currentType.text,
-      'lubeViscosity': currentGrade.text,
-      'sideLubeStatus': null,
-      'topLubeStatus': null,
-      'chainMaster': chainMaster.text,
-      'timerStatus': null,
-      'electricStatus': null,
-      'pneumaticStatus': null,
-      'mightyLubeMonitoring': null,
-      'plcConnection': null,
-      'otherControllerInfo': optionalInfo.text,
-      'frUnitType': null,
-      'frOverheadG': null,
-      'frOverheadH': null,
-      'frOverheadK': null,
-      'frOverheadK2': null,
-      'frInvertedA': null,
-      'frInvertedB': null,
-      'frInvertedG': null,
-      'frInvertedH': null,
-      'frInvertedK': null,
-      'frInvertedL': null,
-    };
-    status = FormAPI().addOrder("FRO_OP139A", configurationData, numRequested);
+    if (validForm()) {
+      dynamic configurationData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherChainManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': conveyorLengthUnit,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': conveyorSpeedUnit,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': surroundingTemp,
+        'conveyorLoaded': conveyorLoaded,
+        'conveyorSwing': conveyorSwing,
+        'orientationType': null,
+        'controlVoltage': null,
+        'compressedAir': compAir.text,
+        'airSupplyType': null,
+        'wheelOpenType': wheelOpenRace,
+        'wheelClosedType': wheelSealedStyle,
+        'openStatus': openInsideShielded,
+        'freeWheelStatus': freeTrolleyWheels,
+        'guideRollerStatus': guideRollers,
+        'openRaceStyle': guideRollersOpenRace,
+        'closedRaceStyle': guideRollersSealedStyle,
+        'holeStatus': openHole,
+        'actuatorStatus': dogActuator,
+        'pivotStatus': pivotPoints,
+        'kingPinStatus': kingPin,
+        'railLubeStatus': railLubrication,
+        'externalLubeStatus': null,
+        'lubeBrand': equipBrand.text,
+        'lubeType': currentType.text,
+        'lubeViscosity': currentGrade.text,
+        'sideLubeStatus': null,
+        'topLubeStatus': null,
+        'chainMaster': chainMaster.text,
+        'timerStatus': null,
+        'electricStatus': null,
+        'pneumaticStatus': null,
+        'mightyLubeMonitoring': null,
+        'plcConnection': null,
+        'otherControllerInfo': optionalInfo.text,
+        'frUnitType': null,
+        'frOverheadG': null,
+        'frOverheadH': null,
+        'frOverheadK': null,
+        'frOverheadK2': null,
+        'frInvertedA': null,
+        'frInvertedB': null,
+        'frInvertedG': null,
+        'frInvertedH': null,
+        'frInvertedK': null,
+        'frInvertedL': null,
+        "templateB": templateBKey.currentState?.getData(),
+        "templateC": templateCKey.currentState?.getData()
+      };
+      status = FormAPI().addOrder("FRO_OP139A", configurationData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 }
