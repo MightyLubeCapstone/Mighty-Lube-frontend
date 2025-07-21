@@ -522,33 +522,34 @@ class CommonWidgets {
   }
 
   // TemplateA Widget
-  static Widget buildTemplateA(GlobalKey<TemplateAWidgetState>? key, Validators validators) {
-    return TemplateAWidget(dataKey: key, validators: validators);
+  static Widget buildTemplateA(GlobalKey<TemplateAWidgetState>? key, Validators validators,
+      {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
+    return TemplateAWidget(initialData: data, validators: validators, callback: callback!);
   }
 
   // TemplateB Widget
   static Widget buildTemplateB(GlobalKey<TemplateBWidgetState>? key, Validators validators) {
-    return TemplateBWidget(dataKey: key, validators: validators);
+    return TemplateBWidget(key: key, validators: validators);
   }
 
   // TemplateC Widget
   static Widget buildTemplateC(GlobalKey<TemplateCWidgetState>? key, Validators validators) {
-    return TemplateCWidget(dataKey: key, validators: validators);
+    return TemplateCWidget(key: key, validators: validators);
   }
 
   // TemplateD Widget
   static Widget buildTemplateD(GlobalKey<TemplateDWidgetState>? key, Validators validators) {
-    return TemplateDWidget(dataKey: key, validators: validators);
+    return TemplateDWidget(key: key, validators: validators);
   }
 
   // TemplateE Widget for Mighty Lube Caterpillar Drive Lubricators
   static Widget buildTemplateE(GlobalKey<TemplateEWidgetState>? key, Validators validators) {
-    return TemplateEWidget(dataKey: key, validators: validators);
+    return TemplateEWidget(key: key, validators: validators);
   }
 
   // TemplateF Widget for OP-52
   static Widget buildTemplateF(GlobalKey<TemplateFWidgetState>? key, Validators validators) {
-    return TemplateFWidget(dataKey: key, validators: validators);
+    return TemplateFWidget(key: key, validators: validators);
   }
 }
 
@@ -758,8 +759,9 @@ class Validators {
 
 class TemplateAWidget extends StatefulWidget {
   final Validators validators;
-  GlobalKey<TemplateAWidgetState>? dataKey;
-  TemplateAWidget({super.key, this.dataKey, required this.validators});
+  Map<String, dynamic>? initialData;
+  void Function(Map<String, dynamic>)? callback;
+  TemplateAWidget({super.key, this.initialData, required this.validators, this.callback});
 
   @override
   TemplateAWidgetState createState() => TemplateAWidgetState();
@@ -815,9 +817,27 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
       'controllerOptions',
       'operatingVoltage'
     ].forEach(_initField);
+
+    if (widget.initialData != null && widget.initialData != {}) {
+      widget.initialData!.forEach((key, value) {
+        if (_controllers.containsKey(key) && value is String) {
+          _controllers[key]!.text = value;
+        } else if (_dropdowns.containsKey(key) && value is int?) {
+          _dropdowns[key] = value;
+        } else if (_toggles.containsKey(key) && value is bool) {
+          _toggles[key] = value;
+        }
+      });
+    }
   }
 
+  // TODO - Leaving here for testing!
   Map<String, dynamic> getData() {
+    return {};
+  }
+
+  @override
+  void dispose() {
     final Map<String, dynamic> data = {};
     // Collect text field values
     _controllers.forEach((key, controller) {
@@ -831,11 +851,8 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
     _toggles.forEach((key, value) {
       data[key] = value;
     });
-    return data;
-  }
-
-  @override
-  void dispose() {
+    // dark fucking magic, scary ahhh
+    widget.callback!(data);
     for (var controller in _controllers.values) {
       controller.dispose();
     }
@@ -928,8 +945,7 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
 
 class TemplateBWidget extends StatefulWidget {
   final Validators validators;
-  GlobalKey<TemplateBWidgetState>? dataKey;
-  TemplateBWidget({super.key, this.dataKey, required this.validators});
+  const TemplateBWidget({super.key, required this.validators});
 
   @override
   State<TemplateBWidget> createState() => TemplateBWidgetState();
@@ -1064,8 +1080,7 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
 
 class TemplateCWidget extends StatefulWidget {
   final Validators validators;
-  GlobalKey<TemplateCWidgetState>? dataKey;
-  TemplateCWidget({super.key, this.dataKey, required this.validators});
+  const TemplateCWidget({super.key, required this.validators});
 
   @override
   State<TemplateCWidget> createState() => TemplateCWidgetState();
@@ -1202,8 +1217,7 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
 
 class TemplateDWidget extends StatefulWidget {
   final Validators validators;
-  GlobalKey<TemplateDWidgetState>? dataKey;
-  TemplateDWidget({super.key, this.dataKey, required this.validators});
+  const TemplateDWidget({super.key, required this.validators});
 
   @override
   State<TemplateDWidget> createState() => TemplateDWidgetState();
@@ -1348,8 +1362,7 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
 
 class TemplateEWidget extends StatefulWidget {
   final Validators validators;
-  GlobalKey<TemplateEWidgetState>? dataKey;
-  TemplateEWidget({super.key, this.dataKey, required this.validators});
+  const TemplateEWidget({super.key, required this.validators});
 
   @override
   State<TemplateEWidget> createState() => TemplateEWidgetState();
@@ -1424,8 +1437,7 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
 
 class TemplateFWidget extends StatefulWidget {
   final Validators validators;
-  GlobalKey<TemplateFWidgetState>? dataKey;
-  TemplateFWidget({super.key, this.dataKey, required this.validators});
+  const TemplateFWidget({super.key, required this.validators});
 
   @override
   State<TemplateFWidget> createState() => TemplateFWidgetState();

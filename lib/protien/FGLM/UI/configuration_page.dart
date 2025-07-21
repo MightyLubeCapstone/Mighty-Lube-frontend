@@ -63,6 +63,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   final Validators validate = Validators();
   final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  Map<String, dynamic> templateAData = {};
   // error messages
   Map<String, String?> errors = {
     //dropdowns
@@ -71,10 +72,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'chainPinType': null,
     'metalType': null,
     'conveyorStyle': null,
-    'motorAmp': null,
-    'takeUpAir': null,
-    'takeUpDist': null,
-    'detectFaultyTrolley': null,
     'sideLube': null,
     'topLube': null,
     'trolleyColor': null,
@@ -139,11 +136,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     _validateDropdownField(trolleyType, 'trolleyType');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
     _validateDropdownField(conveyorSwing, 'conveyorSwing');
-    _validateDropdownField(motorAmp, 'motorAmp');
-    _validateDropdownField(takeUpAir, 'takeUpAir');
-    _validateDropdownField(takeUpDist, 'takeUpDist');
-    _validateDropdownField(motorTemp, 'motorTemp');
-    _validateDropdownField(detectFaultyTrolley, 'detectFaultyTrolley');
     _validateDropdownField(sideLube, 'sideLube');
     _validateDropdownField(topLube, 'topLube');
 
@@ -525,7 +517,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           errorText: errors['existingMonitoring'],
         ),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitor == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+        if (existingMonitor == 1)
+          CommonWidgets.buildTemplateA(
+            templateAKey,
+            validate,
+            data: templateAData,
+            callback: (data) {
+              templateAData = data;
+            },
+          ),
       ],
     );
   }
@@ -746,7 +746,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "conductor4": num.parse(conductor4.text),
         "conductor7": num.parse(conductor7.text),
         "conductor2": num.parse(conductor2.text),
-        "templateA": templateAKey.currentState?.getData(),
+        "templateA": templateAData,
       };
       setState(() {
         status = null;
