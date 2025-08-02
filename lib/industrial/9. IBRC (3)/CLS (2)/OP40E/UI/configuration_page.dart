@@ -48,6 +48,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? chainClean = -1;
   int? measurementUnits = -1;
 
+  final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+
   Map<String, String?> errors = {
     'conveyorSystem': null,
     'conveyorChainSize': null,
@@ -337,6 +339,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           });
         }),
         CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateB(templateBKey, validate),
       ],
     );
   }
@@ -467,6 +471,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'ibrChainC1': null,
       'ibrChainD1': null,
       'ibrChainF1': null,
+      'templateBData': templateBKey.currentState?.getData(),
     };
     status = FormAPI().addOrder("IBR_OP4OE", opData, numRequested);
     return null;

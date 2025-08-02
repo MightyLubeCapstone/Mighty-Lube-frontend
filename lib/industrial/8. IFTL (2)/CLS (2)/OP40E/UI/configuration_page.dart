@@ -67,7 +67,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? kingPin = -1;
   int? outboardStatus = -1;
   int? railLubrication = -1;
- 
+
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  int? existingMonitoring = -1;
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -391,8 +393,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Connecting to Existing Monitoring', ['Yes', 'No']),
+        CommonWidgets.buildDropdownFieldError(
+            'Connecting to Existing Monitoring', ['Yes', 'No'], existingMonitoring, (value) {
+              setState(() {
+                existingMonitoring= value;
+              });
+            },
+        ),
         CommonWidgets.buildDropdownField(
             'Add New Monitoring System', ['Yes', 'No']),
         CommonWidgets.buildSectionDivider(),
@@ -486,10 +493,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'appEnviroment': applicationEnvironment,
       'ovenStatus': null,
       'ovenTemp': null,
-      'monitorData': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
       'surroundingTemp': null,
       'conveyorLoaded': conveyorLoaded,
       'conveyorSwing': conveyorSwing,
@@ -533,6 +536,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'iftPowerV1': null,
       'iftPowerW1': null,
       'iftPowerX1': null,
+      'monitorData': templateAKey.currentState?.getData(),
     };
     status = FormAPI().addOrder("IFT_OP4OE", opData, numRequested);
     return null;

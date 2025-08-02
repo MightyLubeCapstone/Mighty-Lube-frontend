@@ -584,7 +584,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'etOverheadM2': null,
         'etOverheadN2': null,
         'etOverheadS2': null,
-        "templateA": templateAKey.currentState?.getData(),
+        "monitorData": templateAKey.currentState?.getData(),
         "templateB": templateBKey.currentState?.getData(),
         "templateC": templateCKey.currentState?.getData(),
         "templateF": templateFKey.currentState?.getData()

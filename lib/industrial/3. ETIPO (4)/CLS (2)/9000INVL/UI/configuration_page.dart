@@ -47,7 +47,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorLoaded = -1;
   int? conveyorSwing = -1;
   int? measurementUnits = -1;
+  int? existingMonitoring = -1;
 
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
   final Validators validate = Validators();
   Future<bool>? status;
 
@@ -380,10 +382,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildDropdownFieldError(
           'Connecting to Existing Monitoring',
           ['Yes', 'No'],
-          null,
+          existingMonitoring,
           (value) {
             setState(() {
-              // Handle value
+              existingMonitoring = value;
             });
           },
         ),
@@ -398,6 +400,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
         ),
         CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
       ],
     );
   }
@@ -674,6 +677,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'enclosedTrackM2': null,
       'enclosedTrackN2': null,
       'enclosedTrackS2': null,
+      "monitorData": templateAKey.currentState?.getData()
     };
     status = FormAPI().addOrder("ETI_9000INVL", configurationData, numRequested);
     return null;

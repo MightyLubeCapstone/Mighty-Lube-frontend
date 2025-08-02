@@ -524,7 +524,7 @@ class CommonWidgets {
   // TemplateA Widget
   static Widget buildTemplateA(GlobalKey<TemplateAWidgetState>? key, Validators validators,
       {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
-    return TemplateAWidget(initialData: data, validators: validators, callback: callback!);
+    return TemplateAWidget(initialData: data, validators: validators, callback: callback);
   }
 
   // TemplateB Widget
@@ -872,6 +872,7 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
       label,
       options,
       _dropdowns[key],
+      errorText: widget.validators.errors[key],
       (val) => setState(() => _dropdowns[key] = val),
     );
   }
@@ -880,6 +881,7 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
     return CommonWidgets.buildTextField(
       label,
       _controllers[key]!,
+      errorText: widget.validators.errors[key],
       callback: (val) => widget.validators.validateTextField(val, key),
     );
   }
@@ -987,7 +989,8 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
       'currentNLGI',
       'zerkSide',
       'zerkOrientation',
-      'wheelDiameter'
+      'wheelDiameter',
+      'swayDetect',
     ].forEach(_initField);
   }
 
@@ -1016,10 +1019,11 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
     super.dispose();
   }
 
-  Widget _field(String label, String key, {bool multiline = false}) {
+  Widget _field(String label, String key) {
     return CommonWidgets.buildTextField(
       label,
       _controllers[key]!,
+      errorText: widget.validators.errors[key],
       callback: (val) => widget.validators.validateTextField(val, key),
     );
   }
@@ -1029,6 +1033,7 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
       label,
       options,
       _dropdowns[key],
+      errorText: widget.validators.errors[key],
       (val) => setState(() => _dropdowns[key] = val),
     );
   }
@@ -1156,6 +1161,7 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
     return CommonWidgets.buildTextField(
       label,
       _controllers[key]!,
+      errorText: widget.validators.errors[key],
       callback: (val) => widget.validators.validateTextField(val, key),
     );
   }
@@ -1165,6 +1171,7 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
       label,
       options,
       _dropdowns[key],
+      errorText: widget.validators.errors[key],
       (val) => setState(() => _dropdowns[key] = val),
     );
   }
@@ -1298,6 +1305,7 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
     return CommonWidgets.buildTextField(
       label,
       _controllers[key]!,
+      errorText: widget.validators.errors[key],
       callback: (val) => widget.validators.validateTextField(val, key),
     );
   }
@@ -1307,6 +1315,7 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
       label,
       options,
       _dropdowns[key],
+      errorText: widget.validators.errors[key],
       (val) => setState(() => _dropdowns[key] = val),
     );
   }
@@ -1408,6 +1417,7 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
     return CommonWidgets.buildTextField(
       label,
       _controllers[key]!,
+      errorText: widget.validators.errors[key],
       callback: (val) => widget.validators.validateTextField(val, key),
     );
   }
@@ -1417,6 +1427,7 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
       label,
       options,
       _dropdowns[key],
+      errorText: widget.validators.errors[key],
       (val) => setState(() => _dropdowns[key] = val),
     );
   }
@@ -1427,8 +1438,8 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionTitle("Template E - Mighty Lube Caterpillar Drive Lubricators"),
-        _field("Name of Conveyor System", 'nameConveyorD2'),
-        _dropdown("Conveyor Chain Size", 'chainSizeD2',
+        _field("Name of Conveyor System", 'nameConveyorE'),
+        _dropdown("Conveyor Chain Size", 'chainSizeE',
             ['3-inch', '4-inch', '6-inch', '8-inch', 'X-Type', 'I-Beam'])
       ],
     );
@@ -1492,6 +1503,7 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
     return CommonWidgets.buildTextField(
       label,
       _controllers[key]!,
+      errorText: widget.validators.errors[key],
       callback: (val) => widget.validators.validateTextField(val, key),
     );
   }
@@ -1501,6 +1513,7 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
       label,
       options,
       _dropdowns[key],
+      errorText: widget.validators.errors[key],
       (val) => setState(() => _dropdowns[key] = val),
     );
   }

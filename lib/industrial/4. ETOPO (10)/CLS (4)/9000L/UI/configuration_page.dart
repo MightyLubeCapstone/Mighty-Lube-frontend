@@ -606,7 +606,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'enclosedTrackM2': null,
         'enclosedTrackN2': null,
         'enclosedTrackS2': null,
-        "templateA": templateAKey.currentState?.getData(),
+        "monitorData": templateAKey.currentState?.getData(),
         "templateB": templateBKey.currentState?.getData(),
         "templateC": templateCKey.currentState?.getData(),
         "templateE": templateEKey.currentState?.getData()

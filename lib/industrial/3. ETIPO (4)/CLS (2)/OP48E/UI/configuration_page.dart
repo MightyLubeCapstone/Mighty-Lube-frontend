@@ -42,6 +42,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? lubricationTop = -1;
   int? cleanChain = -1;
   int? measurementUnits = -1;
+  int? existingMonitoring = -1;
+
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
 
   final Validators validate = Validators();
   Future<bool>? status;
@@ -344,10 +347,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildDropdownFieldError(
           'Connecting to Existing Monitoring',
           ['Yes', 'No'],
-          null,
+          existingMonitoring,
           (value) {
             setState(() {
-              // Handle value
+              existingMonitoring = value;
             });
           },
         ),
@@ -362,6 +365,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
         ),
         CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
       ],
     );
   }
@@ -631,6 +635,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conductor4': conductor4.text,
       'conductor7': conductor7.text,
       'conductor2': conductor2.text,
+      "monitorData": templateAKey.currentState?.getData()
     };
     status = FormAPI().addOrder("COE_OP4OE", op48eData, numRequested);
     return null;

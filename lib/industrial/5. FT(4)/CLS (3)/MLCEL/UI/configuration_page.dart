@@ -565,7 +565,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conductor4': conductor4.text,
         'conductor7': conductor7.text,
         'conductor2': conductor2.text,
-        "templateA": templateAKey.currentState?.getData(),
+        "monitorData": templateAKey.currentState?.getData(),
         "templateE": templateEKey.currentState?.getData()
       };
       status = FormAPI().addOrder("mlcel", mlcelData, numRequested);

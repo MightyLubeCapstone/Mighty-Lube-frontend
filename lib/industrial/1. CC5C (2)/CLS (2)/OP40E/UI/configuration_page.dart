@@ -841,7 +841,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "coeLinem": mInside.text,
         "coeLiney": yDiameter.text,
         "coeLinez": zLength.text,
-        "templateA": templateAKey.currentState?.getData()
+        "monitorData": templateAKey.currentState?.getData()
       };
       status = FormAPI().addOrder("CC5_OP40E", opData, numRequested);
       return null;

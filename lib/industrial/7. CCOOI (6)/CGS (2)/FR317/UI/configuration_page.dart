@@ -59,6 +59,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? plcConnection = -1;
   int? measurementUnits = -1;
 
+  final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  int? existingMonitoring = -1;
+
   final Validators validate = Validators();
   Future<bool>? status;
 
@@ -372,15 +375,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
+        CommonWidgets.buildDropdownFieldError(
           'Connecting to Existing Monitoring',
           ['Yes', 'No'],
+          existingMonitoring,
+          (value) {
+            setState(() {
+              existingMonitoring = value;
+            });
+          },
         ),
         CommonWidgets.buildDropdownField(
           'Add New Monitoring System',
           ['Yes', 'No'],
         ),
         CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateA(templateAKey, validate),
       ],
     );
   }
@@ -718,6 +729,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'frInvertedG': gWidth.text,
       'frInvertedH': hHeight.text,
       'frInvertedS': null,
+      'monitorData': templateAKey.currentState?.getData(),
     };
     status = FormAPI().addOrder("FRO_317", fr317Data, numRequested);
     return null;

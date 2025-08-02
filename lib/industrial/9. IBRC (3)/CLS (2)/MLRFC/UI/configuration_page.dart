@@ -47,6 +47,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController lubricationType = TextEditingController();
   final TextEditingController lubricationGrade = TextEditingController();
 
+  final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -320,11 +322,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField(
-            'Connecting to Existing Monitoring', ['Yes', 'No']),
+        CommonWidgets.buildDropdownFieldError(
+            'Connecting to Existing Monitoring', ['Yes', 'No'], existingMonitoring, (value) {
+          setState(() {
+            existingMonitoring = value;
+          });
+        }),
         CommonWidgets.buildDropdownField(
             'Add New Monitoring System', ['Yes', 'No']),
         CommonWidgets.buildSectionDivider(),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateB(templateBKey, validate),
       ],
     );
   }
@@ -432,6 +440,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'ibrChainC1': null,
       'ibrChainD1': null,
       'ibrChainF1': null,
+      'templateBData': templateBKey.currentState?.getData(),
     };
     status = FormAPI().addOrder("IBR_RFC", rfcData, numRequested);
     return null;
