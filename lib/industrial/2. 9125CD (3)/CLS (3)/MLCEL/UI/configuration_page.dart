@@ -593,9 +593,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "coeLineJ": jWidth.text,
         "coeLineX": xWidth.text,
         "coeLineY": yThickness.text,
-        "monitorData": templateAKey.currentState?.getData(),
-        "templateDData": templateDKey.currentState?.getData(),
-        "templateEData": templateEKey.currentState?.getData(),
+        "templateA": templateAKey.currentState?.getData(),
+        "templateD": templateDKey.currentState?.getData(),
+        "templateE": templateEKey.currentState?.getData(),
       };
       status = FormAPI().addOrder("COE_CEL", mlcelData, numRequested);
       return null;

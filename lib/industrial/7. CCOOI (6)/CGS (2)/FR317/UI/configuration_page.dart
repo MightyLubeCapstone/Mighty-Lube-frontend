@@ -33,8 +33,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController eBottom = TextEditingController();
   final TextEditingController gWidth = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
-  final TextEditingController sInverted = TextEditingController();  
-  
+  final TextEditingController sInverted = TextEditingController();
+
   // Dropdown values
   int? wheelManufacturer = -1;
   int? conveyorSpeedUnit = -1;
@@ -119,7 +119,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'optionalInfo',
     ],
     'Inverted P&F: Measurements': [
-      'measurementUnits','sInverted','hHeight','gWidth','eBottom','bDiameter','aInverted'
+      'measurementUnits',
+      'sInverted',
+      'hHeight',
+      'gWidth',
+      'eBottom',
+      'bDiameter',
+      'aInverted'
     ],
   };
 
@@ -179,7 +185,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(bDiameter.text, 'bDiameter');
     validate.validateTextField(aInverted.text, 'aInverted');
     validate.validateDropdownField(measurementUnits, 'measurementUnits');
-  
+
     setState(() {});
   }
 
@@ -214,8 +220,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 context,
                 'New/Existing Monitoring System',
                 buildNewMonitoringSystem(),
-                isError:
-                    validate.sectionError('New/Existing Monitoring System'),
+                isError: validate.sectionError('New/Existing Monitoring System'),
               ),
               CommonWidgets.buildGradientButton(
                 context,
@@ -390,8 +395,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           ['Yes', 'No'],
         ),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitoring == 1)
-          CommonWidgets.buildTemplateA(templateAKey, validate),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
       ],
     );
   }
@@ -590,10 +594,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildMeasurements() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildDropdownFieldError(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildDropdownFieldError(
           'Measurement Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
           measurementUnits,
@@ -603,143 +607,144 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
-          errorText: errors['measurementUnits'], 
+          errorText: errors['measurementUnits'],
         ),
-      // Image A
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Chain Drop (A)",
-        hintText: "Center of Chain to Opposite Edge of Rail",
-        imagePath: 'assets/Measurements/7/CGS/317/A.png',
-        controller: aInverted,
-        subHint: "(Center of Chain to Opposide Edge of Rail)",
-        errorText: errors['aInverted'],
-      ),
+        // Image A
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Chain Drop (A)",
+          hintText: "Center of Chain to Opposite Edge of Rail",
+          imagePath: 'assets/Measurements/7/CGS/317/A.png',
+          controller: aInverted,
+          subHint: "(Center of Chain to Opposide Edge of Rail)",
+          errorText: errors['aInverted'],
+        ),
 
-      // Image B
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Power Trolley Wheel (B)",
-        hintText: "Diameter",
-        imagePath: 'assets/Measurements/7/CGS/317/B.png',
-        controller: bDiameter,
-        subHint: "(Diameter)",
-        errorText: errors['bDiameter'],
-      ),
-      
-      // Image E
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Zerk Fitting Vertical Location (E)",
-        hintText: "Bottom of Rail to Zerk Fitting",
-        imagePath: 'assets/Measurements/7/CGS/317/E.png',
-        controller: eBottom,
-        subHint: "(Bottom of Rail to Zerk Fitting)",
-        errorText: errors['eBottom'],
-      ),
-      
-      // Image G
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail (G)",
-        hintText: "Width",
-        imagePath: 'assets/Measurements/7/CGS/317/G.png',
-        controller: gWidth,
-        subHint: "(Width)",
-        errorText: errors['gWidth'],
-      ),
-      
-      // Image H
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail (H)",
-        hintText: "Height",
-        imagePath: 'assets/Measurements/7/CGS/317/H.png',
-        controller: hHeight,
-        subHint: "(Height)",
-        errorText: errors['hHeight'],
-      ),
-      
-      // Image S
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Trolley Pitch [Spacing] Minimum - For Variables pitch chain, Provide the Minimum Pitch Dimensions (S)",
-        hintText: "Center of Power Wheel to Center of Power Wheel",
-        imagePath: 'assets/Measurements/7/CGS/317/S.png',
-        controller: sInverted,
-        subHint: "(Center of Power Wheel to Center of Power Wheel)",
-        errorText: errors['sInverted'],
-      ),  
-    ],
-  );
-}
+        // Image B
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Power Trolley Wheel (B)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/7/CGS/317/B.png',
+          controller: bDiameter,
+          subHint: "(Diameter)",
+          errorText: errors['bDiameter'],
+        ),
 
-  VoidCallback? addFR317Configuration(int numRequested) {
-  if (validForm()) {
-    dynamic fr317Data = {
-      'conveyorName': conveyorSystem.text,
-      'wheelManufacturer': wheelManufacturer,
-      'otherWheelManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': null,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': surroundingTemp,
-      'conveyorSwing': null,
-      'orientation': conveyorType,
-      'operatingVoltage': operatingVoltage.text,
-      'controlVoltage': null,
-      'compressedAir': null,
-      'airSupply': compressedAirUnit,
-      'templateB': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'freeWheelStatus': freeTrolleyWheels,
-      'guideRollerStatus': null,
-      'openRaceStyle': null,
-      'closedRaceStyle': null,
-      'openStatus': null,
-      'lubeBrand': equipBrand.text,
-      'lubeType': currentType.text,
-      'lubeViscosity': currentGrade.text,
-      'currentGrease': greaseType.text,
-      'currentGreaseGrade': greaseGrade.text,
-      'zerkDirection': zerkLocationOrientation,
-      'zerkLocation': zerkLocationSide,
-      'chainMaster': chainMaster.text,
-      'remoteStatus': remote,
-      'mountStatus': mountedOnGreaser,
-      'otherUnitStatus': controlsOtherUnits,
-      'timerStatus': timer,
-      'electricStatus': electricOnOff,
-      'pneumaticStatus': pneumaticOnOff,
-      'mightyLubeMonitoring': mightyLubeMonitoring,
-      'preMountType': null,
-      'plcConnection': plcConnection,
-      'otherControllerInfo': optionalInfo.text,
-      'frUnitType': null,
-      'frInvertedA': null,
-      'frInvertedB': null,
-      'frInvertedE': null,
-      'frInvertedG': gWidth.text,
-      'frInvertedH': hHeight.text,
-      'frInvertedS': null,
-      'monitorData': templateAKey.currentState?.getData(),
-    };
-    status = FormAPI().addOrder("FRO_317", fr317Data, numRequested);
-    return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
+        // Image E
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Zerk Fitting Vertical Location (E)",
+          hintText: "Bottom of Rail to Zerk Fitting",
+          imagePath: 'assets/Measurements/7/CGS/317/E.png',
+          controller: eBottom,
+          subHint: "(Bottom of Rail to Zerk Fitting)",
+          errorText: errors['eBottom'],
+        ),
+
+        // Image G
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/7/CGS/317/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+          errorText: errors['gWidth'],
+        ),
+
+        // Image H
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail (H)",
+          hintText: "Height",
+          imagePath: 'assets/Measurements/7/CGS/317/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+          errorText: errors['hHeight'],
+        ),
+
+        // Image S
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title:
+              "Inverted Power and Free Trolley Pitch [Spacing] Minimum - For Variables pitch chain, Provide the Minimum Pitch Dimensions (S)",
+          hintText: "Center of Power Wheel to Center of Power Wheel",
+          imagePath: 'assets/Measurements/7/CGS/317/S.png',
+          controller: sInverted,
+          subHint: "(Center of Power Wheel to Center of Power Wheel)",
+          errorText: errors['sInverted'],
+        ),
+      ],
     );
   }
-  return null;
-}
+
+  VoidCallback? addFR317Configuration(int numRequested) {
+    if (validForm()) {
+      dynamic fr317Data = {
+        'conveyorName': conveyorSystem.text,
+        'wheelManufacturer': wheelManufacturer,
+        'otherWheelManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': null,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': conveyorSpeedUnit,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': surroundingTemp,
+        'conveyorSwing': null,
+        'orientation': conveyorType,
+        'operatingVoltage': operatingVoltage.text,
+        'controlVoltage': null,
+        'compressedAir': null,
+        'airSupply': compressedAirUnit,
+        'templateB': {
+          'existingMonitor': null,
+          'newMonitor': null,
+        },
+        'freeWheelStatus': freeTrolleyWheels,
+        'guideRollerStatus': null,
+        'openRaceStyle': null,
+        'closedRaceStyle': null,
+        'openStatus': null,
+        'lubeBrand': equipBrand.text,
+        'lubeType': currentType.text,
+        'lubeViscosity': currentGrade.text,
+        'currentGrease': greaseType.text,
+        'currentGreaseGrade': greaseGrade.text,
+        'zerkDirection': zerkLocationOrientation,
+        'zerkLocation': zerkLocationSide,
+        'chainMaster': chainMaster.text,
+        'remoteStatus': remote,
+        'mountStatus': mountedOnGreaser,
+        'otherUnitStatus': controlsOtherUnits,
+        'timerStatus': timer,
+        'electricStatus': electricOnOff,
+        'pneumaticStatus': pneumaticOnOff,
+        'mightyLubeMonitoring': mightyLubeMonitoring,
+        'preMountType': null,
+        'plcConnection': plcConnection,
+        'otherControllerInfo': optionalInfo.text,
+        'frUnitType': null,
+        'frInvertedA': null,
+        'frInvertedB': null,
+        'frInvertedE': null,
+        'frInvertedG': gWidth.text,
+        'frInvertedH': hHeight.text,
+        'frInvertedS': null,
+        'templateA': templateAKey.currentState?.getData(),
+      };
+      status = FormAPI().addOrder("FRO_317", fr317Data, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
+    return null;
+  }
 
   buildErrorText(String message) {
     return Padding(

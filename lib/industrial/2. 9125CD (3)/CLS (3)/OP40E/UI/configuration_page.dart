@@ -683,9 +683,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'coeLineX': xWidth.text,
         'coeLineY': yThickness.text,
         'coeLineZ': zInside.text,
-        "monitorData": templateAKey.currentState?.getData(),
-        "templateDData": templateDKey.currentState?.getData(),
-        "templateFData": templateFKey.currentState?.getData(),
+        "templateA": templateAKey.currentState?.getData(),
+        "templateD": templateDKey.currentState?.getData(),
+        "templateF": templateFKey.currentState?.getData(),
       };
       status = FormAPI().addOrder("COE_OP4OE", opData, numRequested);
       return null;

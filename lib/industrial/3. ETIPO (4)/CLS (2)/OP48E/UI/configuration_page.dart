@@ -84,7 +84,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conductor7',
       'conductor2',
     ],
-    'Measurements': ['measurementUnits','bDiameter','gWidth','hHeight','sCenter','kDiameter','lWidth','mDiameter','nTop','s2Center'],
+    'Measurements': [
+      'measurementUnits',
+      'bDiameter',
+      'gWidth',
+      'hHeight',
+      'sCenter',
+      'kDiameter',
+      'lWidth',
+      'mDiameter',
+      'nTop',
+      's2Center'
+    ],
   };
 
   @override
@@ -137,10 +148,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate .validateDropdownField(
-        chainManufacturer, 'chainManufacturer');
-    validate.validateDropdownField(
-        conveyorChainSize, 'conveyorChainSize');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
     validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
 
@@ -189,8 +198,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 context,
                 'New/Existing Monitoring System',
                 buildNewMonitoringSystem(),
-                isError:
-                    validate.sectionError('New/Existing Monitoring System'),
+                isError: validate.sectionError('New/Existing Monitoring System'),
               ),
               CommonWidgets.buildGradientButton(
                 context,
@@ -216,7 +224,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildMeasurements(),
                 isError: validate.sectionError('Measurements'),
               ),
-              
             ],
           ),
         ),
@@ -250,8 +257,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorChainSize = value;
-              validate.validateDropdownField(
-                  conveyorChainSize, 'conveyorChainSize');
+              validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
             });
           },
         ),
@@ -272,8 +278,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               chainManufacturer = value;
-              validate.validateDropdownField(
-                  chainManufacturer, 'chainManufacturer');
+              validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
             });
           },
         ),
@@ -294,8 +299,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               directionOfTravel = value;
-              validate.validateDropdownField(
-                  directionOfTravel, 'directionOfTravel');
+              validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
             });
           },
         ),
@@ -314,8 +318,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               applicationEnvironment = value;
-              validate.validateDropdownField(
-                  applicationEnvironment, 'applicationEnvironment');
+              validate.validateDropdownField(applicationEnvironment, 'applicationEnvironment');
             });
           },
         ),
@@ -382,8 +385,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               lubricationSide = value;
-              validate.validateDropdownField(
-                  lubricationSide, 'lubricationSide');
+              validate.validateDropdownField(lubricationSide, 'lubricationSide');
             });
           },
         ),
@@ -426,8 +428,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               measurementUnits = value;
-              validate.validateDropdownField(
-                  measurementUnits, 'measurementUnits');
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
         ),
@@ -463,8 +464,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               measurementUnits = value;
-              validate.validateDropdownField(
-                  measurementUnits, 'measurementUnits');
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
         ),
@@ -493,17 +493,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildDropdownFieldError(
-        'Measurement Unit',
-        ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
-        measurementUnits,
-        (value) {
-          setState(() {
-            measurementUnits = value;
-            validate.validateDropdownField(measurementUnits, 'measurementUnits');
-          });
-        },
-        errorText: errors['measurementUnits'], 
-      ),
+          'Measurement Unit',
+          ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
+          measurementUnits,
+          (value) {
+            setState(() {
+              measurementUnits = value;
+              validate.validateDropdownField(measurementUnits, 'measurementUnits');
+            });
+          },
+          errorText: errors['measurementUnits'],
+        ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
           title: "Enclosed Track (Inverted) Power Trolley Wheel (B)",
@@ -533,7 +533,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildMeasurementFieldWithImage(
           context: context,
-          title: "Enclosed Track (Inverted) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
+          title:
+              "Enclosed Track (Inverted) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)",
           hintText: "Center of Power Wheel to Center of Power Wheel",
           imagePath: 'assets/Measurements/3/CLS/S.png',
           controller: sCenter,
@@ -585,67 +586,66 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
           errorText: errors['s2Center'],
         ),
-      
       ],
     );
   }
 
   VoidCallback? addOP48EConfiguration(int numRequested) {
-  if (validForm()) {
-    dynamic op48eData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'industrialChainManufacturer': chainManufacturer,
-      'otherIndustrialChainManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': null,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': null,
-      'conveyorIndex': null,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': null,
-      'conveyorLoaded': null,
-      'conveyorSwing': null,
-      'plantLayout': null,
-      'requiredPics': null,
-      'operatingVoltage': operatingVoltage.text,
-      'templateB': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'wheelOpenType': null,
-      'wheelClosedType': null,
-      'openStatus': null,
-      'holeStatus': null,
-      'railLubeStatus': lubricationSide,
-      'lubeBrand': null,
-      'lubeType': null,
-      'lubeViscosity': null,
-      'chainMaster': null,
-      'timerStatus': null,
-      'electricStatus': null,
-      'pneumaticStatus': null,
-      'mightyLubeMonitoring': null,
-      'plcConnection': null,
-      'otherControllerInfo': null,
-      'measurementUnits': measurementUnits,
-      'conductor4': conductor4.text,
-      'conductor7': conductor7.text,
-      'conductor2': conductor2.text,
-      "monitorData": templateAKey.currentState?.getData()
-    };
-    status = FormAPI().addOrder("COE_OP4OE", op48eData, numRequested);
+    if (validForm()) {
+      dynamic op48eData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherIndustrialChainManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': null,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': null,
+        'conveyorIndex': null,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': null,
+        'conveyorLoaded': null,
+        'conveyorSwing': null,
+        'plantLayout': null,
+        'requiredPics': null,
+        'operatingVoltage': operatingVoltage.text,
+        'templateB': {
+          'existingMonitor': null,
+          'newMonitor': null,
+        },
+        'wheelOpenType': null,
+        'wheelClosedType': null,
+        'openStatus': null,
+        'holeStatus': null,
+        'railLubeStatus': lubricationSide,
+        'lubeBrand': null,
+        'lubeType': null,
+        'lubeViscosity': null,
+        'chainMaster': null,
+        'timerStatus': null,
+        'electricStatus': null,
+        'pneumaticStatus': null,
+        'mightyLubeMonitoring': null,
+        'plcConnection': null,
+        'otherControllerInfo': null,
+        'measurementUnits': measurementUnits,
+        'conductor4': conductor4.text,
+        'conductor7': conductor7.text,
+        'conductor2': conductor2.text,
+        "templateA": templateAKey.currentState?.getData()
+      };
+      status = FormAPI().addOrder("COE_OP4OE", op48eData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
   Widget buildErrorText(String message) {
     return Padding(

@@ -712,7 +712,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'frInvertedG': gWidth.text,
         'frInvertedH': hHeight.text,
         'frInvertedS': null,
-        "monitorData": templateAKey.currentState?.getData()
+        "templateA": templateAKey.currentState?.getData()
       };
       status = FormAPI().addOrder("FC_317", fr317Data, numRequested);
       return null;

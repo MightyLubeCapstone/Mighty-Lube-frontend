@@ -70,8 +70,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
-    validate.validateDropdownField(
-        conveyorChainManufacturer, 'conveyorChainManufacturer');
+    validate.validateDropdownField(conveyorChainManufacturer, 'conveyorChainManufacturer');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
     validate.validateTextField(conveyorIndex.text, 'conveyorIndex');
@@ -147,8 +146,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const IBRCCLSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const IBRCCLSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -165,14 +164,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildCustomerPowerUtilitiesContent(),
                 isError: validate.sectionError("custom"),
               ),
-              CommonWidgets.buildGradientButton(context,
-                  'New/Existing Monitoring System', buildNewMonitoringSystem()),
-              CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(
-                  context, 'Controller', buildController()),
-              CommonWidgets.buildGradientButton(context,
-                  'In Board Roller Chain: Measurements', buildMeasurements()),
+                  context, 'New/Existing Monitoring System', buildNewMonitoringSystem()),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications()),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController()),
+              CommonWidgets.buildGradientButton(
+                  context, 'In Board Roller Chain: Measurements', buildMeasurements()),
             ],
           ),
         ),
@@ -194,11 +192,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonWidgets.buildTextField(
-                  'Enter Name of Conveyor System *', conveyorSystem,
+              CommonWidgets.buildTextField('Enter Name of Conveyor System *', conveyorSystem,
                   errorText: errors['conveyorName']),
-              if (errors['conveyorName'] != null)
-                buildErrorText(errors['conveyorName']!),
+              if (errors['conveyorName'] != null) buildErrorText(errors['conveyorName']!),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
               CommonWidgets.buildDropdownFieldError(
@@ -214,8 +210,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorChainSize = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorChainSize, 'conveyorChainSize');
+                    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
                   });
                 },
                 errorText: errors['conveyorChainSize'],
@@ -243,16 +238,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 },
                 errorText: errors['conveyorChainManufacturer'],
               ),
-              CommonWidgets.buildTextField(
-                  'Enter Conveyor Length', conveyorLength),
+              CommonWidgets.buildTextField('Enter Conveyor Length', conveyorLength),
               CommonWidgets.buildDropdownField('Conveyor Length Unit', [
                 'Feet',
                 'Inches',
                 'm Meter',
                 'mm Milimeter',
               ]),
-              CommonWidgets.buildTextField(
-                  'Enter Conveyor Speed (Min/Max)', conveyorSpeed),
+              CommonWidgets.buildTextField('Enter Conveyor Speed (Min/Max)', conveyorSpeed),
               CommonWidgets.buildDropdownField('Conveyor Speed Unit', [
                 'Feet/Minute',
                 'Meters/Minute',
@@ -279,18 +272,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                     'No',
                   ]),
               CommonWidgets.buildDropdownField(
-                  'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
-                  [
-                    'Loaded',
-                    'Unloaded',
-                  ]),
+                  'Is the Conveyor Loaded or Unloaded at Planned Install Location?', [
+                'Loaded',
+                'Unloaded',
+              ]),
               CommonWidgets.buildDropdownField(
                   'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side', [
                 'Yes',
                 'No',
               ]),
-              CommonWidgets.buildDropdownField(
-                  'Is Conveyor Single or Double Strand', [
+              CommonWidgets.buildDropdownField('Is Conveyor Single or Double Strand', [
                 'Single',
                 'Double',
               ]),
@@ -305,10 +296,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError(
-            'Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3'],
-            operatingVoltage, (value) {
+        CommonWidgets.buildDropdownFieldError('Operating Voltage - 3 Phase: (Volts/hz)',
+            ['Option 1', 'Option 2', 'Option 3'], operatingVoltage, (value) {
           setState(() {
             operatingVoltage = value;
           });
@@ -325,9 +314,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownFieldError(
-            'Connecting to Existing Monitoring',
-            ['Yes', 'No'],
-            existingMonitoring, (value) {
+            'Connecting to Existing Monitoring', ['Yes', 'No'], existingMonitoring, (value) {
           setState(() {
             existingMonitoring = value;
           });
@@ -339,8 +326,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           });
         }),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitoring == 1)
-          CommonWidgets.buildTemplateB(templateBKey, validate),
+        if (existingMonitoring == 1) CommonWidgets.buildTemplateB(templateBKey, validate),
       ],
     );
   }
@@ -350,16 +336,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownField('Wheel: Open Race Style',
-            ['Not Applicable', 'Open Inside', 'Open Outside ']),
         CommonWidgets.buildDropdownField(
-            'Wheel: Sealed Style', ['Extended', 'Flush', 'Recessed']),
-        CommonWidgets.buildDropdownField(
-            'Open Inside/ Shielded Outside', ['Yes', 'No']),
+            'Wheel: Open Race Style', ['Not Applicable', 'Open Inside', 'Open Outside ']),
+        CommonWidgets.buildDropdownField('Wheel: Sealed Style', ['Extended', 'Flush', 'Recessed']),
+        CommonWidgets.buildDropdownField('Open Inside/ Shielded Outside', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Free Trolley Wheels', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Guide Rollers', ['Yes', 'No']),
-        CommonWidgets.buildDropdownField('Guide Rollers Open Race Style',
-            ['Not Applicable ', 'Open Inside', 'Open Outside']),
+        CommonWidgets.buildDropdownField(
+            'Guide Rollers Open Race Style', ['Not Applicable ', 'Open Inside', 'Open Outside']),
         CommonWidgets.buildDropdownField(
             'Guide Rollers Sealed Styles', ['Extended', 'Flush', 'Recessed']),
         CommonWidgets.buildDropdownField('Open Hole', ['Yes', 'No']),
@@ -368,12 +352,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildDropdownField('King Pin', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Outboard Wheels', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Rail Lubrication', ['Yes', 'No']),
-        CommonWidgets.buildTextField(
-            'Enter Current Lubrication Equipment (Brand)', equipBrand),
-        CommonWidgets.buildTextField(
-            'Enter Current Lubricant Type', currentType),
-        CommonWidgets.buildTextField(
-            'Enter Current Lubricant Viscosity/Grade', currentGrade),
+        CommonWidgets.buildTextField('Enter Current Lubrication Equipment (Brand)', equipBrand),
+        CommonWidgets.buildTextField('Enter Current Lubricant Type', currentType),
+        CommonWidgets.buildTextField('Enter Current Lubricant Viscosity/Grade', currentGrade),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -384,13 +365,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField(
-            'Enter ChainMaster Controller', chainMaster),
+        CommonWidgets.buildTextField('Enter ChainMaster Controller', chainMaster),
         CommonWidgets.buildDropdownField('Timer', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Electric On/Off', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('Pneumatic On/Off', ['Yes', 'No']),
-        CommonWidgets.buildDropdownField(
-            'Mighty Lube Monitoring', ['Yes', 'No']),
+        CommonWidgets.buildDropdownField('Mighty Lube Monitoring', ['Yes', 'No']),
         CommonWidgets.buildDropdownField('PLC Connection', ['Yes', 'No']),
         CommonWidgets.buildTextField('Enter Other Details', optionalInfo),
         CommonWidgets.buildTextField(
@@ -415,73 +394,73 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   VoidCallback? addOP40E(int numRequested) {
-  if (validForm()) {
-    dynamic opData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'industrialChainManufacturer': conveyorChainManufacturer,
-      'otherChainManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'measurementUnit': measurementUnits,
-      'conveyorSpeed': conveyorSpeed.text,
-      'speedUnit': null,
-      'conveyorIndex': conveyorIndex.text,
-      'travelDirection': null,
-      'appEnviroment': null,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'monitorData': {
-        'existingMonitor': existingMonitoring,
-        'newMonitor': newMonitoring,
-      },
-      'surrondingTemp': null,
-      'conveyorLoaded': conveyorLoaded,
-      'conveyorSwing': null,
-      'strandStatus': null,
-      'plantLayout': null,
-      'requiredPics': null,
-      'operatingVoltage': operatingVoltage,
-      'controlVoltage': null,
-      'wheelOpenType': null,
-      'wheelClosedType': null,
-      'openStatus': null,
-      'freeWheelStatus': null,
-      'guideRollerStatus': null,
-      'openRaceStyle': null,
-      'closedRaceStyle': null,
-      'holeStatus': null,
-      'actuatorStatus': null,
-      'pivotStatus': null,
-      'kingPinStatus': null,
-      'outboardStatus': null,
-      'railLubeStatus': null,
-      'lubeBrand': equipBrand.text,
-      'lubeType': currentType.text,
-      'lubeViscosity': currentGrade.text,
-      'chainMaster': chainMaster.text,
-      'timerStatus': null,
-      'electricStatus': null,
-      'pneumaticStatus': null,
-      'mightyLubeMonitoring': null,
-      'plcConnection': null,
-      'otherControllerInfo': optionalInfo.text,
-      'ibrUnitType': null,
-      'ibrChainA1': null,
-      'ibrChainB1': null,
-      'ibrChainC1': null,
-      'ibrChainD1': null,
-      'ibrChainF1': null,
-      'templateBData': templateBKey.currentState?.getData(),
-    };
-    status = FormAPI().addOrder("IBR_OP4OE", opData, numRequested);
+    if (validForm()) {
+      dynamic opData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'industrialChainManufacturer': conveyorChainManufacturer,
+        'otherChainManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'measurementUnit': measurementUnits,
+        'conveyorSpeed': conveyorSpeed.text,
+        'speedUnit': null,
+        'conveyorIndex': conveyorIndex.text,
+        'travelDirection': null,
+        'appEnviroment': null,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'templateA': {
+          'existingMonitor': existingMonitoring,
+          'newMonitor': newMonitoring,
+        },
+        'surrondingTemp': null,
+        'conveyorLoaded': conveyorLoaded,
+        'conveyorSwing': null,
+        'strandStatus': null,
+        'plantLayout': null,
+        'requiredPics': null,
+        'operatingVoltage': operatingVoltage,
+        'controlVoltage': null,
+        'wheelOpenType': null,
+        'wheelClosedType': null,
+        'openStatus': null,
+        'freeWheelStatus': null,
+        'guideRollerStatus': null,
+        'openRaceStyle': null,
+        'closedRaceStyle': null,
+        'holeStatus': null,
+        'actuatorStatus': null,
+        'pivotStatus': null,
+        'kingPinStatus': null,
+        'outboardStatus': null,
+        'railLubeStatus': null,
+        'lubeBrand': equipBrand.text,
+        'lubeType': currentType.text,
+        'lubeViscosity': currentGrade.text,
+        'chainMaster': chainMaster.text,
+        'timerStatus': null,
+        'electricStatus': null,
+        'pneumaticStatus': null,
+        'mightyLubeMonitoring': null,
+        'plcConnection': null,
+        'otherControllerInfo': optionalInfo.text,
+        'ibrUnitType': null,
+        'ibrChainA1': null,
+        'ibrChainB1': null,
+        'ibrChainC1': null,
+        'ibrChainD1': null,
+        'ibrChainF1': null,
+        'templateB': templateBKey.currentState?.getData(),
+      };
+      status = FormAPI().addOrder("IBR_OP4OE", opData, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 
   Widget buildErrorText(String message) {
     return Padding(

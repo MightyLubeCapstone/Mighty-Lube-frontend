@@ -122,7 +122,16 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'optionalInfo',
     ],
     'Inverted P&F: Measurements': [
-      'measurementUnits','bDiameter','eInverted','gWidth','hHeight','kCenter','tLead','uLead','vLoad','wOutside'
+      'measurementUnits',
+      'bDiameter',
+      'eInverted',
+      'gWidth',
+      'hHeight',
+      'kCenter',
+      'tLead',
+      'uLead',
+      'vLoad',
+      'wOutside'
     ],
   };
 
@@ -172,10 +181,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(vLoad.text, 'vLoad');
     validate.validateTextField(wOutside.text, 'wOutside');
 
-
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -590,10 +597,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Widget buildMeasurements() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildDropdownFieldError(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildDropdownFieldError(
           'Measurement Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
           measurementUnits,
@@ -603,180 +610,179 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
-          errorText: errors['measurementUnits'], 
+          errorText: errors['measurementUnits'],
         ),
-      
-      // Image B
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Power Trolley Wheel (B)",
-        hintText: "Diameter",
-        imagePath: 'assets/Measurements/7/CGS/314/B.png',
-        controller: bDiameter,
-        subHint: "(Diameter)",
-        errorText: errors['bDiameter'],
-      ),
 
-      // Image E
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Zerk Fitting Vertical Location (E)",
-        hintText: "Bottom of Rail to Zerk Fitting",
-        imagePath: 'assets/Measurements/7/CGS/314/E.png',
-        controller: eInverted,
-        subHint: "(Bottom of Rail to Zerk Fitting)",
-        errorText: errors['eInverted'],
-      ),
-      
-      // Image G
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail (G)",
-        hintText: "Width",
-        imagePath: 'assets/Measurements/7/CGS/314/G.png',
-        controller: gWidth,
-        subHint: "(Width)",
-        errorText: errors['gWidth'],
-      ),
-      
-      // Image H
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail (H)",
-        hintText: "Height",
-        imagePath: 'assets/Measurements/7/CGS/314/H.png',
-        controller: hHeight,
-        subHint: "(Height)",
-        errorText: errors['hHeight'],
-      ),
-      
-      // Image K
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Trolley Wheel Pitch (K)",
-        hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
-        imagePath: 'assets/Measurements/7/CGS/314/K.png',
-        controller: kCenter,
-        subHint: "(Center of Tolley Wheel to Center of Trolley Wheel)",
-        errorText: errors['kCenter'],
-      ),
-      
-      // Image T
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail Carrier Trolley Pitch (T)",
-        hintText: "Lead to Load",
-        imagePath: 'assets/Measurements/7/CGS/314/T.png',
-        controller: tLead,
-        subHint: "(Lead to Load)",
-        errorText: errors['tLead'],
-      ),
-      
-      // Image U
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail Carrier Trolley Pitch (U)",
-        hintText: "Lead to Load",
-        imagePath: 'assets/Measurements/7/CGS/314/U.png',
-        controller: uLead,
-        subHint: "(Lead to Load)",
-        errorText: errors['uLead'],
-      ),
-      
-      // Image V
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail Carrier Trolley Pitch (V)",
-        hintText: "Load to Trailing",
-        imagePath: 'assets/Measurements/7/CGS/314/V.png',
-        controller: vLoad,
-        subHint: "(Load to Trailing)",
-        errorText: errors['vLoad'],
-      ),
-      
-      // Image W
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Trolley Wheel Offset (W)",
-        hintText: "Outside to Outside of Free Trolley Wheels",
-        imagePath: 'assets/Measurements/7/CGS/314/W.png',
-        controller: wOutside,
-        subHint: "(Outside to Outside of Free Trolley Wheels)",
-        errorText: errors['wOutside'],
-      ),
-      
-    ],
-  );
-}
+        // Image B
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Power Trolley Wheel (B)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/7/CGS/314/B.png',
+          controller: bDiameter,
+          subHint: "(Diameter)",
+          errorText: errors['bDiameter'],
+        ),
 
-  VoidCallback? addFR314Configuration(int numRequested) {
-  if (validForm()) {
-    dynamic fr314Data = {
-      'conveyorName': conveyorSystem.text,
-      'wheelManufacturer': wheelManufacturer,
-      'otherWheelManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': null,
-      'conveyorSpeed': conveyorSpeed.text,
-      'conveyorSpeedUnit': conveyorSpeedUnit,
-      'travelDirection': directionOfTravel,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': surroundingTemp,
-      'conveyorSwing': null,
-      'orientation': conveyorType,
-      'operatingVoltage': operatingVoltage.text,
-      'controlVoltage': null,
-      'compressedAir': compAir.text,
-      'airSupply': compressedAirUnit,
-      'templateB': {
-        'existingMonitor': null,
-        'newMonitor': null,
-      },
-      'freeWheelStatus': freeTrolleyWheels,
-      'actuatorStatus': dogActuator,
-      'pivotStatus': pivotPoints,
-      'kingPinStatus': kingPin,
-      'lubeBrand': equipBrand.text,
-      'lubeType': currentType.text,
-      'lubeViscosity': currentGrade.text,
-      'currentGrease': greaseType.text,
-      'currentGreaseGrade': greaseGrade.text,
-      'zerkDirection': zerkLocationOrientation,
-      'zerkLocation': zerkLocationSide,
-      'chainMaster': chainMaster.text,
-      'remoteStatus': remote,
-      'mountStatus': mountedOnGreaser,
-      'otherUnitStatus': controlsOtherUnits,
-      'timerStatus': timer,
-      'electricStatus': electricOnOff,
-      'pneumaticStatus': pneumaticOnOff,
-      'mightyLubeMonitoring': mightyLubeMonitoring,
-      'preMountType': null,
-      'plcConnection': plcConnection,
-      'otherControllerInfo': optionalInfo.text,
-      'frUnitType': null,
-      'frInvertedB': null,
-      'frInvertedE': null,
-      'frInvertedG': gWidth.text,
-      'frInvertedH': hHeight.text,
-      'frInvertedK': kCenter.text,
-      'frInvertedT': tLead.text,
-      'frInvertedU': null,
-      'frInvertedV': vLoad.text,
-      'frInvertedW': wOutside.text,
-      "monitorData": templateAKey.currentState?.getData()
-    };
-    status = FormAPI().addOrder("FRO_314", fr314Data, numRequested);
-    return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
+        // Image E
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Zerk Fitting Vertical Location (E)",
+          hintText: "Bottom of Rail to Zerk Fitting",
+          imagePath: 'assets/Measurements/7/CGS/314/E.png',
+          controller: eInverted,
+          subHint: "(Bottom of Rail to Zerk Fitting)",
+          errorText: errors['eInverted'],
+        ),
+
+        // Image G
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/7/CGS/314/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+          errorText: errors['gWidth'],
+        ),
+
+        // Image H
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail (H)",
+          hintText: "Height",
+          imagePath: 'assets/Measurements/7/CGS/314/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+          errorText: errors['hHeight'],
+        ),
+
+        // Image K
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Trolley Wheel Pitch (K)",
+          hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
+          imagePath: 'assets/Measurements/7/CGS/314/K.png',
+          controller: kCenter,
+          subHint: "(Center of Tolley Wheel to Center of Trolley Wheel)",
+          errorText: errors['kCenter'],
+        ),
+
+        // Image T
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail Carrier Trolley Pitch (T)",
+          hintText: "Lead to Load",
+          imagePath: 'assets/Measurements/7/CGS/314/T.png',
+          controller: tLead,
+          subHint: "(Lead to Load)",
+          errorText: errors['tLead'],
+        ),
+
+        // Image U
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail Carrier Trolley Pitch (U)",
+          hintText: "Lead to Load",
+          imagePath: 'assets/Measurements/7/CGS/314/U.png',
+          controller: uLead,
+          subHint: "(Lead to Load)",
+          errorText: errors['uLead'],
+        ),
+
+        // Image V
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail Carrier Trolley Pitch (V)",
+          hintText: "Load to Trailing",
+          imagePath: 'assets/Measurements/7/CGS/314/V.png',
+          controller: vLoad,
+          subHint: "(Load to Trailing)",
+          errorText: errors['vLoad'],
+        ),
+
+        // Image W
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Trolley Wheel Offset (W)",
+          hintText: "Outside to Outside of Free Trolley Wheels",
+          imagePath: 'assets/Measurements/7/CGS/314/W.png',
+          controller: wOutside,
+          subHint: "(Outside to Outside of Free Trolley Wheels)",
+          errorText: errors['wOutside'],
+        ),
+      ],
     );
   }
-  return null;
-}
+
+  VoidCallback? addFR314Configuration(int numRequested) {
+    if (validForm()) {
+      dynamic fr314Data = {
+        'conveyorName': conveyorSystem.text,
+        'wheelManufacturer': wheelManufacturer,
+        'otherWheelManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': null,
+        'conveyorSpeed': conveyorSpeed.text,
+        'conveyorSpeedUnit': conveyorSpeedUnit,
+        'travelDirection': directionOfTravel,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': surroundingTemp,
+        'conveyorSwing': null,
+        'orientation': conveyorType,
+        'operatingVoltage': operatingVoltage.text,
+        'controlVoltage': null,
+        'compressedAir': compAir.text,
+        'airSupply': compressedAirUnit,
+        'templateB': {
+          'existingMonitor': null,
+          'newMonitor': null,
+        },
+        'freeWheelStatus': freeTrolleyWheels,
+        'actuatorStatus': dogActuator,
+        'pivotStatus': pivotPoints,
+        'kingPinStatus': kingPin,
+        'lubeBrand': equipBrand.text,
+        'lubeType': currentType.text,
+        'lubeViscosity': currentGrade.text,
+        'currentGrease': greaseType.text,
+        'currentGreaseGrade': greaseGrade.text,
+        'zerkDirection': zerkLocationOrientation,
+        'zerkLocation': zerkLocationSide,
+        'chainMaster': chainMaster.text,
+        'remoteStatus': remote,
+        'mountStatus': mountedOnGreaser,
+        'otherUnitStatus': controlsOtherUnits,
+        'timerStatus': timer,
+        'electricStatus': electricOnOff,
+        'pneumaticStatus': pneumaticOnOff,
+        'mightyLubeMonitoring': mightyLubeMonitoring,
+        'preMountType': null,
+        'plcConnection': plcConnection,
+        'otherControllerInfo': optionalInfo.text,
+        'frUnitType': null,
+        'frInvertedB': null,
+        'frInvertedE': null,
+        'frInvertedG': gWidth.text,
+        'frInvertedH': hHeight.text,
+        'frInvertedK': kCenter.text,
+        'frInvertedT': tLead.text,
+        'frInvertedU': null,
+        'frInvertedV': vLoad.text,
+        'frInvertedW': wOutside.text,
+        "templateA": templateAKey.currentState?.getData()
+      };
+      status = FormAPI().addOrder("FRO_314", fr314Data, numRequested);
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
+    return null;
+  }
 
   Widget buildErrorText(String message) {
     return Padding(

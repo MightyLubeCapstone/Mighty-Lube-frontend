@@ -671,7 +671,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'ftTopN1': n1Width.text,
         'ftTopP1': p1Outside.text,
         'ftTopR1': r1Center.text,
-        "monitorData": templateAKey.currentState?.getData()
+        "templateA": templateAKey.currentState?.getData()
       };
       FormAPI().addOrder("FT_OPCO", configurationData, numRequested);
       return null;
