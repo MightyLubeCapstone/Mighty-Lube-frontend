@@ -21,7 +21,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController resSize = TextEditingController();
   final TextEditingController specialOP = TextEditingController();
   final Validators validate = Validators();
-  Future<bool>? status;
+  bool? status;
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
@@ -51,6 +51,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorSwing = -1;
 
   final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  Map<String, dynamic> templateAData = {};
   int? existingMonitoring = -1;
 
   Map<String, String?> errors = {
@@ -372,7 +373,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildDropdownField('Add New Monitoring System', ['Yes', 'No']),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateA(
+            templateAKey,
+            validate,
+            data: templateAData,
+            callback: (data) {
+              templateAData = data;
+            },
+          ),
       ],
     );
   }
@@ -466,7 +475,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addMLIFTL(int numRequested) {
+  Future<VoidCallback?> addMLIFTL(int numRequested) async {
     if (validForm()) {
       dynamic mlData = {
         'conveyorName': conveyorSystem.text,
@@ -524,9 +533,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'iftPowerU1': null,
         'iftPowerW1': null,
         'iftPowerX1': null,
-        'templateA': templateAKey.currentState?.getData(),
+        'templateA': templateAData,
       };
-      status = FormAPI().addOrder("IFT_IFTL", mlData, numRequested);
+      status = await FormAPI().addOrder("IFT_IFTL", mlData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

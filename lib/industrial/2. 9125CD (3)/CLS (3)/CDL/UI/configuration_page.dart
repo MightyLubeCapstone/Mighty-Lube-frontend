@@ -14,7 +14,7 @@ class ConfigurationSection extends StatefulWidget {
 class _ConfigurationSectionState extends State<ConfigurationSection> {
   int itemCount = 1; // Default count
   final Validators validate = Validators();
-  Future<bool>? status;
+  bool? status;
 
   // Text Controllers
   final TextEditingController conveyorSystem = TextEditingController();
@@ -51,7 +51,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? lubricationTopChain = -1;
   int? chainClean = -1;
   int? measurementUnits = -1;
- 
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -73,8 +72,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
-    validate.validateDropdownField(
-        conveyorChainManufacturer, 'conveyorChainManufacturer');
+    validate.validateDropdownField(conveyorChainManufacturer, 'conveyorChainManufacturer');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
     validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
@@ -136,29 +134,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const ProductsCOEDL()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const ProductsCOEDL()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
                   isError: validate.sectionError('General Information')),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
                   isError: validate.sectionError('Customer Power Utilities')),
-              CommonWidgets.buildGradientButton(context,
-                  'New/Existing Monitoring System', buildMonitoringFeatures(),
-                  isError:
-                      validate.sectionError('New/Existing Monitoring System')),
-              CommonWidgets.buildGradientButton(context,
-                  'Conveyor Specifications', buildConveyorSpecifications(),
-                  isError: validate.sectionError('Conveyor Specifications')),
               CommonWidgets.buildGradientButton(
-                  context, 'Controller', buildController(),
+                  context, 'New/Existing Monitoring System', buildMonitoringFeatures(),
+                  isError: validate.sectionError('New/Existing Monitoring System')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Conveyor Specifications', buildConveyorSpecifications(),
+                  isError: validate.sectionError('Conveyor Specifications')),
+              CommonWidgets.buildGradientButton(context, 'Controller', buildController(),
                   isError: validate.sectionError('Controller')),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: validate.sectionError('Wire')),
@@ -183,27 +177,19 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonWidgets.buildTextField(
-                  'Name of Conveyor System *', conveyorSystem,
+              CommonWidgets.buildTextField('Name of Conveyor System *', conveyorSystem,
                   errorText: errors['conveyorName']),
-              if (errors['conveyorName'] != null)
-                buildErrorText(errors['conveyorName']!),
+              if (errors['conveyorName'] != null) buildErrorText(errors['conveyorName']!),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
               CommonWidgets.buildDropdownFieldError(
                 'Conveyor Chain Size',
-                [
-                  'X348 Chain (3”)',
-                  'X458 Chain (4”)',
-                  'OX678 Chain (6”)',
-                  'Other'
-                ],
+                ['X348 Chain (3”)', 'X458 Chain (4”)', 'OX678 Chain (6”)', 'Other'],
                 conveyorChainSize,
                 (value) {
                   setState(() {
                     conveyorChainSize = value; // Update state properly
-                    validate.validateDropdownField(
-                        conveyorChainSize, 'conveyorChainSize');
+                    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
                   });
                 },
                 errorText: errors['conveyorChainSize'],
@@ -240,12 +226,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   conveyorLoaded, (value) {
                 setState(() {
                   conveyorLoaded = value; // Update state properly
-                  validate.validateDropdownField(
-                      conveyorLoaded, 'conveyorLoaded');
+                  validate.validateDropdownField(conveyorLoaded, 'conveyorLoaded');
                 });
               }, errorText: errors['conveyorLoaded']),
-              CommonWidgets.buildDropdownFieldError(
-                  'Is this a Drip Line', ['Yes', 'No'], dripLine, (value) {
+              CommonWidgets.buildDropdownFieldError('Is this a Drip Line', ['Yes', 'No'], dripLine,
+                  (value) {
                 setState(() {
                   dripLine = value; // Update state properly
                   validate.validateDropdownField(dripLine, 'dripLine');
@@ -260,14 +245,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildDropdownFieldError(
-            'Operating Voltage - 3 Phase: (Volts/hz)',
-            ['Option 1', 'Option 2', 'Option 3'],
-            operatingVoltage, (value) {
+        CommonWidgets.buildDropdownFieldError('Operating Voltage - 3 Phase: (Volts/hz)',
+            ['Option 1', 'Option 2', 'Option 3'], operatingVoltage, (value) {
           setState(() {
             operatingVoltage = value; // Update state properly
-            validate.validateDropdownField(
-                operatingVoltage, 'operatingVoltage');
+            validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
           });
         }, errorText: errors['operatingVoltage']),
         CommonWidgets.buildDropdownFieldError(
@@ -281,8 +263,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
         ),
         CommonWidgets.buildDropdownFieldError(
-            '3-Station Push Button Switch', ['Yes', 'No'], pushButtonSwitch,
-            (value) {
+            '3-Station Push Button Switch', ['Yes', 'No'], pushButtonSwitch, (value) {
           setState(() {
             pushButtonSwitch = value; // Update state properly
           });
@@ -297,9 +278,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownFieldError(
-            'Connecting to Existing Monitoring',
-            ['Yes', 'No'],
-            existingMonitoring, (value) {
+            'Connecting to Existing Monitoring', ['Yes', 'No'], existingMonitoring, (value) {
           setState(() {
             existingMonitoring = value; // Update state properly
           });
@@ -320,39 +299,38 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildDropdownFieldError(
-            'Drive Motor Amp', ['Yes', 'No'], driveMotorAmp, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Motor Amp', ['Yes', 'No'], driveMotorAmp,
+            (value) {
           setState(() {
             driveMotorAmp = value; // Update state properly
           });
         }),
-        CommonWidgets.buildDropdownFieldError(
-            'Drive Take-up-Air', ['Yes', 'No'], driveTakeUpAir, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Take-up-Air', ['Yes', 'No'], driveTakeUpAir,
+            (value) {
           setState(() {
             driveTakeUpAir = value; // Update state properly
           });
         }),
-        CommonWidgets.buildDropdownFieldError(
-            'Take-Up Distance', ['Yes', 'No'], takeUpDistance, (value) {
+        CommonWidgets.buildDropdownFieldError('Take-Up Distance', ['Yes', 'No'], takeUpDistance,
+            (value) {
           setState(() {
             takeUpDistance = value; // Update state properly
           });
         }),
-        CommonWidgets.buildDropdownFieldError(
-            'Drive Motor Temp', ['Yes', 'No'], driveMotorTemp, (value) {
+        CommonWidgets.buildDropdownFieldError('Drive Motor Temp', ['Yes', 'No'], driveMotorTemp,
+            (value) {
           setState(() {
             driveMotorTemp = value; // Update state properly
           });
         }),
         CommonWidgets.buildDropdownFieldError(
-            'Drive Motor Vibration', ['Yes', 'No'], driveMotorVibration,
-            (value) {
+            'Drive Motor Vibration', ['Yes', 'No'], driveMotorVibration, (value) {
           setState(() {
             driveMotorVibration = value; // Update state properly
           });
         }),
-        CommonWidgets.buildDropdownFieldError('Bent or Missing Trolley detect',
-            ['Yes', 'No'], bentOrMissingTrolley, (value) {
+        CommonWidgets.buildDropdownFieldError(
+            'Bent or Missing Trolley detect', ['Yes', 'No'], bentOrMissingTrolley, (value) {
           setState(() {
             bentOrMissingTrolley = value; // Update state properly
           });
@@ -368,17 +346,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       children: [
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownFieldError(
-            'Lubrication from the Side of Chain',
-            ['Yes', 'No'],
-            lubricationSideChain, (value) {
+            'Lubrication from the Side of Chain', ['Yes', 'No'], lubricationSideChain, (value) {
           setState(() {
             lubricationSideChain = value; // Update state properly
           });
         }),
         CommonWidgets.buildDropdownFieldError(
-            'Lubrication from the Top of Chain',
-            ['Yes', 'No'],
-            lubricationTopChain, (value) {
+            'Lubrication from the Top of Chain', ['Yes', 'No'], lubricationTopChain, (value) {
           setState(() {
             lubricationTopChain = value; // Update state properly
           });
@@ -401,12 +375,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownField(
             'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
-        CommonWidgets.buildTextField(
-            'Enter 4 Conductor Number Here', conductor4),
-        CommonWidgets.buildTextField(
-            'Enter 7 Conductor Number Here', conductor7),
-        CommonWidgets.buildTextField(
-            'Enter 2 Conductor Number Here', conductor2),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -419,12 +390,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         CommonWidgets.buildSectionDivider(),
         CommonWidgets.buildDropdownField(
             'Measurement Units', ['Feet', 'Inches', 'm Meter', 'mm Milimeter']),
-        CommonWidgets.buildTextField(
-            'Enter 4 Conductor Number Here', conductor4),
-        CommonWidgets.buildTextField(
-            'Enter 7 Conductor Number Here', conductor7),
-        CommonWidgets.buildTextField(
-            'Enter 2 Conductor Number Here', conductor2),
+        CommonWidgets.buildTextField('Enter 4 Conductor Number Here', conductor4),
+        CommonWidgets.buildTextField('Enter 7 Conductor Number Here', conductor7),
+        CommonWidgets.buildTextField('Enter 2 Conductor Number Here', conductor2),
         CommonWidgets.buildSectionDivider(),
       ],
     );
@@ -444,22 +412,40 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addCDL(int numRequested) {
-  if (validForm()) {
-    dynamic cdlData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'ovenStatus': null, 
-      'ovenTemp': null,
-      'controlVoltSingle': operatingVoltage,
-    };
-    status = FormAPI().addOrder("COE_CDL", cdlData, numRequested);
+  Future<VoidCallback?> addCDL(int numRequested) async {
+    if (validForm()) {
+      dynamic cdlData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'controlVoltSingle': operatingVoltage,
+      };
+      status = await FormAPI().addOrder("COE_CDL", cdlData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
     return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
-    );
   }
-  return null;
-}
 }

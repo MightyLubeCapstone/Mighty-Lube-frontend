@@ -528,28 +528,33 @@ class CommonWidgets {
   }
 
   // TemplateB Widget
-  static Widget buildTemplateB(GlobalKey<TemplateBWidgetState>? key, Validators validators) {
-    return TemplateBWidget(key: key, validators: validators);
+  static Widget buildTemplateB(GlobalKey<TemplateBWidgetState>? key, Validators validators,
+      {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
+    return TemplateBWidget(initialData: data, validators: validators, callback: callback);
   }
 
   // TemplateC Widget
-  static Widget buildTemplateC(GlobalKey<TemplateCWidgetState>? key, Validators validators) {
-    return TemplateCWidget(key: key, validators: validators);
+  static Widget buildTemplateC(GlobalKey<TemplateCWidgetState>? key, Validators validators,
+      {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
+    return TemplateCWidget(initialData: data, validators: validators, callback: callback);
   }
 
   // TemplateD Widget
-  static Widget buildTemplateD(GlobalKey<TemplateDWidgetState>? key, Validators validators) {
-    return TemplateDWidget(key: key, validators: validators);
+  static Widget buildTemplateD(GlobalKey<TemplateDWidgetState>? key, Validators validators,
+      {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
+    return TemplateDWidget(initialData: data, validators: validators, callback: callback);
   }
 
   // TemplateE Widget for Mighty Lube Caterpillar Drive Lubricators
-  static Widget buildTemplateE(GlobalKey<TemplateEWidgetState>? key, Validators validators) {
-    return TemplateEWidget(key: key, validators: validators);
+  static Widget buildTemplateE(GlobalKey<TemplateEWidgetState>? key, Validators validators,
+      {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
+    return TemplateEWidget(initialData: data, validators: validators, callback: callback);
   }
 
   // TemplateF Widget for OP-52
-  static Widget buildTemplateF(GlobalKey<TemplateFWidgetState>? key, Validators validators) {
-    return TemplateFWidget(key: key, validators: validators);
+  static Widget buildTemplateF(GlobalKey<TemplateFWidgetState>? key, Validators validators,
+      {Map<String, dynamic>? data, void Function(Map<String, dynamic>)? callback}) {
+    return TemplateFWidget(initialData: data, validators: validators, callback: callback);
   }
 }
 
@@ -947,7 +952,9 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
 
 class TemplateBWidget extends StatefulWidget {
   final Validators validators;
-  const TemplateBWidget({super.key, required this.validators});
+  Map<String, dynamic>? initialData;
+  void Function(Map<String, dynamic>)? callback;
+  TemplateBWidget({super.key, this.initialData, required this.validators, this.callback});
 
   @override
   State<TemplateBWidget> createState() => TemplateBWidgetState();
@@ -992,6 +999,17 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
       'wheelDiameter',
       'swayDetect',
     ].forEach(_initField);
+    if (widget.initialData != null && widget.initialData != {}) {
+      widget.initialData!.forEach((key, value) {
+        if (_controllers.containsKey(key) && value is String) {
+          _controllers[key]!.text = value;
+        } else if (_dropdowns.containsKey(key) && value is int?) {
+          _dropdowns[key] = value;
+        } else if (_toggles.containsKey(key) && value is bool) {
+          _toggles[key] = value;
+        }
+      });
+    }
   }
 
   Map<String, dynamic> getData() {
@@ -1013,6 +1031,21 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
 
   @override
   void dispose() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    // dark fucking magic, scary ahhh
+    widget.callback!(data);
     for (var c in _controllers.values) {
       c.dispose();
     }
@@ -1085,7 +1118,9 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
 
 class TemplateCWidget extends StatefulWidget {
   final Validators validators;
-  const TemplateCWidget({super.key, required this.validators});
+  Map<String, dynamic>? initialData;
+  void Function(Map<String, dynamic>)? callback;
+  TemplateCWidget({super.key, this.initialData, required this.validators, this.callback});
 
   @override
   State<TemplateCWidget> createState() => TemplateCWidgetState();
@@ -1130,6 +1165,17 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
       'zerkOrientationC',
       'wheelDiameterC'
     ].forEach(_initField);
+    if (widget.initialData != null && widget.initialData != {}) {
+      widget.initialData!.forEach((key, value) {
+        if (_controllers.containsKey(key) && value is String) {
+          _controllers[key]!.text = value;
+        } else if (_dropdowns.containsKey(key) && value is int?) {
+          _dropdowns[key] = value;
+        } else if (_toggles.containsKey(key) && value is bool) {
+          _toggles[key] = value;
+        }
+      });
+    }
   }
 
   Map<String, dynamic> getData() {
@@ -1151,6 +1197,21 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
 
   @override
   void dispose() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    // dark fucking magic, scary ahhh
+    widget.callback!(data);
     for (var c in _controllers.values) {
       c.dispose();
     }
@@ -1224,7 +1285,9 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
 
 class TemplateDWidget extends StatefulWidget {
   final Validators validators;
-  const TemplateDWidget({super.key, required this.validators});
+  Map<String, dynamic>? initialData;
+  void Function(Map<String, dynamic>)? callback;
+  TemplateDWidget({super.key, this.initialData, required this.validators, this.callback});
 
   @override
   State<TemplateDWidget> createState() => TemplateDWidgetState();
@@ -1274,6 +1337,17 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
       'preMountingD',
       'otherDescribeD'
     ].forEach(_initField);
+    if (widget.initialData != null && widget.initialData != {}) {
+      widget.initialData!.forEach((key, value) {
+        if (_controllers.containsKey(key) && value is String) {
+          _controllers[key]!.text = value;
+        } else if (_dropdowns.containsKey(key) && value is int?) {
+          _dropdowns[key] = value;
+        } else if (_toggles.containsKey(key) && value is bool) {
+          _toggles[key] = value;
+        }
+      });
+    }
   }
 
   Map<String, dynamic> getData() {
@@ -1295,6 +1369,21 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
 
   @override
   void dispose() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // Collect toggle values
+    _toggles.forEach((key, value) {
+      data[key] = value;
+    });
+    // dark fucking magic, scary ahhh
+    widget.callback!(data);
     for (var c in _controllers.values) {
       c.dispose();
     }
@@ -1371,7 +1460,9 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
 
 class TemplateEWidget extends StatefulWidget {
   final Validators validators;
-  const TemplateEWidget({super.key, required this.validators});
+  Map<String, dynamic>? initialData;
+  void Function(Map<String, dynamic>)? callback;
+  TemplateEWidget({super.key, this.initialData, required this.validators, this.callback});
 
   @override
   State<TemplateEWidget> createState() => TemplateEWidgetState();
@@ -1390,6 +1481,15 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
   void initState() {
     super.initState();
     ['nameConveyorE', 'chainSizeE'].forEach(_initField);
+    if (widget.initialData != null && widget.initialData != {}) {
+      widget.initialData!.forEach((key, value) {
+        if (_controllers.containsKey(key) && value is String) {
+          _controllers[key]!.text = value;
+        } else if (_dropdowns.containsKey(key) && value is int?) {
+          _dropdowns[key] = value;
+        }
+      });
+    }
   }
 
   Map<String, dynamic> getData() {
@@ -1407,6 +1507,17 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
 
   @override
   void dispose() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // dark fucking magic, scary ahhh
+    widget.callback!(data);
     for (var c in _controllers.values) {
       c.dispose();
     }
@@ -1448,7 +1559,9 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
 
 class TemplateFWidget extends StatefulWidget {
   final Validators validators;
-  const TemplateFWidget({super.key, required this.validators});
+  Map<String, dynamic>? initialData;
+  void Function(Map<String, dynamic>)? callback;
+  TemplateFWidget({super.key, this.initialData, required this.validators, this.callback});
 
   @override
   State<TemplateFWidget> createState() => TemplateFWidgetState();
@@ -1476,6 +1589,15 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
       'm12PlugsF',
       'mainBackupF'
     ].forEach(_initField);
+    if (widget.initialData != null && widget.initialData != {}) {
+      widget.initialData!.forEach((key, value) {
+        if (_controllers.containsKey(key) && value is String) {
+          _controllers[key]!.text = value;
+        } else if (_dropdowns.containsKey(key) && value is int?) {
+          _dropdowns[key] = value;
+        }
+      });
+    }
   }
 
   Map<String, dynamic> getData() {
@@ -1493,6 +1615,17 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
 
   @override
   void dispose() {
+    final Map<String, dynamic> data = {};
+    // Collect text field values
+    _controllers.forEach((key, controller) {
+      data[key] = controller.text;
+    });
+    // Collect dropdown values
+    _dropdowns.forEach((key, value) {
+      data[key] = value; // nullable int
+    });
+    // dark fucking magic, scary ahhh
+    widget.callback!(data);
     for (var c in _controllers.values) {
       c.dispose();
     }

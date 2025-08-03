@@ -43,12 +43,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Future<void> _validateForm() async {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate .validateDropdownField(
-        chainManufacturer, 'chainManufacturer');
-    validate.validateDropdownField(
-        conveyorLengthUnit, 'conveyorLengthUnit');
-    validate.validateDropdownField(
-        conveyorSpeedUnit, 'conveyorSpeedUnit');
+    validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
+    validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
+    validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
 
     setState(() {});
   }
@@ -131,8 +128,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           conveyorSystem,
           errorText: errors['conveyorSystem'],
         ),
-        if (errors['conveyorSystem'] != null)
-          buildErrorText(errors['conveyorSystem']!),
+        if (errors['conveyorSystem'] != null) buildErrorText(errors['conveyorSystem']!),
         CommonWidgets.buildDropdownFieldError(
           'Chain Manufacturer',
           [
@@ -150,8 +146,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               chainManufacturer = value;
-              validate.validateDropdownField(
-                  chainManufacturer, 'chainManufacturer');
+              validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
             });
           },
           errorText: errors['chainManufacturer'],
@@ -161,8 +156,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           conveyorLength,
           errorText: errors['conveyorLength'],
         ),
-        if (errors['conveyorLength'] != null)
-          buildErrorText(errors['conveyorLength']!),
+        if (errors['conveyorLength'] != null) buildErrorText(errors['conveyorLength']!),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Length Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeters'],
@@ -170,8 +164,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorLengthUnit = value;
-              validate.validateDropdownField(
-                  conveyorLengthUnit, 'conveyorLengthUnit');
+              validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
             });
           },
           errorText: errors['conveyorLengthUnit'],
@@ -183,8 +176,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               conveyorSpeedUnit = value;
-              validate.validateDropdownField(
-                  conveyorSpeedUnit, 'conveyorSpeedUnit');
+              validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
             });
           },
           errorText: errors['conveyorSpeedUnit'],
@@ -208,7 +200,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addConfiguration(int numRequested) {
+  Future<VoidCallback?> addConfiguration(int numRequested) async {
     if (validForm()) {
       dynamic configurationData = {
         'conveyorSystem': conveyorSystem.text,
@@ -216,7 +208,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conveyorLength': conveyorLength.text,
         'conveyorLengthUnit': conveyorLengthUnit,
       };
-      FormAPI().addOrder("ETI_91", configurationData, numRequested);
+      bool status = await FormAPI().addOrder("ETI_91", configurationData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

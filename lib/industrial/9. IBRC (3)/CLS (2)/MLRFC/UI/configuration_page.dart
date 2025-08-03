@@ -20,7 +20,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController resSize = TextEditingController();
   final TextEditingController specialOP = TextEditingController();
   final Validators validate = Validators();
-  Future<bool>? status;
+  bool? status;
   final TextEditingController operatingVoltage = TextEditingController();
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
@@ -48,6 +48,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController lubricationGrade = TextEditingController();
 
   final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  Map<String, dynamic> templateBData = {};
 
   Map<String, String?> errors = {
     'conveyorSystem': null,
@@ -320,7 +321,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         }),
         CommonWidgets.buildDropdownField('Add New Monitoring System', ['Yes', 'No']),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitoring == 1) CommonWidgets.buildTemplateB(templateBKey, validate),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateB(templateBKey, validate, data: templateBData,
+              callback: (data) {
+            templateBData = data;
+          }),
       ],
     );
   }
@@ -377,7 +382,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addMLRFC(int numRequested) {
+  Future<VoidCallback?> addMLRFC(int numRequested) async {
     if (validForm()) {
       dynamic rfcData = {
         'conveyorName': conveyorSystem.text,
@@ -424,9 +429,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'ibrChainC1': null,
         'ibrChainD1': null,
         'ibrChainF1': null,
-        'templateB': templateBKey.currentState?.getData(),
+        'templateB': templateBData,
       };
-      status = FormAPI().addOrder("IBR_RFC", rfcData, numRequested);
+      status = await FormAPI().addOrder("IBR_RFC", rfcData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

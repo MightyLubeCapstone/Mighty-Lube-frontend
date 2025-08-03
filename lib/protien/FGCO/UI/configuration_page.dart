@@ -31,8 +31,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   Map<String, String?> errors = {};
 
-  void _validateTextField(String value, String field,
-      {bool isNum = false, bool decimal = false}) {
+  void _validateTextField(String value, String field, {bool isNum = false, bool decimal = false}) {
     setState(() {
       if (value.trim().isEmpty) {
         errors[field] = 'This field is required.';
@@ -51,13 +50,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   void _validateDropdownField(int? value, String field) {
     setState(() {
-      errors[field] =
-          (value == null || value == -1) ? 'This field is required.' : null;
+      errors[field] = (value == null || value == -1) ? 'This field is required.' : null;
     });
   }
 
-  void _validatorDelay(String value, String field,
-      {bool isNum = false, bool decimal = false}) {
+  void _validatorDelay(String value, String field, {bool isNum = false, bool decimal = false}) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
@@ -79,8 +76,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     _validateDropdownField(installationClearance, 'installationClearance');
     _validateDropdownField(pushButton, 'pushButton');
     _validateDropdownField(conveyorLoaded, 'conveyorLoaded');
-    _validateTextField(operatingVoltage.text, 'operatingVoltage',
-        isNum: true, decimal: true);
+    _validateTextField(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
 
     setState(() {});
   }
@@ -105,17 +101,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   void _onOpChanged() {
-    _validatorDelay(operatingVoltage.text, 'operatingVoltage',
-        isNum: true, decimal: true);
+    _validatorDelay(operatingVoltage.text, 'operatingVoltage', isNum: true, decimal: true);
   }
 
   final Map<String, List<String>> sections = {
-    "general": [
-      'conveyorName',
-      'conveyorChainSize',
-      'chainManufacturer',
-      'conveyorLoaded'
-    ],
+    "general": ['conveyorName', 'conveyorChainSize', 'chainManufacturer', 'conveyorLoaded'],
     "customerPowerUtilities": ['operatingVoltage'],
     "opss": ['installationClearance'],
     "additional": ['pushButton']
@@ -129,19 +119,17 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const ProteinHome()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const ProteinHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
                   isError: sectionError("general")),
               CommonWidgets.buildGradientButton(
-                  context,
-                  'Customer Power Utilities',
-                  buildCustomerPowerUtilitiesContent(),
+                  context, 'Customer Power Utilities', buildCustomerPowerUtilitiesContent(),
                   isError: sectionError("customerPowerUtilities")),
               CommonWidgets.buildGradientButton(context, 'OP-SS', buildOPSS(),
                   isError: sectionError("opss")),
@@ -173,8 +161,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonWidgets.buildTextField(
-                  'Name of Conveyor System *', conveyorSystemName,
+              CommonWidgets.buildTextField('Name of Conveyor System *', conveyorSystemName,
                   errorText: errors['conveyorName']),
               CommonWidgets.buildSectionDivider(),
               CommonWidgets.buildSectionTitle('Conveyor Details'),
@@ -191,8 +178,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     conveyorChainSize = (value); // Update state properly
-                    _validateDropdownField(
-                        conveyorChainSize, 'conveyorChainSize');
+                    _validateDropdownField(conveyorChainSize, 'conveyorChainSize');
                   });
                 },
                 errorText: errors['conveyorChainSize'],
@@ -215,8 +201,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 (value) {
                   setState(() {
                     chainManufacturer = (value); // Update state properly
-                    _validateDropdownField(
-                        chainManufacturer, 'chainManufacturer');
+                    _validateDropdownField(chainManufacturer, 'chainManufacturer');
                   });
                 },
                 errorText: errors['chainManufacturer'],
@@ -279,8 +264,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           (value) {
             setState(() {
               installationClearance = (value); // Update state properly
-              _validateDropdownField(
-                  installationClearance, 'installationClearance');
+              _validateDropdownField(installationClearance, 'installationClearance');
             });
           },
           errorText: errors['installationClearance'],
@@ -317,8 +301,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             });
           },
         ),
-        CommonWidgets.buildTextField(
-            'Enter Other Information Here: ', additionalOtherInfo),
+        CommonWidgets.buildTextField('Enter Other Information Here: ', additionalOtherInfo),
         CommonWidgets.buildSectionDivider(),
       ],
     );

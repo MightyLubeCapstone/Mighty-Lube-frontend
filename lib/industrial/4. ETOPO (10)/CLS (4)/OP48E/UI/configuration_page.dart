@@ -54,10 +54,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   final Validators validate = Validators();
   final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  Map<String, dynamic> templateAData = {};
   final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  Map<String, dynamic> templateBData = {};
   final GlobalKey<TemplateCWidgetState> templateCKey = GlobalKey();
+  Map<String, dynamic> templateCData = {};
   final GlobalKey<TemplateFWidgetState> templateFKey = GlobalKey();
-  Future<bool>? status;
+  Map<String, dynamic> templateFData = {};
+  bool? status;
 
   Map<String, String?> errors = {
     'conveyorLength': null,
@@ -292,7 +296,15 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           errorText: errors['existingMonitoring'],
         ),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateA(
+            templateAKey,
+            validate,
+            data: templateAData,
+            callback: (data) {
+              templateAData = data;
+            },
+          ),
       ],
     );
   }
@@ -385,8 +397,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           errorText: errors['cleanChain'],
         ),
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTemplateB(templateBKey, validate),
-        CommonWidgets.buildTemplateC(templateCKey, validate),
+        CommonWidgets.buildTemplateB(templateBKey, validate, data: templateBData, callback: (data) {
+          templateBData = data;
+        }),
+        CommonWidgets.buildTemplateC(templateCKey, validate, data: templateCData, callback: (data) {
+          templateCData = data;
+        }),
         CommonWidgets.buildTemplateF(templateFKey, validate)
       ],
     );
@@ -542,7 +558,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addETO_OP48E(int numRequested) {
+  Future<VoidCallback?> addETO_OP48E(int numRequested) async {
     if (validForm()) {
       dynamic etoData = {
         'chainSize': conveyorChainSize,
@@ -584,13 +600,31 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'etOverheadM2': null,
         'etOverheadN2': null,
         'etOverheadS2': null,
-        "templateA": templateAKey.currentState?.getData(),
-        "templateB": templateBKey.currentState?.getData(),
-        "templateC": templateCKey.currentState?.getData(),
-        "templateF": templateFKey.currentState?.getData()
+        "templateA": templateAData,
+        "templateB": templateBData,
+        "templateC": templateCData,
+        "templateF": templateFData
       };
 
-      status = FormAPI().addOrder("ETO_OP48E", etoData, numRequested);
+      status = await FormAPI().addOrder("ETO_OP48E", etoData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

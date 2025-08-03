@@ -33,6 +33,5 @@ class SessionObserver extends NavigatorObserver {
 }
 
 String get baseUrl {
-  //return 'http://34.46.191.207:8080';
-  return 'http://10.0.2.2:8080';
+  return 'https://mighty-lube.com';
 }

@@ -55,8 +55,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   final Validators validate = Validators();
   final GlobalKey<TemplateBWidgetState> templateBKey = GlobalKey();
+  Map<String, dynamic> templateBData = {};
   final GlobalKey<TemplateCWidgetState> templateCKey = GlobalKey();
-  Future<bool>? status;
+  Map<String, dynamic> templateCData = {};
+  bool? status;
 
   // Error messages
   Map<String, String?> errors = {
@@ -366,8 +368,14 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildSectionDivider(),
         if (existingMonitoring == 1) ...[
-          CommonWidgets.buildTemplateB(templateBKey, validate),
-          CommonWidgets.buildTemplateC(templateCKey, validate),
+          CommonWidgets.buildTemplateB(templateBKey, validate, data: templateBData,
+              callback: (data) {
+            templateBData = data;
+          }),
+          CommonWidgets.buildTemplateC(templateCKey, validate, data: templateCData,
+              callback: (data) {
+            templateCData = data;
+          })
         ],
       ],
     );
@@ -569,7 +577,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addOP139AConfiguration(int numRequested) {
+  Future<VoidCallback?> addOP139AConfiguration(int numRequested) async {
     if (validForm()) {
       dynamic configurationData = {
         'conveyorName': conveyorSystem.text,
@@ -627,10 +635,28 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'frInvertedH': null,
         'frInvertedK': null,
         'frInvertedL': null,
-        "templateB": templateBKey.currentState?.getData(),
-        "templateC": templateCKey.currentState?.getData()
+        "templateB": templateBData,
+        "templateC": templateCData
       };
-      status = FormAPI().addOrder("FRO_OP139A", configurationData, numRequested);
+      status = await FormAPI().addOrder("FRO_OP139A", configurationData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

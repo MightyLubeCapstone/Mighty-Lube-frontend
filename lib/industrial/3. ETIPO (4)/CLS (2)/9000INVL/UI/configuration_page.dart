@@ -49,8 +49,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? existingMonitoring = -1;
 
   final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  Map<String, dynamic> templateAData = {};
   final Validators validate = Validators();
-  Future<bool>? status;
+  bool? status;
 
   // Error messages
   Map<String, String?> errors = {
@@ -410,7 +411,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
           },
         ),
         CommonWidgets.buildSectionDivider(),
-        if (existingMonitoring == 1) CommonWidgets.buildTemplateA(templateAKey, validate),
+        if (existingMonitoring == 1)
+          CommonWidgets.buildTemplateA(templateAKey, validate, data: templateAData,
+              callback: (data) {
+            templateAData = data;
+          }),
       ],
     );
   }
@@ -635,7 +640,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addConfiguration(int numRequested) {
+  Future<VoidCallback?> addConfiguration(int numRequested) async {
     if (validForm()) {
       dynamic configurationData = {
         'conveyorName': conveyorSystem.text,
@@ -687,9 +692,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'enclosedTrackM2': null,
         'enclosedTrackN2': null,
         'enclosedTrackS2': null,
-        "templateA": templateAKey.currentState?.getData()
+        "templateA": templateAData
       };
-      status = FormAPI().addOrder("ETI_9000INVL", configurationData, numRequested);
+      status = await FormAPI().addOrder("ETI_9000INVL", configurationData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -58,10 +58,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   final Validators validate = Validators();
   final GlobalKey<TemplateAWidgetState> templateAKey = GlobalKey();
+  Map<String, dynamic> templateAData = {};
   final GlobalKey<TemplateDWidgetState> templateDKey = GlobalKey();
+  Map<String, dynamic> templateDData = {};
   final GlobalKey<TemplateFWidgetState> templateFKey = GlobalKey();
+  Map<String, dynamic> templateFData = {};
 
-  Future<bool>? status;
+  bool? status;
 
   // Error messages
   Map<String, String?> errors = {
@@ -403,9 +406,24 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         ),
         CommonWidgets.buildSectionDivider(),
         if (existingMonitoring == 1) ...[
-          CommonWidgets.buildTemplateA(templateAKey, validate),
-          CommonWidgets.buildTemplateD(templateDKey, validate),
-          CommonWidgets.buildTemplateF(templateFKey, validate),
+          CommonWidgets.buildTemplateA(templateAKey, validate,
+            data: templateAData,
+            callback: (data) {
+              templateAData = data;
+            },
+          ),
+          CommonWidgets.buildTemplateD(templateDKey, validate,
+            data: templateDData,
+            callback: (data) {
+              templateDData = data;
+            },
+          ),
+          CommonWidgets.buildTemplateF(templateFKey, validate,
+            data: templateFData,
+            callback: (data) {
+              templateFData = data;
+            },
+          ),
         ],
       ],
     );
@@ -636,7 +654,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
-  VoidCallback? addOP40E(int numRequested) {
+  Future<VoidCallback?> addOP40E(int numRequested) async {
     if (validForm()) {
       dynamic opData = {
         'conveyorName': conveyorSystem.text,
@@ -683,11 +701,29 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'coeLineX': xWidth.text,
         'coeLineY': yThickness.text,
         'coeLineZ': zInside.text,
-        "templateA": templateAKey.currentState?.getData(),
-        "templateD": templateDKey.currentState?.getData(),
-        "templateF": templateFKey.currentState?.getData(),
+        "templateA": templateAData,
+        "templateD": templateDData,
+        "templateF": templateFData,
       };
-      status = FormAPI().addOrder("COE_OP4OE", opData, numRequested);
+      status = await FormAPI().addOrder("COE_OP4OE", opData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
       return null;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

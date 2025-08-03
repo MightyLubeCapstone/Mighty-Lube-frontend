@@ -39,7 +39,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? measurementUnits = -1;
 
   final Validators validate = Validators();
-  Future<bool>? status;
+  bool? status;
 
   // Error messages
   Map<String, String?> errors = {
@@ -80,7 +80,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
 
   bool validForm() {
     validate.mapErrors(errors);
-    validate.mapSections(sections); 
+    validate.mapSections(sections);
     _validateForm();
     return errors.values.every((error) => error == null);
   }
@@ -124,23 +124,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'bDiameter',
       'gWidth',
       'hHeight',
-      'lCenter','aCenter','bDiameter2','gWidth2','hHeight2','kCenter'
+      'lCenter',
+      'aCenter',
+      'bDiameter2',
+      'gWidth2',
+      'hHeight2',
+      'kCenter'
     ],
   };
-
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(context, '>',
-            const ApplicationPage(), 'Products', const CCSProducts()),
+        CommonWidgets.buildBreadcrumbNavigation(
+            context, '>', const ApplicationPage(), 'Products', const CCSProducts()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
             children: [
-              CommonWidgets.buildGradientButton(context, 'General Information',
-                  buildGeneralInformationContent(),
+              CommonWidgets.buildGradientButton(
+                  context, 'General Information', buildGeneralInformationContent(),
                   isError: validate.sectionError("General Information")),
               CommonWidgets.buildGradientButton(
                   context, 'Free Rail: Measurements', buildMeasurements(),
@@ -234,12 +238,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
-  
+
   Widget buildMeasurements() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CommonWidgets.buildDropdownFieldError(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidgets.buildDropdownFieldError(
           'Measurement Unit',
           ['Feet', 'Inches', 'm Meter', 'mm Millimeter'],
           measurementUnits,
@@ -249,158 +253,175 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               validate.validateDropdownField(measurementUnits, 'measurementUnits');
             });
           },
-          errorText: errors['measurementUnits'], 
+          errorText: errors['measurementUnits'],
         ),
-      
-      // Image A
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Overhead P&F Free Rail Chain Drop (A)",
-        hintText: "Top of Rail to Center of Chain",
-        imagePath: 'assets/Measurements/7/CCS/A.png',
-        controller: aTop,
-        subHint: "(Top of Rail to Center of Chain)",
-        errorText: errors['aTop'],
-      ),
 
-      // Image B
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Overhead P&F Free Rail Power Trolley Wheel (B)",
-        hintText: "Diameter",
-        imagePath: 'assets/Measurements/7/CCS/B.png',
-        controller: bDiameter,
-        subHint: "Diameter",
-        errorText: errors['bDiameter'],
-      ),
-      
-      // Image G
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Overhead P&F Free Rail (G)",
-        hintText: "Width",
-        imagePath: 'assets/Measurements/7/CCS/G.png',
-        controller: gWidth,
-        subHint: "(Width)",
-        errorText: errors['gWidth'],
-      ),
-      
-      // Image H
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Overhead P&F Free Rail (H)",
-        hintText: "Height",
-        imagePath: 'assets/Measurements/7/CCS/H.png',
-        controller: hHeight,
-        subHint: "(Height)",
-        errorText: errors['hHeight'],
-      ),
-      
-      // Image L
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Overhead P&F Free Rail Free Trolley Wheel Position (Vertical - L)",
-        hintText: "Center of Free Trolley Wheel to Bottom of Rail",
-        imagePath: 'assets/Measurements/7/CCS/L.png',
-        controller: lCenter,
-        subHint: "(Center of Free Tolley Wheel to Bottom of Rail)",
-        errorText: errors['lCenter'],
-      ),
-      
-      // Image A
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Chain Drop (A)",
-        hintText: "Center of Chain to Opposite Edge of Rail",
-        imagePath: 'assets/Measurements/7/CCS/A_Color.png',
-        controller: aCenter,
-        subHint: "(Center of Chain to Opposite Edge of Rail)",
-        errorText: errors['aCenter'],
-      ),
-      
-      // Image B2
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Power Trolley Wheel (B)",
-        hintText: "Diameter",
-        imagePath: 'assets/Measurements/7/CCS/B2.png',
-        controller: bDiameter2,
-        subHint: "(Diameter)",
-        errorText: errors['bDiameter2'],
-      ),
-      
-      // Image G2
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail (G)",
-        hintText: "Width",
-        imagePath: 'assets/Measurements/7/CCS/G2.png',
-        controller: gWidth2,
-        subHint: "(Width)",
-        errorText: errors['gWidth2'],
-      ),
-      
-      // Image H2
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Rail (H)",
-        hintText: "Height",
-        imagePath: 'assets/Measurements/7/CCS/H2.png',
-        controller: hHeight2,
-        subHint: "(Height)",
-        errorText: errors['hHeight2'],
-      ),
-      
-      // Image K
-      CommonWidgets.buildMeasurementFieldWithImage(
-        context: context,
-        title: "Inverted Power and Free Trolley Wheel Pitch (K)",
-        hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
-        imagePath: 'assets/Measurements/7/CCS/K.png',
-        controller: kCenter,
-        subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
-        errorText: errors['kCenter'],
-      ),
-      
-    ],
-  );
-}
+        // Image A
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Overhead P&F Free Rail Chain Drop (A)",
+          hintText: "Top of Rail to Center of Chain",
+          imagePath: 'assets/Measurements/7/CCS/A.png',
+          controller: aTop,
+          subHint: "(Top of Rail to Center of Chain)",
+          errorText: errors['aTop'],
+        ),
 
-  VoidCallback? addOEBConfiguration(int numRequested) {
-  if (validForm()) {
-    dynamic oebData = {
-      'conveyorName': conveyorSystem.text,
-      'chainSize': conveyorChainSize,
-      'otherChainSize': null,
-      'industrialChainManufacturer': chainManufacturer,
-      'otherChainManufacturer': null,
-      'conveyorLength': conveyorLength.text,
-      'conveyorLengthUnit': conveyorLengthUnit,
-      'appEnviroment': applicationEnvironment,
-      'ovenStatus': null,
-      'ovenTemp': null,
-      'surroundingTemp': surroundingTemp,
-      'frUnitType': null,
-      'frOverheadA': aTop.text,
-      'frOverheadB': bDiameter.text,
-      'frOverheadG': gWidth.text,
-      'frOverheadH': hHeight.text,
-      'frOverheadL': lCenter.text,
-      'frInvertedA': aCenter.text,
-      'frInvertedB': bDiameter2.text,
-      'frInvertedG': gWidth2.text,
-      'frInvertedH': hHeight2.text,
-      'frInvertedK': kCenter.text,
-    };
-    status = FormAPI().addOrder("FRO_OEB", oebData, numRequested);
-    return null;
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all required fields.')),
+        // Image B
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Overhead P&F Free Rail Power Trolley Wheel (B)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/7/CCS/B.png',
+          controller: bDiameter,
+          subHint: "Diameter",
+          errorText: errors['bDiameter'],
+        ),
+
+        // Image G
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Overhead P&F Free Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/7/CCS/G.png',
+          controller: gWidth,
+          subHint: "(Width)",
+          errorText: errors['gWidth'],
+        ),
+
+        // Image H
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Overhead P&F Free Rail (H)",
+          hintText: "Height",
+          imagePath: 'assets/Measurements/7/CCS/H.png',
+          controller: hHeight,
+          subHint: "(Height)",
+          errorText: errors['hHeight'],
+        ),
+
+        // Image L
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Overhead P&F Free Rail Free Trolley Wheel Position (Vertical - L)",
+          hintText: "Center of Free Trolley Wheel to Bottom of Rail",
+          imagePath: 'assets/Measurements/7/CCS/L.png',
+          controller: lCenter,
+          subHint: "(Center of Free Tolley Wheel to Bottom of Rail)",
+          errorText: errors['lCenter'],
+        ),
+
+        // Image A
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Chain Drop (A)",
+          hintText: "Center of Chain to Opposite Edge of Rail",
+          imagePath: 'assets/Measurements/7/CCS/A_Color.png',
+          controller: aCenter,
+          subHint: "(Center of Chain to Opposite Edge of Rail)",
+          errorText: errors['aCenter'],
+        ),
+
+        // Image B2
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Power Trolley Wheel (B)",
+          hintText: "Diameter",
+          imagePath: 'assets/Measurements/7/CCS/B2.png',
+          controller: bDiameter2,
+          subHint: "(Diameter)",
+          errorText: errors['bDiameter2'],
+        ),
+
+        // Image G2
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail (G)",
+          hintText: "Width",
+          imagePath: 'assets/Measurements/7/CCS/G2.png',
+          controller: gWidth2,
+          subHint: "(Width)",
+          errorText: errors['gWidth2'],
+        ),
+
+        // Image H2
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Rail (H)",
+          hintText: "Height",
+          imagePath: 'assets/Measurements/7/CCS/H2.png',
+          controller: hHeight2,
+          subHint: "(Height)",
+          errorText: errors['hHeight2'],
+        ),
+
+        // Image K
+        CommonWidgets.buildMeasurementFieldWithImage(
+          context: context,
+          title: "Inverted Power and Free Trolley Wheel Pitch (K)",
+          hintText: "Center of Trolley Wheel to Center of Trolley Wheel",
+          imagePath: 'assets/Measurements/7/CCS/K.png',
+          controller: kCenter,
+          subHint: "(Center of Trolley Wheel to Center of Trolley Wheel)",
+          errorText: errors['kCenter'],
+        ),
+      ],
     );
   }
-  return null;
-}
+
+  Future<VoidCallback?> addOEBConfiguration(int numRequested) async {
+    if (validForm()) {
+      dynamic oebData = {
+        'conveyorName': conveyorSystem.text,
+        'chainSize': conveyorChainSize,
+        'otherChainSize': null,
+        'industrialChainManufacturer': chainManufacturer,
+        'otherChainManufacturer': null,
+        'conveyorLength': conveyorLength.text,
+        'conveyorLengthUnit': conveyorLengthUnit,
+        'appEnviroment': applicationEnvironment,
+        'ovenStatus': null,
+        'ovenTemp': null,
+        'surroundingTemp': surroundingTemp,
+        'frUnitType': null,
+        'frOverheadA': aTop.text,
+        'frOverheadB': bDiameter.text,
+        'frOverheadG': gWidth.text,
+        'frOverheadH': hHeight.text,
+        'frOverheadL': lCenter.text,
+        'frInvertedA': aCenter.text,
+        'frInvertedB': bDiameter2.text,
+        'frInvertedG': gWidth2.text,
+        'frInvertedH': hHeight2.text,
+        'frInvertedK': kCenter.text,
+      };
+      status = await FormAPI().addOrder("FRO_OEB", oebData, numRequested);
+      if (!mounted) {
+        return Future(
+          () {
+            return null;
+          },
+        );
+      }
+      if (status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully added to configurator!')),
+        );
+        // To add the line below, we would have to update 2-3 files in about 6 places so leaving it for now.
+        // widget.updateCartItemCount(numRequested);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error adding to configurator!')),
+        );
+      }
+      return null;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+    }
+    return null;
+  }
 
   Widget buildErrorText(String message) {
     return Padding(
