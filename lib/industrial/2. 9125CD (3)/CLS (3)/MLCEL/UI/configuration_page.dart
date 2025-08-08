@@ -211,6 +211,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(yThickness.text, 'yThickness');
 
     setState(() {});
+
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
   }
 
   @override

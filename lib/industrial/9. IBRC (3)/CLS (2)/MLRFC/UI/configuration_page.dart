@@ -51,10 +51,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Map<String, dynamic> templateBData = {};
 
   Map<String, String?> errors = {
-    'conveyorSystem': null,
+    'conveyorName': null,
     'conveyorChainSize': null,
     'conveyorChainManufacturer': null,
-    'conveyorLength': null,
     'conveyorSpeed': null,
     'conveyorIndex': null,
     'operatingVoltage': null,
@@ -68,13 +67,13 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Future<void> _validateForm() async {
-    validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
-    validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
+    validate.validateTextField(conveyorSystem.text, 'conveyorName');
     validate.validateDropdownField(conveyorChainManufacturer, 'conveyorChainManufacturer');
-    validate.validateTextField(conveyorLength.text, 'conveyorLength');
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
-    validate.validateTextField(conveyorIndex.text, 'conveyorIndex');
     validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
+
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
 
     setState(() {});
   }
@@ -86,18 +85,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
       setState(() {});
     });
-    conveyorLength.addListener(() {
-      validate.onNameOpChanged(conveyorLength.text, 'conveyorLength');
-      setState(() {});
-    });
     conveyorSpeed.addListener(() {
       validate.onNameOpChanged(conveyorSpeed.text, 'conveyorSpeed');
       setState(() {});
     });
-    conveyorIndex.addListener(() {
-      validate.onNameOpChanged(conveyorIndex.text, 'conveyorIndex');
-      setState(() {});
-    });
+
     operatingVoltage.addListener(() {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
@@ -110,16 +102,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
       setState(() {});
     });
-    conveyorLength.removeListener(() {
-      validate.onNameOpChanged(conveyorLength.text, 'conveyorLength');
-      setState(() {});
-    });
     conveyorSpeed.removeListener(() {
       validate.onNameOpChanged(conveyorSpeed.text, 'conveyorSpeed');
-      setState(() {});
-    });
-    conveyorIndex.removeListener(() {
-      validate.onNameOpChanged(conveyorIndex.text, 'conveyorIndex');
       setState(() {});
     });
     operatingVoltage.removeListener(() {
@@ -136,18 +120,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conveyorName',
       'conveyorChainSize',
       'chainManufacturer',
-      'chainPinType',
-      'metalType',
       'conveyorStyle',
-      'trolleyColor',
-      'trolleyType',
       'conveyorLoaded',
       'conveyorSwing'
     ],
-    "monitor": ['motorAmp', 'takeUpAir', 'takeUpDist', 'detectFaultyTrolley'],
     "custom": ['operatingVoltage'],
-    "conveyor": ['sideLube', 'topLube'],
-    "wire": ['con2', 'con4', 'con7'],
   };
 
   @override

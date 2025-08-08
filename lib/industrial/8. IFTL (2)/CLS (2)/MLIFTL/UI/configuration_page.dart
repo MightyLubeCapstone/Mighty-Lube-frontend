@@ -90,6 +90,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateDropdownField(installationClearance, 'installationClearance');
     validate.validateDropdownField(dripLine, 'dripLine');
 
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
+
     setState(() {});
   }
 
@@ -112,36 +115,12 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorIndex.text, 'conveyorIndex');
       setState(() {});
     });
-    conductor7.addListener(() {
-      validate.onNum247Changed(conductor7.text, 'con7');
-      setState(() {});
-    });
-    conductor4.addListener(() {
-      validate.onNum247Changed(conductor4.text, 'con4');
-      setState(() {});
-    });
-    conductor2.addListener(() {
-      validate.onNum247Changed(conductor2.text, 'con2');
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
     conveyorSystem.removeListener(() {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
-      setState(() {});
-    });
-    conductor7.removeListener(() {
-      validate.onNum247Changed(conductor7.text, 'con7');
-      setState(() {});
-    });
-    conductor4.removeListener(() {
-      validate.onNum247Changed(conductor4.text, 'con4');
-      setState(() {});
-    });
-    conductor2.removeListener(() {
-      validate.onNum247Changed(conductor2.text, 'con2');
       setState(() {});
     });
     conveyorLength.removeListener(() {

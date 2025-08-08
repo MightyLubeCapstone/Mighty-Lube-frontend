@@ -70,15 +70,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'operatingVoltage': null,
     'conveyorStrand': null,
     'existingMonitoring': null,
-    'conductor4': null,
-    'conductor7': null,
-    'conductor2': null,
     'specialOptions': null,
     'conveyorSpeedUnit': null,
     'conveyorLengthUnit': null,
     'directionOfTravel': null,
     'measurementUnits': null,
-    'monitoringUnits': null,
     'conveyorClean': null,
     'highRollers': null,
     'outboardWheels': null,
@@ -144,18 +140,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
-    conductor7.addListener(() {
-      validate.onNum247Changed(conductor7.text, 'con7');
-      setState(() {});
-    });
-    conductor4.addListener(() {
-      validate.onNum247Changed(conductor4.text, 'con4');
-      setState(() {});
-    });
-    conductor2.addListener(() {
-      validate.onNum247Changed(conductor2.text, 'con2');
-      setState(() {});
-    });
     specialOptions.addListener(() {
       validate.onNameOpChanged(specialOptions.text, 'specialOptions');
       setState(() {});
@@ -182,18 +166,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
     operatingVoltage.removeListener(() {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
-      setState(() {});
-    });
-    conductor7.removeListener(() {
-      validate.onNum247Changed(conductor7.text, 'con7');
-      setState(() {});
-    });
-    conductor4.removeListener(() {
-      validate.onNum247Changed(conductor4.text, 'con4');
-      setState(() {});
-    });
-    conductor2.removeListener(() {
-      validate.onNum247Changed(conductor2.text, 'con2');
       setState(() {});
     });
     specialOptions.removeListener(() {
@@ -225,9 +197,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
     validate.validateTextField(conveyorIndex.text, 'conveyorIndex');
     validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
-    validate.validateTextField(conductor4.text, 'conductor4');
-    validate.validateTextField(conductor7.text, 'conductor7');
-    validate.validateTextField(conductor2.text, 'conductor2');
     validate.validateTextField(specialOptions.text, 'specialOptions');
 
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
@@ -239,9 +208,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
     validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
     validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
-    validate.validateDropdownField(measurementUnits, 'measurementUnits');
-    validate.validateDropdownField(monitoringUnits, 'monitoringUnits');
-    validate.validateDropdownField(conveyorClean, 'conveyorClean');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');    validate.validateDropdownField(conveyorClean, 'conveyorClean');
     validate.validateDropdownField(highRollers, 'highRollers');
     validate.validateDropdownField(outboardWheels, 'outboardWheels');
 
@@ -253,6 +220,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(mInside.text, 'mInside');
     validate.validateTextField(yDiameter.text, 'yDiameter');
     validate.validateTextField(zLength.text, 'zLength');
+
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
 
     setState(() {});
   }

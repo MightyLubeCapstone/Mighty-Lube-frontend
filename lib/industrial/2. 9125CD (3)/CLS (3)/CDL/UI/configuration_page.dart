@@ -56,10 +56,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSystem': null,
     'conveyorChainSize': null,
     'conveyorChainManufacturer': null,
-    'conveyorLength': null,
-    'conveyorSpeed': null,
-    'operatingVoltage': null,
-    'existingMonitoring': null,
   };
 
   bool validForm() {
@@ -73,12 +69,11 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateDropdownField(conveyorChainManufacturer, 'conveyorChainManufacturer');
-    validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
-    validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
-    validate.validateDropdownField(existingMonitoring, 'existingMonitoring');
 
     setState(() {});
+
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
   }
 
   @override
@@ -88,14 +83,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
       setState(() {});
     });
-    conveyorLength.addListener(() {
-      validate.onNameOpChanged(conveyorLength.text, 'conveyorLength');
-      setState(() {});
-    });
-    conveyorSpeed.addListener(() {
-      validate.onNameOpChanged(conveyorSpeed.text, 'conveyorSpeed');
-      setState(() {});
-    });
+    
   }
 
   @override
@@ -104,14 +92,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
       setState(() {});
     });
-    conveyorLength.removeListener(() {
-      validate.onNameOpChanged(conveyorLength.text, 'conveyorLength');
-      setState(() {});
-    });
-    conveyorSpeed.removeListener(() {
-      validate.onNameOpChanged(conveyorSpeed.text, 'conveyorSpeed');
-      setState(() {});
-    });
+
     super.dispose();
   }
 
@@ -120,8 +101,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       'conveyorSystem',
       'conveyorChainSize',
       'conveyorChainManufacturer',
-      'conveyorLength',
-      'conveyorSpeed'
     ],
     "Customer Power Utilities": ['operatingVoltage'],
     "New/Existing Monitoring System": ['existingMonitoring'],

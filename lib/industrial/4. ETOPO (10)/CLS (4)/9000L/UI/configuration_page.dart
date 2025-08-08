@@ -64,8 +64,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   bool? status;
 
   Map<String, String?> errors = {
-    'conveyorLength': null,
-    'conveyorSpeed': null,
     'operatingVoltage': null,
     'conductor4': null,
     'conductor7': null,
@@ -100,8 +98,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Future<void> _validateForm() async {
-    validate.validateTextField(conveyorLength.text, 'conveyorLength');
-    validate.validateTextField(conveyorSpeed.text, 'conveyorSpeed');
+
     validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
@@ -115,6 +112,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(mDiameter.text, 'mDiameter');
     validate.validateTextField(nTop.text, 'nTop');
     validate.validateTextField(s2Center.text, 's2Center');
+
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
 
     setState(() {});
   }

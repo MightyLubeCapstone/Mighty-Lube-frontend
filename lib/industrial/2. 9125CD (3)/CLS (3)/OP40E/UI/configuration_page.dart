@@ -193,6 +193,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(zInside.text, 'zInside');
 
     setState(() {});
+
+    errors = Map<String, String?>.from(validate.errors);
+    print(errors);
   }
 
   @override
