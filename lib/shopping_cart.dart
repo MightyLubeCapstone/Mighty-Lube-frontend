@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/api.dart';
@@ -319,6 +321,88 @@ class _ShoppingPageState extends State<ShoppingPage> {
     return true;
   }
 
+  int setEntryData(dynamic stateHolders, List<List<String>> options, List<String> labels,
+      MapEntry<dynamic, dynamic> entry) {
+    labels.add(entry.key);
+    if (entry.value.runtimeType == List && entry.value[0]["value"].runtimeType != List) {
+      // dropdown addition
+      List mappedOptions = entry.value as List;
+      List<String> newList = []; // Create a new list
+      options.add(newList); // Add it to options
+      bool hasSelected = false;
+      for (var option in mappedOptions) {
+        // array iteration
+        newList.add(option["value"]);
+        if (option["isSelected"] as bool == true) {
+          hasSelected = true;
+          int optionKey = option["key"];
+          stateHolders.add(
+            {
+              "controller": optionKey,
+              "initial": optionKey,
+              "field": entry.key,
+            },
+          );
+        }
+      }
+      if (!hasSelected) {
+        stateHolders.add(
+          {
+            "controller": mappedOptions[0]["key"],
+            "initial": mappedOptions[0]["key"],
+            "field": entry.key,
+          },
+        );
+      }
+    } else if (entry.value.runtimeType != List &&
+        entry.value.runtimeType != int &&
+        entry.value["value"] == null) {
+      // its template data, recursive time bitch :)
+      entry.value.remove("_id");
+      labels.remove(entry.key);
+      setStateData(stateHolders, options, labels, entry.value);
+    } else {
+      // TextEdControl addition
+      if (entry.value is int) {
+        stateHolders.add(
+          {
+            "controller": TextEditingController(
+              text: entry.value.toString(),
+            ),
+            "initial": entry.value.toString(),
+            "field": entry.key,
+          },
+        ); // mind-fuck of code right here
+      } else {
+        stateHolders.add(
+          {
+            "controller": TextEditingController(
+              text: entry.value["value"].toString(),
+            ),
+            "initial": entry.value["value"].toString(),
+            "field": entry.key,
+            "required": entry.value["required"],
+            "isString": entry.value["isString"],
+            "isNum": entry.value["isNum"],
+            "error": null,
+          },
+        ); // mind-fuck of code right here
+      }
+      options.add([]); // jank-ass code to get me through the night
+    }
+    return 1;
+  }
+
+  int setStateData(
+      dynamic stateHolders, List<List<String>> options, List<String> labels, Map orderInfo) {
+    int numberOfFields = 0;
+    for (var entry in orderInfo.entries) {
+      // map iteration
+      numberOfFields += setEntryData(stateHolders, options, labels, entry);
+    }
+    return numberOfFields;
+  }
+
   // pressing the modal, regardless of the pencil or card itself
   void _showCurrentConfiguration(dynamic orderID, bool isEditable, int numRequested) async {
     try {
@@ -335,70 +419,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       setState(() {
         orderLoading = false;
       });
-      int numberOfFields = orderInfo.length; // bye bye _id :)
-      for (var entry in orderInfo.entries) {
-        // map iteration
-        labels.add(entry.key);
-        if (entry.value.runtimeType == List) {
-          // dropdown addition
-          List mappedOptions = entry.value as List;
-          List<String> newList = []; // Create a new list
-          options.add(newList); // Add it to options
-          bool hasSelected = false;
-          for (var option in mappedOptions) {
-            // array iteration
-            newList.add(option["value"]);
-            if (option["isSelected"] as bool == true) {
-              hasSelected = true;
-              int optionKey = option["key"];
-              stateHolders.add(
-                {
-                  "controller": optionKey,
-                  "initial": optionKey,
-                  "field": entry.key,
-                },
-              );
-            }
-          }
-          if (!hasSelected) {
-            stateHolders.add(
-              {
-                "controller": mappedOptions[0]["key"],
-                "initial": mappedOptions[0]["key"],
-                "field": entry.key,
-              },
-            );
-          }
-        } else {
-          // TextEdControl addition
-          if (entry.value is int) {
-            stateHolders.add(
-              {
-                "controller": TextEditingController(
-                  text: entry.value.toString(),
-                ),
-                "initial": entry.value.toString(),
-                "field": entry.key,
-              },
-            ); // mind-fuck of code right here
-          } else {
-            stateHolders.add(
-              {
-                "controller": TextEditingController(
-                  text: entry.value["value"].toString(),
-                ),
-                "initial": entry.value["value"].toString(),
-                "field": entry.key,
-                "required": entry.value["required"],
-                "isString": entry.value["isString"],
-                "isNum": entry.value["isNum"],
-                "error": null,
-              },
-            ); // mind-fuck of code right here
-          }
-          options.add([]); // jank-ass code to get me through the night
-        }
-      }
+      int numberOfFields = setStateData(stateHolders, options, labels, orderInfo);
       // THEN, build the modal
       if (!mounted) return;
       showModalBottomSheet(
@@ -659,8 +680,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          imageList[product["name"]] ??
-                                              "assets/default_product.png",
+                                          imageList[product["name"]] ?? "assets/Industrial.png",
                                           width: 60,
                                           height: 60,
                                           fit: BoxFit.cover,

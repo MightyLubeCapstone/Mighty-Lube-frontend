@@ -271,4 +271,68 @@ final Map<String, String> imageList = {
   // protein
   'FGCO': 'assets/FGCO.png',
   'FGLM': 'assets/FGLM.png',
+  // CC5 Chain
+  'CC5_CL': 'assets/industrial/CC5 Chain (2)/CLS (2)/MLCCL.png',
+  'CC5_OP40E': 'assets/industrial/CC5 Chain (2)/CLS (2)/OP-40E.png',
+
+  // COEDL
+  'COE_CDL': 'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/CDL.png',
+  'COE_CEL': 'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png',
+
+  // ETIPO
+  'ETI_91':
+      'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Cleaning Solutions (2)/UN91.png',
+  'ETI_807':
+      'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Cleaning Solutions (2)/8074-B.png',
+  'ETI_9000INVL':
+      'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/9000INVL.png',
+  'COE_OP4OE':
+      'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP-48E.png',
+
+  // ETOPO
+  'ETO_2100':
+      'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Conveyor Lub. Systems (4)/2100L.png',
+  'ETO_9000E':
+      'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Conveyor Lub. Systems (4)/9000L.png',
+  'ETO_OP48E':
+      'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Conveyor Lub. Systems (4)/OP-48E.png',
+
+  // FT
+  'FT_OPCO': 'assets/industrial/Flat Top (4)/Conveyor Greaser Systems (1)/OPCP 300.png',
+  'mlcel':
+      'assets/industrial/Chain On Edge Drag Line (3)/Conveyor Lub. Systems/MLCEL.png', // same as MLCEL above but different category
+
+  // FC
+  'FC_314': 'assets/industrial/Free Carrier (2)/FR314.png',
+  'FC_317': 'assets/industrial/Free Carrier (2)/FR317.png',
+
+  // FROOI
+  '9000L': 'assets/industrial/IBRC(3)/CGS.png',
+  'FRO_ES': 'assets/industrial/IBRC(3)/CGS.png',
+  'FRO_OP139A': 'assets/industrial/IBRC(3)/CGS.png',
+
+  // IFTL
+  'IFT_IFTL': 'assets/industrial/Title.png',
+
+  // IBRC
+  'IBR_RFC': 'assets/industrial/IBRC(3)/MLRFC.png',
+
+  // OHPRLB
+  '300I': 'assets/industrial/OHPRLB(20)/CCS/300I.png',
+  'LBCBS': 'assets/industrial/OHPRLB(20)/CCS/LBCBS.png',
+  'OEB': 'assets/industrial/OHPRLB(20)/CCS/OEB.png',
+  'OP8': 'assets/industrial/OHPRLB(20)/CCS/OP8.png',
+  'OP8NP': 'assets/industrial/OHPRLB(20)/CCS/OP8NP.png',
+  'OP13': 'assets/industrial/OHPRLB(20)/CCS/OP13.png',
+  'OP55': 'assets/industrial/OHPRLB(20)/CCS/OP55.png',
+  'YCB': 'assets/industrial/OHPRLB(20)/CCS/YCB.png',
+  'GCP': 'assets/industrial/OHPRLB(20)/CGS/CGS.png',
+  '2100L_Beam': 'assets/industrial/OHPRLB(20)/CLS/2100L.png',
+  '9000L_Beam': 'assets/industrial/OHPRLB(20)/CLS/9000L.png',
+  'OP4A': 'assets/industrial/OHPRLB(20)/CLS/OP4A.png',
+  'OP52': 'assets/industrial/OHPRLB(20)/CLS/OP52.png',
+
+  // PFOOI
+  'PMMS': 'assets/industrial/PFOOI(17)/CMS/PMMS.png',
+  'SLMLMS': 'assets/industrial/PFOOI(17)/CMS/SLMLMS.png',
 };
