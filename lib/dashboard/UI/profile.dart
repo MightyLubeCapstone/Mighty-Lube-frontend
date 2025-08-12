@@ -17,9 +17,13 @@ class _ProfilePageState extends State<ProfilePage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _userNameController = TextEditingController();
+  final _companyNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _emailController = TextEditingController();
   int totalQuantities = 0;
   bool loading = false;
   bool removeLoading = false;
+  bool saveLoading = false;
 
   void _deleteAccount() async {
     bool? confirmDelete = await showDialog(
@@ -86,6 +90,37 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _saveChanges() async {
+    try {
+      setState(() {
+        saveLoading = true;
+      });
+      final saved = await UserAPI().updateAccount(
+          _firstNameController.text,
+          _lastNameController.text,
+          _userNameController.text,
+          _companyNameController.text,
+          _phoneNumberController.text,
+          _emailController.text);
+      setState(() {
+        saveLoading = false;
+      });
+      if (saved == true) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully updated your account')),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error updating your account')),
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> _loadData() async {
     try {
       setState(() {
@@ -97,6 +132,9 @@ class _ProfilePageState extends State<ProfilePage> {
         _firstNameController.text = data['firstName'] ?? '';
         _lastNameController.text = data['lastName'] ?? '';
         _userNameController.text = data['username'] ?? '';
+        _companyNameController.text = data['companyName'] ?? '';
+        _phoneNumberController.text = data['phoneNumber'] ?? '';
+        _emailController.text = data['emailAddress'] ?? '';
       }
 
       dynamic cart = await CartAPI().getOrders();
@@ -142,13 +180,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       children: [
                         buildTextFieldWithIcon(Icons.person, 'First Name:',
-                            'Current: ${_firstNameController.text}', context),
+                            'Current: ${_firstNameController.text}', context, _firstNameController),
                         const SizedBox(height: 15),
                         buildTextFieldWithIcon(Icons.person, 'Last Name:',
-                            'Current: ${_lastNameController.text}', context),
+                            'Current: ${_lastNameController.text}', context, _lastNameController),
                         const SizedBox(height: 15),
                         buildTextFieldWithIcon(Icons.account_circle, 'Display Name:',
-                            'Current: ${_userNameController.text}', context),
+                            'Current: ${_userNameController.text}', context, _userNameController),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -157,33 +195,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     _buildProfileCard(
                       context,
                       children: [
-                        buildTextFieldWithIcon(
-                            Icons.business, 'Company Name:', 'Enter company name', context),
+                        buildTextFieldWithIcon(Icons.business, 'Company Name:',
+                            'Enter company name', context, _companyNameController),
                         const SizedBox(height: 15),
-                        buildTextFieldWithIcon(
-                            Icons.phone, 'Phone Number:', 'Enter phone number', context),
+                        buildTextFieldWithIcon(Icons.phone, 'Phone Number:', 'Enter phone number',
+                            context, _phoneNumberController),
                         const SizedBox(height: 15),
-                        buildTextFieldWithIcon(
-                            Icons.email, 'Email Address:', 'Enter email address', context),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildSectionHeader('Password Change:'),
-                    const SizedBox(height: 10),
-                    _buildProfileCard(
-                      context,
-                      children: [
-                        buildTextFieldWithIcon(
-                            Icons.lock, 'Current Password:', 'Enter current password', context,
-                            obscureText: true),
-                        const SizedBox(height: 15),
-                        buildTextFieldWithIcon(
-                            Icons.lock_outline, 'New Password:', 'Enter new password', context,
-                            obscureText: true),
-                        const SizedBox(height: 15),
-                        buildTextFieldWithIcon(Icons.lock_outline, 'Confirm Password:',
-                            'Confirm new password', context,
-                            obscureText: true),
+                        buildTextFieldWithIcon(Icons.email, 'Email Address:', 'Enter email address',
+                            context, _emailController),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -221,15 +240,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextButton(
                         onPressed: () {
                           // Add Save functionality
+                          _saveChanges();
                         },
-                        child: const Text(
-                          'Save Changes',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: (saveLoading == true)
+                            ? const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : const Text(
+                                'Save Changes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -313,6 +337,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildTextFieldWithIcon(IconData icon, String label, String hint, BuildContext context,
+      TextEditingController controller,
       {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,6 +352,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: Colors.black),

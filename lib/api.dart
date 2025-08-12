@@ -78,6 +78,37 @@ class UserAPI {
     }
   }
 
+  Future<bool> updateAccount(String firstName, String lastName, String username, String companyName,
+      String phoneNumber, String email) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final sessionID = prefs.getString("sessionID");
+      if (sessionID == null) {
+        return false;
+      }
+      final response = await http.put(Uri.parse('$baseUrl/api/users'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $sessionID',
+          },
+          body: jsonEncode({
+            'firstName': firstName,
+            'lastName': lastName,
+            'username': username,
+            'companyName': companyName,
+            'phoneNumber': phoneNumber,
+            'email': email,
+          }));
+      if (response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
   Future<bool> removeAccount(String password) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
