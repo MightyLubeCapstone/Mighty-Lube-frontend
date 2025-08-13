@@ -763,7 +763,7 @@ class Validators {
 }
 
 
-
+//____________________________________________________________
 class TemplateAWidget extends StatefulWidget {
   final Validators validators;
   Map<String, dynamic>? initialData;
@@ -789,40 +789,22 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
   void initState() {
     super.initState();
     [
-      'internalExistingMonitoring',
-      'newMonitoring',
-      'addDCU',
-      'windowsVersion',
-      'headUnitVersion',
-      'dcuVersion',
-      'piuVersion',
-      'addReservoir',
-      'reservoirSize',
-      'reservoirQty',
-      'monitoringType',
-      'paintMarkerOnly',
-      'driveMotorAmp',
-      'driveTakeupAir',
-      'takeupDistance',
-      'driveMotorTemp',
-      'driveMotorVibration',
-      'dogPitchValidation',
-      'paintMarkerSystem',
-      'trolleyDetect',
-      'chainVision',
-      'upgradeDCUQty1',
-      'lubeVision',
-      'trolleyVision',
-      'addTrolleyDetect',
-      'omniView',
-      'upgradeDCUQty2',
-      'notes',
-      'distanceToPIU',
-      'distanceSwitchToCTR',
-      'distanceAmpPickup',
-      'distanceAirTakeup',
-      'controllerOptions',
-      'operatingVoltage'
+      'existingMonitor', 
+      'newMonitor', 
+      'dcuStatus', 
+      'dcuNum', 'existingWindows', 
+      'existingHeadUnit', 'existingDCU', 
+      'existingPowerInterface', 'newReservoir', 
+      'reservoirSize', 'otherReservoirSize', 
+      'newReservoirNum', 'typeMonitor', 'driveMotorAmp', 
+      'driveMotorAmpNum', 'driveTakeUpAir', 'driveTakeUpAirNum', 
+      'takeUpDistance', 'takeUpDistanceNum', 'driveTemp', 
+      'driveTempNum', 'driveVibration', 'driveVibrationNum', 
+      'dogPitch', 'dogPitchNum', 'paintMarker', 'paintMarkerNum', 
+      'chainVision', 'lubeVision', 'trolleyVision', 'trolleyDetect', 
+      'omniView', 'dcuUpgradeNum', 'piuDistance', 'switchDistance', 
+      'ampPickup', 'fromAirTakeUpDistance', 'specialControllerOptions', 
+      'operatingVoltage',
     ].forEach(_initField);
 
     if (widget.initialData != null && widget.initialData != {}) {
@@ -901,57 +883,66 @@ class TemplateAWidgetState extends State<TemplateAWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionTitle("Monitoring Template (A)"),
-        _buildSwitch("Connecting to Existing Monitoring", 'internalExistingMonitoring'),
-        if (_toggles['internalExistingMonitoring']!) ...[
-          _buildTextField("Version of Existing Windows Software (CMS)", 'windowsVersion'),
-          _buildTextField("Version of Existing Head Unit Software (CTR)", 'headUnitVersion'),
-          _buildTextField("Version of Existing DCU Software", 'dcuVersion'),
-          _buildTextField("Version of Existing Power Interface Unit", 'piuVersion'),
+        if (_toggles['existingMonitor']!) ...[
+          _buildTextField("Version of Existing Windows Software (CMS)", 'existingWindows'),
+          _buildTextField("Version of Existing Head Unit Software (CTR)", 'existingHeadUnit'),
+          _buildTextField("Version of Existing DCU Software", 'existingDCU'),
+          _buildTextField("Version of Existing Power Interface Unit", 'existingPowerInterface'),
         ],
-        _buildSwitch("Add New Monitoring System", 'newMonitoring'),
-        if (_toggles['newMonitoring']!) ...[
-          _buildSwitch("Add DCU?", 'addDCU'),
-          if (_toggles['addDCU']!) _buildTextField("DCU Quantity", 'upgradeDCUQty1'),
-          _buildSwitch("Adding Reservoir?", 'addReservoir'),
-          if (_toggles['addReservoir']!) ...[
+        _buildSwitch("Add New Monitoring System", 'newMonitor'),
+        if (_toggles['newMonitor']!) ...[
+          _buildSwitch("Add DCU?", 'dcuStatus'),
+          if (_toggles['dcuStatus']!) _buildTextField("DCU Quantity", 'dcuNum'),
+          _buildSwitch("Adding Reservoir?", 'newReservoir'),
+          if (_toggles['newReservoir']!) ...[
             _buildDropdown("Reservoir Size", 'reservoirSize', ["10 Gallon", "65 Gallon", "Other"]),
-            _buildDropdown("Reservoir Quantity", 'reservoirQty',
+            if (_toggles['reservoirSize'] == "Other")
+              _buildTextField("Other Reservoir Size", 'otherReservoirSize'),
+            _buildDropdown("Reservoir Quantity", 'newReservoirNum',
                 ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]),
           ],
         ],
-        _buildDropdown("Type of Monitoring System", 'monitoringType', ["Permanent", "Portable"]),
-        if (isPortable) ...[
-          _buildSwitch("Paint Marker", 'paintMarkerOnly'),
-        ] else ...[
+        _buildDropdown("Type of Monitoring System", 'typeMonitor', ["Permanent", "Portable"]),
+        if (_toggles['typeMonitor'] == "Portable") ...[
+          _buildSwitch("Paint Marker", 'paintMarker'),
+        ] else if (_toggles['typeMonitor'] == "Permanent") ...[
           _buildSwitch("Drive Motor Amp", 'driveMotorAmp'),
-          _buildSwitch("Drive Take-up – Air", 'driveTakeupAir'),
-          _buildSwitch("Take-Up Distance", 'takeupDistance'),
-          _buildSwitch("Drive Motor Temp", 'driveMotorTemp'),
-          _buildSwitch("Drive Motor Vibration", 'driveMotorVibration'),
-          _buildSwitch("Dog Pitch Validation", 'dogPitchValidation'),
-          _buildSwitch("Paint Marker System", 'paintMarkerSystem'),
+          if (_toggles['driveMotorAmp']!) _buildTextField("Drive Motor Amp Quantity", 'driveMotorAmpNum'),
+          _buildSwitch("Drive Take-up – Air", 'driveTakeUpAir'),
+          if (_toggles['driveTakeUpAir']!) _buildTextField("Drive Take-up – Air Quantity", 'driveTakeUpAirNum'),
+          _buildSwitch("Take-Up Distance", 'takeUpDistance'),
+          if (_toggles['takeUpDistance']!) _buildTextField("Take-Up Distance Quantity", 'takeUpDistanceNum'),
+          _buildSwitch("Drive Motor Temp", 'driveTemp'),
+          if (_toggles['driveTemp']!) _buildTextField("Drive Motor Temp Quantity", 'driveTempNum'),
+          _buildSwitch("Drive Motor Vibration", 'driveVibration'),
+          if (_toggles['driveVibration']!) _buildTextField("Drive Motor Vibration Quantity", 'driveVibrationNum'),
+          _buildSwitch("Dog Pitch Validation", 'dogPitch'),
+          if (_toggles['dogPitch']!) _buildTextField("Dog Pitch Validation Quantity", 'dogPitchNum'),
+          _buildSwitch("Paint Marker System", 'paintMarker'),
+          if (_toggles['paintMarker']!) _buildTextField("Paint Marker Quantity", 'paintMarkerNum'),
           _buildSwitch("Trolley Detect", 'trolleyDetect'),
           _buildSwitch("ChainVision", 'chainVision'),
-          if (_toggles['chainVision']!) _buildTextField("Upgrade DCU QTY", 'upgradeDCUQty1'),
+          if (_toggles['chainVision']!) _buildTextField("Upgrade DCU Quantity", 'dcuUpgradeNum'),
           _buildSwitch("LubeVision", 'lubeVision'),
           _buildSwitch("Trolley Vision", 'trolleyVision'),
-          if (_toggles['trolleyVision']!) _buildSwitch("Add Trolley Detect", 'addTrolleyDetect'),
+          if (_toggles['trolleyVision']!) _buildSwitch("Add Trolley Detect", 'trolleyDetect'),
           _buildSwitch("OmniView", 'omniView'),
-          if (_toggles['omniView']!) _buildTextField("Upgrade DCU QTY", 'upgradeDCUQty2'),
-          _buildTextField("Distance to PIU to NGM (add if over 100')", 'distanceToPIU'),
-          _buildTextField("Distance Switch to CTR (add if over 100')", 'distanceSwitchToCTR'),
-          _buildTextField("Distance from AMP Pickup (add if over 100')", 'distanceAmpPickup'),
-          _buildTextField("Distance from Air Take-Up (add if over 100')", 'distanceAirTakeup'),
-          _buildTextField("Special Controller Options (I/O Link, Plug and Play, Dry Contacts)",
-              'controllerOptions'),
+          if (_toggles['omniView']!) _buildTextField("Upgrade DCU Quantity", 'dcuUpgradeNum'),
+          _buildTextField("Distance to PIU to NGM (add if over 100')", 'piuDistance'),
+          _buildTextField("Distance Switch to CTR (add if over 100')", 'switchDistance'),
+          _buildTextField("Distance from AMP Pickup (add if over 100')", 'ampPickup'),
+          _buildTextField("Distance from Air Take-Up (add if over 100')", 'fromAirTakeUpDistance'),
+          _buildTextField("Special Controller Options (I/O Link, Plug and Play, Dry Contacts)", 'specialControllerOptions'),
         ],
-        _buildTextField("Notes", 'notes'),
+        _buildTextField("Notes", 'temp'),  // wes check this one I dunno if we need it or not. 
+        _buildTextField("Multiple Conveyor Requirements Check Diagram", 'temp'),
         _buildTextField("Operating Voltage - Single Phase (Volts/Hz)", 'operatingVoltage'),
-      ],
+
+      ]
     );
   }
 }
-
+//____________________________________________________________
 
 class TemplateBWidget extends StatefulWidget {
   final Validators validators;
@@ -978,29 +969,20 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
   void initState() {
     super.initState();
     [
-      'nameConveyor',
-      'chainManufacturer',
-      'wheelManufacturer',
-      'speedRange',
-      'speedType',
-      'tempCondition',
-      'mountOrientation',
-      'airSupply',
-      'operatingVoltage',
-      'controlVoltage',
-      'connectExistingMonitoring',
-      'addNewMonitoring',
-      'freeTrolleyWheels',
-      'dogActuator',
-      'kingPin',
-      'currentEquip',
-      'currentViscosity',
-      'currentGreaseType',
-      'currentNLGI',
-      'zerkSide',
-      'zerkOrientation',
-      'wheelDiameter',
-      'swayDetect',
+      'conveyorName', 'industrialChainManufacturer', 'otherChainManufacturer', 
+      'wheelManufacturer', 'otherWheelManufacturer', 'conveyorSpeed', 
+      'conveyorSpeedUnit', 'conveyorIndex', 'travelDirection', 
+      'appEnviroment', 'otherAppEnviroment', 'surroundingTemp', 
+      'orientationType', 'operatingVoltage', 'controlVoltSingle', 
+      'compressedAir', 'airSupplyType', 'monitorData', 'freeWheelStatus',
+      'actuatorStatus', 'pivotStatus', 'kingPinStatus', 'lubeBrand', 
+      'lubeViscosity', 'lubeType', 'currentGrease', 'currentGreaseGrade', 
+      'zerkDirection', 'zerkLocationType', 'wheelDiameter', 'conveyorSwing', 
+      'chainMaster', 'remoteStatus', 'mountStatus', 'otherUnitStatus', 'timerStatus', 
+      'electricStatus', 'mightyLubeMonitoring', 'preMountType', 'otherPreMountType', 
+      'plcConnection', 'otherControllerNotes', 'templateB_UnitType', 'templateB_InvertedB', 
+      'templateB_InvertedE', 'templateB_InvertedG', 'templateB_InvertedH', 'templateB_InvertedK', 
+      'templateB_InvertedT', 'templateB_InvertedU', 'templateB_InvertedV', 'templateB_InvertedW',
     ].forEach(_initField);
     if (widget.initialData != null && widget.initialData != {}) {
       widget.initialData!.forEach((key, value) {
@@ -1079,46 +1061,81 @@ class TemplateBWidgetState extends State<TemplateBWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionTitle("Template B - OPCO Free Rail 314 Wheel Greaser"),
-        _field("Name of Conveyor System", 'nameConveyor'),
-        _field("Chain Manufacturer", 'chainManufacturer'),
-        _field("Wheel Manufacturer", 'wheelManufacturer'),
-        _field("Conveyor Speed (Min/Max)", 'speedRange'),
-        _dropdown("Speed Type", 'speedType', ['Indexing', 'Variable']),
-        CommonWidgets.buildSectionTitle("Application Environment"),
-        _dropdown(
-            "Temperature of Area", 'tempCondition', ['Below 30°F', 'Above 120°F', 'Normal Range']),
-        _dropdown("Mounting Orientation", 'mountOrientation',
-            ['Overhead', 'Inverted', 'Inverted/Inverted']),
-        CommonWidgets.buildSectionTitle("Customer Power Utilities"),
-        _field("Operating Voltage (Volts/Hz)", 'operatingVoltage'),
-        _field("Control Voltage (Volts/Hz)", 'controlVoltage'),
-        _dropdown("Compressed Air Supply Available?", 'airSupply', ['Yes', 'No']),
-        CommonWidgets.buildSectionTitle("Monitoring System"),
-        _dropdown("Connect to Existing Monitoring?", 'connectExistingMonitoring', ['Yes', 'No']),
-        _dropdown("Add New Monitoring System?", 'addNewMonitoring', ['Yes', 'No']),
-        // Can see the "null" giving us MAJOR issues in the future, but one problem at a time...
-        if (_dropdowns['addNewMonitoring'] == 1)
-          CommonWidgets.buildTemplateA(null, widget.validators),
-        CommonWidgets.buildSectionTitle("Conveyor Specifications"),
-        _field("Free Trolley Wheels", 'freeTrolleyWheels'),
-        _field("Dog Actuator", 'dogActuator'),
-        _field("King Pin", 'kingPin'),
-        _field("Current Lubrication Equipment (Brand)", 'currentEquip'),
-        _field("Current Lubricant Viscosity/Grade", 'currentViscosity'),
-        _field("Current Grease Type", 'currentGreaseType'),
-        _field("Current Grease NLGI Grade", 'currentNLGI'),
-        _dropdown("Zerk Ftg Location (Side)", 'zerkSide', ['Left', 'Right']),
-        _field("Zerk Ftg Orientation", 'zerkOrientation'),
-        _field("Wheel Diameter", 'wheelDiameter'),
-        _field("Does Conveyor/Chain Move Side-to-Side?", 'swayDetect'),
-        if (_controllers['currentEquip']!.text.trim().toLowerCase() == 'mighty lube')
-          CommonWidgets.buildSectionTitle("Controller Info (Mighty Lube Detected)")
+        CommonWidgets.buildSectionTitle("OPCO Free Rail 314 \"Load\" Wheel Greaser - General Information"),
+          _field("Name of Conveyor System", 'conveyorName'),
+
+          _dropdown("Chain Manufacturer", 'industrialChainManufacturer', [
+            'Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
+            'Other'
+          ]),
+          if (_dropdowns['industrialChainManufacturer'] == 'Other')
+            _field("Other Chain Manufacturer", 'otherChainManufacturer'),
+          _dropdown("Wheel Manufacturer", 'wheelManufacturer', ['Green Line', 'Frost', 'M&M','Stork','Meyn','Linco','DC','Merel','D&F', 'Other']),
+          if (_dropdowns['wheelManufacturer'] == 'Other')
+            _field("Other Wheel Manufacturer", 'otherWheelManufacturer'),
+          _field("Conveyor Speed (Min/Max)", 'conveyorSpeed'),
+          _dropdown("Indexing or Variable Speed Conditions", 'conveyorSpeedUnit', ['Indexing', 'Variable']),
+
+          CommonWidgets.buildSectionTitle("Application Environment"),
+          _dropdown(
+            "Temperature of Surrounding Area at Planned Location of Lubrication System",
+            'appEnviroment',
+            ['Below 30°F', 'Above 120°F', 'Normal Range'],
+          ),
+
+          _dropdown(
+            "Is the Conveyor Overhead, Inverted, or Inverted/Inverted?",
+            'orientationType',
+            ['Overhead', 'Inverted', 'Inverted/Inverted'],
+          ),
+
+          CommonWidgets.buildSectionTitle("Customer Power Utilities"),
+          _field("Operating Voltage (Volts/Hz)", 'operatingVoltage'),
+          _field("Control Voltage (Volts/Hz)", 'controlVoltSingle'),
+
+          _dropdown(
+            "Is Compressed Air Supply Available at Mounting Location?",
+            'compressedAir',
+            ['Yes', 'No'],
+          ),
+
+          CommonWidgets.buildSectionTitle("New Monitoring System or Adding to Existing Monitoring System"),
+          _dropdown("Connecting to Existing Monitoring?", 'existingMonitor', ['Yes', 'No']),
+          _dropdown("Add New Monitoring System?", 'newMonitor', ['Yes', 'No']),
+          if (_dropdowns['newMonitor'] == 'Yes')
+            CommonWidgets.buildTemplateA(null, widget.validators),
+
+          CommonWidgets.buildSectionTitle("Conveyor Specifications"),
+          _field("Free Trolley Wheels", 'freeWheelStatus'),
+          _field("Dog Actuator", 'actuatorStatus'),
+          _field("King Pin", 'kingPinStatus'),
+
+          _field("Current Lubrication Equipment (Brand)", 'lubeBrand'),
+          _field("Current Lubricant Viscosity/Grade", 'lubeViscosity'),
+          _field("Current Grease Type", 'currentGrease'),
+          _field("Current Grease NLGI Grade", 'currentGreaseGrade'),
+
+          _dropdown("Zerk Fitting Location (Left or Right, Facing Direction of Travel)", 'zerkLocationType', ['Left', 'Right']),
+          _field("Zerk Fitting Orientation", 'zerkDirection'),
+
+          _field("Wheel Diameter", 'wheelDiameter'),
+
+          _field("Does the Conveyor or Chain Swing, Sway, Surge, or Move Side-to-Side?", 'conveyorSwing'),
+
+          if (_controllers['lubeBrand']!.text.trim().toLowerCase() == 'mighty lube')
+            CommonWidgets.buildSectionTitle("Controller Information (Mighty Lube Detected)"),
       ],
     );
   }
 }
-
+//____________________________________________________________
 
 class TemplateCWidget extends StatefulWidget {
   final Validators validators;
@@ -1145,29 +1162,18 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
   void initState() {
     super.initState();
     [
-      'nameConveyorC',
-      'chainManufacturerC',
-      'wheelManufacturerC',
-      'speedRangeC',
-      'speedTypeC',
-      'tempConditionC',
-      'mountOrientationC',
-      'guideWheelSpacingC',
-      'airSupplyC',
-      'operatingVoltageC',
-      'controlVoltageC',
-      'connectExistingMonitoringC',
-      'addNewMonitoringC',
-      'freeTrolleyWheelsC',
-      'dogActuatorC',
-      'kingPinC',
-      'currentEquipC',
-      'currentViscosityC',
-      'currentGreaseTypeC',
-      'currentNLGIC',
-      'zerkSideC',
-      'zerkOrientationC',
-      'wheelDiameterC'
+      'conveyorName', 'industrialChainManufacturer', 'otherChainManufacturer', 
+      'wheelManufacturer', 'otherWheelManufacturer', 'conveyorSpeed', 
+      'conveyorSpeedUnit', 'conveyorIndex', 'travelDirection', 'appEnviroment',
+      'otherAppEnviroment', 'surroundingTemp', 'orientationType', 'guideWheelsEven', 
+      'operatingVoltage', 'controlVoltSingle', 'compressedAir', 'airSupplyType', 
+      'monitorData', 'freeWheelStatus', 'actuatorStatus', 'pivotStatus', 
+      'kingPinStatus', 'lubeBrand', 'lubeViscosity', 'lubeType', 'currentGrease', 
+      'currentGreaseGrade', 'zerkDirection', 'zerkLocationType', 'wheelDiameter', 
+      'conveyorSwing', 'chainMaster', 'remoteStatus', 'mountStatus', 'otherUnitStatus', 
+      'timerStatus', 'electricStatus', 'mightyLubeMonitoring', 'preMountType', 
+      'otherPreMountType', 'plcConnection', 'otherControllerNotes', 'templateC_UnitType', 
+      'templateC_InvertedA', 'templateC_InvertedB', 'templateC_InvertedE', 'templateC_InvertedS',
     ].forEach(_initField);
     if (widget.initialData != null && widget.initialData != {}) {
       widget.initialData!.forEach((key, value) {
@@ -1247,46 +1253,58 @@ class TemplateCWidgetState extends State<TemplateCWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionTitle("Template C - OPCO Free Rail 317 Guide Wheel Greaser"),
-        _field("Name of Conveyor System", 'nameConveyorC'),
-        _field("Chain Manufacturer", 'chainManufacturerC'),
-        _field("Wheel Manufacturer", 'wheelManufacturerC'),
-        _field("Conveyor Speed (Min/Max)", 'speedRangeC'),
-        _dropdown("Speed Type", 'speedTypeC', ['Indexing', 'Variable']),
-        CommonWidgets.buildSectionTitle("Application Environment"),
-        _dropdown(
-            "Temperature of Area", 'tempConditionC', ['Below 30°F', 'Above 120°F', 'Normal Range']),
-        _dropdown("Mounting Orientation", 'mountOrientationC',
-            ['Overhead', 'Inverted', 'Inverted/Inverted']),
-        _dropdown("Are guide wheels evenly spaced?", 'guideWheelSpacingC', ['Yes', 'No']),
-        if (_dropdowns['guideWheelSpacingC'] == 2)
-          CommonWidgets.buildSectionTitle("Please provide trolley mechanical diagrams"),
-        CommonWidgets.buildSectionTitle("Customer Power Utilities"),
-        _field("Operating Voltage (Volts/Hz)", 'operatingVoltageC'),
-        _field("Control Voltage (Volts/Hz)", 'controlVoltageC'),
-        _dropdown("Compressed Air Supply Available?", 'airSupplyC', ['Yes', 'No']),
-        CommonWidgets.buildSectionTitle("Monitoring System"),
-        _dropdown("Connect to Existing Monitoring?", 'connectExistingMonitoringC', ['Yes', 'No']),
-        _dropdown("Add New Monitoring System?", 'addNewMonitoringC', ['Yes', 'No']),
-        if (_dropdowns['addNewMonitoringC'] == 1)
-          CommonWidgets.buildTemplateA(null, widget.validators),
-        CommonWidgets.buildSectionTitle("Conveyor Specifications"),
-        _field("Free Trolley Wheels", 'freeTrolleyWheelsC'),
-        _field("Dog Actuator", 'dogActuatorC'),
-        _field("King Pin", 'kingPinC'),
-        _field("Current Lubrication Equipment (Brand)", 'currentEquipC'),
-        _field("Current Lubricant Viscosity/Grade", 'currentViscosityC'),
-        _field("Current Grease Type", 'currentGreaseTypeC'),
-        _field("Current Grease NLGI Grade", 'currentNLGIC'),
-        _dropdown("Zerk Ftg Location (Side)", 'zerkSideC', ['Left', 'Right']),
-        _field("Zerk Ftg Orientation", 'zerkOrientationC'),
-        _field("Wheel Diameter", 'wheelDiameterC'),
-        if (_controllers['currentEquipC']!.text.trim().toLowerCase() == 'mighty lube')
-          CommonWidgets.buildSectionTitle("Controller Info (Mighty Lube Detected)")
+          _field("Name of Conveyor System", 'conveyorName'),
+          _dropdown("Chain Manufacturer", 'industrialChainManufacturer', ['Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
+            'Other']),
+          if (_dropdowns['industrialChainManufacturer'] == 'Other')
+            _field("Other Chain Manufacturer", 'otherChainManufacturer'),
+          _dropdown("Wheel Manufacturer", 'wheelManufacturer', ['Green Line', 'Frost', 'M&M','Stork','Meyn','Linco','DC','Merel','D&F', 'Other']),
+          if (_dropdowns['wheelManufacturer'] == 'Other')
+            _field("Other Wheel Manufacturer", 'otherWheelManufacturer'),
+          _field("Conveyor Speed (Min/Max)", 'conveyorSpeed'),
+          _dropdown("Speed Type", 'conveyorSpeedUnit', ['Indexing', 'Variable']),
+          CommonWidgets.buildSectionTitle("Application Environment"),
+          _dropdown("Temperature of Area", 'appEnviroment', ['Below 30°F', 'Above 120°F', 'Normal Range']),
+          _dropdown("Mounting Orientation", 'orientationType', ['Overhead', 'Inverted', 'Inverted/Inverted']),
+          _dropdown("Are guide wheels evenly spaced?", 'guideWheelsEven', ['Yes', 'No']),
+          if (_dropdowns['guideWheelsEven'] == 'No')
+            CommonWidgets.buildSectionTitle("Please provide trolley mechanical diagrams"),
+          CommonWidgets.buildSectionTitle("Customer Power Utilities"),
+          _field("Operating Voltage (Volts/Hz)", 'operatingVoltage'),
+          _field("Control Voltage (Volts/Hz)", 'controlVoltSingle'),
+          _dropdown("Compressed Air Supply Available?", 'compressedAir', ['Yes', 'No']),
+          CommonWidgets.buildSectionTitle("Monitoring System"),
+          _dropdown("Connect to Existing Monitoring?", 'monitorData', ['Yes', 'No']),
+          _dropdown("Add New Monitoring System?", 'mightyLubeMonitoring', ['Yes', 'No']),
+          if (_dropdowns['mightyLubeMonitoring'] == 'Yes')
+            CommonWidgets.buildTemplateA(null, widget.validators),
+          CommonWidgets.buildSectionTitle("Conveyor Specifications"),
+          _field("Free Trolley Wheels", 'freeWheelStatus'),
+          _field("Dog Actuator", 'actuatorStatus'),
+          _field("King Pin", 'kingPinStatus'),
+          _field("Current Lubrication Equipment (Brand)", 'lubeBrand'),
+          _field("Current Lubricant Viscosity/Grade", 'lubeViscosity'),
+          _field("Current Grease Type", 'currentGrease'),
+          _field("Current Grease NLGI Grade", 'currentGreaseGrade'),
+          _dropdown("Zerk Ftg Location (Left or Right, Facing Direction of Travel)", 'zerkLocationType', ['Left', 'Right']),
+          _field("Zerk Ftg Orientation", 'zerkDirection'),
+          _field("Wheel Diameter", 'wheelDiameter'),
+          _field("Does the Conveyor or Chain Swing, Sway, Surge, or Move Side-to-Side?", 'conveyorSwing'),
+          if (_controllers['lubeBrand']!.text.trim().toLowerCase() == 'mighty lube')
+            CommonWidgets.buildSectionTitle("Controller Info (Mighty Lube Detected)"),
+
       ],
     );
   }
 }
-
+//____________________________________________________________
 
 class TemplateDWidget extends StatefulWidget {
   final Validators validators;
@@ -1313,34 +1331,16 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
   void initState() {
     super.initState();
     [
-      'nameConveyorD',
-      'wheelManufacturerD',
-      'conveyorLengthD',
-      'chainSizeD',
-      'chainManufacturerD',
-      'speedRangeD',
-      'speedTypeD',
-      'tempConditionD',
-      'mountOrientationD',
-      'loadStatusD',
-      'swayConditionD',
-      'operatingVoltageD',
-      'controlVoltageD',
-      'airSupplyD',
-      'connectExistingMonitoringD',
-      'addNewMonitoringD',
-      'currentGreaseTypeD',
-      'currentNLGID',
-      'wheelDiameterD',
-      'currentEquipD',
-      'chainMasterControllerD',
-      'remoteControlledD',
-      'mountedOnGreaserD',
-      'controlsOtherUnitsD',
-      'timerD',
-      'mightyLubeMonitoringD',
-      'preMountingD',
-      'otherDescribeD'
+      'conveyorName', 'wheelManufacturer', 'otherWheelManufacturer', 
+      'conveyorLength', 'conveyorLengthUnit', 'chainSize', 
+      'otherChainSize', 'industrialChainManufacturer', 'otherChainManufacturer', 
+      'conveyorSpeed', 'conveyorSpeedUnit', 'conveyorIndex', 'appEnviroment', 
+      'otherAppEnviroment', 'surroundingTemp', 'orientationType', 'conveyorLoaded', 
+      'conveyorSwing', 'operatingVoltage', 'controlVoltSingle', 'compressedAir', 
+      'airSupplyType', 'monitorData', 'lubeBrand', 'currentGrease', 
+      'currentGreaseGrade', 'wheelDiameter', 'chainMaster', 'remoteStatus', 
+      'mountStatus', 'otherUnitStatus', 'timerStatus', 'electricStatus', 
+      'mightyLubeMonitoring', 'preMountType', 'otherControllerNotes',
     ].forEach(_initField);
     if (widget.initialData != null && widget.initialData != {}) {
       widget.initialData!.forEach((key, value) {
@@ -1419,50 +1419,65 @@ class TemplateDWidgetState extends State<TemplateDWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidgets.buildSectionTitle("Template D - OPCO OP-201 Greaser Power Chain"),
-        _field("Name of Conveyor System", 'nameConveyorD'),
-        _field("Wheel Manufacturer", 'wheelManufacturerD'),
-        _field("Conveyor Length", 'conveyorLengthD'),
-        _field("Conveyor Chain Size", 'chainSizeD'),
-        _field("Chain Manufacturer", 'chainManufacturerD'),
-        _field("Conveyor Speed (Min/Max)", 'speedRangeD'),
-        _dropdown("Speed Type", 'speedTypeD', ['Indexing', 'Variable']),
-        CommonWidgets.buildSectionTitle("Application Environment"),
-        _dropdown(
-            "Temperature of Area", 'tempConditionD', ['Below 30°F', 'Above 120°F', 'Normal Range']),
-        _dropdown("Mounting Orientation", 'mountOrientationD',
-            ['Overhead', 'Inverted Chain Under', 'Inverted Chain Over']),
-        _dropdown("Is Conveyor Loaded?", 'loadStatusD', ['Loaded', 'Unloaded']),
-        _dropdown("Does Conveyor/Chain Sway/Surge?", 'swayConditionD', ['Yes', 'No']),
-        CommonWidgets.buildSectionTitle("Customer Power Utilities"),
-        _field("Operating Voltage (Volts/Hz)", 'operatingVoltageD'),
-        _field("Control Voltage (Volts/Hz)", 'controlVoltageD'),
-        _dropdown("Compressed Air Supply Available?", 'airSupplyD', ['Yes', 'No']),
-        CommonWidgets.buildSectionTitle("Monitoring System"),
-        _dropdown("Connect to Existing Monitoring?", 'connectExistingMonitoringD', ['Yes', 'No']),
-        _dropdown("Add New Monitoring System?", 'addNewMonitoringD', ['Yes', 'No']),
-        if (_dropdowns['addNewMonitoringD'] == 1)
-          CommonWidgets.buildTemplateA(null, widget.validators),
-        CommonWidgets.buildSectionTitle("Conveyor Specifications"),
-        _field("Current Grease Type", 'currentGreaseTypeD'),
-        _field("Current Grease NLGI Grade", 'currentNLGID'),
-        _field("Wheel Diameter", 'wheelDiameterD'),
-        if (_controllers['currentEquipD']!.text.trim().toLowerCase() == 'mighty lube') ...[
-          CommonWidgets.buildSectionTitle("Controller Info - Mighty Lube Detected"),
-          _field("ChainMaster Controller", 'chainMasterControllerD'),
-          _field("Remote Controlled by E-series", 'remoteControlledD'),
-          _field("Mounted on Greaser", 'mountedOnGreaserD'),
-          _field("Controls Other Units (list)", 'controlsOtherUnitsD'),
-          _field("Timer", 'timerD'),
-          _field("Mighty Lube Monitoring", 'mightyLubeMonitoringD'),
-          _field("Pre-Mounting Requirements", 'preMountingD'),
-          _field("Other Describe", 'otherDescribeD'),
-        ]
+        
+          CommonWidgets.buildSectionTitle("Template D - OPCO OP-201 Greaser Power Chain"),
+            _field("Name of Conveyor System", 'conveyorName'),
+            _dropdown("Wheel Manufacturer", 'wheelManufacturer', ['Green Line', 'Frost', 'M&M','Stork','Meyn','Linco','DC','Merel','D&F', 'Other']),
+            if (_dropdowns['wheelManufacturer'] == 'Other')
+              _field("Other Wheel Manufacturer", 'otherWheelManufacturer'),
+            _field("Conveyor Length", 'conveyorLength'),
+            _dropdown("Conveyor Length Unit", 'conveyorLengthUnit', ['Feet', 'Meters']),
+            _field("Conveyor Chain Size", 'chainSize'),
+            if (_dropdowns['chainSize'] == 'Other')
+              _field("Other Chain Size", 'otherChainSize'),
+            _dropdown("Chain Manufacturer", 'industrialChainManufacturer', ['Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
+            'Other']),
+            if (_dropdowns['industrialChainManufacturer'] == 'Other')
+              _field("Other Chain Manufacturer", 'otherChainManufacturer'),
+            _field("Conveyor Speed (Min/Max)", 'conveyorSpeed'),
+            _dropdown("Speed Type", 'conveyorSpeedUnit', ['Indexing', 'Variable']),
+            CommonWidgets.buildSectionTitle("Application Environment"),
+            _dropdown("Temperature of Area", 'appEnviroment', ['Below 30°F', 'Above 120°F', 'Normal Range']),
+            _field("Surrounding Temperature", 'surroundingTemp'),
+            _dropdown("Mounting Orientation", 'orientationType', ['Overhead', 'Inverted Chain Under', 'Inverted Chain Over']),
+            _dropdown("Is Conveyor Loaded?", 'conveyorLoaded', ['Loaded', 'Unloaded']),
+            _dropdown("Does Conveyor/Chain Sway/Surge?", 'conveyorSwing', ['Yes', 'No']),
+            CommonWidgets.buildSectionTitle("Customer Power Utilities"),
+            _field("Operating Voltage (Volts/Hz)", 'operatingVoltage'),
+            _field("Control Voltage (Volts/Hz)", 'controlVoltSingle'),
+            _dropdown("Compressed Air Supply Available?", 'compressedAir', ['Yes', 'No']),
+            CommonWidgets.buildSectionTitle("Monitoring System"),
+            _dropdown("Connect to Existing Monitoring?", 'monitorData', ['Yes', 'No']),
+            _dropdown("Add New Monitoring System?", 'addNewMonitoringD', ['Yes', 'No']),
+            if (_dropdowns['addNewMonitoringD'] == 1)
+              CommonWidgets.buildTemplateA(null, widget.validators),
+            CommonWidgets.buildSectionTitle("Conveyor Specifications"),
+            _field("Current Grease Type", 'currentGrease'),
+            _field("Current Grease NLGI Grade", 'currentGreaseGrade'),
+            _field("Wheel Diameter", 'wheelDiameter'),
+            if (_controllers['lubeBrand']!.text.trim().toLowerCase() == 'mighty lube') ...[
+              CommonWidgets.buildSectionTitle("Controller Info - Mighty Lube Detected"),
+              _field("ChainMaster Controller", 'chainMaster'),
+              _field("Remote Controlled by E-series", 'remoteStatus'),
+              _field("Mounted on Greaser", 'mountStatus'),
+              _field("Controls Other Units (list)", 'otherUnitStatus'),
+              _field("Timer", 'timerStatus'),
+              _field("Mighty Lube Monitoring", 'mightyLubeMonitoring'),
+              _field("Pre-Mounting Requirements", 'preMountType'),
+              _field("Other Describe", 'otherControllerNotes'),
+            ],
       ],
     );
   }
 }
-
+//____________________________________________________________
 
 class TemplateEWidget extends StatefulWidget {
   final Validators validators;
@@ -1477,6 +1492,7 @@ class TemplateEWidget extends StatefulWidget {
 class TemplateEWidgetState extends State<TemplateEWidget> {
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, int?> _dropdowns = {};
+  final Map<String, bool> _toggles = {};
 
   void _initField(String name) {
     _controllers.putIfAbsent(name, () => TextEditingController());
@@ -1486,13 +1502,22 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
   @override
   void initState() {
     super.initState();
-    ['nameConveyorE', 'chainSizeE'].forEach(_initField);
+    [
+      'conveyorName', 'chainSize', 'otherChainSize', 
+      'industrialChainManufacturer', 'otherChainManufacturer', 
+      'conveyorLength', 'conveyorLengthUnit', 'appEnviroment', 
+      'otherAppEnviroment', 'lubeBrand', 'lubeType', 'lubeViscosity', 
+      'specialControllerOptions', 'wireMeasurementUnit', 'conductor2', 
+      'conductor4', 'conductor7', 'conductor12', 'junctionBoxNum',
+    ].forEach(_initField);
     if (widget.initialData != null && widget.initialData != {}) {
       widget.initialData!.forEach((key, value) {
         if (_controllers.containsKey(key) && value is String) {
           _controllers[key]!.text = value;
         } else if (_dropdowns.containsKey(key) && value is int?) {
           _dropdowns[key] = value;
+        } else if (_toggles.containsKey(key) && value is bool) {
+          _toggles[key] = value;
         }
       });
     }
@@ -1562,7 +1587,7 @@ class TemplateEWidgetState extends State<TemplateEWidget> {
     );
   }
 }
-
+//____________________________________________________________
 
 class TemplateFWidget extends StatefulWidget {
   final Validators validators;
@@ -1587,14 +1612,11 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
   void initState() {
     super.initState();
     [
-      'nameConveyorF',
-      'chainSizeF',
-      'chainManufacturerF',
-      'wheelManufacturerF',
-      'conveyorLengthF',
-      'brushApplicatorsF',
-      'm12PlugsF',
-      'mainBackupF'
+      'conveyorName', 'chainSize', 'otherChainSize', 
+      'industrialChainManufacturer', 'otherChainManufacturer', 
+      'wheelManufacturer', 'otherWheelManufacturer', 'conveyorLength', 
+      'conveyorLengthUnit', 'brushApplicators', 'm12Plugs', 
+      'oilStatus', 'operatingVoltage', 'controlVoltSingle',
     ].forEach(_initField);
     if (widget.initialData != null && widget.initialData != {}) {
       widget.initialData!.forEach((key, value) {
@@ -1667,8 +1689,16 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
         _field("Name of Conveyor System", 'nameConveyorF'),
         _dropdown("Conveyor Chain Size", 'chainSizeF',
             ['3-inch', '4-inch', '6-inch', '8-inch', 'X-Type', 'I-Beam']),
-        _field("Chain Manufacturer", 'chainManufacturerF'),
-        _field("Wheel Manufacturer", 'wheelManufacturerF'),
+        _dropdown("Chain Manufacturer", 'chainManufacturerF',['Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
+            'Other']),
+        _dropdown("Wheel Manufacturer", 'wheelManufacturer', ['Green Line', 'Frost', 'M&M','Stork','Meyn','Linco','DC','Merel','D&F', 'Other']),
         _field("Conveyor Length", 'conveyorLengthF'),
         _dropdown("Are brush applicators wanted?", 'brushApplicatorsF', ['Yes', 'No']),
         _dropdown("Are M12 plugs required?", 'm12PlugsF', ['Yes', 'No']),
@@ -1677,3 +1707,4 @@ class TemplateFWidgetState extends State<TemplateFWidget> {
     );
   }
 }
+//____________________________________________________________
