@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mighty_lube/api.dart';
@@ -360,7 +358,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       // its template data, recursive time bitch :)
       entry.value.remove("_id");
       labels.remove(entry.key);
-      setStateData(stateHolders, options, labels, entry.value);
+      return setStateData(stateHolders, options, labels, entry.value);
     } else {
       // TextEdControl addition
       if (entry.value is int) {

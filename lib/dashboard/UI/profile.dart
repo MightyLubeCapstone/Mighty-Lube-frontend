@@ -117,6 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       }
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }

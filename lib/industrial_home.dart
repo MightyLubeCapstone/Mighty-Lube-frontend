@@ -70,7 +70,8 @@ class _IndustrialHomeState extends State<IndustrialHome> {
   //               boxShadow: [
   //                 BoxShadow(
   //                   color: const Color.fromARGB(25, 54, 53, 53)
-  //                       .withOpacity(0.3), // More prominent shadow
+  //                        // ignore: deprecated_member_use
+  //                     .withOpacity(0.3), // More prominent shadow
   //                   blurRadius: 10.0,
   //                   offset: const Offset(0, 6),
   //                 ),

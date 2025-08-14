@@ -45,6 +45,7 @@ class Page300IState extends State<Page300I> {
                   'assets/WhiteML_Logo-w-tag-vector.svg',
                   width: 100, // Increased width for a larger logo
                   height: 150, // Adjust height proportionally
+                  // ignore: deprecated_member_use
                   color: Colors.white,
                 ),
               ),

@@ -23,6 +23,7 @@ class HeaderLogo extends StatelessWidget {
           'assets/WhiteML_Logo-w-tag-vector.svg',
           width: 100,
           height: 150,
+          // ignore: deprecated_member_use
           color: const Color.fromARGB(255, 249, 249, 250),
         ),
       ),
@@ -179,6 +180,7 @@ class CMSProductsState extends State<CMSProducts> {
                 boxShadow: [
                   BoxShadow(
                     color: const Color.fromARGB(25, 54, 53, 53)
+                        // ignore: deprecated_member_use
                         .withOpacity(0.3), // More prominent shadow
                     blurRadius: 10.0,
                     offset: const Offset(0, 6),

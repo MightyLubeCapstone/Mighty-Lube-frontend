@@ -222,7 +222,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(zLength.text, 'zLength');
 
     errors = Map<String, String?>.from(validate.errors);
-    print(errors);
 
     setState(() {});
   }

@@ -195,7 +195,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     setState(() {});
 
     errors = Map<String, String?>.from(validate.errors);
-    print(errors);
   }
 
   @override

@@ -144,7 +144,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Future<void> _validateForm() async {
-
     validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
@@ -161,7 +160,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(s2Center.text, 's2Center');
 
     errors = Map<String, String?>.from(validate.errors);
-    print(errors);
 
     setState(() {});
   }

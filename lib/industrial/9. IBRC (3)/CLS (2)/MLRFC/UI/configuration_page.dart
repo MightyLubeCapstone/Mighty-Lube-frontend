@@ -73,7 +73,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(operatingVoltage.text, 'operatingVoltage');
 
     errors = Map<String, String?>.from(validate.errors);
-    print(errors);
 
     setState(() {});
   }

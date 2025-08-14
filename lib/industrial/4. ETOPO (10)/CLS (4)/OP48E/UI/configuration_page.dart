@@ -98,7 +98,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
   Future<void> _validateForm() async {
-
     validate.validateDropdownField(chainManufacturer, 'chainManufacturer');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateDropdownField(operatingVoltage, 'operatingVoltage');
@@ -114,7 +113,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(s2Center.text, 's2Center');
 
     errors = Map<String, String?>.from(validate.errors);
-    print(errors);
 
     setState(() {});
   }
@@ -559,6 +557,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Future<VoidCallback?> addETO_OP48E(int numRequested) async {
     if (validForm()) {
       dynamic etoData = {

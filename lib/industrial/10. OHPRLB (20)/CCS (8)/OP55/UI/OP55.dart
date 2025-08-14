@@ -45,6 +45,7 @@ class OP55PageState extends State<OP55Page> {
                   'assets/WhiteML_Logo-w-tag-vector.svg',
                   width: 100, // Increased width for a larger logo
                   height: 150, // Adjust height proportionally
+                  // ignore: deprecated_member_use
                   color: Colors.white,
                 ),
               ),
@@ -54,19 +55,16 @@ class OP55PageState extends State<OP55Page> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon:
-                          const Icon(Icons.account_circle, color: Colors.white),
+                      icon: const Icon(Icons.account_circle, color: Colors.white),
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
+                          MaterialPageRoute(builder: (context) => const ProfilePage()),
                         );
                       },
                     ),
                     IconButton(
-                      icon:
-                          const Icon(Icons.shopping_cart, color: Colors.white),
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         // Navigate to shopping cart
                       },
@@ -80,8 +78,7 @@ class OP55PageState extends State<OP55Page> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: 5.0), // Add padding to the top and bottom
+        padding: const EdgeInsets.symmetric(vertical: 5.0), // Add padding to the top and bottom
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,

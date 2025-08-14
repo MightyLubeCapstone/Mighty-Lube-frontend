@@ -91,7 +91,6 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateDropdownField(dripLine, 'dripLine');
 
     errors = Map<String, String?>.from(validate.errors);
-    print(errors);
 
     setState(() {});
   }
