@@ -20,6 +20,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorSpeed = TextEditingController();
   final TextEditingController conveyorIndex = TextEditingController();
   final TextEditingController operatingVoltage = TextEditingController();
+  final TextEditingController techniciannote = TextEditingController();
+
   final TextEditingController otherInfo = TextEditingController();
   final TextEditingController specialOptions = TextEditingController();
   final TextEditingController equipBrand = TextEditingController();
@@ -70,6 +72,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSpeed': null,
     'conveyorIndex': null,
     'operatingVoltage': null,
+    'techniciannote': null,
     'otherInfo': null,
     'specialOptions': null,
     'equipBrand': null,
@@ -157,6 +160,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     specialOptions.addListener(() {
       validate.onNameOpChanged(specialOptions.text, 'specialOptions');
       setState(() {});
@@ -199,6 +206,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
     operatingVoltage.removeListener(() {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
+      setState(() {});
+    });
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
       setState(() {});
     });
     specialOptions.removeListener(() {
@@ -293,8 +304,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(
-            context, '>', const ApplicationPage(), 'Products', const ProductsHome()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>', const ApplicationPage(), 'Products', const ProductsHome()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -315,6 +325,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   isError: validate.sectionError("controller")),
               CommonWidgets.buildGradientButton(context, 'CC5: Measurements', buildMeasurements(),
                   isError: validate.sectionError("measurements")),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -327,6 +340,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
 //actual buttons w/ the questions :)
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
 
   Widget buildGeneralInformationContent() {
     return Column(
@@ -813,6 +843,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'appEnviroment': applicationEnvironment,
         'ovenStatus': null,
         'ovenTemp': null,
+        'technicianNote':techniciannote.text,
         'surroundingTemp': temperature,
         'strandStatus': singleOrDoubleStrand,
         'plantLayout': null,

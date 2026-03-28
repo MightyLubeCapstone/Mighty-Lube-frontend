@@ -319,8 +319,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     return true;
   }
 
-  int setEntryData(dynamic stateHolders, List<List<String>> options, List<String> labels,
-      MapEntry<dynamic, dynamic> entry) {
+  int setEntryData(dynamic stateHolders, List<List<String>> options, List<String> labels, MapEntry<dynamic, dynamic> entry) {
     labels.add(entry.key);
     if (entry.value.runtimeType == List && entry.value[0]["value"].runtimeType != List) {
       // dropdown addition
@@ -391,8 +390,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     return 1;
   }
 
-  int setStateData(
-      dynamic stateHolders, List<List<String>> options, List<String> labels, Map orderInfo) {
+  int setStateData(dynamic stateHolders, List<List<String>> options, List<String> labels, Map orderInfo) {
     int numberOfFields = 0;
     for (var entry in orderInfo.entries) {
       // map iteration
@@ -660,8 +658,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   orderLoading = true;
                                 });
                                 // this is the one that needs to show all their CURRENT choices...
-                                _showCurrentConfiguration(
-                                    product["orderID"], false, product["quantity"]);
+                                _showCurrentConfiguration(product["orderID"], false, product["quantity"]);
                               },
                               child: Card(
                                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -705,8 +702,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                               ),
                                             ),
                                             const SizedBox(height: 2),
-                                            Text(
-                                              'Number requested: ${product["quantity"].toString()}',
+                                            Text('Number requested: ${product["quantity"].toString()}',
                                               style: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.normal,
@@ -729,8 +725,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                                   orderLoading = true;
                                                 }),
                                                 // show modal with all possible choices, just like original page
-                                                _showCurrentConfiguration(
-                                                    product["orderID"], true, product["quantity"])
+                                                _showCurrentConfiguration(product["orderID"], true, product["quantity"])
                                               },
                                             ),
                                           if (orderLoading == true)

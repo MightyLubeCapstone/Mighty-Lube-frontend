@@ -30,8 +30,7 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
     setState(() {
       configLoading = true;
     });
-    widget.configurationItems =
-        await ConfigurationAPI().getConfigurations() as List;
+    widget.configurationItems = await ConfigurationAPI().getConfigurations() as List;
     setState(() {
       configLoading = false;
     });
@@ -149,9 +148,7 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          widget.configurationItems[index]
-                                                  ["configurationName"] ??
-                                              "Unknown draft",
+                                          widget.configurationItems[index]["configurationName"] ?? "Unknown draft",
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,

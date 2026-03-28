@@ -28,8 +28,7 @@ class HeaderLogo extends StatelessWidget {
       height: 180,
       color: const Color.fromARGB(255, 87, 154, 246),
       child: Center(
-        child: SvgPicture.asset(
-          'assets/WhiteML_Logo-w-tag-vector.svg',
+        child: SvgPicture.asset('assets/WhiteML_Logo-w-tag-vector.svg',
           width: 100,
           height: 150,
           // ignore: deprecated_member_use

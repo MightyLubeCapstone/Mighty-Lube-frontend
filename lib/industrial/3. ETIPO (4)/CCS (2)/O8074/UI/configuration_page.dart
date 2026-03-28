@@ -19,6 +19,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conveyorSystem = TextEditingController();
   final TextEditingController conveyorLength = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // Dropdown values
   int? chainManufacturer = -1;
   int? conveyorLengthUnit = -1;
@@ -31,6 +34,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'chainManufacturer': null,
     'conveyorLengthUnit': null,
     'conveyorSpeedUnit': null,
+    'techniciannote': null,
   };
 
   bool validForm() {
@@ -58,6 +62,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorLength.text, 'conveyorLength');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
   }
 
   @override
@@ -68,6 +76,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
     conveyorLength.removeListener(() {
       validate.onNameOpChanged(conveyorLength.text, 'conveyorLength');
+      setState(() {});
+    });
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
       setState(() {});
     });
     super.dispose();
@@ -101,6 +113,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildGeneralInformationContent(),
                 isError: validate.sectionError("General Information"),
               ),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -111,6 +126,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
+
 
   Widget buildGeneralInformationContent() {
     return Column(
@@ -201,6 +237,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'industrialChainManufacturer': chainManufacturer,
         'conveyorLength': conveyorLength.text,
         'conveyorLengthUnit': conveyorLengthUnit,
+        'technicianNote':techniciannote.text,
       };
       bool status = await FormAPI().addOrder("ETI_807", configurationData, numRequested);
       if (!mounted) {

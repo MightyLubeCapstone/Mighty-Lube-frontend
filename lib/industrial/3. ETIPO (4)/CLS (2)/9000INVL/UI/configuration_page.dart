@@ -35,6 +35,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController nTop = TextEditingController();
   final TextEditingController s2Center = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // Dropdown values
   int? conveyorChainSize = -1;
   int? chainManufacturer = -1;
@@ -58,6 +61,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSystem': null,
     'conveyorLength': null,
     'conveyorSpeed': null,
+    'techniciannote': null,
     'operatingVoltage': null,
     'conductor4': null,
     'conductor7': null,
@@ -121,10 +125,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     conveyorSystem.dispose();
     conveyorLength.dispose();
     conveyorSpeed.dispose();
@@ -179,13 +191,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(
-          context,
-          '>',
-          const ApplicationPage(),
-          'Products',
-          const CLSProducts(),
-        ),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>', const ApplicationPage(), 'Products', const CLSProducts(),),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -232,6 +238,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildMeasurements(),
                 isError: validate.sectionError('Measurements'),
               ),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -242,6 +251,27 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
+
 
   Widget buildGeneralInformationContent() {
     return Column(
@@ -659,6 +689,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conveyorLoaded': conveyorLoaded,
         'conveyorSwing': conveyorSwing,
         'operatingVoltage': operatingVoltage.text,
+        'technicianNote':techniciannote.text,
         'templateB': {
           'newMonitor': null,
         },

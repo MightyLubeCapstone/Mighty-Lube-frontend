@@ -38,6 +38,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController p1Outside = TextEditingController();
   final TextEditingController r1Center = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // Dropdown values
   int? conveyorChainSize = -1;
   int? chainManufacturer = -1;
@@ -65,6 +68,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'equipBrand': null,
     'currentType': null,
     'currentGrade': null,
+    'techniciannote': null,
   };
 
   // Sections map
@@ -123,10 +127,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     conveyorSystem.dispose();
     conveyorLength.dispose();
     conveyorSpeed.dispose();
@@ -229,6 +241,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                 buildMeasurements(),
                 isError: validate.sectionError('Measurements'),
               ),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -239,6 +254,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       ],
     );
   }
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
+
 
   Widget buildGeneralInformationContent() {
     return Column(
@@ -568,6 +602,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'plantLayout': null,
         'requiredPics': null,
         'operatingVoltage': operatingVoltage.text,
+        'technicianNote':techniciannote.text,
         'wheelOpenType': null,
         'wheelClosedType': null,
         'openStatus': null,

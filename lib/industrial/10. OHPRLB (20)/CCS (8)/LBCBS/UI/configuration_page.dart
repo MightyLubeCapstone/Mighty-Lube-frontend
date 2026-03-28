@@ -18,6 +18,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController bDiameter = TextEditingController();
   final TextEditingController hHeight = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,6 +31,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
             children: [
               CommonWidgets.buildGradientButton(context, 'General Information',buildGeneralInformationContent()),
               CommonWidgets.buildGradientButton(context, 'Overhead Power Rail: Measurements',buildMeasurements()),
+              CommonWidgets.buildGradientButton(context, 'Technician Note', buildTechnicianNoteContent()),
             ],
           ),
         ),
@@ -39,7 +42,26 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     );
   }
 
+
+
 //actual buttons w/ the questions :) 
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: ""),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
+
 
   Widget buildGeneralInformationContent() {
     return Column(

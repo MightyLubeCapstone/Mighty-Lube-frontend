@@ -141,20 +141,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Text(
-                        'Hello $name, ',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '(not $name? )',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      TextButton(
-                        child: const Text(
-                          '(Log out)',
-                          style: TextStyle(fontSize: 16, color: Colors.blue),
-                        ),
+                      Text('Hello $name, ', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                      Text('(not $name? )', style: const TextStyle(fontSize: 16),),
+                      TextButton(child: const Text('(Log out)', style: TextStyle(fontSize: 16, color: Colors.blue),),
                         onPressed: () {
                           logoutUser();
                         },
@@ -181,9 +170,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               );
                             },
                         ),
-                        const TextSpan(
-                          text: ', manage your ',
-                        ),
+                        const TextSpan(text: ', manage your ',),
 
                         // LEAVE THIS SPACING ALONE!!
                         // I FOUND A SPECIAL LEVEL UP PAGE THAT I'M NOT GONNA TOUCH RN
@@ -200,9 +187,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             },
                         ),
 
-                        const TextSpan(
-                          text: ', and ',
-                        ),
+                        const TextSpan(text: ', and ',),
                         TextSpan(
                           text: 'edit your password and account details.',
                           style: const TextStyle(color: Colors.blue),

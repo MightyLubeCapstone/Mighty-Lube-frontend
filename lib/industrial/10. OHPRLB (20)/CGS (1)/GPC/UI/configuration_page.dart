@@ -35,6 +35,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController greaseType = TextEditingController();
   final TextEditingController greaseGrade = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
 
 
   @override
@@ -52,6 +55,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'Conveyor Specifications',buildConveyorSpecifications()),
               CommonWidgets.buildGradientButton(context, 'Controller',buildController()),
               CommonWidgets.buildGradientButton(context, 'Greaser - Power Chain: Measurements',buildMeasurements()),
+              CommonWidgets.buildGradientButton(context, 'Technician Note', buildTechnicianNoteContent()),
             ],
           ),
         ),
@@ -60,6 +64,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         const SizedBox(height: 20),
       ],
     );
+  }
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: ""),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
   }
 
 //actual buttons w/ the questions :) 

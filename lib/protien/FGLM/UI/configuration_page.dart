@@ -41,6 +41,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? requiredPics = -1;
   // CPU
   final TextEditingController operatingVoltage = TextEditingController();
+
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // MonSys
   int? existingMonitor = -1;
   int? newMonitor = -1;
@@ -84,6 +88,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'con7': null,
     'con2': null,
     'operatingVoltage': null,
+    'techniciannote': null,
     'conveyorLength': null,
     'conveyorSpeed': null,
   };
@@ -166,6 +171,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   @override
   void initState() {
     super.initState();
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     conveyorSystemName.addListener(_onNameChanged);
     operatingVoltage.addListener(_onOpChanged);
     conductor7.addListener(_on7Changed);
@@ -252,6 +261,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   isError: sectionError("conveyor")),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: sectionError("wire")),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -262,6 +274,24 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         const SizedBox(height: 20),
       ],
     );
+  }
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
   }
 
 //buttons
@@ -731,6 +761,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "plantLayout": plantLayout,
         "requiredPics": requiredPics,
         "operatingVoltage": num.parse(operatingVoltage.text),
+        'technicianNote':techniciannote.text,
         "existingMonitor": existingMonitor,
         "newMonitor": newMonitor,
         "motorAmp": motorAmp,

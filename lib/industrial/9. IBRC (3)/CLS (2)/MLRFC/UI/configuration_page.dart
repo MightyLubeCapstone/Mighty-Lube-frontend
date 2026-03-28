@@ -25,6 +25,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor4 = TextEditingController();
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
+
+  final TextEditingController techniciannote = TextEditingController();
+
+
   int? conveyorChainSize = -1;
   int? conveyorChainManufacturer = -1;
   int? conveyorLoaded = -1;
@@ -57,6 +61,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSpeed': null,
     'conveyorIndex': null,
     'operatingVoltage': null,
+    'techniciannote': null,
   };
 
   bool validForm() {
@@ -93,6 +98,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
   }
 
   @override
@@ -109,7 +118,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
-
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     validate.delay?.cancel();
     super.dispose();
   }
@@ -155,6 +167,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
               CommonWidgets.buildGradientButton(context, 'Controller', buildController()),
               CommonWidgets.buildGradientButton(
                   context, 'In Board Roller Chain: Measurements', buildMeasurement()),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -167,6 +182,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
 //actual buttons w/ the questions :)
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
+
 
   Widget buildGeneralInformationContent() {
     return ValueListenableBuilder<TextEditingValue>(
@@ -370,6 +404,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conveyorSpeed': conveyorSpeed.text,
         'speedUnit': null,
         'conveyorIndex': conveyorIndex.text,
+        'technicianNote':techniciannote.text,
         'travelDirection': null,
         'appEnviroment': null,
         'ovenStatus': null,

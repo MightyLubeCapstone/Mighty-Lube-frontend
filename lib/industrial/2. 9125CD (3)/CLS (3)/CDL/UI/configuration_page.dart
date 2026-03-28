@@ -31,6 +31,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController conductor7 = TextEditingController();
   final TextEditingController conductor2 = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // Dropdown Values
   int? operatingVoltage = -1;
   int? conveyorChainSize = -1;
@@ -56,6 +59,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conveyorSystem': null,
     'conveyorChainSize': null,
     'conveyorChainManufacturer': null,
+    'techniciannote': null,
   };
 
   bool validForm() {
@@ -69,9 +73,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateTextField(conveyorSystem.text, 'conveyorSystem');
     validate.validateDropdownField(conveyorChainSize, 'conveyorChainSize');
     validate.validateDropdownField(conveyorChainManufacturer, 'conveyorChainManufacturer');
-
     setState(() {});
-
     errors = Map<String, String?>.from(validate.errors);
   }
 
@@ -82,7 +84,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
       setState(() {});
     });
-    
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
   }
 
   @override
@@ -91,7 +96,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSystem.text, 'conveyorName');
       setState(() {});
     });
-
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     super.dispose();
   }
 
@@ -112,8 +120,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonWidgets.buildBreadcrumbNavigation(
-            context, '>', const ApplicationPage(), 'Products', const ProductsCOEDL()),
+        CommonWidgets.buildBreadcrumbNavigation(context, '>', const ApplicationPage(), 'Products', const ProductsCOEDL()),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.all(20.0),
@@ -134,6 +141,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   isError: validate.sectionError('Controller')),
               CommonWidgets.buildGradientButton(context, 'Wire', buildWire(),
                   isError: validate.sectionError('Wire')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -146,6 +156,24 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   }
 
 //actual buttons w/ the questions :)
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
 
   Widget buildGeneralInformationContent() {
     return ValueListenableBuilder<TextEditingValue>(
@@ -398,6 +426,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'ovenStatus': null,
         'ovenTemp': null,
         'controlVoltSingle': operatingVoltage,
+        'technicianNote':techniciannote.text,
       };
       status = await FormAPI().addOrder("COE_CDL", cdlData, numRequested);
       if (!mounted) {

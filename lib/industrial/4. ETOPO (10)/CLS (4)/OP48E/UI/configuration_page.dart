@@ -31,6 +31,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController nTop = TextEditingController();
   final TextEditingController s2Center = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // Dropdown values
   int? conveyorChainSize;
   int? operatingVoltage = -1;
@@ -68,6 +71,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'conductor4': null,
     'conductor7': null,
     'conductor2': null,
+    'techniciannote': null,
   };
 
   @override
@@ -81,10 +85,18 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(conveyorSpeed.text, 'conveyorSpeed');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     conveyorLength.dispose();
     conveyorSpeed.dispose();
     conveyorIndex.dispose();
@@ -171,6 +183,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   isError: validate.sectionError('Wire')),
               CommonWidgets.buildGradientButton(context, 'Measurements', buildMeasurements(),
                   isError: validate.sectionError('Measurements')),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -180,6 +195,25 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         const SizedBox(height: 20),
       ],
     );
+  }
+
+
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
   }
 
   Widget buildGeneralInformationContent() {
@@ -577,6 +611,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'conveyorLoaded': conveyorLoaded,
         'conveyorSwing': null,
         'operatingVoltage': operatingVoltage,
+        'technicianNote':techniciannote.text,
         'freeCarrierSystem': null,
         'catDriveStatus': null,
         'catDriveNum': null,

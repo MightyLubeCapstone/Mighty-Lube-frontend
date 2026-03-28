@@ -4,8 +4,7 @@ import 'dart:async';
 
 class CommonWidgets {
   // Nice looking button
-  static Widget buildGradientButton(BuildContext context, String title, Widget content,
-      {bool isError = false}) {
+  static Widget buildGradientButton(BuildContext context, String title, Widget content, {bool isError = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       height: 50,

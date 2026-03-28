@@ -81,8 +81,7 @@ class ProductsHomeState extends State<ProductsHome> {
                       MaterialPageRoute(builder: (context) => const CLSHome()),
                     );
                   },
-                  child: const Text(
-                    'Conveyor Lubrication Systems',
+                  child: const Text('Conveyor Lubrication Systems',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

@@ -24,6 +24,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   int? conveyorLoaded = -1;
   int? dripLine = -1;
   final TextEditingController operatingVoltage = TextEditingController();
+
+  final TextEditingController techniciannote = TextEditingController();
+
+
   int? installationClearance = -1;
   int? pushButton = -1;
   int? enclosedShroud = -1;
@@ -92,6 +96,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   @override
   void initState() {
     super.initState();
+
     conveyorSystemName.addListener(_onNameChanged);
     operatingVoltage.addListener(_onOpChanged);
   }
@@ -320,6 +325,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         "pushButton": pushButton,
         if (enclosedShroud != -1) "enclosedShroud": enclosedShroud,
         "additionalOtherInfo": additionalOtherInfo.text,
+        "technicianNote":techniciannote.text,
       };
       setState(() {
         status = null;

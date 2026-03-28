@@ -34,6 +34,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
   final TextEditingController yDiameter = TextEditingController();
   final TextEditingController zLength = TextEditingController();
 
+  final TextEditingController techniciannote = TextEditingController();
+
+
   // Dropdown values
   int? conveyorSpeedUnit = -1;
   int? conveyorLengthUnit = -1;
@@ -68,6 +71,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     'applicationEnvironment': null,
     'surroundingTemp': null,
     'operatingVoltage': null,
+    'techniciannote': null,
     'conveyorStrand': null,
     'existingMonitoring': null,
     'specialOptions': null,
@@ -140,6 +144,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
       setState(() {});
     });
+    techniciannote.addListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
+      setState(() {});
+    });
     specialOptions.addListener(() {
       validate.onNameOpChanged(specialOptions.text, 'specialOptions');
       setState(() {});
@@ -166,6 +174,10 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     });
     operatingVoltage.removeListener(() {
       validate.onNameOpChanged(operatingVoltage.text, 'operatingVoltage');
+      setState(() {});
+    });
+    techniciannote.removeListener(() {
+      validate.onNameOpChanged(techniciannote.text, 'techniciannote');
       setState(() {});
     });
     specialOptions.removeListener(() {
@@ -208,7 +220,8 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
     validate.validateDropdownField(conveyorSpeedUnit, 'conveyorSpeedUnit');
     validate.validateDropdownField(conveyorLengthUnit, 'conveyorLengthUnit');
     validate.validateDropdownField(directionOfTravel, 'directionOfTravel');
-    validate.validateDropdownField(measurementUnits, 'measurementUnits');    validate.validateDropdownField(conveyorClean, 'conveyorClean');
+    validate.validateDropdownField(measurementUnits, 'measurementUnits');
+    validate.validateDropdownField(conveyorClean, 'conveyorClean');
     validate.validateDropdownField(highRollers, 'highRollers');
     validate.validateDropdownField(outboardWheels, 'outboardWheels');
 
@@ -252,6 +265,9 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   isError: validate.sectionError("controller")),
               CommonWidgets.buildGradientButton(context, 'CC5: Measurements', buildMeasurements(),
                   isError: validate.sectionError("measurements")),
+              CommonWidgets.buildGradientButton(
+                  context, 'Technician Note', buildTechnicianNoteContent(),
+                  isError: validate.sectionError("custom")),
             ],
           ),
         ),
@@ -270,8 +286,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidgets.buildSectionDivider(),
-        CommonWidgets.buildTextField('Name of Conveyor System', conveyorSystem,
-            errorText: errors['conveyorSystem']),
+        CommonWidgets.buildTextField('Name of Conveyor System', conveyorSystem, errorText: errors['conveyorSystem']),
         if (errors['conveyorName'] != null) buildErrorText(errors['conveyorName']!),
         CommonWidgets.buildDropdownFieldError(
           'Conveyor Chain Size',
@@ -434,6 +449,23 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
                   'Operating Voltage - Single Phase: (Volts/hz] *', operatingVoltage,
                   errorText: errors['operatingVoltage']),
               if (errors['operatingVoltage'] != null) buildErrorText(errors['operatingVoltage']!),
+              CommonWidgets.buildSectionDivider(),
+            ],
+          );
+        });
+  }
+
+  Widget buildTechnicianNoteContent() {
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: techniciannote,
+        builder: (context, value, child) {
+          // validate.validatorDelay(value.text, 'operatingVoltage');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonWidgets.buildSectionDivider(),
+              CommonWidgets.buildTextField('Technician note*', techniciannote, errorText: errors['techniciannote']),
+              if (errors['techniciannote'] != null) buildErrorText(errors['techniciannote']!),
               CommonWidgets.buildSectionDivider(),
             ],
           );
@@ -660,6 +692,7 @@ class _ConfigurationSectionState extends State<ConfigurationSection> {
         'surroundingTemp': surroundingTemp,
         'strandStatus': conveyorStrand,
         'operatingVoltage': operatingVoltage.text,
+        'technicianNote':techniciannote.text,
         'highRollerStatus': highRollers,
         'outboardStatus': outboardWheels,
         'cleanChain': conveyorClean,
