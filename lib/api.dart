@@ -4,6 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'env.dart';
 
+class ApiResult {
+  final bool success;
+  final String? message;
+
+  ApiResult({required this.success, this.message});
+}
+
 class UserAPI {
   Future<bool> checkSession() async {
     try {
@@ -21,7 +28,9 @@ class UserAPI {
       if (response.statusCode == 200) {
         return true;
       } else {
-        prefs.remove("sessionID");
+        await prefs.remove("sessionID");
+        await prefs.remove("role");
+        await prefs.remove("username");
         return false;
       }
     } catch (error) {
@@ -40,6 +49,7 @@ class UserAPI {
     String email,
     String phoneNumber,
     String companyName,
+    String securityPin,
     String country,
   ) async {
     try {
@@ -55,10 +65,11 @@ class UserAPI {
             'emailAddress': email,
             'phoneNumber': phoneNumber,
             'companyName': companyName,
+            'securityPin': securityPin,
             'country': country,
           }));
 
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final responseData = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
@@ -78,8 +89,8 @@ class UserAPI {
     }
   }
 
-  Future<bool> updateAccount(String firstName, String lastName, String username, String companyName,
-      String phoneNumber, String email) async {
+  Future<bool> updateAccount(String firstName, String lastName, String username,
+      String companyName, String phoneNumber, String email) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final sessionID = prefs.getString("sessionID");
@@ -99,7 +110,7 @@ class UserAPI {
             'phoneNumber': phoneNumber,
             'email': email,
           }));
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return true;
       }
       return false;
@@ -143,7 +154,7 @@ class UserAPI {
         "email": email,
       });
       final response = await http.post(url, headers: headers, body: body);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       } else {
         return false;
@@ -178,16 +189,20 @@ class UserAPI {
     }
   }
 
-  Future<bool> resetPassword(String email, String password) async {
+  Future<bool> validateSecurityPin(String email, String securityPin) async {
     try {
-      final url = Uri.parse("$baseUrl/api/email/forgot");
+      final cleanEmail = email.trim();
+      final cleanSecurityPin = securityPin.trim();
+      final url = Uri.parse("$baseUrl/api/email/forgot/verify-pin");
       final headers = {
         "Content-Type": "application/json",
-        "email": email,
-        "password": password,
       };
-      final response = await http.put(url, headers: headers);
-      if (response.statusCode == 200) {
+      final body = jsonEncode({
+        "email": cleanEmail,
+        "securityPin": cleanSecurityPin,
+      });
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       } else {
         return false;
@@ -198,6 +213,51 @@ class UserAPI {
       }
       return false;
     }
+  }
+
+  Future<ApiResult> resetPassword(String email, String password) async {
+    try {
+      final url = Uri.parse("$baseUrl/api/email/forgot");
+      final headers = {
+        "Content-Type": "application/json",
+      };
+      final body = jsonEncode({
+        "email": email.trim(),
+        "password": password,
+      });
+      final response = await http.put(url, headers: headers, body: body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ApiResult(success: true);
+      }
+      return ApiResult(
+        success: false,
+        message: _extractErrorMessage(response.body),
+      );
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return ApiResult(success: false, message: "Unable to reset password.");
+    }
+  }
+
+  String _extractErrorMessage(String responseBody) {
+    try {
+      final responseData = jsonDecode(responseBody);
+      if (responseData is Map<String, dynamic>) {
+        final message = responseData["message"] ??
+            responseData["error"] ??
+            responseData["details"];
+        if (message is String && message.trim().isNotEmpty) {
+          return message;
+        }
+      }
+    } catch (_) {
+      if (responseBody.trim().isNotEmpty) {
+        return responseBody;
+      }
+    }
+    return "Unable to reset password.";
   }
 
   Future<bool> loginUser(String username, String password) async {
@@ -211,10 +271,13 @@ class UserAPI {
             'username': username,
             'password': password,
           }));
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final responseData = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('sessionID', responseData['sessionID']);
+        await prefs.setString(
+            'role', responseData['role']?.toString().toLowerCase() ?? 'user');
+        await prefs.setString('username', username.trim());
         return true;
       } else {
         if (kDebugMode) {
@@ -250,9 +313,13 @@ class UserAPI {
         if (response.statusCode == 200) {
           // no error
           await prefs.remove('sessionID');
+          await prefs.remove('role');
+          await prefs.remove('username');
           return true;
         } else {
           await prefs.remove('sessionID');
+          await prefs.remove('role');
+          await prefs.remove('username');
           // error message, either way still going to send back to login screen
           return false;
         }
@@ -321,10 +388,33 @@ class UserAPI {
       return null;
     }
   }
+
+  /// Returns whether the signed-in user has administrator access.
+  ///
+  /// The role is read from the user-info endpoint after authentication. Both
+  /// the `isAdmin` boolean and the common `role: "admin"` response shapes are
+  /// supported so older API responses continue to work.
+  Future<bool> isCurrentUserAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedRole = prefs.getString('role')?.trim().toLowerCase();
+    if (savedRole != null) return savedRole == 'admin';
+
+    final userInfo = await getUserInfo();
+    if (userInfo is! Map) return false;
+
+    final isAdmin = userInfo['isAdmin'] ?? userInfo['admin'];
+    if (isAdmin is bool) return isAdmin;
+    if (isAdmin is num) return isAdmin == 1;
+    if (isAdmin is String) return isAdmin.toLowerCase() == 'true';
+
+    final role = userInfo['role']?.toString().trim().toLowerCase();
+    return role == 'admin' || role == 'administrator';
+  }
 }
 
 class FormAPI {
-  Future<bool> addOrder(String endpoint, dynamic order, int numRequested) async {
+  Future<bool> addOrder(
+      String endpoint, dynamic order, int numRequested) async {
     try {
       final url = Uri.parse('$baseUrl/api/$endpoint');
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -334,7 +424,8 @@ class FormAPI {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString('sessionID')}',
         },
-        body: jsonEncode({'${endpoint}Data': order, 'numRequested': numRequested}),
+        body: jsonEncode(
+            {'${endpoint}Data': order, 'numRequested': numRequested}),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -409,8 +500,8 @@ class CartAPI {
     }
   }
 
-  Future<bool> updateOrder(
-      dynamic orderID, Map<String, dynamic> newData, int numRequestedValue) async {
+  Future<bool> updateOrder(dynamic orderID, Map<String, dynamic> newData,
+      int numRequestedValue) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final uri = Uri.parse("$baseUrl/api/cart/order");

@@ -16,15 +16,18 @@ class SessionObserver extends NavigatorObserver {
         return;
       }
     }
-    if (route.settings.name == "/create_account" || route.settings.name == "/forgot_password") {
+    if (route.settings.name == "/create_account" ||
+        route.settings.name == "/forgot_password") {
       return;
     }
 
     bool isValid = await checkSession();
     if (!isValid) {
-      if (navigatorKey.currentContext != null && previousRoute!.settings.name != "/login") {
+      if (navigatorKey.currentContext != null &&
+          previousRoute?.settings.name != "/login") {
         ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
-          const SnackBar(content: Text('Your session has expired, please login again!')),
+          const SnackBar(
+              content: Text('Your session has expired, please login again!')),
         );
       }
       navigatorKey.currentState?.pushReplacementNamed('/login');
@@ -33,6 +36,13 @@ class SessionObserver extends NavigatorObserver {
 }
 
 String get baseUrl {
-  return 'http://localhost:8080';
-  // return 'https://mighty-lube.com'
+  return const String.fromEnvironment(
+    'API_HOST',
+    defaultValue: 'http://localhost:8080',
+  );
 }
+
+/// API root used by the role-based admin endpoints.
+/// Production builds can use:
+/// `--dart-define=API_HOST=https://configurator-67eol.sevalla.app`
+String get apiBaseUrl => '$baseUrl/api';

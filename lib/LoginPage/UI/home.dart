@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../env.dart';
+import '../../api.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -32,8 +33,12 @@ class _HomeState extends State<Home> {
       final response = await http.get(uri, headers: headers);
       if (!mounted) return;
       if (response.statusCode == 200) {
-        // Navigate to dashboard if session is valid
-        Navigator.pushReplacementNamed(context, '/dashboard');
+        final isAdmin = await UserAPI().isCurrentUserAdmin();
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(
+          context,
+          isAdmin ? '/admin' : '/dashboard',
+        );
       } else {
         // Navigate to login if session is invalid
         Navigator.pushReplacementNamed(context, '/login');

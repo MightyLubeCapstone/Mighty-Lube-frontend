@@ -25,6 +25,7 @@ import 'application/UI/applicationHome.dart';
 
 // industrial pages
 import 'industrial_home.dart';
+import 'admin/UI/admin_dashboard.dart';
 
 void main() {
   runApp(const MainApp());
@@ -55,6 +56,7 @@ class MainApp extends StatelessWidget {
         '/configurations': (context) => ConfigurationsPage(),
         '/drafts': (context) => DraftsPage(),
         '/profile': (context) => const ProfilePage(),
+        '/admin': (context) => const AdminDashboardPage(),
 
         // protien pages
         '/protein_home': (context) => const ProteinHome(),

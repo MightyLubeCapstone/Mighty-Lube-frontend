@@ -33,6 +33,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final TextEditingController securityPinController = TextEditingController();
 
   List<String> _countries = [];
 
@@ -57,6 +58,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String? _errorConfirmPassword;
   String? _errorUser;
   String? _errorEmail;
+  String? _errorSecurityPin;
   Timer? _delay;
 
   List<PWDRequirements> requirements = [
@@ -78,12 +80,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     _validatePassword(passwordController.text);
     _validateConfirmPassword(
         passwordController.text, confirmPasswordController.text);
+    _validateSecurityPin(securityPinController.text);
     await _validateUser(usernameController.text);
 
-    if ((_errorPassword?.isNotEmpty ??
-        false ||
-            (_errorConfirmPassword?.isNotEmpty ?? false) ||
-            (_errorUser?.isNotEmpty ?? false))) {
+    if ((_errorPassword?.isNotEmpty ?? false) ||
+        (_errorConfirmPassword?.isNotEmpty ?? false) ||
+        (_errorUser?.isNotEmpty ?? false) ||
+        (_errorEmail?.isNotEmpty ?? false) ||
+        (_errorSecurityPin?.isNotEmpty ?? false)) {
       setState(() {});
       return false;
     }
@@ -169,9 +173,20 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
+  void _validateSecurityPin(String securityPin) {
+    setState(() {
+      if (securityPin.trim().isEmpty) {
+        _errorSecurityPin = 'Security PIN is required';
+      } else {
+        _errorSecurityPin = null;
+      }
+    });
+  }
+
   @override
   void dispose() {
     _delay?.cancel();
+    securityPinController.dispose();
     super.dispose();
   }
 
@@ -189,10 +204,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final email = emailController.text;
     final username = usernameController.text;
     final password = passwordController.text;
+    final securityPin = securityPinController.text.trim();
 
     try {
       bool success = await UserAPI().makeAccount(username, password, firstName,
-          lastName, email, phoneNumber, companyName, countrytype!);
+          lastName, email, phoneNumber, companyName, securityPin, countrytype!);
       if (success) {
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
@@ -328,6 +344,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     if (_errorConfirmPassword != null)
                       Text(
                         _errorConfirmPassword!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    const SizedBox(height: 15),
+                    buildTextField(
+                        'Security PIN:*', 'Security PIN', securityPinController,
+                        borderColor: Colors.grey, onChanged: (value) {
+                      _validateSecurityPin(value);
+                    }, errorText: _errorSecurityPin != null ? '' : null),
+                    if (_errorSecurityPin != null)
+                      Text(
+                        _errorSecurityPin!,
                         style: const TextStyle(color: Colors.red),
                       ),
                     const SizedBox(height: 15),

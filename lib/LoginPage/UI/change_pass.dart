@@ -13,7 +13,8 @@ class PWDRequirements {
 
 class ChangePass extends StatefulWidget {
   final String email;
-  const ChangePass({super.key, required this.email});
+  final String securityPin;
+  const ChangePass({super.key, required this.email, this.securityPin = ""});
 
   @override
   State<ChangePass> createState() => _ChangePassState();
@@ -23,17 +24,19 @@ class _ChangePassState extends State<ChangePass> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmController = TextEditingController();
   String? _errorPassword;
+  String? _errorConfirmPassword;
 
   bool loading = false;
 
   List<PWDRequirements> requirements = [
-    PWDRequirements('Password must be at least 8 characters', (input) => input.length >= 8),
+    PWDRequirements(
+        'Password must be at least 8 characters', (input) => input.length >= 8),
     PWDRequirements('Password must contain at least one uppercase letter',
         (input) => RegExp(r'[A-Z]').hasMatch(input)),
     PWDRequirements('Password must contain at least one lowercase letter',
         (input) => RegExp(r'[a-z]').hasMatch(input)),
-    PWDRequirements(
-        'Password must contain at least one number', (input) => RegExp(r'[0-9]').hasMatch(input)),
+    PWDRequirements('Password must contain at least one number',
+        (input) => RegExp(r'[0-9]').hasMatch(input)),
     PWDRequirements('Password must contain at least one special character',
         (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input)),
   ];
@@ -52,7 +55,8 @@ class _ChangePassState extends State<ChangePass> {
         _errorPassword = 'Password must contain at least one lowercase letter';
       } else if (RegExp(r'[0-9]').hasMatch(password) == false) {
         _errorPassword = 'Password must contain at least one number';
-      } else if (RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(password) == false) {
+      } else if (RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(password) ==
+          false) {
         _errorPassword = 'Password must contain at least one special character';
       } else {
         _errorPassword = null;
@@ -61,21 +65,34 @@ class _ChangePassState extends State<ChangePass> {
     return _errorPassword == null;
   }
 
+  bool _validateConfirmPassword(String password, String confirmPassword) {
+    setState(() {
+      if (confirmPassword.isEmpty) {
+        _errorConfirmPassword = 'Confirm password is required!';
+      } else if (password != confirmPassword) {
+        _errorConfirmPassword = 'Passwords do not match!';
+      } else {
+        _errorConfirmPassword = null;
+      }
+    });
+    return _errorConfirmPassword == null;
+  }
+
   Future<bool> resetPassword(String password) async {
     try {
-      if (!_validatePassword(password)) {
+      if (!_validatePassword(password) ||
+          !_validateConfirmPassword(password, confirmController.text)) {
         return false;
       }
       setState(() {
         loading = true;
       });
-      bool status = await UserAPI().resetPassword(widget.email, password);
+      final result = await UserAPI().resetPassword(widget.email, password);
       setState(() {
         loading = false;
       });
-      if (status == false) {
-        // 400, same password
-        _errorPassword = "Can not be your previous password!";
+      if (!result.success) {
+        _errorPassword = result.message ?? "Unable to reset password.";
         setState(() {});
         return false;
       }
@@ -111,12 +128,14 @@ class _ChangePassState extends State<ChangePass> {
         children: [
           const HeaderLogo(pressable: false), // Add the logo header here
           (loading == true)
-              ? const Expanded(child: Center(child: CircularProgressIndicator()))
+              ? const Expanded(
+                  child: Center(child: CircularProgressIndicator()))
               : Expanded(
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(20),
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, keyboardHeight > 0 ? 0 : 100),
+                      margin: EdgeInsets.fromLTRB(
+                          20, 0, 20, keyboardHeight > 0 ? 0 : 100),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -148,7 +167,9 @@ class _ChangePassState extends State<ChangePass> {
                             const SizedBox(height: 20),
                             const Text(
                               'Enter new password:',
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 8),
                             TextField(
@@ -158,7 +179,8 @@ class _ChangePassState extends State<ChangePass> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
                                 filled: true,
                                 fillColor: Colors.grey[100],
                                 hintText: 'Enter your new password:',
@@ -168,12 +190,15 @@ class _ChangePassState extends State<ChangePass> {
                             const SizedBox(height: 20),
                             const Text(
                               'Confirm new password:',
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 8),
                             TextField(
                               onChanged: (value) => {
-                                _validatePassword(value),
+                                _validateConfirmPassword(
+                                    passwordController.text, value),
                               },
                               obscureText: true,
                               controller: confirmController,
@@ -181,10 +206,12 @@ class _ChangePassState extends State<ChangePass> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
                                 filled: true,
                                 fillColor: Colors.grey[100],
                                 hintText: 'Confirm your new password:',
+                                errorText: _errorConfirmPassword,
                               ),
                             ),
                             if (_remains.isNotEmpty)
@@ -241,7 +268,10 @@ class _ChangePassState extends State<ChangePass> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
                                       gradient: const LinearGradient(
-                                        colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                                        colors: [
+                                          Colors.blueAccent,
+                                          Colors.lightBlueAccent
+                                        ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       ),

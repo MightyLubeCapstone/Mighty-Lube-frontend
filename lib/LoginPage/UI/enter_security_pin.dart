@@ -1,56 +1,63 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:mighty_lube/LoginPage/UI/enter_otp.dart';
-import 'package:mighty_lube/LoginPage/UI/enter_security_pin.dart';
+import 'package:mighty_lube/LoginPage/UI/change_pass.dart';
 import 'package:mighty_lube/api.dart';
 import 'package:mighty_lube/header_logo.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class EnterSecurityPin extends StatefulWidget {
+  final String email;
+  const EnterSecurityPin({super.key, required this.email});
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<EnterSecurityPin> createState() => _EnterSecurityPinState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  // variables
-  final TextEditingController emailController = TextEditingController();
-  String? _errorEmail;
+class _EnterSecurityPinState extends State<EnterSecurityPin> {
+  final TextEditingController securityPinController = TextEditingController();
+  String? _errorSecurityPin;
 
   bool loading = false;
 
-  Future<bool> forgotPassword(String email) async {
-    if (!_validateEmail(email)) {
-      return false;
-    }
+  bool _validateSecurityPin(String securityPin) {
     setState(() {
-      loading = true;
-    });
-    bool status = await UserAPI().forgotPassword(email);
-    setState(() {
-      loading = false;
-    });
-    if (status == true) {
-      // render OTP page
-      return true;
-    }
-    setState(() {
-      _errorEmail = "Email not found!";
-    });
-    return false;
-  }
-
-  bool _validateEmail(String email) {
-    setState(() {
-      if (email.isEmpty) {
-        _errorEmail = 'Email is Required';
-      } else if (!RegExp(r'[^@]+@[^@]+\.[^@]+$').hasMatch(email)) {
-        _errorEmail =
-            'Email must include an @\nEmail must include a domain(i.e., .com)';
+      if (securityPin.trim().isEmpty) {
+        _errorSecurityPin = 'Security PIN is required!';
       } else {
-        _errorEmail = null;
+        _errorSecurityPin = null;
       }
     });
-    return _errorEmail == null;
+    return _errorSecurityPin == null;
+  }
+
+  Future<bool> validateSecurityPin(String securityPin) async {
+    try {
+      if (!_validateSecurityPin(securityPin)) return false;
+      setState(() {
+        loading = true;
+      });
+      bool status =
+          await UserAPI().validateSecurityPin(widget.email, securityPin);
+      setState(() {
+        loading = false;
+      });
+      if (!status) {
+        setState(() {
+          _errorSecurityPin = 'Invalid security PIN!';
+        });
+      }
+      return status == true;
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
+
+  @override
+  void dispose() {
+    securityPinController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,7 +67,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       backgroundColor: const Color(0xFFF3F4F6),
       body: Column(
         children: [
-          const HeaderLogo(pressable: false), // Add the logo header here
+          const HeaderLogo(pressable: false),
           (loading == true)
               ? const Expanded(
                   child: Center(child: CircularProgressIndicator()))
@@ -89,7 +96,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           children: [
                             const Center(
                               child: Text(
-                                'Forgot Password',
+                                'Security PIN',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -99,7 +106,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                             const SizedBox(height: 10),
                             const Text(
-                              'Please enter your email. If an account exists, you will be asked for your security PIN.',
+                              'Enter your security PIN to reset your password.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,
@@ -108,14 +115,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                             const SizedBox(height: 20),
                             const Text(
-                              'Email:',
+                              'Security PIN:',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 8),
                             TextField(
-                              controller: emailController,
+                              controller: securityPinController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -124,8 +131,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                     const EdgeInsets.symmetric(horizontal: 15),
                                 filled: true,
                                 fillColor: Colors.grey[100],
-                                hintText: 'Enter your email address:',
-                                errorText: _errorEmail,
+                                hintText: 'Enter your security PIN:',
+                                errorText: _errorSecurityPin,
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -142,7 +149,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                     ),
                                     child: TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context); // Cancel button
+                                        Navigator.pop(context);
                                       },
                                       child: const Text(
                                         'Cancel',
@@ -172,32 +179,28 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                     ),
                                     child: TextButton(
                                       onPressed: () {
-                                        // Add functionality for the submit button
-                                        forgotPassword(emailController.text)
-                                            .then((success) => {
-                                                  if (success == true)
-                                                    {
-                                                      // OTP flow disabled while password reset uses security PIN.
-                                                      // Navigator.pushReplacement(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //     builder: (context) =>
-                                                      //         EnterOTP(email: emailController.text),
-                                                      //   ),
-                                                      // )
-                                                      Navigator.pushReplacement(
-                                                        // ignore: use_build_context_synchronously
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              EnterSecurityPin(
-                                                                  email:
-                                                                      emailController
-                                                                          .text),
-                                                        ),
-                                                      )
-                                                    }
-                                                });
+                                        final securityPin =
+                                            securityPinController.text.trim();
+                                        validateSecurityPin(securityPin)
+                                            .then(
+                                          (success) => {
+                                            if (success)
+                                              {
+                                                Navigator.pushReplacement(
+                                                  // ignore: use_build_context_synchronously
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ChangePass(
+                                                            email:
+                                                                widget.email,
+                                                            securityPin:
+                                                                securityPin),
+                                                  ),
+                                                )
+                                              }
+                                          },
+                                        );
                                       },
                                       child: const Text(
                                         'Submit',
