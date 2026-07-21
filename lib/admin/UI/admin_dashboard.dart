@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -269,6 +267,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
+  void _viewUser(AdminUser user) {
+    showDialog<void>(
+        context: context, builder: (_) => _UserDetails(user: user));
+  }
+
   Future<void> _deleteUser(AdminUser user) async {
     final confirmed = await _confirmDelete(
       title: 'Delete user?',
@@ -389,6 +392,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       return _ErrorView(
           message: _configurationError!, onRetry: _loadConfigurations);
     }
+    final compact = _isCompactLayout();
     return RefreshIndicator(
       onRefresh: _loadConfigurations,
       child: ListView(padding: _pagePadding(), children: [
@@ -396,29 +400,31 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         const SizedBox(height: 18),
         _summaryCards(),
         const SizedBox(height: 22),
-        _tableContainer(
-          empty: _configurations.isEmpty,
-          emptyText: 'No configurations found.',
-          table: DataTable(
-            columnSpacing: _columnSpacing(),
-            horizontalMargin: 12,
-            headingRowHeight: 44,
-            dataRowMinHeight: 54,
-            dataRowMaxHeight: 58,
-            dividerThickness: .65,
-            columns: const [
-              DataColumn(label: Text('Configuration name')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('Date ordered')),
-              DataColumn(label: Text('Completion date')),
-              DataColumn(label: Text('Products'), numeric: true),
-              DataColumn(label: Text('Details')),
-              DataColumn(label: Text('Change status')),
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: _configurations.map(_configurationRow).toList(),
-          ),
-        ),
+        compact
+            ? _configurationCards()
+            : _tableContainer(
+                empty: _configurations.isEmpty,
+                emptyText: 'No configurations found.',
+                table: DataTable(
+                  columnSpacing: _columnSpacing(),
+                  horizontalMargin: 12,
+                  headingRowHeight: 44,
+                  dataRowMinHeight: 54,
+                  dataRowMaxHeight: 58,
+                  dividerThickness: .65,
+                  columns: const [
+                    DataColumn(label: Text('Configuration name')),
+                    DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('Date ordered')),
+                    DataColumn(label: Text('Completion date')),
+                    DataColumn(label: Text('Products'), numeric: true),
+                    DataColumn(label: Text('Details')),
+                    DataColumn(label: Text('Change status')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: _configurations.map(_configurationRow).toList(),
+                ),
+              ),
       ]),
     );
   }
@@ -473,84 +479,225 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     if (_userError != null) {
       return _ErrorView(message: _userError!, onRetry: _loadUsers);
     }
+    final compact = _isCompactLayout();
     return RefreshIndicator(
       onRefresh: _loadUsers,
       child: ListView(padding: _pagePadding(), children: [
         _heading('Users (${_users.length})', _loadUsers),
         const SizedBox(height: 18),
-        _tableContainer(
-          empty: _users.isEmpty,
-          emptyText: 'No users found.',
-          table: DataTable(
-            columnSpacing: _columnSpacing(),
-            horizontalMargin: 12,
-            headingRowHeight: 44,
-            dataRowMinHeight: 54,
-            dataRowMaxHeight: 58,
-            dividerThickness: .65,
-            columns: const [
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Username')),
-              DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Phone')),
-              DataColumn(label: Text('Company')),
-              DataColumn(label: Text('Country')),
-              DataColumn(label: Text('Role')),
-              DataColumn(label: Text('Change role')),
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: _users
-                .map((user) => DataRow(cells: [
-                      DataCell(_responsiveText(user.name, .11, 100, 180)),
-                      DataCell(_responsiveText(user.username, .13, 125, 210)),
-                      DataCell(_responsiveText(user.email, .14, 135, 230)),
-                      DataCell(_responsiveText(user.phone, .09, 100, 150)),
-                      DataCell(_responsiveText(user.company, .12, 110, 200)),
-                      DataCell(_responsiveText(user.country, .08, 80, 130)),
-                      DataCell(_RoleBadge(user.role)),
-                      DataCell(_updatingUsers.contains(user.userID)
-                          ? const SizedBox.square(
-                              dimension: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2))
-                          : DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: roles.contains(user.role)
-                                    ? user.role
-                                    : null,
-                                hint: Text(user.role),
-                                items: roles
-                                    .map((value) => DropdownMenuItem(
-                                        value: value,
-                                        child: Text(_titleCase(value))))
-                                    .toList(),
-                                onChanged: (value) => _changeRole(user, value),
-                              ),
-                            )),
-                      DataCell(_deletingUsers.contains(user.userID)
-                          ? const SizedBox.square(
-                              dimension: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2))
-                          : Row(mainAxisSize: MainAxisSize.min, children: [
-                              IconButton(
-                                tooltip: 'Edit user',
-                                onPressed: () => _editUser(user),
-                                icon: const Icon(Icons.edit_outlined,
-                                    color: Color(0xFF2563EB)),
-                              ),
-                              IconButton(
-                                tooltip: 'Delete user',
-                                onPressed: () => _deleteUser(user),
-                                icon: const Icon(Icons.delete_outline,
-                                    color: Colors.red),
-                              ),
-                            ])),
-                    ]))
-                .toList(),
-          ),
-        ),
+        compact ? _userCards() : _usersTable(),
       ]),
     );
   }
+
+  Widget _usersTable() => _tableContainer(
+        empty: _users.isEmpty,
+        emptyText: 'No users found.',
+        table: DataTable(
+          columnSpacing: _columnSpacing(),
+          horizontalMargin: 12,
+          headingRowHeight: 44,
+          dataRowMinHeight: 54,
+          dataRowMaxHeight: 58,
+          dividerThickness: .65,
+          columns: const [
+            DataColumn(label: Text('Name')),
+            DataColumn(label: Text('Username')),
+            DataColumn(label: Text('Email')),
+            DataColumn(label: Text('Phone')),
+            DataColumn(label: Text('Company')),
+            DataColumn(label: Text('Country')),
+            DataColumn(label: Text('Role')),
+            DataColumn(label: Text('Change role')),
+            DataColumn(label: Text('Actions')),
+          ],
+          rows: _users
+              .map((user) => DataRow(cells: [
+                    DataCell(_responsiveText(user.name, .11, 100, 180)),
+                    DataCell(_responsiveText(user.username, .13, 125, 210)),
+                    DataCell(_responsiveText(user.email, .14, 135, 230)),
+                    DataCell(_responsiveText(user.phone, .09, 100, 150)),
+                    DataCell(_responsiveText(user.company, .12, 110, 200)),
+                    DataCell(_responsiveText(user.country, .08, 80, 130)),
+                    DataCell(_RoleBadge(user.role)),
+                    DataCell(_userRoleControl(user)),
+                    DataCell(_userActions(user)),
+                  ]))
+              .toList(),
+        ),
+      );
+
+  Widget _configurationCards() {
+    if (_configurations.isEmpty) {
+      return _emptyCard('No configurations found.');
+    }
+    return Column(
+      children: [
+        for (final item in _configurations)
+          _AdminListCard(
+            margin: const EdgeInsets.only(bottom: 12),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                  child: Text(item.name,
+                      style: const TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w800)),
+                ),
+                const SizedBox(width: 10),
+                _StatusBadge(item.status),
+              ]),
+              const SizedBox(height: 12),
+              _InfoLine(
+                  icon: Icons.event_outlined,
+                  label: 'Ordered',
+                  value: _date(item.dateOrdered)),
+              _InfoLine(
+                  icon: Icons.event_available_outlined,
+                  label: 'Complete',
+                  value: _date(item.completeDate)),
+              _InfoLine(
+                  icon: Icons.inventory_2_outlined,
+                  label: 'Products',
+                  value: '${item.cart.length}'),
+              const SizedBox(height: 12),
+              _configurationStatusControl(item),
+              const Divider(height: 24),
+              Wrap(spacing: 4, runSpacing: 4, children: [
+                IconButton.filledTonal(
+                  tooltip: 'View details',
+                  onPressed: () => showDialog<void>(
+                      context: context,
+                      builder: (_) =>
+                          _ConfigurationDetails(configuration: item)),
+                  icon: const Icon(Icons.visibility_outlined),
+                ),
+                IconButton.filledTonal(
+                  tooltip: 'Edit configuration',
+                  onPressed: () => _editConfiguration(item),
+                  icon: const Icon(Icons.edit_outlined),
+                ),
+                IconButton.filledTonal(
+                  tooltip: 'Delete configuration',
+                  onPressed: _deletingConfigurations.contains(item.id)
+                      ? null
+                      : () => _deleteConfiguration(item),
+                  icon: _deletingConfigurations.contains(item.id)
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.delete_outline, color: Colors.red),
+                ),
+              ]),
+            ]),
+          ),
+      ],
+    );
+  }
+
+  Widget _userCards() {
+    if (_users.isEmpty) return _emptyCard('No users found.');
+    return Column(
+      children: [
+        for (final user in _users)
+          _AdminListCard(
+            margin: const EdgeInsets.only(bottom: 12),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                  child: Text(user.name,
+                      style: const TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w800)),
+                ),
+                const SizedBox(width: 10),
+                _RoleBadge(user.role),
+              ]),
+              const SizedBox(height: 12),
+              _InfoLine(
+                  icon: Icons.alternate_email,
+                  label: 'Username',
+                  value: user.username),
+              _InfoLine(
+                  icon: Icons.email_outlined,
+                  label: 'Email',
+                  value: user.email),
+              _InfoLine(
+                  icon: Icons.phone_outlined,
+                  label: 'Phone',
+                  value: user.phone),
+              _InfoLine(
+                  icon: Icons.business_outlined,
+                  label: 'Company',
+                  value: user.company),
+              const SizedBox(height: 12),
+              _userRoleControl(user),
+              const Divider(height: 24),
+              _userActions(user),
+            ]),
+          ),
+      ],
+    );
+  }
+
+  Widget _configurationStatusControl(AdminConfiguration item) =>
+      _updatingConfigurations.contains(item.id)
+          ? const SizedBox.square(
+              dimension: 22, child: CircularProgressIndicator(strokeWidth: 2))
+          : DropdownButtonFormField<String>(
+              initialValue: statuses.contains(item.status) ? item.status : null,
+              decoration:
+                  _fieldDecoration('Change status', Icons.pending_actions),
+              items: statuses
+                  .map((value) => DropdownMenuItem(
+                      value: value, child: Text(_titleCase(value))))
+                  .toList(),
+              onChanged: (value) => _changeStatus(item, value),
+            );
+
+  Widget _userRoleControl(AdminUser user) =>
+      _updatingUsers.contains(user.userID)
+          ? const SizedBox.square(
+              dimension: 22, child: CircularProgressIndicator(strokeWidth: 2))
+          : DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: roles.contains(user.role) ? user.role : null,
+                hint: Text(user.role),
+                items: roles
+                    .map((value) => DropdownMenuItem(
+                        value: value, child: Text(_titleCase(value))))
+                    .toList(),
+                onChanged: (value) => _changeRole(user, value),
+              ),
+            );
+
+  Widget _userActions(AdminUser user) => _deletingUsers.contains(user.userID)
+      ? const SizedBox.square(
+          dimension: 22, child: CircularProgressIndicator(strokeWidth: 2))
+      : Wrap(spacing: 4, runSpacing: 4, children: [
+          IconButton(
+            tooltip: 'View user',
+            onPressed: () => _viewUser(user),
+            icon: const Icon(Icons.visibility_outlined),
+          ),
+          IconButton(
+            tooltip: 'Edit user',
+            onPressed: () => _editUser(user),
+            icon: const Icon(Icons.edit_outlined, color: Color(0xFF2563EB)),
+          ),
+          IconButton(
+            tooltip: 'Delete user',
+            onPressed: () => _deleteUser(user),
+            icon: const Icon(Icons.delete_outline, color: Colors.red),
+          ),
+        ]);
+
+  Widget _emptyCard(String text) => _AdminListCard(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 28),
+          child: Center(child: Text(text)),
+        ),
+      );
 
   Widget _heading(String title, Future<void> Function() refresh) => Row(
         children: [
@@ -618,6 +765,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   double _columnSpacing() => MediaQuery.sizeOf(context).width >= 1200 ? 24 : 12;
 
+  bool _isCompactLayout() => MediaQuery.sizeOf(context).width < 760;
+
   Widget _responsiveText(
       String value, double fraction, double minimum, double maximum) {
     final width =
@@ -640,65 +789,96 @@ class _ConfigurationDetails extends StatelessWidget {
   final AdminConfiguration configuration;
 
   @override
-  Widget build(BuildContext context) => Dialog(
-        insetPadding: const EdgeInsets.all(20),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 820, maxHeight: 760),
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 18, 12, 12),
-              child: Row(children: [
-                Expanded(
-                    child: Text(configuration.name,
-                        style: const TextStyle(
-                            fontSize: 21, fontWeight: FontWeight.w800))),
-                IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close)),
+  Widget build(BuildContext context) => _AdminDetailsDialog(
+        icon: Icons.tune,
+        title: configuration.name,
+        subtitle:
+            '${configuration.cart.length} product${configuration.cart.length == 1 ? '' : 's'} configured',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _PlainSectionBox(
+            title: 'Configuration summary',
+            children: [
+              _plainInfoGrid([
+                _PlainInfo('Status', _titleCase(configuration.status)),
+                _PlainInfo('Products', '${configuration.cart.length}'),
+                _PlainInfo(
+                    'Date ordered', _friendlyDate(configuration.dateOrdered)),
+                _PlainInfo('Completion date',
+                    _friendlyDate(configuration.completeDate)),
               ]),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (configuration.cart.isEmpty)
+            const _EmptyProductEditor()
+          else
+            _PlainSectionBox(
+              title: 'Configured products',
+              children: [
+                LayoutBuilder(builder: (context, constraints) {
+                  final width = _compactItemBoxWidth(constraints.maxWidth);
+                  return Wrap(spacing: 12, runSpacing: 12, children: [
+                    for (var index = 0;
+                        index < configuration.cart.length;
+                        index++)
+                      _productDetails(
+                          context, index, configuration.cart[index], width),
+                  ]);
+                }),
+              ],
             ),
-            const Divider(height: 1),
-            Expanded(
-              child: configuration.cart.isEmpty
-                  ? const Center(
-                      child: Text('This configuration has no products.'))
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(20),
-                      itemCount: configuration.cart.length,
-                      itemBuilder: (context, index) {
-                        final product = configuration.cart[index];
-                        final info = product['productConfigurationInfo'];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 14),
-                          child: ExpansionTile(
-                            initiallyExpanded: index == 0,
-                            title: Text(
-                                '${product['productType'] ?? 'Product'} · ${product['orderID'] ?? 'No order ID'}'),
-                            subtitle: Text(
-                                'Quantity: ${product['numRequested'] ?? 0}'),
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 0, 16, 18),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: SelectableText(
-                                    const JsonEncoder.withIndent('  ').convert(
-                                      info is Map ? info : product,
-                                    ),
-                                    style: const TextStyle(
-                                        fontFamily: 'monospace', height: 1.45),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-            ),
-          ]),
-        ),
+        ]),
       );
+
+  Widget _productDetails(BuildContext context, int index,
+      Map<String, dynamic> product, double width) {
+    final rawInfo = product['productConfigurationInfo'];
+    final info = rawInfo is Map ? rawInfo : const <String, dynamic>{};
+    final simpleEntries = info.entries
+        .where((entry) => entry.key != '_id' && !_isNested(entry.value));
+    final nestedEntries = info.entries.where((entry) => _isNested(entry.value));
+    return Container(
+      width: width,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAFCFF),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          product['productType']?.toString() ?? 'Product ${index + 1}',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 10),
+        _plainInfoGrid([
+          _PlainInfo('Order ID', product['orderID']),
+          _PlainInfo('Quantity requested', product['numRequested']),
+          _PlainInfo('Created', _friendlyDate(product['orderCreated'])),
+        ]),
+        if (simpleEntries.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          _PlainSubsection(
+            title: 'Product configuration',
+            child: _plainInfoGrid([
+              for (final entry in simpleEntries)
+                _PlainInfo(_readableLabel(entry.key.toString()), entry.value),
+            ]),
+          ),
+        ],
+        if (nestedEntries.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          _PlainSubsection(
+            title: 'Linked information',
+            child: Column(children: [
+              for (final entry in nestedEntries)
+                _plainLinkedInfo(entry.key.toString(), entry.value),
+            ]),
+          ),
+        ],
+      ]),
+    );
+  }
 }
 
 class _EditConfigurationDialog extends StatefulWidget {
@@ -854,9 +1034,7 @@ class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
           Padding(
             padding: const EdgeInsets.all(18),
             child: LayoutBuilder(builder: (context, constraints) {
-              final width = constraints.maxWidth >= 620
-                  ? (constraints.maxWidth - 14) / 2
-                  : constraints.maxWidth;
+              final width = _compactFieldWidth(constraints.maxWidth);
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1034,6 +1212,124 @@ String _nestedSummary(dynamic value) {
   return value?.toString() ?? '—';
 }
 
+Widget _detailField(String label, dynamic value, IconData icon, double width) =>
+    SizedBox(
+      width: width,
+      child: InputDecorator(
+        decoration: _fieldDecoration(label, icon),
+        child: SelectableText(
+          value?.toString().isEmpty ?? true ? '—' : value.toString(),
+          maxLines: 3,
+        ),
+      ),
+    );
+
+class _PlainInfo {
+  const _PlainInfo(this.label, this.value);
+  final String label;
+  final dynamic value;
+}
+
+class _PlainSectionBox extends StatelessWidget {
+  const _PlainSectionBox({required this.title, required this.children});
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFDCE4F0)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 14),
+          ...children,
+        ]),
+      );
+}
+
+class _PlainSubsection extends StatelessWidget {
+  const _PlainSubsection({required this.title, required this.child});
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+          const SizedBox(height: 10),
+          child,
+        ]),
+      );
+}
+
+Widget _plainInfoGrid(List<_PlainInfo> items) =>
+    LayoutBuilder(builder: (context, constraints) {
+      final width = _compactFieldWidth(constraints.maxWidth);
+      return Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          for (final item in items)
+            SizedBox(
+              width: width,
+              child: _plainInfoRow(item.label, item.value),
+            ),
+        ],
+      );
+    });
+
+Widget _plainInfoRow(String label, dynamic value) => Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label,
+            style: const TextStyle(
+                color: Color(0xFF64748B),
+                fontSize: 12,
+                fontWeight: FontWeight.w700)),
+        const SizedBox(height: 4),
+        SelectableText(
+          value?.toString().isEmpty ?? true ? '—' : value.toString(),
+          maxLines: 4,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ]),
+    );
+
+Widget _plainLinkedInfo(String label, dynamic value) => Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: _plainInfoRow(_readableLabel(label), _nestedSummary(value)),
+    );
+
+double _compactFieldWidth(double maxWidth) {
+  if (maxWidth < 520) return maxWidth;
+  return ((maxWidth - 24) / 3).clamp(190.0, 240.0);
+}
+
+double _compactItemBoxWidth(double maxWidth) {
+  if (maxWidth < 560) return maxWidth;
+  return ((maxWidth - 12) / 2).clamp(260.0, 340.0);
+}
+
 class _EditorSectionTitle extends StatelessWidget {
   const _EditorSectionTitle({required this.icon, required this.title});
   final IconData icon;
@@ -1196,9 +1492,7 @@ class _EditUserDialogState extends State<_EditUserDialog> {
                 style: TextStyle(color: Color(0xFF64748B))),
             const SizedBox(height: 16),
             LayoutBuilder(builder: (context, constraints) {
-              final fieldWidth = constraints.maxWidth >= 620
-                  ? (constraints.maxWidth - 16) / 2
-                  : constraints.maxWidth;
+              final fieldWidth = _compactFieldWidth(constraints.maxWidth);
               return Wrap(spacing: 16, runSpacing: 16, children: [
                 _userField(
                     'firstName', 'First name', Icons.person_outline, fieldWidth,
@@ -1343,6 +1637,127 @@ class _EditUserDialogState extends State<_EditUserDialog> {
       );
 }
 
+class _UserDetails extends StatelessWidget {
+  const _UserDetails({required this.user});
+  final AdminUser user;
+
+  @override
+  Widget build(BuildContext context) => _AdminDetailsDialog(
+        icon: Icons.manage_accounts_outlined,
+        title: user.name,
+        subtitle: 'User information and account role.',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const _EditorSectionTitle(
+              icon: Icons.badge_outlined, title: 'User information'),
+          const SizedBox(height: 16),
+          LayoutBuilder(builder: (context, constraints) {
+            final width = _compactFieldWidth(constraints.maxWidth);
+            return Wrap(spacing: 14, runSpacing: 14, children: [
+              _detailField(
+                  'First name', user.firstName, Icons.person_outline, width),
+              _detailField(
+                  'Last name', user.lastName, Icons.person_outline, width),
+              _detailField(
+                  'Username', user.username, Icons.alternate_email, width),
+              _detailField('Email', user.email, Icons.email_outlined, width),
+              _detailField('Phone', user.phone, Icons.phone_outlined, width),
+              _detailField(
+                  'Company', user.company, Icons.business_outlined, width),
+              _detailField('Country', user.country, Icons.public, width),
+              _detailField('Role', _titleCase(user.role),
+                  Icons.admin_panel_settings_outlined, width),
+            ]);
+          }),
+        ]),
+      );
+}
+
+class _AdminDetailsDialog extends StatelessWidget {
+  const _AdminDetailsDialog({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.child,
+  });
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final screen = MediaQuery.sizeOf(context);
+    final compact = screen.width < 560;
+    return Dialog(
+      insetPadding: EdgeInsets.all(compact ? 8 : 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 780,
+          maxHeight: screen.height - (compact ? 24 : 48),
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(
+                compact ? 16 : 24, compact ? 16 : 20, 8, compact ? 14 : 18),
+            decoration: const BoxDecoration(
+              color: Color(0xFFF1F5FF),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Row(children: [
+              if (!compact) ...[
+                CircleAvatar(
+                  backgroundColor: const Color(0xFF2563EB),
+                  foregroundColor: Colors.white,
+                  child: Icon(icon),
+                ),
+                const SizedBox(width: 14),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: compact ? 18 : 21,
+                            fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 3),
+                    Text(subtitle,
+                        style: const TextStyle(color: Color(0xFF64748B))),
+                  ],
+                ),
+              ),
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close)),
+            ]),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(compact ? 14 : 24),
+              child: child,
+            ),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: EdgeInsets.all(compact ? 12 : 16),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.check),
+                label: const Text('Done'),
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
 class _AdminEditDialog extends StatelessWidget {
   const _AdminEditDialog({
     required this.icon,
@@ -1358,63 +1773,127 @@ class _AdminEditDialog extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Dialog(
-        insetPadding: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 780, maxHeight: 780),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(24, 20, 12, 18),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF1F5FF),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: Row(children: [
+  Widget build(BuildContext context) {
+    final screen = MediaQuery.sizeOf(context);
+    final compact = screen.width < 560;
+    return Dialog(
+      insetPadding: EdgeInsets.all(compact ? 8 : 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+            maxWidth: 780, maxHeight: screen.height - (compact ? 24 : 48)),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(
+                compact ? 16 : 24, compact ? 16 : 20, 8, compact ? 14 : 18),
+            decoration: const BoxDecoration(
+              color: Color(0xFFF1F5FF),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Row(children: [
+              if (!compact) ...[
                 CircleAvatar(
                   backgroundColor: const Color(0xFF2563EB),
                   foregroundColor: Colors.white,
                   child: Icon(icon),
                 ),
                 const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title,
-                          style: const TextStyle(
-                              fontSize: 21, fontWeight: FontWeight.w800)),
-                      const SizedBox(height: 3),
-                      Text(subtitle,
-                          style: const TextStyle(color: Color(0xFF64748B))),
-                    ],
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: compact ? 18 : 21,
+                            fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 3),
+                    Text(subtitle,
+                        style: const TextStyle(color: Color(0xFF64748B))),
+                  ],
+                ),
+              ),
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close)),
+            ]),
+          ),
+          Flexible(
+              child: SingleChildScrollView(
+                  padding: EdgeInsets.all(compact ? 14 : 24), child: child)),
+          const Divider(height: 1),
+          Padding(
+            padding: EdgeInsets.all(compact ? 12 : 16),
+            child: Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 10,
+                runSpacing: 8,
+                children: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel')),
+                  FilledButton.icon(
+                    onPressed: onSave,
+                    icon: const Icon(Icons.save_outlined),
+                    label: const Text('Save changes'),
                   ),
-                ),
-                IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close)),
-              ]),
-            ),
-            Flexible(
-                child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24), child: child)),
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel')),
-                const SizedBox(width: 10),
-                FilledButton.icon(
-                  onPressed: onSave,
-                  icon: const Icon(Icons.save_outlined),
-                  label: const Text('Save changes'),
-                ),
-              ]),
-            ),
-          ]),
+                ]),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+class _AdminListCard extends StatelessWidget {
+  const _AdminListCard({required this.child, this.margin = EdgeInsets.zero});
+  final Widget child;
+  final EdgeInsetsGeometry margin;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        margin: margin,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
+        child: child,
+      );
+}
+
+class _InfoLine extends StatelessWidget {
+  const _InfoLine({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(icon, size: 18, color: const Color(0xFF64748B)),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 78,
+            child: Text(label,
+                style: const TextStyle(
+                    color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(value.isEmpty ? '—' : value,
+                overflow: TextOverflow.visible),
+          ),
+        ]),
       );
 }
 
