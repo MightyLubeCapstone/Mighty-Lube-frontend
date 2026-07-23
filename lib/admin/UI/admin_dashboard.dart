@@ -371,11 +371,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             foregroundColor: Colors.white,
             title: Row(children: [
               SvgPicture.asset('assets/WhiteML_Logo-w-tag-vector.svg',
-                  height: 43),
-              const SizedBox(width: 18),
+                  height: 48,
+                  colorFilter:
+                      const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
+              const SizedBox(width: 20),
               if (MediaQuery.sizeOf(context).width >= 620)
                 const Text('Admin dashboard',
-                    style: TextStyle(fontWeight: FontWeight.w700)),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800)),
             ]),
             actions: [
               IconButton(
@@ -641,7 +646,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                _CreatedAgeChip(configuration: item),
+                _ConfigurationAgeStack(configuration: item),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -655,16 +660,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 ),
                 const SizedBox(width: 8),
                 _StatusBadge(item.status, compact: true),
-                const SizedBox(width: 4),
-                _ConfigurationCardActions(
-                  isDeleting: _deletingConfigurations.contains(item.id),
-                  onView: () => showDialog<void>(
-                      context: context,
-                      builder: (_) =>
-                          _ConfigurationDetails(configuration: item)),
-                  onEdit: () => _editConfiguration(item),
-                  onDelete: () => _deleteConfiguration(item),
-                ),
               ]),
               if (item.status == 'pending') ...[
                 const SizedBox(height: 12),
@@ -673,7 +668,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               const SizedBox(height: 12),
               _configurationInfoGrid(item),
               const SizedBox(height: 12),
-              _configurationStatusControl(item),
+              _configurationStatusActionRow(item),
             ]),
           ),
       ],
@@ -807,10 +802,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 
+  Widget _configurationStatusActionRow(AdminConfiguration item) =>
+      Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Expanded(child: _configurationStatusControl(item)),
+        const SizedBox(width: 8),
+        _ConfigurationCardActions(
+          isDeleting: _deletingConfigurations.contains(item.id),
+          onView: () => showDialog<void>(
+              context: context,
+              builder: (_) => _ConfigurationDetails(configuration: item)),
+          onEdit: () => _editConfiguration(item),
+          onDelete: () => _deleteConfiguration(item),
+        ),
+      ]);
+
   Widget _configurationStatusControl(AdminConfiguration item) =>
       _updatingConfigurations.contains(item.id)
-          ? const SizedBox.square(
-              dimension: 22, child: CircularProgressIndicator(strokeWidth: 2))
+          ? const SizedBox(
+              height: 48,
+              child: Center(
+                child: SizedBox.square(
+                    dimension: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2)),
+              ),
+            )
           : DropdownButtonFormField<String>(
               initialValue: statuses.contains(item.status) ? item.status : null,
               decoration:
@@ -841,23 +856,26 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget _userActions(AdminUser user) => _deletingUsers.contains(user.userID)
       ? const SizedBox.square(
           dimension: 22, child: CircularProgressIndicator(strokeWidth: 2))
-      : Wrap(spacing: 4, runSpacing: 4, children: [
-          IconButton(
-            tooltip: 'View user',
-            onPressed: () => _viewUser(user),
-            icon: const Icon(Icons.visibility_outlined),
-          ),
-          IconButton(
-            tooltip: 'Edit user',
-            onPressed: () => _editUser(user),
-            icon: const Icon(Icons.edit_outlined, color: Color(0xFF2563EB)),
-          ),
-          IconButton(
-            tooltip: 'Delete user',
-            onPressed: () => _deleteUser(user),
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
-          ),
-        ]);
+      : SizedBox(
+          width: 132,
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            IconButton(
+              tooltip: 'View user',
+              onPressed: () => _viewUser(user),
+              icon: const Icon(Icons.visibility_outlined),
+            ),
+            IconButton(
+              tooltip: 'Edit user',
+              onPressed: () => _editUser(user),
+              icon: const Icon(Icons.edit_outlined, color: Color(0xFF2563EB)),
+            ),
+            IconButton(
+              tooltip: 'Delete user',
+              onPressed: () => _deleteUser(user),
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
+            ),
+          ]),
+        );
 
   Widget _emptyCard(String text) => _AdminListCard(
         child: Padding(
@@ -1314,36 +1332,77 @@ class _GroupByStatusCheckbox extends StatelessWidget {
   }
 }
 
-class _CreatedAgeChip extends StatelessWidget {
-  const _CreatedAgeChip({required this.configuration});
+class _ConfigurationAgeStack extends StatelessWidget {
+  const _ConfigurationAgeStack({required this.configuration});
 
   final AdminConfiguration configuration;
 
   @override
   Widget build(BuildContext context) {
-    final age = _elapsedAge(configuration.createdAt)?.value;
-    if (age == null) return const SizedBox.shrink();
-    return Container(
-      constraints: const BoxConstraints(minWidth: 98),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFBFDBFE)),
-      ),
-      child: Text(
-        'Created at $age ago',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: Color(0xFF1D4ED8),
-          fontSize: 11,
-          fontWeight: FontWeight.w900,
-        ),
+    final createdAge = _elapsedAge(configuration.createdAt)?.value;
+    final updatedAge = _elapsedAge(configuration.updatedAt)?.value;
+    if (createdAge == null) return const SizedBox.shrink();
+
+    return SizedBox(
+      width: 112,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _AgePill(
+            label: 'Created $createdAge ago',
+            color: const Color(0xFF1D4ED8),
+            background: const Color(0xFFEFF6FF),
+            border: const Color(0xFFBFDBFE),
+          ),
+          if (_hasDistinctUpdate(configuration) && updatedAge != null) ...[
+            const SizedBox(height: 3),
+            _AgePill(
+              label: 'Update $updatedAge ago',
+              color: const Color(0xFF047857),
+              background: const Color(0xFFECFDF5),
+              border: const Color(0xFFA7F3D0),
+            ),
+          ],
+        ],
       ),
     );
   }
+}
+
+class _AgePill extends StatelessWidget {
+  const _AgePill({
+    required this.label,
+    required this.color,
+    required this.background,
+    required this.border,
+  });
+
+  final String label;
+  final Color color;
+  final Color background;
+  final Color border;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: border),
+        ),
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      );
 }
 
 class _ConfigurationCardActions extends StatelessWidget {
