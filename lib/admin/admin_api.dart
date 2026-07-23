@@ -45,6 +45,58 @@ class AdminConfigurations {
   final List<AdminConfiguration> data;
 }
 
+class AdminListFilters {
+  const AdminListFilters({
+    this.sortBy = 'createdAt',
+    this.sortOrder = 'asc',
+    this.dateField = 'createdAt',
+    this.dateFilter = 'all',
+    this.startDate,
+    this.endDate,
+    this.status,
+  });
+
+  final String sortBy;
+  final String sortOrder;
+  final String dateField;
+  final String dateFilter;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? status;
+
+  Map<String, String> toQueryParameters() => {
+        'sortBy': sortBy,
+        'sortOrder': sortOrder.toLowerCase() == 'desc' ? 'desc' : 'asc',
+        'dateField': dateField,
+        'dateFilter': dateFilter,
+        if (status != null) 'status': status!,
+        if (dateFilter == 'custom' && startDate != null)
+          'startDate': _dateOnly(startDate!),
+        if (dateFilter == 'custom' && endDate != null)
+          'endDate': _dateOnly(endDate!),
+      };
+
+  AdminListFilters copyWith({
+    String? sortBy,
+    String? sortOrder,
+    String? dateField,
+    String? dateFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? status,
+    bool clearDates = false,
+  }) =>
+      AdminListFilters(
+        sortBy: sortBy ?? this.sortBy,
+        sortOrder: sortOrder ?? this.sortOrder,
+        dateField: dateField ?? this.dateField,
+        dateFilter: dateFilter ?? this.dateFilter,
+        startDate: clearDates ? null : startDate ?? this.startDate,
+        endDate: clearDates ? null : endDate ?? this.endDate,
+        status: status ?? this.status,
+      );
+}
+
 class AdminConfiguration {
   AdminConfiguration({
     required this.id,
@@ -52,6 +104,8 @@ class AdminConfiguration {
     required this.status,
     required this.dateOrdered,
     required this.completeDate,
+    required this.createdAt,
+    required this.updatedAt,
     required this.cart,
   });
 
@@ -60,6 +114,8 @@ class AdminConfiguration {
   String status;
   final DateTime? dateOrdered;
   final DateTime? completeDate;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final List<Map<String, dynamic>> cart;
 
   factory AdminConfiguration.fromJson(Map<String, dynamic> json) {
@@ -70,6 +126,8 @@ class AdminConfiguration {
       status: _normalizedStatus(json['status'] ?? json['orderStatus']),
       dateOrdered: DateTime.tryParse(json['dateOrdered']?.toString() ?? ''),
       completeDate: DateTime.tryParse(json['completeDate']?.toString() ?? ''),
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
       cart: rawCart is List
           ? rawCart
               .whereType<Map>()
@@ -92,6 +150,8 @@ class AdminUser {
     required this.phone,
     required this.company,
     required this.country,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   final String id;
@@ -104,6 +164,8 @@ class AdminUser {
   final String phone;
   final String company;
   final String country;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   String get name {
     final value = '$firstName $lastName'.trim();
@@ -121,6 +183,8 @@ class AdminUser {
         phone: json['phoneNumber']?.toString() ?? '—',
         company: json['companyName']?.toString() ?? '—',
         country: json['country']?.toString() ?? '—',
+        createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
+        updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
       );
 }
 
@@ -137,9 +201,10 @@ class AdminAPI {
     };
   }
 
-  Future<AdminConfigurations> getConfigurations() async {
+  Future<AdminConfigurations> getConfigurations(
+      {AdminListFilters filters = const AdminListFilters()}) async {
     final response = await http.get(
-      Uri.parse('$apiBaseUrl/admin/configurations'),
+      _adminUri('/admin/configurations', filters: filters),
       headers: await _headers(),
     );
     final decoded = _decode(response);
@@ -201,9 +266,10 @@ class AdminAPI {
     _decode(response);
   }
 
-  Future<List<AdminUser>> getUsers() async {
+  Future<List<AdminUser>> getUsers(
+      {AdminListFilters filters = const AdminListFilters()}) async {
     final response = await http.get(
-      Uri.parse('$apiBaseUrl/admin/users'),
+      _adminUri('/admin/users', filters: filters),
       headers: await _headers(),
     );
     final decoded = _decode(response);
@@ -264,6 +330,15 @@ class AdminAPI {
     _decode(response);
   }
 
+  Uri _adminUri(String path, {AdminListFilters? filters}) {
+    final uri = Uri.parse('$apiBaseUrl$path');
+    if (filters == null) return uri;
+    return uri.replace(queryParameters: {
+      ...uri.queryParameters,
+      ...filters.toQueryParameters(),
+    });
+  }
+
   Map<String, dynamic> _decode(http.Response response) {
     dynamic decoded;
     try {
@@ -295,6 +370,13 @@ class AdminAPI {
 
 int _asInt(dynamic value) =>
     value is num ? value.toInt() : int.tryParse(value?.toString() ?? '') ?? 0;
+
+String _dateOnly(DateTime value) {
+  final local = value.toLocal();
+  final month = local.month.toString().padLeft(2, '0');
+  final day = local.day.toString().padLeft(2, '0');
+  return '${local.year}-$month-$day';
+}
 
 String _normalizedStatus(dynamic value) {
   final status = value?.toString().trim().toLowerCase() ?? 'requested';

@@ -11,6 +11,11 @@ environment:
   sdk: ^3.5.2
 ```
 
+Branch information:
+
+- Live version branch: `addTechNote`
+- Version branch: `adminDashboard`
+
 The app targets Flutter platforms through the standard project folders:
 
 - Android

@@ -139,16 +139,19 @@ class _DashboardPageState extends State<DashboardPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Text('Hello $name, ', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                      Text('(not $name? )', style: const TextStyle(fontSize: 16),),
-                      TextButton(child: const Text('(Log out)', style: TextStyle(fontSize: 16, color: Colors.blue),),
-                        onPressed: () {
-                          logoutUser();
-                        },
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text('Hello $name, ', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                        Text('(not $name? )', style: const TextStyle(fontSize: 16),),
+                        TextButton(child: const Text('(Log out)', style: TextStyle(fontSize: 16, color: Colors.blue),),
+                          onPressed: () {
+                            logoutUser();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(

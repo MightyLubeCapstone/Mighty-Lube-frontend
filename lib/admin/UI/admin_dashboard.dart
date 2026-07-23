@@ -30,6 +30,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   final Set<String> _updatingUsers = {};
   final Set<String> _deletingConfigurations = {};
   final Set<String> _deletingUsers = {};
+  AdminListFilters _configurationFilters =
+      const AdminListFilters(status: 'all');
+  AdminListFilters _userFilters = const AdminListFilters();
+  bool _groupConfigurationsByStatus = false;
 
   @override
   void initState() {
@@ -58,7 +62,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       });
     }
     try {
-      final result = await _api.getConfigurations();
+      final result = await _api.getConfigurations(
+        filters: _configurationFilters,
+      );
       if (!mounted) return;
       setState(() {
         _summary = result.summary;
@@ -91,7 +97,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       });
     }
     try {
-      final users = await _api.getUsers();
+      final users = await _api.getUsers(
+        filters: _userFilters,
+      );
       if (!mounted) return;
       setState(() {
         _users = users;
@@ -204,6 +212,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       pending: _configurations.where((item) => item.status == 'pending').length,
       done: _configurations.where((item) => item.status == 'done').length,
     );
+  }
+
+  void _setConfigurationFilters(AdminListFilters filters) {
+    setState(() => _configurationFilters = filters);
+    _loadConfigurations();
+  }
+
+  void _setGroupConfigurationsByStatus(bool value) {
+    setState(() => _groupConfigurationsByStatus = value);
+  }
+
+  void _setUserFilters(AdminListFilters filters) {
+    setState(() => _userFilters = filters);
+    _loadUsers();
   }
 
   Future<void> _editConfiguration(AdminConfiguration configuration) async {
@@ -398,40 +420,98 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       child: ListView(padding: _pagePadding(), children: [
         _heading('Configurations', _loadConfigurations),
         const SizedBox(height: 18),
+        _AdminListFilterBar(
+          filters: _configurationFilters,
+          onChanged: _setConfigurationFilters,
+          showStatusFilter: true,
+          groupByStatus: _groupConfigurationsByStatus,
+          onGroupByStatusChanged: _setGroupConfigurationsByStatus,
+        ),
+        const SizedBox(height: 18),
         _summaryCards(),
         const SizedBox(height: 22),
-        compact
-            ? _configurationCards()
-            : _tableContainer(
-                empty: _configurations.isEmpty,
-                emptyText: 'No configurations found.',
-                table: DataTable(
-                  columnSpacing: _columnSpacing(),
-                  horizontalMargin: 12,
-                  headingRowHeight: 44,
-                  dataRowMinHeight: 54,
-                  dataRowMaxHeight: 58,
-                  dividerThickness: .65,
-                  columns: const [
-                    DataColumn(label: Text('Configuration name')),
-                    DataColumn(label: Text('Status')),
-                    DataColumn(label: Text('Date ordered')),
-                    DataColumn(label: Text('Completion date')),
-                    DataColumn(label: Text('Products'), numeric: true),
-                    DataColumn(label: Text('Details')),
-                    DataColumn(label: Text('Change status')),
-                    DataColumn(label: Text('Actions')),
-                  ],
-                  rows: _configurations.map(_configurationRow).toList(),
-                ),
-              ),
+        _configurationList(compact),
       ]),
     );
   }
 
+  Widget _configurationList(bool compact) {
+    if (!_groupConfigurationsByStatus) {
+      return compact
+          ? _configurationCards()
+          : _configurationTable(_configurations);
+    }
+
+    final sections = [
+      for (final status in statuses)
+        MapEntry(
+          status,
+          _configurations.where((item) => item.status == status).toList(),
+        ),
+    ].where((entry) => entry.value.isNotEmpty).toList();
+
+    if (sections.isEmpty) {
+      return _emptyCard('No configurations found.');
+    }
+
+    return Column(children: [
+      for (final section in sections) ...[
+        _StatusSectionHeader(
+          status: section.key,
+          count: section.value.length,
+        ),
+        const SizedBox(height: 10),
+        compact
+            ? _configurationCards(items: section.value)
+            : _configurationTable(section.value),
+        const SizedBox(height: 18),
+      ],
+    ]);
+  }
+
+  Widget _configurationTable(List<AdminConfiguration> items) => _tableContainer(
+        empty: items.isEmpty,
+        emptyText: 'No configurations found.',
+        table: DataTable(
+          columnSpacing: _columnSpacing(),
+          horizontalMargin: 12,
+          headingRowHeight: 44,
+          dataRowMinHeight: 66,
+          dataRowMaxHeight: 76,
+          dividerThickness: .65,
+          columns: const [
+            DataColumn(label: Text('Configuration name')),
+            DataColumn(label: Text('Status')),
+            DataColumn(label: Text('Created')),
+            DataColumn(label: Text('Updated')),
+            DataColumn(label: Text('Date ordered')),
+            DataColumn(label: Text('Completion date')),
+            DataColumn(label: Text('Products'), numeric: true),
+            DataColumn(label: Text('Details')),
+            DataColumn(label: Text('Change status')),
+            DataColumn(label: Text('Actions')),
+          ],
+          rows: items.map(_configurationRow).toList(),
+        ),
+      );
+
   DataRow _configurationRow(AdminConfiguration item) => DataRow(cells: [
         DataCell(_responsiveText(item.name, .15, 130, 240)),
-        DataCell(_StatusBadge(item.status)),
+        DataCell(Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _StatusBadge(item.status),
+            if (item.status == 'pending') ...[
+              const SizedBox(height: 4),
+              _PendingAgePill(configuration: item),
+            ],
+          ],
+        )),
+        DataCell(_dateAgeCell(item.createdAt, .12, 125, 190)),
+        DataCell(_hasDistinctUpdate(item)
+            ? _dateAgeCell(item.updatedAt, .12, 125, 190)
+            : const Text('—')),
         DataCell(_responsiveText(_date(item.dateOrdered), .12, 125, 190)),
         DataCell(_responsiveText(_date(item.completeDate), .12, 125, 190)),
         DataCell(Text('${item.cart.length}')),
@@ -485,6 +565,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       child: ListView(padding: _pagePadding(), children: [
         _heading('Users (${_users.length})', _loadUsers),
         const SizedBox(height: 18),
+        _AdminListFilterBar(
+          filters: _userFilters,
+          onChanged: _setUserFilters,
+        ),
+        const SizedBox(height: 18),
         compact ? _userCards() : _usersTable(),
       ]),
     );
@@ -507,6 +592,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             DataColumn(label: Text('Phone')),
             DataColumn(label: Text('Company')),
             DataColumn(label: Text('Country')),
+            DataColumn(label: Text('Created')),
+            DataColumn(label: Text('Updated')),
             DataColumn(label: Text('Role')),
             DataColumn(label: Text('Change role')),
             DataColumn(label: Text('Actions')),
@@ -519,6 +606,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     DataCell(_responsiveText(user.phone, .09, 100, 150)),
                     DataCell(_responsiveText(user.company, .12, 110, 200)),
                     DataCell(_responsiveText(user.country, .08, 80, 130)),
+                    DataCell(
+                        _responsiveText(_date(user.createdAt), .12, 125, 190)),
+                    DataCell(
+                        _responsiveText(_date(user.updatedAt), .12, 125, 190)),
                     DataCell(_RoleBadge(user.role)),
                     DataCell(_userRoleControl(user)),
                     DataCell(_userActions(user)),
@@ -527,13 +618,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
       );
 
-  Widget _configurationCards() {
-    if (_configurations.isEmpty) {
+  Widget _configurationCards({List<AdminConfiguration>? items}) {
+    final data = items ?? _configurations;
+    if (data.isEmpty) {
       return _emptyCard('No configurations found.');
     }
     return Column(
       children: [
-        for (final item in _configurations)
+        for (final item in data)
           _AdminListCard(
             margin: const EdgeInsets.only(bottom: 12),
             child:
@@ -547,7 +639,22 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 const SizedBox(width: 10),
                 _StatusBadge(item.status),
               ]),
+              if (item.status == 'pending') ...[
+                const SizedBox(height: 12),
+                _PendingAgePanel(configuration: item),
+              ],
               const SizedBox(height: 12),
+              _ConfigurationAgeBlocks(configuration: item),
+              const SizedBox(height: 12),
+              _InfoLine(
+                  icon: Icons.add_circle_outline,
+                  label: 'Created',
+                  value: _date(item.createdAt)),
+              if (_hasDistinctUpdate(item))
+                _InfoLine(
+                    icon: Icons.update,
+                    label: 'Updated',
+                    value: _date(item.updatedAt)),
               _InfoLine(
                   icon: Icons.event_outlined,
                   label: 'Ordered',
@@ -630,6 +737,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   icon: Icons.business_outlined,
                   label: 'Company',
                   value: user.company),
+              _InfoLine(
+                  icon: Icons.add_circle_outline,
+                  label: 'Created',
+                  value: _date(user.createdAt)),
+              _InfoLine(
+                  icon: Icons.update,
+                  label: 'Updated',
+                  value: _date(user.updatedAt)),
               const SizedBox(height: 12),
               _userRoleControl(user),
               const Divider(height: 24),
@@ -782,6 +897,553 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   String _date(DateTime? value) =>
       value == null ? '—' : DateFormat.yMMMd().add_jm().format(value.toLocal());
+
+  Widget _dateAgeCell(
+      DateTime? value, double fraction, double minimum, double maximum) {
+    final width =
+        (MediaQuery.sizeOf(context).width * fraction).clamp(minimum, maximum);
+    final date = _date(value);
+    final age = _elapsedAge(value)?.value;
+    return SizedBox(
+      width: width,
+      child: Tooltip(
+        message: age == null ? date : '$date · $age ago',
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(date, maxLines: 1, overflow: TextOverflow.ellipsis),
+            if (age != null) ...[
+              const SizedBox(height: 2),
+              Text(
+                '$age ago',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF17223B),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminListFilterBar extends StatelessWidget {
+  const _AdminListFilterBar({
+    required this.filters,
+    required this.onChanged,
+    this.showStatusFilter = false,
+    this.groupByStatus = false,
+    this.onGroupByStatusChanged,
+  });
+
+  static const _dateFields = {
+    'createdAt': 'Created date',
+    'updatedAt': 'Updated date',
+  };
+  static const _dateFilters = {
+    'all': 'All dates',
+    'today': 'Today',
+    'lastDay': 'Yesterday',
+    'thisWeek': 'This week',
+    'custom': 'Custom range',
+  };
+  static const _statusFilters = {
+    'all': 'All statuses',
+    'requested': 'Requested',
+    'pending': 'Pending',
+    'done': 'Done',
+  };
+
+  final AdminListFilters filters;
+  final ValueChanged<AdminListFilters> onChanged;
+  final bool showStatusFilter;
+  final bool groupByStatus;
+  final ValueChanged<bool>? onGroupByStatusChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final custom = filters.dateFilter == 'custom';
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final compact = constraints.maxWidth < 720;
+        final sortWidth = compact ? constraints.maxWidth - 52 : 220.0;
+        final dateWidth = compact ? constraints.maxWidth : 260.0;
+        final statusWidth = compact ? constraints.maxWidth : 190.0;
+        final customDateWidth = compact
+            ? (constraints.maxWidth - 12) / 2
+            : (constraints.maxWidth - dateWidth - 24).clamp(180.0, 220.0);
+        return Wrap(
+          spacing: 12,
+          runSpacing: 10,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            _dropdown(
+              width: sortWidth,
+              label: 'Sort by',
+              icon: Icons.sort,
+              value: filters.sortBy,
+              options: _dateFields,
+              onChanged: (value) => onChanged(filters.copyWith(
+                sortBy: value,
+                dateField: value,
+              )),
+            ),
+            _SortDirectionButton(
+              sortOrder: filters.sortOrder,
+              onPressed: () => onChanged(filters.copyWith(
+                sortOrder: filters.sortOrder == 'asc' ? 'desc' : 'asc',
+              )),
+            ),
+            _dropdown(
+              width: dateWidth,
+              label: 'Filter dates',
+              icon: Icons.filter_alt_outlined,
+              value: filters.dateFilter,
+              options: _dateFilters,
+              onChanged: (value) {
+                if (value == 'custom') {
+                  final today = DateTime.now();
+                  onChanged(filters.copyWith(
+                    dateField: filters.sortBy,
+                    dateFilter: value,
+                    startDate: filters.startDate ?? today,
+                    endDate: filters.endDate ?? today,
+                  ));
+                  return;
+                }
+                onChanged(filters.copyWith(
+                  dateField: filters.sortBy,
+                  dateFilter: value,
+                  clearDates: true,
+                ));
+              },
+            ),
+            if (showStatusFilter) ...[
+              _dropdown(
+                width: statusWidth,
+                label: 'Status',
+                icon: Icons.flag_outlined,
+                value: filters.status ?? 'all',
+                options: _statusFilters,
+                onChanged: (value) => onChanged(filters.copyWith(
+                  status: value,
+                )),
+              ),
+              _GroupByStatusCheckbox(
+                selected: groupByStatus,
+                onChanged: onGroupByStatusChanged,
+              ),
+            ],
+            if (custom) ...[
+              _dateButton(
+                context: context,
+                width: customDateWidth,
+                label: 'Start',
+                icon: Icons.date_range_outlined,
+                value: filters.startDate,
+                onPicked: (date) => onChanged(filters.copyWith(
+                  startDate: date,
+                  endDate:
+                      filters.endDate != null && filters.endDate!.isBefore(date)
+                          ? date
+                          : filters.endDate,
+                )),
+              ),
+              _dateButton(
+                context: context,
+                width: customDateWidth,
+                label: 'End',
+                icon: Icons.event_available_outlined,
+                value: filters.endDate,
+                firstDate: filters.startDate,
+                onPicked: (date) => onChanged(filters.copyWith(endDate: date)),
+              ),
+            ],
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _dropdown({
+    required double width,
+    required String label,
+    required IconData icon,
+    required String value,
+    required Map<String, String> options,
+    required ValueChanged<String> onChanged,
+  }) =>
+      SizedBox(
+        width: width,
+        child: DropdownButtonFormField<String>(
+          key: ValueKey('$label:$value'),
+          initialValue: value,
+          isDense: true,
+          decoration: _fieldDecoration(label, icon).copyWith(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          ),
+          items: options.entries
+              .map((entry) => DropdownMenuItem(
+                    value: entry.key,
+                    child: Text(entry.value),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            if (value != null) onChanged(value);
+          },
+        ),
+      );
+
+  Widget _dateButton({
+    required BuildContext context,
+    required double width,
+    required String label,
+    required IconData icon,
+    required DateTime? value,
+    required ValueChanged<DateTime> onPicked,
+    DateTime? firstDate,
+  }) =>
+      SizedBox(
+        width: width,
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+          onPressed: () async {
+            final now = DateTime.now();
+            final selected = await showDatePicker(
+              context: context,
+              initialDate: value ?? firstDate ?? now,
+              firstDate: firstDate ?? DateTime(2020),
+              lastDate: DateTime(now.year + 5),
+            );
+            if (selected != null) onPicked(selected);
+          },
+          icon: Icon(icon, size: 20),
+          label: Text(
+            value == null
+                ? label
+                : '$label ${DateFormat('yyyy-MM-dd').format(value)}',
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
+      );
+}
+
+class _SortDirectionButton extends StatelessWidget {
+  const _SortDirectionButton({
+    required this.sortOrder,
+    required this.onPressed,
+  });
+
+  final String sortOrder;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final descending = sortOrder == 'desc';
+    return Tooltip(
+      message: descending ? 'Descending' : 'Ascending',
+      child: IconButton.filledTonal(
+        constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+        onPressed: onPressed,
+        icon: Icon(descending ? Icons.arrow_downward : Icons.arrow_upward),
+      ),
+    );
+  }
+}
+
+class _GroupByStatusCheckbox extends StatelessWidget {
+  const _GroupByStatusCheckbox({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final bool selected;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onChanged == null ? null : () => onChanged!(!selected),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.only(left: 8, right: 12),
+          decoration: BoxDecoration(
+            color: selected ? const Color(0xFFE8F1FF) : const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color:
+                  selected ? const Color(0xFF2563EB) : const Color(0xFFDCE4F0),
+            ),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Checkbox(
+              value: selected,
+              visualDensity: VisualDensity.compact,
+              onChanged: onChanged == null
+                  ? null
+                  : (value) => onChanged!(value ?? false),
+            ),
+            const Text('Group by status',
+                style: TextStyle(fontWeight: FontWeight.w700)),
+          ]),
+        ),
+      );
+}
+
+class _StatusSectionHeader extends StatelessWidget {
+  const _StatusSectionHeader({
+    required this.status,
+    required this.count,
+  });
+
+  final String status;
+  final int count;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Row(children: [
+          _StatusBadge(status),
+          const SizedBox(width: 10),
+          Text(
+            '$count configuration${count == 1 ? '' : 's'}',
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
+        ]),
+      );
+}
+
+class _ConfigurationAgeBlocks extends StatelessWidget {
+  const _ConfigurationAgeBlocks({required this.configuration});
+
+  final AdminConfiguration configuration;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final compact = constraints.maxWidth < 460;
+      final hasUpdate = _hasDistinctUpdate(configuration);
+      final width = compact || !hasUpdate
+          ? constraints.maxWidth
+          : (constraints.maxWidth - 10) / 2;
+      return Wrap(spacing: 10, runSpacing: 10, children: [
+        _AgeFocusBlock(
+          width: width,
+          label: 'Created ago',
+          icon: Icons.add_circle_outline,
+          value: _elapsedAge(configuration.createdAt),
+          color: const Color(0xFF2563EB),
+          background: const Color(0xFFEFF6FF),
+        ),
+        if (hasUpdate)
+          _AgeFocusBlock(
+            width: width,
+            label: 'Updated ago',
+            icon: Icons.update,
+            value: _elapsedAge(configuration.updatedAt),
+            color: const Color(0xFF0F766E),
+            background: const Color(0xFFECFDF5),
+          ),
+      ]);
+    });
+  }
+}
+
+class _AgeFocusBlock extends StatelessWidget {
+  const _AgeFocusBlock({
+    required this.width,
+    required this.label,
+    required this.icon,
+    required this.value,
+    required this.color,
+    required this.background,
+  });
+
+  final double width;
+  final String label;
+  final IconData icon;
+  final _ElapsedAge? value;
+  final Color color;
+  final Color background;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: .28)),
+      ),
+      child: Row(children: [
+        Icon(icon, color: color, size: 24),
+        const SizedBox(width: 10),
+        Expanded(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label,
+                style: TextStyle(
+                    color: color, fontSize: 12, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 2),
+            Text(
+              value?.value ?? '-',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: color, fontSize: 26, fontWeight: FontWeight.w900),
+            ),
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+class _PendingAgePanel extends StatelessWidget {
+  const _PendingAgePanel({required this.configuration});
+
+  final AdminConfiguration configuration;
+
+  @override
+  Widget build(BuildContext context) {
+    final age = _pendingAge(configuration);
+    if (age == null) return const SizedBox.shrink();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF7ED),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFF97316)),
+      ),
+      child: Row(children: [
+        const Icon(Icons.priority_high_rounded,
+            color: Color(0xFFC2410C), size: 28),
+        const SizedBox(width: 10),
+        Text(
+          age.value,
+          style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF9A3412)),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'pending',
+            style: TextStyle(
+              color: Colors.orange.shade900,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class _PendingAgePill extends StatelessWidget {
+  const _PendingAgePill({required this.configuration});
+
+  final AdminConfiguration configuration;
+
+  @override
+  Widget build(BuildContext context) {
+    final age = _pendingAge(configuration);
+    if (age == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFEDD5),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        '${age.value} pending',
+        style: const TextStyle(
+          color: Color(0xFF9A3412),
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+}
+
+class _PendingAge {
+  const _PendingAge(this.value);
+
+  final String value;
+}
+
+_PendingAge? _pendingAge(AdminConfiguration configuration) {
+  if (configuration.status != 'pending') return null;
+  final start = configuration.updatedAt ??
+      configuration.createdAt ??
+      configuration.dateOrdered;
+  if (start == null) return null;
+  final duration = DateTime.now().difference(start.toLocal());
+  if (duration.inDays >= 1) {
+    return _PendingAge('${duration.inDays}d');
+  }
+  if (duration.inHours >= 1) {
+    return _PendingAge('${duration.inHours}h');
+  }
+  final minutes = duration.inMinutes.clamp(0, 59);
+  return _PendingAge('${minutes}m');
+}
+
+class _ElapsedAge {
+  const _ElapsedAge(this.value);
+
+  final String value;
+}
+
+_ElapsedAge? _elapsedAge(DateTime? date) {
+  if (date == null) return null;
+  final duration = DateTime.now().difference(date.toLocal());
+  if (duration.inDays >= 1) {
+    return _ElapsedAge('${duration.inDays}d');
+  }
+  if (duration.inHours >= 1) {
+    return _ElapsedAge('${duration.inHours}h');
+  }
+  final minutes = duration.inMinutes.clamp(0, 59);
+  return _ElapsedAge('${minutes}m');
+}
+
+bool _hasDistinctUpdate(AdminConfiguration configuration) {
+  final created = configuration.createdAt;
+  final updated = configuration.updatedAt;
+  if (updated == null) return false;
+  if (created == null) return true;
+  return updated.difference(created).abs().inMinutes >= 1;
 }
 
 class _ConfigurationDetails extends StatelessWidget {
@@ -795,12 +1457,17 @@ class _ConfigurationDetails extends StatelessWidget {
         subtitle:
             '${configuration.cart.length} product${configuration.cart.length == 1 ? '' : 's'} configured',
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _ConfigurationAgeBlocks(configuration: configuration),
+          const SizedBox(height: 16),
           _PlainSectionBox(
             title: 'Configuration summary',
             children: [
               _plainInfoGrid([
                 _PlainInfo('Status', _titleCase(configuration.status)),
                 _PlainInfo('Products', '${configuration.cart.length}'),
+                _PlainInfo('Created', _friendlyDate(configuration.createdAt)),
+                if (_hasDistinctUpdate(configuration))
+                  _PlainInfo('Updated', _friendlyDate(configuration.updatedAt)),
                 _PlainInfo(
                     'Date ordered', _friendlyDate(configuration.dateOrdered)),
                 _PlainInfo('Completion date',
@@ -962,6 +1629,8 @@ class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
           key: _formKey,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            _ConfigurationAgeBlocks(configuration: widget.configuration),
+            const SizedBox(height: 18),
             TextFormField(
               controller: _name,
               decoration: const InputDecoration(
@@ -1664,6 +2333,10 @@ class _UserDetails extends StatelessWidget {
               _detailField(
                   'Company', user.company, Icons.business_outlined, width),
               _detailField('Country', user.country, Icons.public, width),
+              _detailField('Created', _friendlyDate(user.createdAt),
+                  Icons.add_circle_outline, width),
+              _detailField('Updated', _friendlyDate(user.updatedAt),
+                  Icons.update, width),
               _detailField('Role', _titleCase(user.role),
                   Icons.admin_panel_settings_outlined, width),
             ]);
