@@ -24,10 +24,14 @@ environment:
 
 - `addTechNote`
   - Current live project baseline.
+  - Live Android version: `2.0.1` (`versionCode` `8`).
+  - Live iOS version: `2.0.1` (`CFBundleVersion` `8`).
   - Adds technician notes for each created configuration.
   - Includes code quality improvements.
 - `adminDashboard`
   - Active version branch for admin dashboard updates.
+  - Android version: `2.0.2` (`versionCode` `9`).
+  - iOS version: `2.0.2` (`CFBundleVersion` `9`).
   - Adds server-side sorting, date filtering, and configuration status filtering.
   - Adds configuration status grouping.
   - Adds created/updated elapsed-time indicators in configuration lists, cards, view dialogs, and edit dialogs.
@@ -36,6 +40,11 @@ environment:
 ### Version Mapping
 
 - Flutter project version: `2.0.2+9`
+
+| Branch | Purpose | Android version | iOS version |
+| --- | --- | --- | --- |
+| `addTechNote` | Current live baseline | `2.0.1` / code `8` | `2.0.1` / build `8` |
+| `adminDashboard` | Active admin dashboard version | `2.0.2` / code `9` | `2.0.2` / build `9` |
 
 Android:
 
