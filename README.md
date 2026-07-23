@@ -24,6 +24,8 @@ environment:
 
 - `addTechNote`
   - Current live project baseline.
+  - Adds technician notes for each created configuration.
+  - Includes code quality improvements.
 - `adminDashboard`
   - Active version branch for admin dashboard updates.
   - Adds server-side sorting, date filtering, and configuration status filtering.
