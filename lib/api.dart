@@ -48,7 +48,7 @@ class UserAPI {
     String lastName,
     String email,
     String phoneNumber,
-    String companyName,1
+    String companyName,
     String securityPin,
     String country,
   ) async {

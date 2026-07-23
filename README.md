@@ -1,31 +1,56 @@
 # Mighty Lube Configurator
 
-Mighty Lube Configurator is a Flutter frontend for configuring Mighty Lube industrial and protein conveyor products. The app lets users sign in, browse product families, enter product-specific configuration data, manage cart items and drafts, finalize configurations, and view saved configurations from a dashboard. It also includes an administrator dashboard for managing configurations and users.
+Flutter frontend for configuring Mighty Lube industrial and protein conveyor products. Users can sign in, browse product families, configure products, manage carts and drafts, finalize configurations, and view saved configurations. Admin users can manage configurations and users from the admin dashboard.
 
-## Project Information
+## Quick Info
 
 ```yaml
 name: mighty_lube
-version: 2.0.1+8
+version: 2.0.2+9
 environment:
   sdk: ^3.5.2
 ```
 
-Branch information:
+- Live branch: `addTechNote`
+- Active version branch: `adminDashboard`
+- Default local backend: `http://localhost:8080`
+- API root: `http://localhost:8080/api`
+- Admin route: `/admin`
 
-- Live version branch: `addTechNote`
-- Version branch: `adminDashboard`
+<details>
+<summary>Branch And Release Details</summary>
 
-The app targets Flutter platforms through the standard project folders:
+### Branches
 
-- Android
-- iOS
-- macOS
-- Windows
-- Linux
-- Web
+- `addTechNote`
+  - Current live project baseline.
+- `adminDashboard`
+  - Active version branch for admin dashboard updates.
+  - Adds server-side sorting, date filtering, and configuration status filtering.
+  - Adds configuration status grouping.
+  - Adds created/updated elapsed-time indicators in configuration lists, cards, view dialogs, and edit dialogs.
+  - Keeps Users tab sorting/date filtering separate from configuration-only status controls.
 
-## Technology Stack
+### Version Mapping
+
+- Flutter project version: `2.0.2+9`
+
+Android:
+
+- `versionName`: `2.0.2`
+- `versionCode`: `9`
+- Source: `android/app/build.gradle` uses `flutter.versionName` and `flutter.versionCode`.
+
+iOS:
+
+- `CFBundleShortVersionString`: `2.0.2`
+- `CFBundleVersion`: `9`
+- Source: `ios/Runner/Info.plist` uses `$(FLUTTER_BUILD_NAME)` and `$(FLUTTER_BUILD_NUMBER)`.
+
+</details>
+
+<details>
+<summary>Technology Stack</summary>
 
 - Flutter and Dart for the application UI.
 - Material widgets for screens, forms, navigation, dialogs, and dashboard controls.
@@ -39,9 +64,10 @@ The app targets Flutter platforms through the standard project folders:
 - `photo_view` for zoomable measurement/product images.
 - `password_strength_checker` for password validation UI.
 
-## Application Architecture
+</details>
 
-The project uses a screen-based Flutter structure. Route registration is centralized in `lib/main.dart`, API access is centralized in `lib/api.dart` and `lib/admin/admin_api.dart`, and environment/session behavior is handled in `lib/env.dart`.
+<details>
+<summary>Project Structure</summary>
 
 ```text
 lib/
@@ -74,7 +100,19 @@ assets/
   FGCO.png                          Protein product image
 ```
 
-## Routing
+Platform folders:
+
+- Android
+- iOS
+- macOS
+- Windows
+- Linux
+- Web
+
+</details>
+
+<details>
+<summary>Routing</summary>
 
 Routes are registered in `lib/main.dart`.
 
@@ -97,7 +135,10 @@ Routes are registered in `lib/main.dart`.
 
 Navigation uses Flutter named routes and normal `Navigator` calls. A `SessionObserver` is registered as a navigator observer so session validity is checked during navigation.
 
-## Backend Configuration
+</details>
+
+<details>
+<summary>Backend And API</summary>
 
 The backend host is configured in `lib/env.dart`.
 
@@ -112,22 +153,12 @@ String get baseUrl {
 String get apiBaseUrl => '$baseUrl/api';
 ```
 
-Default local backend:
-
-```text
-http://localhost:8080
-```
-
-Production or hosted backend can be supplied at build/run time:
+Run with a specific backend:
 
 ```bash
+flutter run --dart-define=API_HOST=http://localhost:8080
 flutter run --dart-define=API_HOST=https://configurator-67eol.sevalla.app
-flutter build apk --release --dart-define=API_HOST=https://configurator-67eol.sevalla.app
 ```
-
-## API Approach
-
-The app uses REST endpoints under `/api`. Most authenticated requests send `sessionID` from `SharedPreferences` in the request headers.
 
 Main API client classes:
 
@@ -138,15 +169,60 @@ Main API client classes:
 - `ConfigurationAPI` in `lib/api.dart`: reads and finalizes user configurations.
 - `AdminAPI` in `lib/admin/admin_api.dart`: admin-only configuration and user management.
 
-Admin API calls use typed frontend models:
+Admin API models:
 
 - `ConfigurationSummary`
 - `AdminConfigurations`
 - `AdminConfiguration`
 - `AdminUser`
+- `AdminListFilters`
 - `AdminApiException`
 
-## Authentication Flow
+</details>
+
+<details>
+<summary>Admin Dashboard</summary>
+
+The admin dashboard is available at:
+
+```text
+/admin
+```
+
+Admin access is guarded by the locally stored `role` value and backend session validation. Non-admin users are redirected back to the normal dashboard.
+
+Configuration features:
+
+- Load configurations with server-side sorting.
+- Filter configurations by created/updated date windows.
+- Filter configurations by status: `all`, `requested`, `pending`, `done`.
+- Group configurations by status.
+- View filtered summary counts.
+- View configuration details.
+- Edit configuration name and product configuration values.
+- Change configuration status.
+- Delete configurations.
+- Show created/updated elapsed-time information in table rows, cards, view dialogs, and edit dialogs.
+- Highlight pending duration.
+- Mobile-friendly card layout for narrow screens.
+
+Users features:
+
+- Load users with server-side sorting.
+- Filter users by created/updated date windows.
+- View user details.
+- Edit user profile data.
+- Change user role.
+- Reset user password.
+- Delete users.
+- Mobile-friendly card layout for narrow screens.
+
+</details>
+
+<details>
+<summary>User Flows</summary>
+
+### Authentication
 
 1. User opens the app and navigates to login or account creation.
 2. Login calls `UserAPI.loginUser`.
@@ -155,20 +231,20 @@ Admin API calls use typed frontend models:
 5. If the session is missing or expired, the user is redirected to `/login`.
 6. Logout calls `UserAPI.logoutUser` and clears local session data.
 
-Stored local session keys include:
+Stored local session keys:
 
 - `sessionID`
 - `username`
 - `role`
 
-## Account Creation Flow
+### Account Creation
 
 1. User enters personal details, country, password, confirm password, and security PIN.
 2. The app validates required fields, username availability, password strength, confirm-password match, and security PIN.
 3. `UserAPI.makeAccount` sends the account payload to the backend.
 4. On success, the user is routed into the dashboard experience.
 
-## Password Reset Flow
+### Password Reset
 
 1. User enters an email on the forgot-password screen.
 2. `UserAPI.forgotPassword` submits the email.
@@ -186,20 +262,21 @@ Password rules:
 - At least one special character.
 - Confirm password must match.
 
-## User Dashboard Flow
+### Cart, Draft, And Final Configuration
 
-The user dashboard provides access to:
+1. User selects a product family and product.
+2. User enters configuration data.
+3. Product configuration is added to the cart.
+4. User can edit cart quantity/configuration data where supported.
+5. User can save work as a draft.
+6. User can restore a draft later.
+7. User finalizes the cart as a named configuration.
+8. Finalized configurations are available from the dashboard.
 
-- Product configuration entry points.
-- Saved configurations.
-- Draft configurations.
-- User profile management.
-- Application page.
-- Logout.
+</details>
 
-The dashboard screens are under `lib/dashboard/UI/`.
-
-## Product Configuration Flow
+<details>
+<summary>Product Configuration</summary>
 
 The app separates product configuration by business area:
 
@@ -214,57 +291,10 @@ Industrial flows are organized by product family and product type. Each product 
 
 Configuration pages collect product-specific values and add them to the cart through API/state flows. Measurement images are loaded from `assets/Measurements/` and product/category images are loaded from `assets/industrial/`.
 
-## Cart, Draft, and Final Configuration Flow
+</details>
 
-Cart and configuration behavior is handled through:
-
-- `shopping_cart.dart`
-- `CartAPI`
-- `DraftAPI`
-- `ConfigurationAPI`
-
-Typical user flow:
-
-1. User selects a product family and product.
-2. User enters configuration data.
-3. Product configuration is added to the cart.
-4. User can edit cart quantity/configuration data where supported.
-5. User can save work as a draft.
-6. User can restore a draft later.
-7. User finalizes the cart as a named configuration.
-8. Finalized configurations are available from the dashboard.
-
-## Admin Dashboard
-
-The admin dashboard is available at:
-
-```text
-/admin
-```
-
-Admin access is guarded by the locally stored `role` value and backend session validation. Non-admin users are redirected back to the normal dashboard.
-
-Admin configuration features:
-
-- Load all configurations.
-- View configuration summary counts.
-- View configuration details.
-- Edit configuration name and product configuration values.
-- Change configuration status.
-- Delete configurations.
-- Mobile-friendly card layout for narrow screens.
-
-Admin user features:
-
-- Load all users.
-- View user details.
-- Edit user profile data.
-- Change user role.
-- Reset user password.
-- Delete users.
-- Mobile-friendly card layout for narrow screens.
-
-## UI and Responsiveness
+<details>
+<summary>UI And Responsiveness</summary>
 
 The app uses Material widgets and shared UI helpers. Dashboard and admin layouts use responsive checks based on `MediaQuery` and `LayoutBuilder`.
 
@@ -275,7 +305,10 @@ Current responsive approach:
 - View/edit dialogs use constrained max widths and scrollable content.
 - Form fields wrap into compact groups on wider screens and become full-width on mobile.
 
-## Setup
+</details>
+
+<details>
+<summary>Setup, Analysis, And Release Build</summary>
 
 Install Flutter, then install project dependencies:
 
@@ -289,13 +322,6 @@ Run locally:
 flutter run
 ```
 
-Run with a specific backend:
-
-```bash
-flutter run --dart-define=API_HOST=http://localhost:8080
-flutter run --dart-define=API_HOST=https://configurator-67eol.sevalla.app
-```
-
 Run for specific targets:
 
 ```bash
@@ -303,8 +329,6 @@ flutter run -d chrome
 flutter run -d macos
 flutter run -d android
 ```
-
-## Analysis and Tests
 
 Run static analysis:
 
@@ -318,9 +342,7 @@ Run tests:
 flutter test
 ```
 
-## Android Release Build
-
-Release signing reads `key.properties` from:
+Android release signing reads `key.properties` from:
 
 ```text
 android/app/key.properties
@@ -341,7 +363,10 @@ Build a release APK:
 flutter build apk --release --dart-define=API_HOST=https://configurator-67eol.sevalla.app
 ```
 
-## Platform Notes
+</details>
+
+<details>
+<summary>Platform Notes</summary>
 
 - macOS builds require `com.apple.security.network.client` for outbound API access.
 - Web assets and splash/icon files are present under `web/`.
@@ -349,12 +374,4 @@ flutter build apk --release --dart-define=API_HOST=https://configurator-67eol.se
 - Android release signing is configured in `android/app/build.gradle`.
 - iOS and macOS native project files are included under `ios/` and `macos/`.
 
-## Current Version Notes
-
-Current app version:
-
-```yaml
-version: 2.0.1+8
-```
-
-The note in `pubspec.yaml` says iOS already had version `2.0.0`, so this project is using `2.0.1+8` to keep Android and iOS versioning aligned.
+</details>
