@@ -362,47 +362,61 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor: background,
-        appBar: AppBar(
-          toolbarHeight: 74,
-          backgroundColor: navy,
-          foregroundColor: Colors.white,
-          title: Row(children: [
-            SvgPicture.asset('assets/WhiteML_Logo-w-tag-vector.svg',
-                height: 43),
-            const SizedBox(width: 18),
-            if (MediaQuery.sizeOf(context).width >= 620)
-              const Text('Admin dashboard',
-                  style: TextStyle(fontWeight: FontWeight.w700)),
-          ]),
-          actions: [
-            IconButton(
-              tooltip: 'User dashboard',
-              onPressed: () => Navigator.pushNamed(context, '/dashboard'),
-              icon: const Icon(Icons.person_outline),
-            ),
-            IconButton(
-                tooltip: 'Logout',
-                onPressed: _logout,
-                icon: const Icon(Icons.logout)),
-            const SizedBox(width: 8),
-          ],
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            tabs: [
-              Tab(icon: Icon(Icons.tune), text: 'Configurations'),
-              Tab(icon: Icon(Icons.people_outline), text: 'Users'),
+      child: Builder(builder: (context) {
+        return Scaffold(
+          backgroundColor: background,
+          appBar: AppBar(
+            toolbarHeight: 74,
+            backgroundColor: navy,
+            foregroundColor: Colors.white,
+            title: Row(children: [
+              SvgPicture.asset('assets/WhiteML_Logo-w-tag-vector.svg',
+                  height: 43),
+              const SizedBox(width: 18),
+              if (MediaQuery.sizeOf(context).width >= 620)
+                const Text('Admin dashboard',
+                    style: TextStyle(fontWeight: FontWeight.w700)),
+            ]),
+            actions: [
+              IconButton(
+                tooltip: 'Refresh',
+                onPressed: () {
+                  final index = DefaultTabController.of(context).index;
+                  if (index == 0) {
+                    _loadConfigurations();
+                  } else {
+                    _loadUsers();
+                  }
+                },
+                icon: const Icon(Icons.refresh),
+              ),
+              IconButton(
+                tooltip: 'User dashboard',
+                onPressed: () => Navigator.pushNamed(context, '/dashboard'),
+                icon: const Icon(Icons.person_outline),
+              ),
+              IconButton(
+                  tooltip: 'Logout',
+                  onPressed: _logout,
+                  icon: const Icon(Icons.logout)),
+              const SizedBox(width: 8),
             ],
+            bottom: const TabBar(
+              indicatorColor: Colors.white,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white70,
+              tabs: [
+                Tab(icon: Icon(Icons.tune), text: 'Configurations'),
+                Tab(icon: Icon(Icons.people_outline), text: 'Users'),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(children: [
-          _configurationsTab(),
-          _usersTab(),
-        ]),
-      ),
+          body: TabBarView(children: [
+            _configurationsTab(),
+            _usersTab(),
+          ]),
+        );
+      }),
     );
   }
 
@@ -418,8 +432,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return RefreshIndicator(
       onRefresh: _loadConfigurations,
       child: ListView(padding: _pagePadding(), children: [
-        _heading('Configurations', _loadConfigurations),
-        const SizedBox(height: 18),
         _AdminListFilterBar(
           filters: _configurationFilters,
           onChanged: _setConfigurationFilters,
@@ -563,8 +575,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return RefreshIndicator(
       onRefresh: _loadUsers,
       child: ListView(padding: _pagePadding(), children: [
-        _heading('Users (${_users.length})', _loadUsers),
-        const SizedBox(height: 18),
         _AdminListFilterBar(
           filters: _userFilters,
           onChanged: _setUserFilters,
@@ -630,76 +640,118 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             margin: const EdgeInsets.only(bottom: 12),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                _CreatedAgeChip(configuration: item),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Text(item.name,
-                      style: const TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.w800)),
+                  child: Text(
+                    item.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 17, fontWeight: FontWeight.w800),
+                  ),
                 ),
-                const SizedBox(width: 10),
-                _StatusBadge(item.status),
+                const SizedBox(width: 8),
+                _StatusBadge(item.status, compact: true),
+                const SizedBox(width: 4),
+                _ConfigurationCardActions(
+                  isDeleting: _deletingConfigurations.contains(item.id),
+                  onView: () => showDialog<void>(
+                      context: context,
+                      builder: (_) =>
+                          _ConfigurationDetails(configuration: item)),
+                  onEdit: () => _editConfiguration(item),
+                  onDelete: () => _deleteConfiguration(item),
+                ),
               ]),
               if (item.status == 'pending') ...[
                 const SizedBox(height: 12),
                 _PendingAgePanel(configuration: item),
               ],
               const SizedBox(height: 12),
-              _ConfigurationAgeBlocks(configuration: item),
-              const SizedBox(height: 12),
-              _InfoLine(
-                  icon: Icons.add_circle_outline,
-                  label: 'Created',
-                  value: _date(item.createdAt)),
-              if (_hasDistinctUpdate(item))
-                _InfoLine(
-                    icon: Icons.update,
-                    label: 'Updated',
-                    value: _date(item.updatedAt)),
-              _InfoLine(
-                  icon: Icons.event_outlined,
-                  label: 'Ordered',
-                  value: _date(item.dateOrdered)),
-              _InfoLine(
-                  icon: Icons.event_available_outlined,
-                  label: 'Complete',
-                  value: _date(item.completeDate)),
-              _InfoLine(
-                  icon: Icons.inventory_2_outlined,
-                  label: 'Products',
-                  value: '${item.cart.length}'),
+              _configurationInfoGrid(item),
               const SizedBox(height: 12),
               _configurationStatusControl(item),
-              const Divider(height: 24),
-              Wrap(spacing: 4, runSpacing: 4, children: [
-                IconButton.filledTonal(
-                  tooltip: 'View details',
-                  onPressed: () => showDialog<void>(
-                      context: context,
-                      builder: (_) =>
-                          _ConfigurationDetails(configuration: item)),
-                  icon: const Icon(Icons.visibility_outlined),
-                ),
-                IconButton.filledTonal(
-                  tooltip: 'Edit configuration',
-                  onPressed: () => _editConfiguration(item),
-                  icon: const Icon(Icons.edit_outlined),
-                ),
-                IconButton.filledTonal(
-                  tooltip: 'Delete configuration',
-                  onPressed: _deletingConfigurations.contains(item.id)
-                      ? null
-                      : () => _deleteConfiguration(item),
-                  icon: _deletingConfigurations.contains(item.id)
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Icon(Icons.delete_outline, color: Colors.red),
-                ),
-              ]),
             ]),
           ),
       ],
     );
+  }
+
+  Widget _configurationInfoGrid(AdminConfiguration item) =>
+      LayoutBuilder(builder: (context, constraints) {
+        const gap = 10.0;
+        final width = (constraints.maxWidth - gap) / 2;
+        final info = [
+          _InfoTileData(
+              Icons.add_circle_outline, 'Created', _date(item.createdAt)),
+          _InfoTileData(
+              Icons.inventory_2_outlined, 'Products', '${item.cart.length}'),
+          _InfoTileData(Icons.tune_outlined, 'Configuration',
+              _configurationProductSummary(item)),
+          _InfoTileData(Icons.settings_suggest_outlined, 'Product config',
+              _productConfigurationPreview(item)),
+        ];
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final item in info)
+              SizedBox(width: width, child: _InfoTile(item: item)),
+          ],
+        );
+      });
+
+  String _configurationProductSummary(AdminConfiguration item) {
+    if (item.cart.isEmpty) return 'No products';
+
+    final productTypes = item.cart
+        .map((product) => product['productType']?.toString().trim() ?? '')
+        .where((value) => value.isNotEmpty)
+        .toList();
+    if (productTypes.isNotEmpty) {
+      final shown = productTypes.take(2).join(', ');
+      final hidden = productTypes.length - 2;
+      return hidden > 0 ? '$shown +$hidden' : shown;
+    }
+
+    final configuredCount = item.cart.where((product) {
+      final info = product['productConfigurationInfo'];
+      return info is Map && info.isNotEmpty;
+    }).length;
+    if (configuredCount > 0) {
+      return '$configuredCount configured';
+    }
+    return '${item.cart.length} configured';
+  }
+
+  String _productConfigurationPreview(AdminConfiguration item) {
+    final previews = <String>[];
+    for (final product in item.cart) {
+      final rawInfo = product['productConfigurationInfo'];
+      if (rawInfo is! Map) continue;
+
+      for (final entry in rawInfo.entries) {
+        final key = entry.key.toString();
+        if (key == '_id' || _isNested(entry.value)) continue;
+
+        final value = entry.value?.toString().trim() ?? '';
+        if (value.isEmpty) continue;
+        previews.add('$key: $value');
+        break;
+      }
+      if (previews.length == 2) break;
+    }
+
+    if (previews.isNotEmpty) return previews.join(', ');
+
+    final configuredCount = item.cart.where((product) {
+      final info = product['productConfigurationInfo'];
+      return info is Map && info.isNotEmpty;
+    }).length;
+    return configuredCount > 0 ? '$configuredCount configured' : 'No details';
   }
 
   Widget _userCards() {
@@ -814,19 +866,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
       );
 
-  Widget _heading(String title, Future<void> Function() refresh) => Row(
-        children: [
-          Expanded(
-              child: Text(title,
-                  style: const TextStyle(
-                      fontSize: 26, fontWeight: FontWeight.w800, color: navy))),
-          IconButton.filledTonal(
-              tooltip: 'Refresh',
-              onPressed: refresh,
-              icon: const Icon(Icons.refresh)),
-        ],
-      );
-
   Widget _tableContainer(
           {required bool empty,
           required String emptyText,
@@ -853,26 +892,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
 
   Widget _summaryCards() => LayoutBuilder(builder: (context, constraints) {
-        const gap = 14.0;
-        final columns = constraints.maxWidth >= 1000
-            ? 4
-            : constraints.maxWidth >= 520
-                ? 2
-                : 1;
-        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
-        return Wrap(spacing: gap, runSpacing: gap, children: [
-          _SummaryCard('Total', _summary.total, Icons.inventory_2_outlined,
-              const Color(0xFF579AF6),
-              width: width),
-          _SummaryCard('Requested', _summary.requested, Icons.inbox_outlined,
-              Colors.blue,
-              width: width),
-          _SummaryCard(
-              'Pending', _summary.pending, Icons.pending_actions, Colors.orange,
-              width: width),
-          _SummaryCard('Done', _summary.done, Icons.task_alt, Colors.green,
-              width: width),
-        ]);
+        const gap = 10.0;
+        final width = constraints.maxWidth >= 760
+            ? (constraints.maxWidth - gap * 3) / 4
+            : 112.0;
+        final showIcons = constraints.maxWidth >= 760;
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: [
+            _SummaryCard('Total', _summary.total, Icons.inventory_2_outlined,
+                const Color(0xFF579AF6),
+                width: width, showIcon: showIcons),
+            const SizedBox(width: gap),
+            _SummaryCard('Requested', _summary.requested, Icons.inbox_outlined,
+                Colors.blue,
+                width: width, showIcon: showIcons),
+            const SizedBox(width: gap),
+            _SummaryCard('Pending', _summary.pending, Icons.pending_actions,
+                Colors.orange,
+                width: width, showIcon: showIcons),
+            const SizedBox(width: gap),
+            _SummaryCard('Done', _summary.done, Icons.task_alt, Colors.green,
+                width: width, showIcon: showIcons),
+          ]),
+        );
       });
 
   EdgeInsets _pagePadding() =>
@@ -979,21 +1022,37 @@ class _AdminListFilterBar extends StatelessWidget {
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         final compact = constraints.maxWidth < 720;
-        final sortWidth = compact ? constraints.maxWidth - 52 : 220.0;
-        final dateWidth = compact ? constraints.maxWidth : 260.0;
-        final statusWidth = compact ? constraints.maxWidth : 190.0;
+        final halfWidth = (constraints.maxWidth - 8) / 2;
+        final controls = showStatusFilter ? 5 : 3;
+        final desktopGap = 12.0 * (controls - 1);
+        final remaining = constraints.maxWidth - desktopGap - 44;
+        final sortWidth =
+            compact ? halfWidth : (remaining * .26).clamp(200.0, 280.0);
+        final dateWidth =
+            compact ? halfWidth : (remaining * .29).clamp(220.0, 320.0);
+        final statusWidth =
+            compact ? halfWidth : (remaining * .20).clamp(170.0, 230.0);
+        final groupWidth = compact
+            ? (constraints.maxWidth - sortWidth - 44 - 16).clamp(104.0, 180.0)
+            : (constraints.maxWidth -
+                    desktopGap -
+                    44 -
+                    sortWidth -
+                    dateWidth -
+                    statusWidth)
+                .clamp(190.0, 280.0);
         final customDateWidth = compact
-            ? (constraints.maxWidth - 12) / 2
+            ? halfWidth
             : (constraints.maxWidth - dateWidth - 24).clamp(180.0, 220.0);
         return Wrap(
-          spacing: 12,
-          runSpacing: 10,
+          spacing: compact ? 8 : 12,
+          runSpacing: compact ? 8 : 10,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             _dropdown(
               width: sortWidth,
-              label: 'Sort by',
-              icon: Icons.sort,
+              label: compact ? 'Sort' : 'Sort by',
+              icon: compact ? null : Icons.sort,
               value: filters.sortBy,
               options: _dateFields,
               onChanged: (value) => onChanged(filters.copyWith(
@@ -1002,15 +1061,23 @@ class _AdminListFilterBar extends StatelessWidget {
               )),
             ),
             _SortDirectionButton(
+              compact: compact,
               sortOrder: filters.sortOrder,
               onPressed: () => onChanged(filters.copyWith(
                 sortOrder: filters.sortOrder == 'asc' ? 'desc' : 'asc',
               )),
             ),
+            if (showStatusFilter && compact)
+              _GroupByStatusCheckbox(
+                width: groupWidth,
+                selected: groupByStatus,
+                compact: compact,
+                onChanged: onGroupByStatusChanged,
+              ),
             _dropdown(
               width: dateWidth,
-              label: 'Filter dates',
-              icon: Icons.filter_alt_outlined,
+              label: compact ? 'Date' : 'Filter dates',
+              icon: compact ? null : Icons.filter_alt_outlined,
               value: filters.dateFilter,
               options: _dateFilters,
               onChanged: (value) {
@@ -1035,17 +1102,20 @@ class _AdminListFilterBar extends StatelessWidget {
               _dropdown(
                 width: statusWidth,
                 label: 'Status',
-                icon: Icons.flag_outlined,
+                icon: compact ? null : Icons.flag_outlined,
                 value: filters.status ?? 'all',
                 options: _statusFilters,
                 onChanged: (value) => onChanged(filters.copyWith(
                   status: value,
                 )),
               ),
-              _GroupByStatusCheckbox(
-                selected: groupByStatus,
-                onChanged: onGroupByStatusChanged,
-              ),
+              if (!compact)
+                _GroupByStatusCheckbox(
+                  width: groupWidth,
+                  selected: groupByStatus,
+                  compact: compact,
+                  onChanged: onGroupByStatusChanged,
+                ),
             ],
             if (custom) ...[
               _dateButton(
@@ -1081,7 +1151,7 @@ class _AdminListFilterBar extends StatelessWidget {
   Widget _dropdown({
     required double width,
     required String label,
-    required IconData icon,
+    required IconData? icon,
     required String value,
     required Map<String, String> options,
     required ValueChanged<String> onChanged,
@@ -1094,12 +1164,12 @@ class _AdminListFilterBar extends StatelessWidget {
           isDense: true,
           decoration: _fieldDecoration(label, icon).copyWith(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           ),
           items: options.entries
               .map((entry) => DropdownMenuItem(
                     value: entry.key,
-                    child: Text(entry.value),
+                    child: Text(entry.value, overflow: TextOverflow.ellipsis),
                   ))
               .toList(),
           onChanged: (value) {
@@ -1150,10 +1220,12 @@ class _AdminListFilterBar extends StatelessWidget {
 
 class _SortDirectionButton extends StatelessWidget {
   const _SortDirectionButton({
+    required this.compact,
     required this.sortOrder,
     required this.onPressed,
   });
 
+  final bool compact;
   final String sortOrder;
   final VoidCallback onPressed;
 
@@ -1164,8 +1236,10 @@ class _SortDirectionButton extends StatelessWidget {
       message: descending ? 'Descending' : 'Ascending',
       child: IconButton.filledTonal(
         constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+        padding: EdgeInsets.zero,
         onPressed: onPressed,
-        icon: Icon(descending ? Icons.arrow_downward : Icons.arrow_upward),
+        icon: Icon(descending ? Icons.arrow_downward : Icons.arrow_upward,
+            size: compact ? 20 : 24),
       ),
     );
   }
@@ -1173,29 +1247,40 @@ class _SortDirectionButton extends StatelessWidget {
 
 class _GroupByStatusCheckbox extends StatelessWidget {
   const _GroupByStatusCheckbox({
+    required this.width,
     required this.selected,
+    required this.compact,
     required this.onChanged,
   });
 
+  final double width;
   final bool selected;
+  final bool compact;
   final ValueChanged<bool>? onChanged;
 
   @override
-  Widget build(BuildContext context) => InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: onChanged == null ? null : () => onChanged!(!selected),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 44),
-          padding: const EdgeInsets.only(left: 8, right: 12),
-          decoration: BoxDecoration(
-            color: selected ? const Color(0xFFE8F1FF) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color:
-                  selected ? const Color(0xFF2563EB) : const Color(0xFFDCE4F0),
+  Widget build(BuildContext context) {
+    final content = compact
+        ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(
+              selected ? Icons.check_box : Icons.check_box_outline_blank,
+              size: 18,
+              color: selected ? const Color(0xFF2563EB) : null,
             ),
-          ),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            const SizedBox(width: 5),
+            Flexible(
+              child: Text(
+                'Group',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: selected ? const Color(0xFF2563EB) : null,
+                ),
+              ),
+            ),
+          ])
+        : Row(mainAxisSize: MainAxisSize.min, children: [
             Checkbox(
               value: selected,
               visualDensity: VisualDensity.compact,
@@ -1205,8 +1290,168 @@ class _GroupByStatusCheckbox extends StatelessWidget {
             ),
             const Text('Group by status',
                 style: TextStyle(fontWeight: FontWeight.w700)),
-          ]),
+          ]);
+    return Tooltip(
+      message: 'Group by status',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onChanged == null ? null : () => onChanged!(!selected),
+        child: Container(
+          width: width,
+          constraints: const BoxConstraints(minHeight: 44),
+          alignment: Alignment.center,
+          padding: compact
+              ? EdgeInsets.zero
+              : const EdgeInsets.only(left: 8, right: 12),
+          decoration: BoxDecoration(
+            color: selected ? const Color(0xFFE8F1FF) : const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color:
+                  selected ? const Color(0xFF2563EB) : const Color(0xFFDCE4F0),
+            ),
+          ),
+          child: content,
         ),
+      ),
+    );
+  }
+}
+
+class _CreatedAgeChip extends StatelessWidget {
+  const _CreatedAgeChip({required this.configuration});
+
+  final AdminConfiguration configuration;
+
+  @override
+  Widget build(BuildContext context) {
+    final age = _elapsedAge(configuration.createdAt)?.value;
+    if (age == null) return const SizedBox.shrink();
+    return Container(
+      constraints: const BoxConstraints(minWidth: 98),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEFF6FF),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: const Color(0xFFBFDBFE)),
+      ),
+      child: Text(
+        'Created at $age ago',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          color: Color(0xFF1D4ED8),
+          fontSize: 11,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+    );
+  }
+}
+
+class _ConfigurationCardActions extends StatelessWidget {
+  const _ConfigurationCardActions({
+    required this.isDeleting,
+    required this.onView,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final bool isDeleting;
+  final VoidCallback onView;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) =>
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        _compactAction(
+          tooltip: 'View details',
+          icon: const Icon(Icons.visibility_outlined),
+          onPressed: onView,
+        ),
+        _compactAction(
+          tooltip: 'Edit configuration',
+          icon: const Icon(Icons.edit_outlined),
+          onPressed: onEdit,
+        ),
+        _compactAction(
+          tooltip: 'Delete configuration',
+          icon: isDeleting
+              ? const SizedBox.square(
+                  dimension: 14,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.delete_outline, color: Colors.red),
+          onPressed: isDeleting ? null : onDelete,
+        ),
+      ]);
+
+  Widget _compactAction({
+    required String tooltip,
+    required Widget icon,
+    required VoidCallback? onPressed,
+  }) =>
+      SizedBox.square(
+        dimension: 30,
+        child: IconButton.filledTonal(
+          tooltip: tooltip,
+          onPressed: onPressed,
+          icon: icon,
+          iconSize: 16,
+          padding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
+          style: IconButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+      );
+}
+
+class _InfoTileData {
+  const _InfoTileData(this.icon, this.label, this.value);
+
+  final IconData icon;
+  final String label;
+  final String value;
+}
+
+class _InfoTile extends StatelessWidget {
+  const _InfoTile({required this.item});
+
+  final _InfoTileData item;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        constraints: const BoxConstraints(minHeight: 58),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(item.icon, size: 16, color: const Color(0xFF64748B)),
+          const SizedBox(width: 6),
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(item.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(height: 2),
+                Text(item.value,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w700)),
+              ])),
+        ]),
       );
 }
 
@@ -1818,10 +2063,10 @@ dynamic _restoreFieldType(String value, dynamic original) {
   return value;
 }
 
-InputDecoration _fieldDecoration(String label, IconData icon) =>
+InputDecoration _fieldDecoration(String label, IconData? icon) =>
     InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, size: 20),
+      prefixIcon: icon == null ? null : Icon(icon, size: 20),
       border: const OutlineInputBorder(),
       enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color(0xFFD7E0EC))),
@@ -2572,40 +2817,54 @@ class _InfoLine extends StatelessWidget {
 
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard(this.label, this.total, this.icon, this.color,
-      {required this.width});
+      {required this.width, required this.showIcon});
   final String label;
   final int total;
   final IconData icon;
   final Color color;
   final double width;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) => Container(
         width: width,
-        padding: const EdgeInsets.all(18),
+        padding: EdgeInsets.all(showIcon ? 18 : 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
         child: Row(children: [
-          CircleAvatar(
-              backgroundColor: color.withValues(alpha: .12),
-              child: Icon(icon, color: color)),
-          const SizedBox(width: 14),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('$total',
-                style:
-                    const TextStyle(fontSize: 25, fontWeight: FontWeight.w800)),
-            Text(label, style: const TextStyle(color: Colors.grey)),
-          ]),
+          if (showIcon) ...[
+            CircleAvatar(
+                backgroundColor: color.withValues(alpha: .12),
+                child: Icon(icon, color: color)),
+            const SizedBox(width: 14),
+          ],
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text('$total',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: showIcon ? 25 : 21,
+                        fontWeight: FontWeight.w900,
+                        color: color)),
+                Text(label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              ])),
         ]),
       );
 }
 
 class _StatusBadge extends StatelessWidget {
-  const _StatusBadge(this.status);
+  const _StatusBadge(this.status, {this.compact = false});
   final String status;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -2614,7 +2873,7 @@ class _StatusBadge extends StatelessWidget {
       'pending' => Colors.orange,
       _ => Colors.blue,
     };
-    return _Badge(label: _titleCase(status), color: color);
+    return _Badge(label: _titleCase(status), color: color, compact: compact);
   }
 }
 
@@ -2629,20 +2888,33 @@ class _RoleBadge extends StatelessWidget {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color});
+  const _Badge({
+    required this.label,
+    required this.color,
+    this.compact = false,
+  });
   final String label;
   final MaterialColor color;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 7 : 10,
+          vertical: compact ? 3 : 5,
+        ),
         decoration: BoxDecoration(
           color: color.withValues(alpha: .12),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(label,
-            style:
-                TextStyle(color: color.shade700, fontWeight: FontWeight.w700)),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: color.shade700,
+              fontSize: compact ? 11 : null,
+              fontWeight: FontWeight.w700,
+            )),
       );
 }
 
