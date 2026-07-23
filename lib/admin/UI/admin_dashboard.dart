@@ -892,30 +892,26 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
 
   Widget _summaryCards() => LayoutBuilder(builder: (context, constraints) {
-        const gap = 10.0;
-        final width = constraints.maxWidth >= 760
-            ? (constraints.maxWidth - gap * 3) / 4
-            : 112.0;
+        final compact = constraints.maxWidth < 760;
+        final gap = compact ? 6.0 : 10.0;
+        final width = (constraints.maxWidth - gap * 3) / 4;
         final showIcons = constraints.maxWidth >= 760;
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(children: [
-            _SummaryCard('Total', _summary.total, Icons.inventory_2_outlined,
-                const Color(0xFF579AF6),
-                width: width, showIcon: showIcons),
-            const SizedBox(width: gap),
-            _SummaryCard('Requested', _summary.requested, Icons.inbox_outlined,
-                Colors.blue,
-                width: width, showIcon: showIcons),
-            const SizedBox(width: gap),
-            _SummaryCard('Pending', _summary.pending, Icons.pending_actions,
-                Colors.orange,
-                width: width, showIcon: showIcons),
-            const SizedBox(width: gap),
-            _SummaryCard('Done', _summary.done, Icons.task_alt, Colors.green,
-                width: width, showIcon: showIcons),
-          ]),
-        );
+        return Row(children: [
+          _SummaryCard('Total', _summary.total, Icons.inventory_2_outlined,
+              const Color(0xFF579AF6),
+              width: width, showIcon: showIcons),
+          SizedBox(width: gap),
+          _SummaryCard('Requested', _summary.requested, Icons.inbox_outlined,
+              Colors.blue,
+              width: width, showIcon: showIcons),
+          SizedBox(width: gap),
+          _SummaryCard(
+              'Pending', _summary.pending, Icons.pending_actions, Colors.orange,
+              width: width, showIcon: showIcons),
+          SizedBox(width: gap),
+          _SummaryCard('Done', _summary.done, Icons.task_alt, Colors.green,
+              width: width, showIcon: showIcons),
+        ]);
       });
 
   EdgeInsets _pagePadding() =>
@@ -2828,10 +2824,13 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         width: width,
-        padding: EdgeInsets.all(showIcon ? 18 : 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: showIcon ? 18 : 6,
+          vertical: showIcon ? 18 : 10,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(showIcon ? 14 : 8),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
         child: Row(children: [
@@ -2848,14 +2847,19 @@ class _SummaryCard extends StatelessWidget {
                 Text('$total',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    textAlign: showIcon ? TextAlign.start : TextAlign.center,
                     style: TextStyle(
-                        fontSize: showIcon ? 25 : 21,
+                        fontSize: showIcon ? 25 : 19,
                         fontWeight: FontWeight.w900,
                         color: color)),
                 Text(label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                    textAlign: showIcon ? TextAlign.start : TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: showIcon ? 12 : 10,
+                        fontWeight: FontWeight.w700)),
               ])),
         ]),
       );
