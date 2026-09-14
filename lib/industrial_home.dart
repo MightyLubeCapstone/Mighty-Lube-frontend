@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:mighty_lube/app_bar.dart';
-import 'package:mighty_lube/application/UI/applicationHome.dart';
-import 'package:mighty_lube/dashboard/UI/dashboard.dart';
-import 'package:mighty_lube/dashboard/UI/profile.dart';
-import 'package:mighty_lube/drawer.dart';
+// import 'package:flutter/material.dart';
+// import 'package:mighty_lube/app_bar.dart';
+// import 'package:mighty_lube/application/UI/applicationHome.dart';
+// import 'package:mighty_lube/dashboard/UI/dashboard.dart';
+// import 'package:mighty_lube/dashboard/UI/profile.dart';
+// import 'package:mighty_lube/drawer.dart';
+//
+// class IndustrialHome extends StatefulWidget {
+//   const IndustrialHome({super.key});
+//
+//   @override
+//   State<IndustrialHome> createState() => _IndustrialHomeState();
+// }
 
-class IndustrialHome extends StatefulWidget {
-  const IndustrialHome({super.key});
-
-  @override
-  State<IndustrialHome> createState() => _IndustrialHomeState();
-}
-
-class _IndustrialHomeState extends State<IndustrialHome> {
-  // Helper function to filter cards based on the search query
-  String searchQuery = '';
+// class _IndustrialHomeState extends State<IndustrialHome> {
+//   // Helper function to filter cards based on the search query
+//   String searchQuery = '';
 
   // bool _filterCard(String title) {
   //   return title.toLowerCase().contains(searchQuery.toLowerCase());
@@ -107,94 +107,94 @@ class _IndustrialHomeState extends State<IndustrialHome> {
   //   );
   // }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        link: const ProfilePage(),
-        customIcon: Icons.person,
-      ),
-      drawer: const CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Breadcrumb Navigation with Search Box
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const DashboardPage()),
-                    );
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(width: 4),
-                    ],
-                  ),
-                ),
-                const Text(' > '),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ApplicationPage()),
-                    );
-                  },
-                  child: const Text(
-                    'Industrial',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                // Search Box
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      ),
-                      suffixIcon: const Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Vertical list of images with text, filtered by search query
-            const Expanded(
-              child: Center(
-                child: Text(
-                  "Coming soon!",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, height: -10),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: CustomAppBar(
+//         link: const ProfilePage(),
+//         customIcon: Icons.person,
+//       ),
+//       drawer: const CustomDrawer(),
+//       body: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // Breadcrumb Navigation with Search Box
+//             Row(
+//               children: [
+//                 GestureDetector(
+//                   onTap: () {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(builder: (context) => const DashboardPage()),
+//                     );
+//                   },
+//                   child: const Row(
+//                     children: [
+//                       Icon(
+//                         Icons.home,
+//                         color: Colors.blue,
+//                       ),
+//                       SizedBox(width: 4),
+//                     ],
+//                   ),
+//                 ),
+//                 const Text(' > '),
+//                 GestureDetector(
+//                   onTap: () {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(builder: (context) => const ApplicationPage()),
+//                     );
+//                   },
+//                   child: const Text(
+//                     'Industrial',
+//                     style: TextStyle(
+//                       color: Colors.blue,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ),
+//                 const Spacer(),
+//                 // Search Box
+//                 SizedBox(
+//                   width: 200,
+//                   child: TextField(
+//                     decoration: InputDecoration(
+//                       hintText: 'Search...',
+//                       border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(8.0),
+//                       ),
+//                       contentPadding: const EdgeInsets.symmetric(
+//                         vertical: 8.0,
+//                         horizontal: 12.0,
+//                       ),
+//                       suffixIcon: const Icon(Icons.search),
+//                     ),
+//                     onChanged: (value) {
+//                       setState(() {
+//                         searchQuery = value;
+//                       });
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             const SizedBox(height: 20),
+//
+//             // Vertical list of images with text, filtered by search query
+//             const Expanded(
+//               child: Center(
+//                 child: Text(
+//                   "Coming soon!",
+//                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, height: -10),
+//                 ),
+//               ),
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

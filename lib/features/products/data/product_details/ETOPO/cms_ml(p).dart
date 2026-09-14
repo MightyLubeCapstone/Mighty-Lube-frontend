@@ -1,0 +1,454 @@
+import '../../../models/product_detail_data.dart';
+
+const ProductDetailData etopoMlaioData = ProductDetailData(
+  id: 'ETO_MLAIO',
+
+  title: 'Multi Line (Permanent) ALL IN ONE Monitoring + Lubrication',
+
+  imagePath:
+  'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Conveyor Monitor Systems (2)/Multi Line.png',
+
+  description:
+  'The Next Generation Permanent Conveyor Monitoring System is connected '
+      'to the network and provides chain wear data and projections for up to '
+      '100 conveyor lines measuring wear in Link by Link and 10’ sections. '
+      'This system monitors drive amps, chain speed, take-up pressure and '
+      'drive hours. It also provides data on lube cycles, reservoir levels, '
+      'head voltage and pump cycles when combined with Mighty Lube or OPCO '
+      'lubrication systems.',
+
+  configurationSections: [
+    // ========================================================
+    // GENERAL INFORMATION
+    // ========================================================
+
+    ProductConfigurationSection(
+      id: 'general_information',
+      title: 'General Information',
+      fields: [
+        ProductFieldData(
+          key: 'conveyorName',
+          label: 'Name of Conveyor System',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'chainSize',
+          label: 'Conveyor Chain Size',
+          type: ProductFieldType.dropdown,
+          options: [
+            'X348 Chain (3")',
+            'X458 Chain (4")',
+            'X678 Chain (6")',
+            'Other',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherChainSize',
+          label: 'Other Conveyor Chain Size',
+          type: ProductFieldType.text,
+          visibleWhenFieldKey: 'chainSize',
+          visibleWhenValue: 'Other',
+        ),
+
+        ProductFieldData(
+          key: 'industrialChainManufacturer',
+          label: 'Chain Manufacturer',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
+            'Other',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherIndustrialChainManufacturer',
+          label: 'Other Chain Manufacturer',
+          type: ProductFieldType.text,
+          visibleWhenFieldKey: 'industrialChainManufacturer',
+          visibleWhenValue: 'Other',
+        ),
+
+        ProductFieldData(
+          key: 'conveyorLength',
+          label: 'Conveyor Length',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'conveyorLengthUnit',
+          label: 'Conveyor Length Unit',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Feet',
+            'Inches',
+            'm Meter',
+            'mm Millimeter',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorSpeed',
+          label: 'Conveyor Speed (Min/Max)',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'conveyorSpeedUnit',
+          label: 'Conveyor Speed Unit',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Feet / minute',
+            'Meters / minute',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorIndex',
+          label: 'Indexing or Variable Speed Conditions',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'travelDirection',
+          label: 'Direction of Travel',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Left to Right',
+            'Right to Left',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'appEnviroment',
+          label: 'Application Environment',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Indoor',
+            'Outdoor',
+            'Other',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherAppEnviroment',
+          label: 'Other Application Environment',
+          type: ProductFieldType.text,
+          visibleWhenFieldKey: 'appEnviroment',
+          visibleWhenValue: 'Other',
+        ),
+
+        ProductFieldData(
+          key: 'surroundingTemp',
+          label:
+          'Temperature of Surrounding Area at Planned Location of Lubrication System is below 30°F or above 120°F?',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorLoaded',
+          label:
+          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Loaded',
+            'Unloaded',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorSwing',
+          label: 'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+      ],
+    ),
+
+    // ========================================================
+    // CUSTOMER POWER UTILITIES
+    // ========================================================
+
+    ProductConfigurationSection(
+      id: 'customer_power_utilities',
+      title: 'Customer Power Utilities',
+      fields: [
+        ProductFieldData(
+          key: 'operatingVoltage',
+          label: 'Operating Voltage - Single Phase: (Volts/hz)',
+          type: ProductFieldType.text,
+          required: true,
+        ),
+
+        ProductFieldData(
+          key: 'controlVoltage',
+          label: 'Control Voltage (Volts/hz)',
+          type: ProductFieldType.text,
+          required: true,
+        ),
+      ],
+    ),
+
+    // ========================================================
+    // NEW / EXISTING MONITORING SYSTEM
+    // ========================================================
+
+    ProductConfigurationSection(
+      id: 'monitoring_system',
+      title: 'New Monitoring System or Adding to Existing Monitoring System',
+      fields: [
+        ProductFieldData(
+          key: 'existingMonitoring',
+          label: 'Connecting to Existing Monitoring',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'newMonitoringSystem',
+          label: 'Add New Monitoring System',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+      ],
+    ),
+
+    // ========================================================
+    // CONVEYOR SPECIFICATIONS
+    // ========================================================
+
+    ProductConfigurationSection(
+      id: 'conveyor_specifications',
+      title: 'Conveyor Specifications',
+      fields: [
+        ProductFieldData(
+          key: 'wheelOpenType',
+          label: 'Wheel: Open Race Style',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'wheelClosedType',
+          label: 'Wheel: Sealed Style',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'powerChain',
+          label: 'Power Chain',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'chainPins',
+          label: 'Chain Pins',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'catDriveStatus',
+          label: 'Caterpillar Drive',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'catDriveNum',
+          label: 'Caterpillar Drive Quantity',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'railLubeStatus',
+          label: 'Rail Lubrication',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'externalLubeStatus',
+          label: 'External Lubrication',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'lubeBrand',
+          label: 'Current Lubrication Equipment (Brand)',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'lubeType',
+          label: 'Current Lubricant Type',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'lubeViscosity',
+          label: 'Current Lubricant Viscosity/Grade',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'reservoirSize',
+          label: 'Reservoir Size',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'reservoirSizeQuantity',
+          label: 'Reservoir Size Quantity',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'chainCleanStatus',
+          label: 'Is the Conveyor Chain Clean?',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+      ],
+    ),
+
+    // ========================================================
+    // ENCLOSED TRACK OVERHEAD: MEASUREMENTS
+    // ========================================================
+
+    ProductConfigurationSection(
+      id: 'measurements',
+      title: 'Enclosed Track Overhead: Measurements',
+      fields: [
+        ProductFieldData(
+          key: 'enclosedUnitType',
+          label: 'Measurement Unit',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Feet',
+            'Inches',
+            'm Meter',
+            'mm Millimeter',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackB',
+          label: 'Enclosed Track (Overhead) Power Trolley Wheel (B)',
+          type: ProductFieldType.text,
+          hintText: 'Diameter',
+          imagePath: 'assets/Measurements/4/CMS/B.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackG',
+          label: 'Enclosed Track (Overhead) Power Rail (G)',
+          type: ProductFieldType.text,
+          hintText: 'Width',
+          imagePath: 'assets/Measurements/4/CMS/G.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackH',
+          label: 'Enclosed Track (Overhead) Power Rail (H)',
+          type: ProductFieldType.text,
+          hintText: 'Height',
+          imagePath: 'assets/Measurements/4/CMS/H.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackS',
+          label:
+          'Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
+          type: ProductFieldType.text,
+          hintText: 'Center of Power Wheel to Center of Power Wheel',
+          imagePath: 'assets/Measurements/4/CMS/S.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackK2',
+          label: 'Enclosed Track (Overhead) Free Trolley Wheel (K2)',
+          type: ProductFieldType.text,
+          hintText: 'Diameter',
+          imagePath: 'assets/Measurements/4/CMS/K2.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackL2',
+          label: 'Enclosed Track (Overhead) Free Rail (L2)',
+          type: ProductFieldType.text,
+          hintText: 'Width',
+          imagePath: 'assets/Measurements/4/CMS/L2.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackM2',
+          label: 'Enclosed Track (Overhead) Free Rail (M2)',
+          type: ProductFieldType.text,
+          hintText: 'Height',
+          imagePath: 'assets/Measurements/4/CMS/M2.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackN2',
+          label:
+          'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
+          type: ProductFieldType.text,
+          hintText: 'Top of Power Rail to Bottom of Free Rail',
+          imagePath: 'assets/Measurements/4/CMS/N2.png',
+        ),
+
+        ProductFieldData(
+          key: 'enclosedTrackS2',
+          label: 'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)',
+          type: ProductFieldType.text,
+          hintText: 'Center of Trolley Wheel to Center of Trolley Wheel',
+          imagePath: 'assets/Measurements/4/CMS/S2.png',
+        ),
+      ],
+    ),
+  ],
+);

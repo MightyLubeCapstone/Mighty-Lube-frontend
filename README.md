@@ -13,8 +13,9 @@ environment:
 
 - Live branch: `addTechNote`
 - Active version branch: `adminDashboard`
-- Default local backend: `http://localhost:8080`
-- API root: `http://localhost:8080/api`
+- Debug backend: `http://localhost:8080`
+- Release backend: `https://configurator-67eol.sevalla.app`
+- Release API root: `https://configurator-67eol.sevalla.app/api`
 - Admin route: `/admin`
 
 <details>
@@ -157,7 +158,7 @@ The backend host is configured in `lib/env.dart`.
 String get baseUrl {
   return const String.fromEnvironment(
     'API_HOST',
-    defaultValue: 'http://localhost:8080',
+    defaultValue: kReleaseMode ? productionBaseUrl : localBaseUrl,
   );
 }
 
@@ -170,6 +171,10 @@ Run with a specific backend:
 flutter run --dart-define=API_HOST=http://localhost:8080
 flutter run --dart-define=API_HOST=https://configurator-67eol.sevalla.app
 ```
+
+Release builds default to the production backend automatically on Android, iOS,
+and macOS. Pass `--dart-define=API_HOST=...` only when you want to override that
+default.
 
 Main API client classes:
 
@@ -371,7 +376,7 @@ storePassword=...
 Build a release APK:
 
 ```bash
-flutter build apk --release --dart-define=API_HOST=https://configurator-67eol.sevalla.app
+flutter build apk --release
 ```
 
 </details>

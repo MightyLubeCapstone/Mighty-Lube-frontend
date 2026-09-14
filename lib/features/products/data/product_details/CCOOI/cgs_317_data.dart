@@ -1,0 +1,556 @@
+import '../../../../../core/constants/app_assets.dart';
+import '../../../models/product_detail_data.dart';
+
+const ProductDetailData cChannelFreeRail317GuideWheelGreaserData =
+ProductDetailData(
+  // =========================================================
+  // PRODUCT INFORMATION
+  // =========================================================
+
+  id: 'FRO_317',
+
+  title: 'Free Rail 317 "Guide" Wheel Greaser',
+
+  imagePath: AppAssets.cChannelFr317,
+
+  description: 'Free Rail 317 "Guide" Wheel Greaser.',
+
+  // =========================================================
+  // CONFIGURATION SECTIONS
+  // =========================================================
+
+  configurationSections: [
+    // =======================================================
+    // GENERAL INFORMATION
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'general',
+      title: 'General Information',
+      fields: [
+        ProductFieldData(
+          key: 'conveyorName',
+          label: 'Name of Conveyor System',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'wheelManufacturer',
+          label: 'Wheel Manufacturer',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Green Line',
+            'Frost',
+            'M&M',
+            'Stork',
+            'Meyn',
+            'Linco',
+            'DC',
+            'Merel',
+            'D&F',
+            'Other',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherWheelManufacturer',
+          label: 'Wheel Manufacturer – Other',
+          type: ProductFieldType.text,
+          visibleWhenFieldKey: 'wheelManufacturer',
+          visibleWhenValue: 'Other',
+        ),
+
+        ProductFieldData(
+          key: 'conveyorLength',
+          label: 'Conveyor Length',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'conveyorLengthUnit',
+          label: 'Conveyor Length Unit',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Feet',
+            'Inches',
+            'm Meter',
+            'mm Millimeter',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorSpeed',
+          label: 'Conveyor Speed (Min/Max)',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'conveyorSpeedUnit',
+          label: 'Conveyor Speed Unit',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Feet / minute',
+            'Meters /minute',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'indexingVariableSpeedConditions',
+          label: 'Indexing or Variable Speed Conditions',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'travelDirection',
+          label: 'Direction of Travel',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Right to Left',
+            'Left to Right',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'applicationEnvironment',
+          label: 'Application Environment',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Ambient',
+            'Caustic (i.e. Phosphate / E-Coat, etc.)',
+            'Oven',
+            'Wash Down',
+            'Intrinsic',
+            'Food Grade',
+            'Other',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherApplicationEnvironment',
+          label: 'Application Environment – Other',
+          type: ProductFieldType.text,
+          visibleWhenFieldKey: 'applicationEnvironment',
+          visibleWhenValue: 'Other',
+        ),
+
+        ProductFieldData(
+          key: 'surroundingTemperature',
+          label:
+          'Temperature of Surrounding Area at Planned Location of Lubrication System is below 30°F or above 120°F?',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorSwingStatus',
+          label:
+          'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'conveyorOrientation',
+          label:
+          'Is the Conveyor Overhead, Inverted, or Inverted/Inverted?',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Overhead',
+            'Inverted',
+            'Inverted/Inverted',
+          ],
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // CUSTOMER POWER UTILITIES
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'customerPowerUtilities',
+      title: 'Customer Power Utilities',
+      fields: [
+        ProductFieldData(
+          key: 'operatingVoltage',
+          label: 'Operating Voltage - Single Phase: (Volts/hz)',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'controlVoltage',
+          label: 'Control Voltage (Volts/hz)',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'compressedAirSupply',
+          label: 'Compressed Air Supply',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'compressedAirSupplyUnit',
+          label: 'Compressed Air Supply Unit',
+          type: ProductFieldType.dropdown,
+          options: [
+            'PSI',
+            'KPI',
+            'Bar',
+          ],
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // NEW MONITORING SYSTEM OR ADDING TO EXISTING
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'monitoringSystem',
+      title:
+      'New Monitoring System or Adding to Existing Monitoring System',
+      fields: [
+        ProductFieldData(
+          key: 'existingMonitoring',
+          label: 'Connecting to Existing Monitoring',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'newMonitoringSystem',
+          label: 'Add New Monitoring System',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // CONVEYOR SPECIFICATIONS
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'conveyorSpecifications',
+      title: 'Conveyor Specifications',
+      fields: [
+        ProductFieldData(
+          key: 'freeTrolleyWheels',
+          label: 'Free Trolley Wheels',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'guideRollers',
+          label: 'Guide Rollers',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'guideRollersOpenRaceStyle',
+          label: 'Guide Rollers Open Race Style',
+          type: ProductFieldType.dropdown,
+          options: [
+            'No Applicable',
+            'Open Inside',
+            'Open Outside',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'guideRollersSealedStyle',
+          label: 'Guide Rollers Sealed Style',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Extended',
+            'Flush',
+            'Recessed',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'openHole',
+          label: 'Open Hole',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'currentLubricationEquipmentBrand',
+          label: 'Current Lubrication Equipment (Brand)',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'currentLubricantType',
+          label: 'Current Lubricant Type',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'currentLubricantViscosityGrade',
+          label: 'Current Lubricant Viscosity/Grade',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'currentGreaseType',
+          label: 'Current Grease Type',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'currentGreaseNlgiGrade',
+          label: 'Current Grease NLGI Grade',
+          type: ProductFieldType.text,
+        ),
+
+        ProductFieldData(
+          key: 'zerkFittingLocationSide',
+          label:
+          'Zerk Ftg Location [Left or Right: Facing Direction of Travel]',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Left',
+            'Right',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'zerkFittingLocationOrientation',
+          label: 'Zerk Ftg Location (Orientation)',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Center',
+            '12 O\'clock',
+            '3 O\'clock',
+            '6 O\'clock',
+            '9 O\'clock',
+          ],
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // CONTROLLER
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'controller',
+      title: 'Controller',
+      fields: [
+        ProductFieldData(
+          key: 'chainMasterController',
+          label: 'ChainMaster Controller',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'remote',
+          label: 'Remote',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'mountedOnGreaser',
+          label: 'Mounted on Greaser',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'controlsOtherUnits',
+          label: 'Controls other units (list)',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'timer',
+          label: 'Timer',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Not Required',
+            '12 Hour',
+            '100 Hour',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'electricOnOff',
+          label: 'Electric On/Off',
+          type: ProductFieldType.dropdown,
+          options: [
+            'On',
+            'Off',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'mightyLubeMonitoring',
+          label: 'Mighty Lube Monitoring',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'preMountingRequirements',
+          label: 'Pre-Mounting Requirements',
+          type: ProductFieldType.dropdown,
+          options: [
+            'OPCO Track',
+            'Customer Provided Track',
+            'Other',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherPreMountingRequirements',
+          label: 'Pre-Mounting Requirements – Other',
+          type: ProductFieldType.text,
+          visibleWhenFieldKey: 'preMountingRequirements',
+          visibleWhenValue: 'Other',
+        ),
+
+        ProductFieldData(
+          key: 'plcConnection',
+          label: 'PLC Connection',
+          type: ProductFieldType.dropdown,
+          options: [
+            'Yes',
+            'No',
+          ],
+        ),
+
+        ProductFieldData(
+          key: 'otherControllerInfo',
+          label: 'Other Describe',
+          type: ProductFieldType.text,
+          multiline: true,
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // INVERTED P&F: MEASUREMENTS
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'invertedPowerFreeMeasurements',
+      title: 'Inverted P&F: Measurements',
+      fields: [
+        // Recording showed Feet, but the dropdown was not opened.
+        ProductFieldData(
+          key: 'measurementUnit',
+          label: 'Measurement Unit',
+          type: ProductFieldType.text,
+          hintText: 'Feet',
+        ),
+
+        ProductFieldData(
+          key: 'invertedChainDropA',
+          label: 'Inverted Power and Free Chain Drop (A)',
+          type: ProductFieldType.text,
+          hintText: 'Center of Chain to Opposite Edge of Rail',
+        ),
+
+        ProductFieldData(
+          key: 'invertedPowerTrolleyWheelB',
+          label: 'Inverted Power and Free Power Trolley Wheel (B)',
+          type: ProductFieldType.text,
+          hintText: 'Diameter',
+        ),
+
+        ProductFieldData(
+          key: 'invertedZerkFittingVerticalE',
+          label:
+          'Inverted Power and Free Zerk Fitting Vertical Location (E)',
+          type: ProductFieldType.text,
+          hintText: 'Bottom of Rail to Zerk Fitting',
+        ),
+
+        ProductFieldData(
+          key: 'invertedRailG',
+          label: 'Inverted Power and Free Rail (G)',
+          type: ProductFieldType.text,
+          hintText: 'Width',
+        ),
+
+        ProductFieldData(
+          key: 'invertedRailH',
+          label: 'Inverted Power and Free Rail (H)',
+          type: ProductFieldType.text,
+          hintText: 'Height',
+        ),
+
+        ProductFieldData(
+          key: 'invertedPowerTrolleyPitchS',
+          label:
+          'Inverted Power and Free Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
+          type: ProductFieldType.text,
+          hintText: 'Center of Power Wheel to Center of Power Wheel',
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    // Retained as part of existing product workflow.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technicianNote',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          multiline: true,
+          required: true,
+        ),
+      ],
+    ),
+  ],
+);
