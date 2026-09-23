@@ -8,14 +8,10 @@ ProductDetailData(
   // =========================================================
 
   id: 'CC5_CL',
-
   title: 'Mighty Lube CC5 Chain Lubricator',
-
   // Same image source used everywhere.
   imagePath: AppAssets.mlcc5ChainLubricator,
-
-  description:
-  'Mighty Lube CC5 Chain Lubricator and Roller Lubricator.',
+  description: 'Mighty Lube CC5 Chain Lubricator and Roller Lubricator.',
 
   // =========================================================
   // CONFIGURATION SECTIONS
@@ -564,7 +560,7 @@ ProductDetailData(
           label: 'CC5 Power Rail (G) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementG,
+          imagePath: AppAssets.mlcc5PowerRailG,
         ),
 
         ProductFieldData(
@@ -572,7 +568,7 @@ ProductDetailData(
           label: 'CC5 Power Rail (H) - Height',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementH,
+          imagePath: AppAssets.mlcc5PowerRailH,
         ),
 
         ProductFieldData(
@@ -580,7 +576,7 @@ ProductDetailData(
           label: 'CC5 Roller Wheel (A1) - Diameter',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementA1,
+          imagePath: AppAssets.mlcc5RollerWheelA1,
         ),
 
         ProductFieldData(
@@ -588,7 +584,7 @@ ProductDetailData(
           label: 'CC5 Roller Wheel (B1) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementB1,
+          imagePath: AppAssets.mlcc5RollerWheelB1,
         ),
 
         ProductFieldData(
@@ -596,7 +592,7 @@ ProductDetailData(
           label: 'CC5 Link (D1) - Thickness',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementD1,
+          imagePath: AppAssets.mlcc5LinkD1,
         ),
 
         ProductFieldData(
@@ -604,7 +600,7 @@ ProductDetailData(
           label: 'CC5 Roller Wheel Pitch (M1)',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementM1,
+          imagePath: AppAssets.mlcc5RollerWheelPitchM1,
         ),
 
         ProductFieldData(
@@ -612,7 +608,7 @@ ProductDetailData(
           label: 'CC5 Roller Pin (Y1) - Diameter',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementY1,
+          imagePath: AppAssets.mlcc5RollerPinY1,
         ),
 
         ProductFieldData(
@@ -620,7 +616,7 @@ ProductDetailData(
           label: 'CC5 Roller Pin (Z1) - Length',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementZ1,
+          imagePath: AppAssets.mlcc5RollerPinZ1,
         ),
       ],
     ),

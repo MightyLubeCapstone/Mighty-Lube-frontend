@@ -7,14 +7,9 @@ const ProductDetailData etipoUn91Data = ProductDetailData(
   // =========================================================
 
   id: 'ETI_91',
-
-  title:
-  'Overhead Non-Powered Mighty Lube Rail Cleaners UN91, RW91',
-
+  title: 'Overhead Non-Powered Mighty Lube Rail Cleaners UN91, RW91',
   imagePath: AppAssets.etipoRailCleanersUn91,
-
-  description:
-  'Overhead non-powered Mighty Lube rail cleaner configuration for UN91 and RW91 systems.',
+  description: 'Overhead non-powered Mighty Lube rail cleaner configuration for UN91 and RW91 systems.',
 
   // =========================================================
   // CONFIGURATION

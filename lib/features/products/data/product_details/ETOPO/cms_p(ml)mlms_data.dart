@@ -119,7 +119,7 @@ const ProductDetailData etopoPmlmsData = ProductDetailData(
           key: 'conveyorIndex',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -256,105 +256,117 @@ const ProductDetailData etopoPmlmsData = ProductDetailData(
     // =========================================================
 
     ProductConfigurationSection(
-      id: 'enclosed_track_overhead_measurements',
-      title: 'Enclosed Track Overhead: Measurements',
+      id: 'measurements',
+      title: 'Enclosed Track Inverted: Measurements',
       fields: [
         ProductFieldData(
-          key: 'enclosedUnitType',
+          key: 'measurementUnits',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
-          required: true,
           options: [
             'Feet',
             'Inches',
             'm Meter',
             'mm Millimeter',
           ],
+          required: true,
         ),
-
         ProductFieldData(
           key: 'enclosedTrackB',
-          label:
-          'Enclosed Track (Overhead) Power Trolley Wheel (B) - Diameter',
+          label: 'Enclosed Track (Inverted) Power Trolley Wheel (B)',
           type: ProductFieldType.text,
+          hintText: 'Diameter',
+          imagePath: AppAssets.etioB,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/B.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackG',
-          label:
-          'Enclosed Track (Overhead) Power Rail (G) - Width',
+          label: 'Enclosed Track (Inverted) Power Rail (G)',
           type: ProductFieldType.text,
+          hintText: 'Width',
+          imagePath: AppAssets.etioB,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/G.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackH',
-          label:
-          'Enclosed Track (Overhead) Power Rail (H) - Height',
+          label: 'Enclosed Track (Inverted) Power Rail (H)',
           type: ProductFieldType.text,
+          hintText: 'Height',
+          imagePath: AppAssets.etioH,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/H.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackS',
           label:
-          'Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - '
-              'For variable pitch chain, Provide the Minimum Pitch Dimension '
-              '(S) - Center of Power Wheel to Center of Power Wheel',
+          'Enclosed Track (Inverted) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
           type: ProductFieldType.text,
+          hintText: 'Center of Power Wheel to Center of Power Wheel',
+          imagePath: AppAssets.etioS,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/S.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackK2',
-          label:
-          'Enclosed Track (Overhead) Free Trolley Wheel (K2) - Diameter',
+          label: 'Enclosed Track (Inverted) Free Trolley Wheel (K2)',
           type: ProductFieldType.text,
+          hintText: 'Diameter',
+          imagePath: AppAssets.etioK2,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/K2.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackL2',
-          label:
-          'Enclosed Track (Overhead) Free Rail (L2) - Width',
+          label: 'Enclosed Track (Inverted) Free Rail (L2)',
           type: ProductFieldType.text,
+          hintText: 'Width',
+          imagePath: AppAssets.etioL2,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/L2.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackM2',
-          label:
-          'Enclosed Track (Overhead) Free Rail (M2) - Height',
+          label: 'Enclosed Track (Inverted) Free Rail (M2)',
           type: ProductFieldType.text,
+          hintText: 'Height',
+          imagePath: AppAssets.etioM2,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/M2.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackN2',
           label:
-          'Enclosed Track (Overhead) Free Rail Vertical Position '
-              '(Height) (N2) - Top of Power Rail to Bottom of Free Rail',
+          'Enclosed Track (Inverted) Free Rail Vertical Position (Height) (N2)',
           type: ProductFieldType.text,
+          hintText: 'Top of Power Rail to Bottom of Free Rail',
+          imagePath: AppAssets.etioN2,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/N2.png',
         ),
-
         ProductFieldData(
           key: 'enclosedTrackS2',
-          label:
-          'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2) - '
-              'Center of Trolley Wheel to Center of Trolley Wheel',
+          label: 'Enclosed Track (Inverted) Power Trolley Wheel Pitch (S2)',
           type: ProductFieldType.text,
+          hintText: 'Center of Trolley Wheel to Center of Trolley Wheel',
+          imagePath: AppAssets.etioS2,
           required: true,
-          imagePath: 'assets/Measurements/4/CMS/S2.png',
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Existing app-specific field.
+    // Kept optional.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          required: false,
+          multiline: true,
+          hintText:
+          'Enter any additional notes or instructions here...',
         ),
       ],
     ),

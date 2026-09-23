@@ -1,3 +1,5 @@
+import 'package:mighty_lube/core/constants/app_assets.dart';
+
 import '../../../models/product_detail_data.dart';
 
 const ProductDetailData freeCarrier317Data = ProductDetailData(
@@ -6,11 +8,8 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
   // =========================================================
 
   id: 'FC_317',
-
   title: 'Free Rail 317 “Guide” Wheel Greaser',
-
-  imagePath: 'assets/industrial/Free Carrier (2)/FR317.png',
-
+  imagePath: AppAssets.freeCarrierFr317,
   description: 'Free Rail 317 “Guide” Wheel Greaser.',
 
   // =========================================================
@@ -30,12 +29,14 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
           type: ProductFieldType.text,
+          required: true
         ),
 
         ProductFieldData(
           key: 'wheelManufacturer',
           label: 'Wheel Manufacturer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Green Line',
             'Frost',
@@ -54,6 +55,7 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           key: 'otherWheelManufacturer',
           label: 'Other Wheel Manufacturer',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'wheelManufacturer',
           visibleWhenValue: 'Other',
         ),
@@ -62,12 +64,14 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -80,25 +84,37 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           key: 'conveyorSpeed',
           label: 'Conveyor Speed (Min/Max)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorSpeedUnit',
           label: 'Conveyor Speed Unit',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
           hintText: 'Feet / minute',
+          required: true,
+          options: [
+            'Feet/ Minute',
+            'Meters/ Minute'
+          ]
         ),
 
         ProductFieldData(
           key: 'indexingVariableSpeedConditions',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'travelDirection',
           label: 'Direction of Travel',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Right to Left',
+            'Left to Right'
+          ]
         ),
 
         ProductFieldData(
@@ -127,9 +143,9 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
 
         ProductFieldData(
           key: 'surroundingTemperature',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System — is it below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System — is it below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -138,10 +154,13 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
 
         ProductFieldData(
           key: 'conveyorSwingStatus',
-          label:
-          'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side',
+          label: 'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side',
           type: ProductFieldType.text,
           required: true,
+          options: [
+            'Yes',
+            'No'
+          ]
         ),
       ],
     ),
@@ -178,8 +197,14 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
         ProductFieldData(
           key: 'compressedAirSupplyUnit',
           label: 'Compressed Air Supply Unit',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
           hintText: 'PSI',
+          required: true,
+          options: [
+            'PSI',
+            'KPI',
+            'Bar'
+          ]
         ),
       ],
     ),
@@ -190,19 +215,28 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
 
     ProductConfigurationSection(
       id: 'monitoringSystem',
-      title:
-      'New Monitoring System or Adding to Existing Monitoring System',
+      title: 'New Monitoring System or Adding to Existing Monitoring System',
       fields: [
         ProductFieldData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No'
+          ]
         ),
 
         ProductFieldData(
-          key: 'newMonitoringSystem',
-          label: 'Add New Monitoring System',
-          type: ProductFieldType.text,
+            key: 'newMonitoringSystem',
+            label: 'Add New Monitoring System',
+            type: ProductFieldType.dropdown,
+            required: true,
+            options: [
+              'Yes',
+              'No'
+            ]
         ),
       ],
     ),
@@ -218,13 +252,20 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
         ProductFieldData(
           key: 'freeTrolleyWheels',
           label: 'Free Trolley Wheels',
-          type: ProductFieldType.text,
+            type: ProductFieldType.dropdown,
+            required: true,
+            options: [
+              'Yes',
+              'No'
+            ]
+
         ),
 
         ProductFieldData(
           key: 'guideRollers',
           label: 'Guide Rollers',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -234,31 +275,50 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
         ProductFieldData(
           key: 'guideRollersOpenRaceStyle',
           label: 'Guide Rollers Open Race Style',
-          type: ProductFieldType.text,
+            type: ProductFieldType.dropdown,
+            required: true,
+            options: [
+              'No Applicable',
+              'Open Inside',
+              'Open Outside'
+            ]
         ),
 
         ProductFieldData(
-          key: 'guideRollersSealedStyle',
-          label: 'Guide Rollers Sealed Style',
-          type: ProductFieldType.text,
+            key: 'guideRollersSealedStyle',
+            label: 'Guide Rollers Sealed Style',
+            type: ProductFieldType.dropdown,
+            required: true,
+            options: [
+              'Extended',
+              'Flush',
+              'Recessed'
+            ]
         ),
 
         ProductFieldData(
           key: 'openHole',
           label: 'Open Hole',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No'
+          ]
         ),
 
         ProductFieldData(
           key: 'currentLubricationEquipmentBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'currentLubricantType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
@@ -271,25 +331,39 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           key: 'currentGreaseType',
           label: 'Current Grease Type',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'currentGreaseNlgiGrade',
           label: 'Current Grease NLGI Grade',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'zerkFittingLocationSide',
-          label:
-          'Zerk Ftg Location (Left or Right: Facing Direction of Travel)',
+          label: 'Zerk Ftg Location (Left or Right: Facing Direction of Travel)',
           type: ProductFieldType.text,
+          required: true,
+          options: [
+            'Left',
+            'Right'
+          ]
         ),
 
         ProductFieldData(
           key: 'zerkFittingLocationOrientation',
           label: 'Zerk Ftg Location (Orientation)',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Center',
+            '12 O\'clock',
+            '3 O\'clock',
+            '6 O\'clock',
+            '9 O\'clock',
+          ],
         ),
       ],
     ),
@@ -305,65 +379,102 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
         ProductFieldData(
           key: 'chainMasterController',
           label: 'ChainMaster Controller',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
         ),
 
         ProductFieldData(
           key: 'remote',
           label: 'Remote',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
         ),
 
         ProductFieldData(
           key: 'mountedOnGreaser',
           label: 'Mounted on Greaser',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
         ),
 
         ProductFieldData(
           key: 'controlsOtherUnits',
           label: 'Controls other units (list):',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
         ),
 
         ProductFieldData(
           key: 'timer',
           label: 'Timer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Not Required',
             '12 Hour',
-            '1000 Hour',
+            '1000 Hour'
           ],
         ),
 
         ProductFieldData(
           key: 'electricOnOff',
           label: 'Electric On/Off',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'On',
+            'Off',
+          ],
         ),
 
         ProductFieldData(
           key: 'mightyLubeMonitoring',
           label: 'Mighty Lube Monitoring',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
         ),
 
         ProductFieldData(
           key: 'preMountingRequirements',
           label: 'Pre-Mounting Requirements',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
-            'OPCO Track',
+            'OPCO Truck',
             'Customer Provided Track',
-            'Other',
+            'Other'
           ],
         ),
 
         ProductFieldData(
           key: 'plcConnection',
           label: 'PLC Connection',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes',
+            'No',
+          ],
         ),
 
         ProductFieldData(
@@ -387,6 +498,7 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           key: 'measurementUnit',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -397,22 +509,20 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
 
         ProductFieldData(
           key: 'freeCarrierZerkFittingE',
-          label:
-          'Greaser - Free Carrier Zerk Fitting Vertical Location (E)',
+          label: 'Greaser - Free Carrier Zerk Fitting Vertical Location (E)',
           type: ProductFieldType.text,
-          hintText:
-          'Center OF Free Trolley Wheel to Zerk Fitting',
-          imagePath: 'assets/Measurements/6/317/E.png',
+          hintText: 'Center OF Free Trolley Wheel to Zerk Fitting',
+          required: true,
+          imagePath: AppAssets.fcE,
         ),
 
         ProductFieldData(
           key: 'freeCarrierZerkFittingF',
-          label:
-          'Greaser - Free Carrier Zerk Fitting Horizontal Location (F)',
+          label: 'Greaser - Free Carrier Zerk Fitting Horizontal Location (F)',
           type: ProductFieldType.text,
-          hintText:
-          'Center of Zerk Ftg. to Center of Zerk Ftg.',
-          imagePath: 'assets/Measurements/6/317/F.png',
+          hintText: 'Center of Zerk Ftg. to Center of Zerk Ftg.',
+          required: true,
+          imagePath: AppAssets.fcF,
         ),
 
         ProductFieldData(
@@ -420,7 +530,8 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           label: 'Greaser - Free Carrier Rail (G)',
           type: ProductFieldType.text,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/6/317/G.png',
+          required: true,
+          imagePath: AppAssets.fcG,
         ),
 
         ProductFieldData(
@@ -428,7 +539,8 @@ const ProductDetailData freeCarrier317Data = ProductDetailData(
           label: 'Greaser - Free Carrier Rail (H)',
           type: ProductFieldType.text,
           hintText: 'Height',
-          imagePath: 'assets/Measurements/6/317/H.png',
+          required: true,
+          imagePath: AppAssets.fcH,
         ),
       ],
     ),

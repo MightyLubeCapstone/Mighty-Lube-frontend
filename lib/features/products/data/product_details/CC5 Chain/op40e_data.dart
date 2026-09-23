@@ -147,8 +147,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
 
         ProductFieldData(
           key: 'surroundingTemp',
-          label:
-          'Is the temperature at the planned lubrication system location below 30°F or above 120°F?',
+          label: 'Is the temperature at the planned lubrication system location below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
           required: true,
           options: [
@@ -159,8 +158,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
 
         ProductFieldData(
           key: 'loadedUnloadedStatus',
-          label:
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+          label: 'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
           type: ProductFieldType.dropdown,
           required: true,
           options: [
@@ -205,8 +203,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
 
         ProductFieldData(
           key: 'requiredPics',
-          label:
-          'I Have The Required Pictures Of Each Chain To Attach',
+          label: 'I Have The Required Pictures Of Each Chain To Attach',
           type: ProductFieldType.dropdown,
           required: true,
           options: [
@@ -590,7 +587,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Power Rail (G) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementG,
+          imagePath: AppAssets.mlcc5PowerRailG,
         ),
 
         ProductFieldData(
@@ -598,7 +595,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Power Rail (H) - Height',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementH,
+          imagePath: AppAssets.mlcc5PowerRailH,
         ),
 
         ProductFieldData(
@@ -606,7 +603,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Roller Wheel (A1) - Diameter',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementA1,
+          imagePath: AppAssets.mlcc5RollerWheelA1,
         ),
 
         ProductFieldData(
@@ -614,7 +611,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Roller Wheel (B1) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementB1,
+          imagePath: AppAssets.mlcc5RollerWheelB1,
         ),
 
         ProductFieldData(
@@ -622,7 +619,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Link (D1) - Thickness',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementD1,
+          imagePath: AppAssets.mlcc5LinkD1,
         ),
 
         ProductFieldData(
@@ -630,7 +627,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Roller Wheel Pitch (M1)',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementM1,
+          imagePath: AppAssets.mlcc5RollerWheelPitchM1,
         ),
 
         ProductFieldData(
@@ -638,7 +635,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Roller Pin (Y1) - Diameter',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementY1,
+          imagePath: AppAssets.mlcc5RollerPinY1,
         ),
 
         ProductFieldData(
@@ -646,7 +643,7 @@ const ProductDetailData cc5Op40eData = ProductDetailData(
           label: 'CC5 Roller Pin (Z1) - Length',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.cc5MeasurementZ1,
+          imagePath: AppAssets.mlcc5RollerPinZ1,
         ),
       ],
     ),

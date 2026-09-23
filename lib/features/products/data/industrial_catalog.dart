@@ -6,260 +6,57 @@ import 'package:mighty_lube/features/products/data/product_details/CC5%20Chain/o
 import 'package:mighty_lube/features/products/data/product_details/CCOOI/ccs_oeb_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/CCOOI/cgs_314_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/CCOOI/cgs_317_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/CCOOI/clc_9000_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/CCOOI/clc_eseries_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/CCOOI/clc_op139a_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/CCOOI/cls_9000_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/CCOOI/cls_eseries_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/CCOOI/cls_op139a_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETIPO/ccs_8074-b_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETIPO/ccs_un91_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETIPO/cls_9000_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/ETIPO/cls_op41a_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETIPO/cls_op48e_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/ETIPO/cms_mlaio_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETOPO/cls_2100l_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETOPO/cls_9000l_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/ETOPO/cls_op41a_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETOPO/cls_op48e_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/ETOPO/cms_ml(p).dart';
 import 'package:mighty_lube/features/products/data/product_details/ETOPO/cms_p(ml)mlms_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/FC/314_load_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/FC/317_guide_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/FT/cgs_3000.dart';
+import 'package:mighty_lube/features/products/data/product_details/FT/cgs_300.dart';
+import 'package:mighty_lube/features/products/data/product_details/FT/cls_cdl_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/FT/cls_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/FT/cls_mlftl.dart';
+import 'package:mighty_lube/features/products/data/product_details/IBRC/cgs_300_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/IBRC/cls_mlrfc_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/IBRC/cls_op40e_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/IFTL/cls_mlftl_data.dart';
 import 'package:mighty_lube/features/products/data/product_details/IFTL/cls_op40e_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_ibcbs_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_oeb_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_onpmlbc_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_op13_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_op55_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_op8_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_op8np_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/ccs_ycb_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cgs_gpc_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cls_2100_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cls_9000_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cls_9125_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cls_eseries_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cls_op52_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cms_mlpaioml_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cms_pmmlbms_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cms_pmms_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/cms_slmlms_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/overhead_op139a_data.dart';
-import 'package:mighty_lube/features/products/data/product_details/OH/overhead_op4a_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_ibcbs_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_oeb_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_onpmlbc_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_op13_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_op55_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_op8_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_op8np_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/ccs_ycb_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cgs_gpc_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_2100_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_9000_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_9125_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_eseries_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_op52_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cms_mlpaioml_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cms_pmmlbms_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cms_pmms_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cms_slmlms_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_op139a_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/OHP/cls_op4a_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/PFO/ccs_300i_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/PFO/ccs_op8_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/PFO/ccs_op8np_data.dart';
+import 'package:mighty_lube/features/products/data/product_details/PFO/cgs_fr314_data.dart';
 import '../../../core/constants/app_assets.dart';
-
-
-// ============================================================
-// 1. CC5 CHAIN
-// ============================================================
-
-import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/MLCC5CL/UI/MLCC5CL.dart';
-
-import 'package:mighty_lube/industrial/1.%20CC5C%20(2)/CLS%20(2)/OP40E/UI/OP40E.dart'
-as cc5_op40e;
-
-
-// ============================================================
-// 2. CATERPILLAR DRIVE
-// ============================================================
-
-import 'package:mighty_lube/industrial/2.%209125CD%20(3)/CLS%20(3)/CDL/UI/CDL.dart'
-as caterpillar_cdl;
-
-import 'package:mighty_lube/industrial/2.%209125CD%20(3)/CLS%20(3)/MLCEL/UI/MLCEL.dart'
-as caterpillar_mlcel;
-
-import 'package:mighty_lube/industrial/2.%209125CD%20(3)/CLS%20(3)/OP40E/UI/OP40E.dart'
-as caterpillar_op40e;
-
-
-// ============================================================
-// 3. ETIPO
-// ============================================================
-
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(4)/CCS%20(2)/O8074/UI/O8074.dart'
-as etipo_8074;
-
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(4)/CCS%20(2)/OUN91/UI/OUN91.dart'
-as etipo_un91;
-
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(4)/CLS%20(2)/9000INVL/UI/9000INVL.dart'
-as etipo_9000invl;
-
-import 'package:mighty_lube/industrial/3.%20ETIPO%20(4)/CLS%20(2)/OP48E/UI/OP48E.dart'
-as etipo_op48e;
-
-
-// ============================================================
-// 4. ETOPO
-// ============================================================
-
-import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/2100L/UI/2100L.dart'
-as etopo_2100l;
-
-import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/9000L/UI/9000L.dart'
-as etopo_9000l;
-
-import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CLS%20(4)/OP48E/UI/OP48E.dart'
-as etopo_op48e;
-
-import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CMS%20(2)/MLAIO/UI/MLAIO.dart'
-as etopo_mlaio;
-
-import 'package:mighty_lube/industrial/4.%20ETOPO%20(10)/CMS%20(2)/PMLMS/UI/PMLMS.dart'
-as etopo_pmlms;
-
-
-// ============================================================
-// 5. FLAT TOP
-// ============================================================
-
-import 'package:mighty_lube/industrial/5.%20FT(4)/CGS%20(1)/OPCO300/UI/OPCO300.dart'
-as flat_top_opco300;
-
-import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/MLCEL/UI/MLCEL.dart'
-as flat_top_mlcel;
-
-import 'package:mighty_lube/industrial/5.%20FT(4)/CLS%20(3)/OP40E/UI/OP40E.dart'
-as flat_top_op40e;
-
-
-// ============================================================
-// 6. FREE CARRIER
-// ============================================================
-
-import 'package:mighty_lube/industrial/6.%20FC%20(2)/FR314/UI/FR314.dart'
-as free_carrier_fr314;
-
-import 'package:mighty_lube/industrial/6.%20FC%20(2)/FR317/UI/FR317.dart'
-as free_carrier_fr317;
-
-
-// ============================================================
-// 7. C CHANNEL OVERHEAD OR INVERTED
-// ============================================================
-
-import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CCS%20(1)/OEB/UI/OEB.dart'
-as cchannel_oeb;
-
-import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CGS%20(2)/FR314/UI/FR314.dart'
-as cchannel_fr314;
-
-import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CGS%20(2)/FR317/UI/FR317.dart'
-as cchannel_fr317;
-
-import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CLS%20(3)/9000L/UI/9000L.dart'
-as cchannel_9000l;
-
-import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CLS%20(3)/ES/UI/ES.dart'
-as cchannel_es;
-
-import 'package:mighty_lube/industrial/7.%20CCOOI%20(6)/CLS%20(3)/OP139A/UI/OP139A.dart'
-as cchannel_op139a;
-
-
-// ============================================================
-// 8. IN FLOOR TOW LINE
-// ============================================================
-
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/MLIFTL/UI/MLIFTL.dart'
-as iftl_ml;
-
-import 'package:mighty_lube/industrial/8.%20IFTL%20(2)/CLS%20(2)/OP40E/UI/OP40E.dart'
-as iftl_op40e;
-
-
-// ============================================================
-// 9. IN-BOARD ROLLER CHAIN
-// ============================================================
-
-import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/MLRFC/UI/MLRFC.dart'
-as ibrc_mlrfc;
-
-import 'package:mighty_lube/industrial/9.%20IBRC%20(3)/CLS%20(2)/OP40E/UI/OP40E.dart'
-as ibrc_op40e;
-
-
-// ============================================================
-// 10. OHPRLB - CLEANING
-// ============================================================
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/300I/UI/300I.dart'
-as ohprlb_300i;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/LBCBS/UI/LBCBS.dart'
-as ohprlb_lbcbs;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/OEB/UI/OEB.dart'
-as ohprlb_oeb;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/OP8/UI/OP8.dart'
-as ohprlb_op8;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/OP8NP/UI/OP8NP.dart'
-as ohprlb_op8np;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/OP13/UI/OP13.dart'
-as ohprlb_op13;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/OP55/UI/OP55.dart'
-as ohprlb_op55;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CCS%20(8)/YCB/UI/YCB.dart'
-as ohprlb_ycb;
-
-
-// ============================================================
-// OHPRLB - GREASER
-// ============================================================
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CGS%20(1)/GPC/UI/GPC.dart'
-as ohprlb_gpc;
-
-
-// ============================================================
-// OHPRLB - LUBRICATION
-// ============================================================
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/2100L/UI/2100L.dart'
-as ohprlb_2100l;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/9000L/UI/9000L.dart'
-as ohprlb_9000l;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/CDL/UI/CDL.dart'
-as ohprlb_cdl;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/ES/UI/ES.dart'
-as ohprlb_es;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/OP139A/UI/OP139A.dart'
-as ohprlb_op139a;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/OP4A/UI/OP4A.dart'
-as ohprlb_op4a;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CLS%20(7)/OP52/UI/OP52.dart'
-as ohprlb_op52;
-
-
-// ============================================================
-// OHPRLB - MONITOR
-// ============================================================
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CMS%20(4)/MLAIO/UI/MLAIO.dart'
-as ohprlb_mlaio;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CMS%20(4)/PMLMS/UI/PMLMS.dart'
-as ohprlb_pmlms;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CMS%20(4)/PMMS/UI/PMMS.dart'
-as ohprlb_pmms;
-
-import 'package:mighty_lube/industrial/10.%20OHPRLB%20(20)/CMS%20(4)/SLMLMS/UI/SLMLMS.dart'
-as ohprlb_slmlms;
-
 
 // ============================================================
 // PRODUCT MODEL
@@ -360,7 +157,7 @@ final List<ProductItem> industrialCatalog = [
   // ==========================================================
 
   const ProductItem(
-    title: 'Enclosed Track Inverted Power Only and PF (4)',
+    title: 'Enclosed Track Inverted Power Only and PF (8)',
     imagePath: AppAssets.enclosedTrackInverted,
     children: [
       ProductItem(
@@ -383,7 +180,7 @@ final List<ProductItem> industrialCatalog = [
       ),
 
       ProductItem(
-        title: 'Conveyor Lubrication Systems (2)',
+        title: 'Conveyor Lubrication Systems (3)',
         imagePath: AppAssets.etipoLubricationSystems,
         children: [
           ProductItem(
@@ -394,9 +191,28 @@ final List<ProductItem> industrialCatalog = [
           ),
 
           ProductItem(
+              title: 'OP-41A Conveyor Lubricators',
+              imagePath: AppAssets.etipoOP41A,
+              detail: etipoOp41aData
+          ),
+
+          ProductItem(
               title: 'OP-48E',
               imagePath: AppAssets.etipoOp48e,
               detail: etipoOp48eData
+          ),
+        ],
+      ),
+
+      ProductItem(
+        title: 'Conveyor Monitor Systems (1)',
+        imagePath: AppAssets.etipoMonitorSystems,
+        children: [
+          ProductItem(
+            title: 'Multi Line (Permanent) ALL IN ONE Monitoring + Lubrication',
+            imagePath: AppAssets.etipoMonitorSystemsMultiLine,
+            // New reusable product configuration.
+            detail: etiMlaioData,
           ),
         ],
       ),
@@ -428,6 +244,12 @@ final List<ProductItem> industrialCatalog = [
             imagePath: AppAssets.etopo9000L,
             // New reusable product configuration.
             detail: etopo9000LData,
+          ),
+
+          ProductItem(
+              title: 'OP-41A Conveyor Lubricators',
+              imagePath: AppAssets.etopoOp41a,
+              detail: etopoOp41aData
           ),
 
           ProductItem(
@@ -493,7 +315,13 @@ final List<ProductItem> industrialCatalog = [
           ProductItem(
             title: 'OP-40E',
             imagePath: AppAssets.flatTopOp40e,
-              detail: flatTopOp40eData
+            detail: flatTopOp40eData,
+          ),
+
+          ProductItem(
+              title: 'Caterpillar Drive Lubricators',
+              imagePath: AppAssets.flatTopCdl,
+              detail: FTcdl
           ),
         ],
       ),
@@ -598,6 +426,7 @@ final List<ProductItem> industrialCatalog = [
     title: 'In Floor Tow Line (2)',
     imagePath: AppAssets.inFloorTowLine,
     children: [
+
       ProductItem(
         title: 'Conveyor Lubrication Systems (2)',
         imagePath: AppAssets.inFloorTowLineLubricationSystems,
@@ -627,6 +456,19 @@ final List<ProductItem> industrialCatalog = [
     title: 'In-Board Roller Chain (3)',
     imagePath: AppAssets.inBoardRollerChain,
     children: [
+
+      ProductItem(
+        title: 'Conveyor Greaser Systems (1)',
+        imagePath: AppAssets.inBoardRollerChainGreaserSystems,
+        children: [
+          ProductItem(
+              title: 'OPCO 300 Series Automatic Sealed Wheel Lubricator',
+              imagePath: AppAssets.inBoardRollerChain300,
+              detail: inBoardRollerChain300data
+          ),
+        ],
+      ),
+
       ProductItem(
         title: 'Conveyor Lubrication Systems (2)',
         imagePath: AppAssets.inBoardRollerChainLubricationSystems,
@@ -667,49 +509,49 @@ final List<ProductItem> industrialCatalog = [
         children: [
           ProductItem(
             title: 'Overhead Non-Powered Mighty Lube Brush Cleaners 300I 400I 600I',
-            imagePath: AppAssets.ohprlbCcs300I,
+            imagePath: AppAssets.OHP_CCS_300I,
             detail: overheadNonPoweredBrushCleaners300i400i600iData
           ),
 
           ProductItem(
             title: 'I-Beam Conveyor Beam Sweep',
-            imagePath: AppAssets.ohprlbCcsLbcbs,
+              imagePath: AppAssets.OHP_CSS_LBCBS,
               detail: overheadIBeamConveyorBeamSweepData
           ),
 
           ProductItem(
             title: 'Overspray Eliminator Brush',
-            imagePath: AppAssets.ohprlbCcsOeb,
+            imagePath: AppAssets.OHP_CSS_OEB,
             detail: overheadOversprayEliminatorBrushData
           ),
 
           ProductItem(
             title: 'OP-8 Power Brush Cleaning System Conveyor Chain & Trolley Wheel Cleaner',
-            imagePath: AppAssets.ohprlbCcsOp8,
+              imagePath: AppAssets.OHP_CSS_OP8,
             detail: overheadOp8PowerBrushCleaningSystemData
           ),
 
           ProductItem(
             title: 'OP-8NP Non-Power Brush Cleaning System I-Beam Conveyor Chain Cleaner',
-            imagePath: AppAssets.ohprlbCcsOp8Np,
+              imagePath: AppAssets.OHP_CSS_OP8NP,
             detail: overheadOp8npNonPowerBrushCleaningSystemData
           ),
 
           ProductItem(
             title: 'OP-13 Sanitary Hook Cleaner',
-            imagePath: AppAssets.ohprlbCcsOp13,
+              imagePath: AppAssets.OHP_CSS_OEB,
             detail: overheadOp13SanitaryHookCleanerData
           ),
 
           ProductItem(
             title: 'OP-55',
-            imagePath: AppAssets.ohprlbCcsOp55,
+              imagePath: AppAssets.OHP_CSS_OP55,
             detail: overheadOp55Data
           ),
 
           ProductItem(
             title: 'Yoke Cleaning Brush',
-            imagePath: AppAssets.ohprlbCcsYcb,
+              imagePath: AppAssets.OHP_CSS_YCB,
             detail: overheadYokeCleaningBrushData
           ),
         ],
@@ -726,7 +568,7 @@ final List<ProductItem> industrialCatalog = [
         children: [
           ProductItem(
             title: 'Greaser Power Chain',
-            imagePath: AppAssets.ohprlbGreaserPowerChain,
+            imagePath: AppAssets.OHP_CGS_GPC,
             detail: overheadGreaserPowerChainData
           ),
         ],
@@ -742,46 +584,45 @@ final List<ProductItem> industrialCatalog = [
         imagePath: AppAssets.ohprlbLubricationSystems,
         children: [
           ProductItem(
-            title:
-            '2100L Series Self-Contained I-Beam Conveyor Lubricators',
-            imagePath: AppAssets.ohprlbCls2100L,
+            title: '2100L Series Self-Contained I-Beam Conveyor Lubricators',
+            imagePath: AppAssets.OHP_CLS_2100,
             detail: overhead2100lSelfContainedIBeamConveyorLubricatorsData
           ),
 
           ProductItem(
             title:
             '9000L Series Central System I-Beam Conveyor Lubricators',
-            imagePath: AppAssets.ohprlbCls9000L,
+            imagePath: AppAssets.OHP_CLS_9000,
             detail: overhead9000lCentralSystemIBeamConveyorLubricatorsData
           ),
 
           ProductItem(
             title: '9125/9126 Caterpillar Drive Lubricators',
-            imagePath: AppAssets.ohprlbClsCDL,
+            imagePath: AppAssets.OHP_CLS_CDL,
             detail: overhead9125_9126CaterpillarDriveData
           ),
 
           ProductItem(
             title: 'E-Series',
-            imagePath: AppAssets.ohprlbClsES,
+            imagePath: AppAssets.OHP_CLS_ES,
             detail: overheadESeriesData
           ),
 
           ProductItem(
             title: 'OP-4A',
-            imagePath: AppAssets.ohprlbClsOP4A,
+            imagePath: AppAssets.OHP_CLS_OP4A,
             detail: overheadOp4AData
           ),
 
           ProductItem(
             title: 'OP-52/OP-53',
-            imagePath: AppAssets.ohprlbClsOP52,
+            imagePath: AppAssets.OHP_CLS_OP52,
             detail: overheadOp52CaterpillarDriveLubricatorData
           ),
 
           ProductItem(
             title: 'OP-139A',
-            imagePath: AppAssets.ohprlbClsOP139A,
+            imagePath: AppAssets.OHP_CLS_OP139A,
             detail: overheadOp139AData
           ),
         ],
@@ -832,5 +673,148 @@ final List<ProductItem> industrialCatalog = [
   // 11. POWER AND FREE OVERHEAD OR INVERTED
   // ==========================================================
   //
-  // Pending - next page required.
+  // ==========================================================
+  // 11. POWER AND FREE OVERHEAD OR INVERTED
+  // ==========================================================
+
+  const ProductItem(
+    title: 'Power and Free Overhead Or Inverted (16)',
+    imagePath: AppAssets.powerAndFreeOverhead,
+    children: [
+
+      // ======================================================
+      // CLEANING
+      // ======================================================
+
+      ProductItem(
+        title: 'Conveyor Cleaning Solutions (3)',
+        imagePath: AppAssets.pfoCleaningSolutions,
+        children: [
+          ProductItem(
+            title:
+            'Overhead Non-Powered Mighty Lube Brush Cleaners 300I 400I 600I',
+            imagePath: AppAssets.PFO_CCS_300I,
+            detail: pfoNonPoweredBrushCleaners300i400i600iData,
+          ),
+
+          ProductItem(
+            title: 'OP-8 Power Brush Cleaning System Conveyor Chain & Trolley Wheel Cleaner',
+            imagePath: AppAssets.PFO_CCS_OP8,
+            detail: pfoOp8PowerBrushCleaningSystemData,
+          ),
+
+          ProductItem(
+            title: 'OP-8NP Non-Power Brush Cleaning System I-Beam Conveyor Chain Cleaner',
+            imagePath: AppAssets.PFO_CCS_OP8NP,
+            detail: pfoOp8npNonPowerBrushCleaningSystemData,
+          ),
+        ],
+      ),
+
+      // ======================================================
+      // GREASER
+      // ======================================================
+
+      ProductItem(
+        title: 'Conveyor Greaser Systems (3)',
+        imagePath: AppAssets.pfoGreaserSystems,
+        children: [
+          ProductItem(
+            title: 'Free Rail 314 “Load” Wheel Greaser',
+            imagePath: AppAssets.PFO_CGS_FR314,
+            detail: pfoFreeRail314LoadWheelGreaserData,
+          ),
+
+          ProductItem(
+            title: 'Free Rail 317 “Guide” Wheel Greaser',
+            imagePath: AppAssets.PFO_CGS_FR317,
+          ),
+
+          ProductItem(
+            title: 'Greaser Power Chain',
+            imagePath: AppAssets.PFO_CGS_GPC,
+          ),
+        ],
+      ),
+
+      // ======================================================
+      // LUBRICATION
+      // ======================================================
+
+      ProductItem(
+        title: 'Conveyor Lubrication Systems (7)',
+        imagePath: AppAssets.pfoLubricationSystems,
+        children: [
+          ProductItem(
+            title: '9000L Series Central Overhead I-Beam Conveyor Lubricators',
+            imagePath: AppAssets.PFO_CLS_9000L,
+          ),
+
+          ProductItem(
+            title: '9000L Series Central System Enclosed Track Conveyor Lubricators',
+            imagePath: AppAssets.PFO_CLS_9000LECCCL,
+          ),
+
+          ProductItem(
+            title:
+            '9000L Series Central System Power and Free C-Channel Conveyor Lubricators',
+            imagePath: AppAssets.PFO_CLS_9000LTCL,
+          ),
+
+          ProductItem(
+            title: 'Caterpillar Drive Lubricators',
+            imagePath: AppAssets.PFO_CLS_CDL,
+          ),
+
+          ProductItem(
+            title: 'E-Series',
+            imagePath: AppAssets.PFO_CLS_ES,
+          ),
+
+          ProductItem(
+            title: 'OP-55',
+            imagePath: AppAssets.PFO_CLS_OP55,
+          ),
+
+          ProductItem(
+            title: 'OP-139A',
+            imagePath: AppAssets.PFO_CLS_OP139A,
+          ),
+        ],
+      ),
+
+      // ======================================================
+      // MONITOR
+      // ======================================================
+
+      ProductItem(
+        title: 'Conveyor Monitor Systems (4)',
+        imagePath: AppAssets.pfoMonitorSystems,
+        children: [
+          ProductItem(
+            title:
+            'Multi Line (Permanent) ALL IN ONE Monitoring + Lubrication',
+            imagePath: AppAssets.PFO_CMS_MLAIO,
+          ),
+
+          ProductItem(
+            title:
+            'Portable (Multi-Line) Mighty Lube® Monitoring System',
+            imagePath: AppAssets.PFO_CMS_PMLMS,
+          ),
+
+          ProductItem(
+            title: 'Paint Marker for Monitoring System (Optional)',
+            imagePath: AppAssets.PFO_CMS_PMMS,
+          ),
+
+          ProductItem(
+            title:
+            'Single Line (Stationary) Mighty Lube® Monitoring System',
+            imagePath: AppAssets.PFO_CMS_SLMLMS,
+          ),
+        ],
+      ),
+    ],
+  ),
 ];

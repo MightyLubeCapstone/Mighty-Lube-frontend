@@ -24,6 +24,7 @@ dependencies:
   flutter_svg: ^2.0.9
   url_launcher: ^6.1.14
   photo_view: ^0.15.0
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -55,10 +56,21 @@ flutter:
      - assets/industrial/
      - assets/industrial/CC5 Chain (2)/
      - assets/industrial/CC5 Chain (2)/CLS (2)/
+     - assets/industrial/CC5 Chain (2)/CLS (2)/MLCCL/
+     - assets/industrial/CC5 Chain (2)/CLS (2)/OP40E/
+
+     - assets/industrial/Caterpillar Drive ( 3 )/
+     - assets/industrial/Caterpillar Drive ( 3 )/Conveyor Lubrication System (3)/
+     - assets/industrial/Caterpillar Drive ( 3 )/Conveyor Lubrication System (3)/MLCEL/
+     - assets/industrial/Caterpillar Drive ( 3 )/Conveyor Lubrication System (3)/OP40E/
 
      - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/
      - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/
+     - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/0P41A/
+     - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/OP48E/
+     - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Lub. Systems (3)/9000INVL/
      - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Cleaning Solutions (2)/
+     - assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Conveyor Monitor Systems (1)/
 
      - assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/
      - assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Conveyor Lub. Systems (4)/
@@ -66,30 +78,57 @@ flutter:
 
      - assets/industrial/Flat Top (4)/
      - assets/industrial/Flat Top (4)/Conveyor Greaser Systems (1)/
+     - assets/industrial/Flat Top (4)/Conveyor Greaser Systems (1)/OPCO300/
      - assets/industrial/Flat Top (4)/Conveyor Lub. Systems (3)/
 
-     - assets/industrial/C Channel Overhead Or Inverted(6)/
-     - assets/industrial/C Channel Overhead Or Inverted(6)/Conveyor Greaser System(2)/
-     - assets/industrial/C Channel Overhead Or Inverted(6)/Conveyor Lubrication System/
-
-     - assets/industrial/In Board Roller Chain(3)/
-     - assets/industrial/In Board Roller Chain(3)/Conveyor Greaser Systems (1)/
-     - assets/industrial/In Board Roller Chain(3)/Conveyor Lubrication System (2)/
-
-     - assets/industrial/Caterpillar Drive ( 3 )/
-     - assets/industrial/Caterpillar Drive ( 3 )/Conveyor Lubrication System (3)/
-
-     - assets/industrial/OHPRLB(20)/
-     - assets/industrial/OHPRLB(20)/CCS/
-     - assets/industrial/OHPRLB(20)/CGS/
-     - assets/industrial/OHPRLB(20)/CLS/
-     - assets/industrial/OHPRLB(20)/Conveyor Moniter System (4)/
 
      - assets/industrial/Free Carrier (2)/
+     - assets/industrial/Free Carrier (2)/FR314/
+     - assets/industrial/Free Carrier (2)/FR317/
 
-     - assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/
-     - assets/industrial/Power and Free Overhead Or Inverted (16)/
-     - assets/industrial/Over Head Power Rail L-Beam (20)/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CCS/
+
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CGS/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CGS/314/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CGS/317/
+
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CLS/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CLS/9000/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CLS/Eseries/
+     - assets/industrial/C Channel Overhead Or Inverted(6)/CLS/OP139A/
+
+
+     - assets/industrial/FTL/
+     - assets/industrial/FTL/CLS/
+     - assets/industrial/FTL/CLS/MLFTL/
+     - assets/industrial/FTL/CLS/OP40E/
+
+     - assets/industrial/In Board Roller Chain(3)/
+     - assets/industrial/In Board Roller Chain(3)/CGS/
+     - assets/industrial/In Board Roller Chain(3)/CLS/
+
+
+     - assets/industrial/OHP(20)/
+     - assets/industrial/OHP(20)/CCS/
+     - assets/industrial/OHP(20)/CCS/Mesurment/
+     - assets/industrial/OHP(20)/CGS/
+     - assets/industrial/OHP(20)/CGS/314/
+     - assets/industrial/OHP(20)/CGS/317/
+     - assets/industrial/OHP(20)/CLS/
+     - assets/industrial/OHP(20)/CMS/
+
+     - assets/industrial/PFO(16)/
+     - assets/industrial/PFO(16)/CCS/
+     - assets/industrial/PFO(16)/CGS/
+     - assets/industrial/PFO(16)/CLS/
+     - assets/industrial/PFO(16)/CMS/
+
+#     - assets/industrial/Free Carrier (2)/
+
+#     - assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/
+#     - assets/industrial/Power and Free Overhead Or Inverted (16)/
+#     - assets/industrial/Over Head Power Rail L-Beam (20)/
 
 
      - assets/Measurements/

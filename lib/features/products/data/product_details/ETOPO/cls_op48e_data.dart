@@ -5,8 +5,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
   id: 'ETO_OP48E',
   title: 'OP-48E Conveyor Lubricators',
   imagePath: AppAssets.etopoOp48e,
-  description:
-  'OP-48E Conveyor Lubricators for enclosed track overhead conveyor systems.',
+  description: 'OP-48E Conveyor Lubricators for enclosed track overhead conveyor systems.',
   configurationSections: [
     // =========================================================
     // GENERAL INFORMATION
@@ -20,12 +19,14 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'chainSize',
           label: 'Conveyor Chain Size',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'X348 Chain (3")',
             'X458 Chain (4")',
@@ -39,6 +40,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'otherChainSize',
           label: 'Other Conveyor Chain Size',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'chainSize',
           visibleWhenValue: 'Other',
         ),
@@ -47,6 +49,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'industrialChainManufacturer',
           label: 'Chain Manufacturer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Daifuku',
             'Frost',
@@ -64,6 +67,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'otherIndustrialChainManufacturer',
           label: 'Other Chain Manufacturer',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'industrialChainManufacturer',
           visibleWhenValue: 'Other',
         ),
@@ -72,12 +76,14 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length (Ft/m)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Feet',
             'Inches',
@@ -89,6 +95,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
         ProductFieldData(
           key: 'conveyorSpeed',
           label: 'Conveyor Speed (Min/Max)',
+          required: true,
           type: ProductFieldType.text,
         ),
 
@@ -96,6 +103,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'conveyorSpeedUnit',
           label: 'Conveyor Speed Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Feet / minute',
             'Meters / minute',
@@ -105,6 +113,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
         ProductFieldData(
           key: 'conveyorIndex',
           label: 'Indexing or Variable Speed Conditions',
+          required: true,
           type: ProductFieldType.text,
         ),
 
@@ -112,6 +121,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'travelDirection',
           label: 'Direction of Travel',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Right to Left',
             'Left to Right',
@@ -138,15 +148,16 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'otherAppEnviroment',
           label: 'Other Application Environment',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'appEnviroment',
           visibleWhenValue: 'Other',
         ),
 
         ProductFieldData(
           key: 'surroundingTemp',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
           type: ProductFieldType.text,
+          required: true,
         ),
       ],
     ),
@@ -188,6 +199,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -198,6 +210,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'newMonitoringSystem',
           label: 'Add New Monitoring System',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -218,6 +231,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'wheelOpenType',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -228,6 +242,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'wheelClosedType',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -238,6 +253,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'powerChain',
           label: 'Power Chain',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -248,6 +264,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'chainPins',
           label: 'Chain Pins',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -258,6 +275,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'catDriveStatus',
           label: 'Caterpillar Drive',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -268,12 +286,14 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'catDriveNum',
           label: 'Caterpillar Drive Quantity',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'railLubeStatus',
           label: 'Rail Lubrication',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -284,6 +304,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'externalLubeStatus',
           label: 'External Lubrication',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -294,24 +315,28 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'lubeBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeViscosity',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'sideLubeStatus',
           label: 'Lubrication from the Side of Chain',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -322,6 +347,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'topLubeStatus',
           label: 'Lubrication from the Top of Chain',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -332,6 +358,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'chainCleanStatus',
           label: 'Is the Conveyor Chain Clean?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -350,9 +377,9 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
       fields: [
         ProductFieldData(
           key: 'specialControllerOptions',
-          label:
-          'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
+          label: 'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -363,6 +390,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'controllerPleaseSpecify',
           label: 'Please Specify',
           type: ProductFieldType.text,
+          required: true,
           multiline: true,
         ),
       ],
@@ -379,6 +407,7 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
         ProductFieldData(
           key: 'etUnitType',
           label: 'Measurement Unit',
+          required: true,
           type: ProductFieldType.dropdown,
           options: const [
             'Feet',
@@ -392,78 +421,104 @@ const ProductDetailData etopoOp48eData = ProductDetailData(
           key: 'etOverheadB',
           label: 'Enclosed Track (Overhead) Power Trolley Wheel (B)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Diameter)',
-          imagePath: 'assets/Measurements/4/CMS/B.png',
+          imagePath: AppAssets.etioB,
         ),
 
         ProductFieldData(
           key: 'etOverheadG',
           label: 'Enclosed Track (Overhead) Power Rail (G)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Width)',
-          imagePath: 'assets/Measurements/4/CMS/G.png',
+          imagePath: AppAssets.etioG,
         ),
 
         ProductFieldData(
           key: 'etOverheadH',
           label: 'Enclosed Track (Overhead) Power Rail (H)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Height)',
-          imagePath: 'assets/Measurements/4/CMS/H.png',
+          imagePath: AppAssets.etioH,
         ),
 
         ProductFieldData(
           key: 'etOverheadS',
-          label:
-          'Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
+          label: 'Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
           type: ProductFieldType.text,
-          hintText:
-          '(Center of Power Wheel to Center of Power Wheel)',
-          imagePath: 'assets/Measurements/4/CMS/S.png',
+          required: true,
+          hintText: '(Center of Power Wheel to Center of Power Wheel)',
+          imagePath: AppAssets.etioS,
         ),
 
         ProductFieldData(
           key: 'etOverheadK2',
           label: 'Enclosed Track (Overhead) Free Trolley Wheel (K2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Diameter)',
-          imagePath: 'assets/Measurements/4/CMS/K2.png',
+          imagePath: AppAssets.etioK2,
         ),
 
         ProductFieldData(
           key: 'etOverheadL2',
           label: 'Enclosed Track (Overhead) Free Rail (L2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Width)',
-          imagePath: 'assets/Measurements/4/CMS/L2.png',
+          imagePath: AppAssets.etioL2,
         ),
 
         ProductFieldData(
           key: 'etOverheadM2',
           label: 'Enclosed Track (Overhead) Free Rail (M2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Height)',
-          imagePath: 'assets/Measurements/4/CMS/M2.png',
+          imagePath: AppAssets.etioM2,
         ),
 
         ProductFieldData(
           key: 'etOverheadN2',
-          label:
-          'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
+          label: 'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
           type: ProductFieldType.text,
-          hintText:
-          '(Top of Power Rail to Bottom of Free Rail)',
-          imagePath: 'assets/Measurements/4/CMS/N2.png',
+          required: true,
+          hintText: '(Top of Power Rail to Bottom of Free Rail)',
+          imagePath: AppAssets.etioN2,
         ),
 
         ProductFieldData(
           key: 'etOverheadS2',
-          label:
-          'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)',
+          label: 'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)',
           type: ProductFieldType.text,
+          required: true,
+          hintText: '(Center of Trolley Wheel to Center of Trolley Wheel)',
+          imagePath: AppAssets.etioS2,
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Existing app-specific field.
+    // Kept optional.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          required: false,
+          multiline: true,
           hintText:
-          '(Center of Trolley Wheel to Center of Trolley Wheel)',
-          imagePath: 'assets/Measurements/4/CMS/S2.png',
+          'Enter any additional notes or instructions here...',
         ),
       ],
     ),

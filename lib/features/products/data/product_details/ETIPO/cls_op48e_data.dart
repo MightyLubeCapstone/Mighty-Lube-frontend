@@ -17,7 +17,6 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
       id: 'general',
       title: 'General Information',
       fields: [
-
         ProductFieldData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
@@ -236,7 +235,7 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             'Yes',
             'No',
           ],
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -247,7 +246,7 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             'Yes',
             'No',
           ],
-          required: false,
+          required: true,
         ),
       ],
     ),
@@ -265,105 +264,105 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           key: 'wheelOpenType',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'wheelClosedType',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'openStatus',
           label: 'Open Inside / Shielded Outside',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'freeTrolleyWheels',
           label: 'Free Trolley Wheels',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'guideRollers',
           label: 'Guide Rollers',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'guideRollersOpenRaceStyle',
           label: 'Guide Rollers Open Race Style',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'guideRollersSealedStyle',
           label: 'Guide Rollers Sealed Style',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'holeStatus',
           label: 'Open Hole',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'dogActuator',
           label: 'Dog Actuator',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'pivotPoints',
           label: 'Pivot Points',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'kingPin',
           label: 'King Pin',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'railLubeStatus',
           label: 'Rail Lubrication',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeViscosity',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -374,7 +373,7 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             'Yes',
             'No',
           ],
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -385,7 +384,7 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             'Yes',
             'No',
           ],
-          required: false,
+          required: true,
         ),
       ],
     ),
@@ -403,7 +402,7 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           key: 'chainMaster',
           label: 'ChainMaster Controller',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -415,28 +414,28 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             '12 Hour',
             '1000 Hour',
           ],
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'electricStatus',
           label: 'Electric On/Off',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'pneumaticStatus',
           label: 'Pneumatic On/Off',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'mightyLubeMonitoring',
           label: 'Mighty Lube Monitoring',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -447,14 +446,14 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             'Yes',
             'No',
           ],
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'otherControllerInfo',
           label: 'Other Describe',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           multiline: true,
         ),
 
@@ -463,14 +462,14 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label:
           'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'controllerSpecialOptionsSpecify',
           label: 'Please Specify',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           multiline: true,
         ),
       ],
@@ -495,7 +494,7 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
             'm Meter',
             'mm Millimeter',
           ],
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -503,8 +502,8 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label: 'Enclosed Track (Inverted) Power Trolley Wheel (B)',
           type: ProductFieldType.text,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/3/CLS/b.png',
-          required: false,
+          imagePath: AppAssets.etioB,
+          required: true,
         ),
 
         ProductFieldData(
@@ -512,8 +511,8 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label: 'Enclosed Track (Inverted) Power Rail (G)',
           type: ProductFieldType.text,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/3/CLS/G.png',
-          required: false,
+          imagePath: AppAssets.etioG,
+          required: true,
         ),
 
         ProductFieldData(
@@ -521,18 +520,17 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label: 'Enclosed Track (Inverted) Power Rail (H)',
           type: ProductFieldType.text,
           hintText: 'Height',
-          imagePath: 'assets/Measurements/3/CLS/H.png',
-          required: false,
+          imagePath: AppAssets.etioH,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackS',
-          label:
-          'Enclosed Track (Inverted) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
+          label: 'Enclosed Track (Inverted) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
           type: ProductFieldType.text,
           hintText: 'Center of Power Wheel to Center of Power Wheel',
-          imagePath: 'assets/Measurements/3/CLS/S.png',
-          required: false,
+          imagePath: AppAssets.etioS,
+          required: true,
         ),
 
         ProductFieldData(
@@ -540,8 +538,8 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label: 'Enclosed Track (Inverted) Free Trolley Wheel (K2)',
           type: ProductFieldType.text,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/3/CLS/K2.png',
-          required: false,
+          imagePath: AppAssets.etioM2,
+          required: true,
         ),
 
         ProductFieldData(
@@ -549,8 +547,8 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label: 'Enclosed Track (Inverted) Free Rail (L2)',
           type: ProductFieldType.text,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/3/CLS/L2.png',
-          required: false,
+          imagePath: AppAssets.etioL2,
+          required: true,
         ),
 
         ProductFieldData(
@@ -558,28 +556,49 @@ const ProductDetailData etipoOp48eData = ProductDetailData(
           label: 'Enclosed Track (Inverted) Free Rail (M2)',
           type: ProductFieldType.text,
           hintText: 'Height',
-          imagePath: 'assets/Measurements/3/CLS/M2.png',
-          required: false,
+          imagePath: AppAssets.etioM2,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackN2',
-          label:
-          'Enclosed Track (Inverted) Free Rail Vertical Position (Height) (N2)',
+          label: 'Enclosed Track (Inverted) Free Rail Vertical Position (Height) (N2)',
           type: ProductFieldType.text,
           hintText: 'Top of Power Rail to Bottom of Free Rail',
-          imagePath: 'assets/Measurements/3/CLS/N2.png',
-          required: false,
+          imagePath: AppAssets.etioN2,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackS2',
-          label:
-          'Enclosed Track (Inverted) Power Trolley Wheel Pitch (S2)',
+          label: 'Enclosed Track (Inverted) Power Trolley Wheel Pitch (S2)',
           type: ProductFieldType.text,
           hintText: 'Center of Trolley Wheel to Center of Trolley Wheel',
-          imagePath: 'assets/Measurements/3/CLS/S2.png',
+          imagePath: AppAssets.etioS2,
+          required: true,
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Existing app-specific field.
+    // Kept optional.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
           required: false,
+          multiline: true,
+          hintText:
+          'Enter any additional notes or instructions here...',
         ),
       ],
     ),

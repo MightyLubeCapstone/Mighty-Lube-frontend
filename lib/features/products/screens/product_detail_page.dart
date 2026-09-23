@@ -4,10 +4,7 @@ import 'package:mighty_lube/core/widget/custom_app_bar.dart';
 import 'package:mighty_lube/core/widget/breadcrumb_bar.dart';
 import 'package:mighty_lube/core/widget/product_details_section.dart';
 import 'package:mighty_lube/core/widget/product_configuration_form.dart';
-
 import 'package:mighty_lube/features/dashboard/screens/dashboard.dart';
-import 'package:mighty_lube/drawer.dart';
-
 import '../../../core/widget/custom_drawer.dart';
 import '../models/product_detail_data.dart';
 

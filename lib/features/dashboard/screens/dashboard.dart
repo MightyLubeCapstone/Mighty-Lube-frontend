@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mighty_lube/features/configurations/screens/configurations.dart';
-import 'package:mighty_lube/drawer.dart';
 import 'package:mighty_lube/features/application/screens/application_catalog_page.dart';
 import 'package:mighty_lube/features/auth/repositories/user_repository.dart';
 import 'package:mighty_lube/features/auth/screen/login_page.dart';

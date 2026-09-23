@@ -546,7 +546,7 @@ ProductDetailData(
           'Chain on Edge Drag Line Chain Drop (A) - Top of Rail to Center of Chain',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementA,
+          imagePath: AppAssets.mlcelA,
         ),
 
         ProductFieldData(
@@ -555,7 +555,7 @@ ProductDetailData(
           'Chain on Edge Drag Line Power Rail (G) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementG,
+          imagePath: AppAssets.mlcelG,
         ),
 
         ProductFieldData(
@@ -564,7 +564,7 @@ ProductDetailData(
           'Chain on Edge Drag Line Power Rail (H) - Height',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementH,
+          imagePath: AppAssets.mlcelH,
         ),
 
         ProductFieldData(
@@ -573,7 +573,7 @@ ProductDetailData(
           'Chain on Edge Drag Line Rail Offset (J) - Inside of Rail Channel to Inside of Rail Channel',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementJ,
+          imagePath: AppAssets.mlcelJ,
         ),
 
         ProductFieldData(
@@ -582,7 +582,7 @@ ProductDetailData(
           'Chain on Edge Drag Line Wear Bar (X) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementX,
+          imagePath: AppAssets.mlcelX,
         ),
 
         ProductFieldData(
@@ -591,7 +591,7 @@ ProductDetailData(
           'Chain on Edge Drag Line Wear Bar (Y) - Thickness',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementY,
+          imagePath: AppAssets.mlcelY,
         ),
       ],
     ),

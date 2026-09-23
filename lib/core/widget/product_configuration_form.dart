@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../features/products/models/product_detail_data.dart';
 import '../../features/products/repositories/product_repository.dart';
@@ -24,8 +27,12 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   final Map<String, TextEditingController> _textControllers = {};
+  final Map<String, TextEditingController> _otherControllers = {};
   final Map<String, String?> _dropdownValues = {};
+  final Map<String, XFile?> _selectedImages = {};
   final Map<String, String?> _errors = {};
+
+  final ImagePicker _imagePicker = ImagePicker();
 
   // =========================================================
   // QUANTITY
@@ -53,6 +60,12 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
         if (field.type == ProductFieldType.dropdown) {
           _dropdownValues[field.key] = null;
+
+          if (_hasOtherOption(field)) {
+            _otherControllers[field.key] = TextEditingController();
+          }
+
+          _selectedImages[_imagePickerKeyFor(field)] = null;
         }
 
         _errors[field.key] = null;
@@ -61,16 +74,65 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   }
 
   // =========================================================
+  // AUTOMATIC FIELD RULES
+  // =========================================================
+
+  bool _hasOtherOption(
+    ProductFieldData field,
+  ) {
+    if (field.type != ProductFieldType.dropdown) {
+      return false;
+    }
+
+    return field.options.any(
+      (option) => option.trim().toLowerCase() == 'other',
+    );
+  }
+
+  bool _isOtherSelected(
+    ProductFieldData field,
+  ) {
+    final selectedValue = _dropdownValues[field.key];
+
+    return selectedValue?.trim().toLowerCase() == 'other';
+  }
+
+  bool _shouldShowImagePicker(
+    ProductFieldData field,
+  ) {
+    if (field.type != ProductFieldType.dropdown) {
+      return false;
+    }
+
+    final value = _dropdownValues[field.key]?.trim().toLowerCase();
+
+    if (value == null || value.isEmpty) {
+      return false;
+    }
+
+    final hasYes = value.contains('yes');
+    final hasAttachOrUpload =
+        value.contains('attach') || value.contains('upload');
+
+    return hasYes && hasAttachOrUpload;
+  }
+
+  String _imagePickerKeyFor(
+    ProductFieldData field,
+  ) {
+    return '${field.key}Image';
+  }
+
+  // =========================================================
   // CONDITIONAL VISIBILITY
   // =========================================================
 
   bool _isFieldVisible(
-      ProductFieldData field,
-      ) {
+    ProductFieldData field,
+  ) {
     final controllingKey = field.visibleWhenFieldKey;
     final requiredValue = field.visibleWhenValue;
 
-    // No condition = always visible.
     if (controllingKey == null || requiredValue == null) {
       return true;
     }
@@ -83,8 +145,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   }
 
   String? _getFieldValue(
-      String key,
-      ) {
+    String key,
+  ) {
     if (_dropdownValues.containsKey(key)) {
       return _dropdownValues[key];
     }
@@ -101,8 +163,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   void _clearHiddenDependentFields(
-      String changedFieldKey,
-      ) {
+    String changedFieldKey,
+  ) {
     for (final section in widget.product.configurationSections) {
       for (final field in section.fields) {
         if (field.visibleWhenFieldKey != changedFieldKey) {
@@ -119,12 +181,12 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
         if (field.type == ProductFieldType.dropdown) {
           _dropdownValues[field.key] = null;
+          _otherControllers[field.key]?.clear();
+          _selectedImages[_imagePickerKeyFor(field)] = null;
         }
 
         _errors[field.key] = null;
 
-        // Also clear fields that may depend
-        // on this field.
         _clearHiddenDependentFields(
           field.key,
         );
@@ -137,8 +199,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   bool _isSectionComplete(
-      ProductConfigurationSection section,
-      ) {
+    ProductConfigurationSection section,
+  ) {
     for (final field in section.fields) {
       if (!_isFieldVisible(field)) {
         continue;
@@ -162,6 +224,14 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
         if (value == null || value.trim().isEmpty) {
           return false;
         }
+
+        if (_isOtherSelected(field)) {
+          final otherValue = _otherControllers[field.key]?.text.trim();
+
+          if (otherValue == null || otherValue.isEmpty) {
+            return false;
+          }
+        }
       }
     }
 
@@ -177,46 +247,37 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
     for (final section in widget.product.configurationSections) {
       for (final field in section.fields) {
-        // Hidden field should not be validated.
         if (!_isFieldVisible(field)) {
           _errors[field.key] = null;
           continue;
         }
 
-        if (!field.required) {
-          _errors[field.key] = null;
-          continue;
-        }
-
-        // -----------------------------------------------------
-        // TEXT
-        // -----------------------------------------------------
-
         if (field.type == ProductFieldType.text) {
           final value = _textControllers[field.key]?.text.trim();
 
-          if (value == null || value.isEmpty) {
-            _errors[field.key] =
-            '${field.label} is required';
-
+          if (field.required && (value == null || value.isEmpty)) {
+            _errors[field.key] = '${field.label} is required';
             valid = false;
           } else {
             _errors[field.key] = null;
           }
         }
 
-        // -----------------------------------------------------
-        // DROPDOWN
-        // -----------------------------------------------------
-
         if (field.type == ProductFieldType.dropdown) {
           final value = _dropdownValues[field.key];
 
-          if (value == null || value.trim().isEmpty) {
-            _errors[field.key] =
-            'Please select ${field.label}';
-
+          if (field.required && (value == null || value.trim().isEmpty)) {
+            _errors[field.key] = 'Please select ${field.label}';
             valid = false;
+          } else if (_isOtherSelected(field)) {
+            final otherValue = _otherControllers[field.key]?.text.trim();
+
+            if (otherValue == null || otherValue.isEmpty) {
+              _errors[field.key] = 'Please specify ${field.label}';
+              valid = false;
+            } else {
+              _errors[field.key] = null;
+            }
           } else {
             _errors[field.key] = null;
           }
@@ -238,33 +299,112 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
     for (final section in widget.product.configurationSections) {
       for (final field in section.fields) {
-        // Hidden conditional fields should not
-        // be sent to API.
         if (!_isFieldVisible(field)) {
           continue;
         }
 
-        // -----------------------------------------------------
-        // TEXT
-        // -----------------------------------------------------
-
         if (field.type == ProductFieldType.text) {
-          data[field.key] =
-              _textControllers[field.key]?.text.trim() ?? '';
+          data[field.key] = _textControllers[field.key]?.text.trim() ?? '';
         }
 
-        // -----------------------------------------------------
-        // DROPDOWN
-        // -----------------------------------------------------
-
         if (field.type == ProductFieldType.dropdown) {
-          data[field.key] =
-              _dropdownValues[field.key] ?? '';
+          if (_isOtherSelected(field)) {
+            data[field.key] = _otherControllers[field.key]?.text.trim() ?? '';
+          } else {
+            data[field.key] = _dropdownValues[field.key] ?? '';
+          }
+
+          if (_shouldShowImagePicker(field)) {
+            final imageKey = _imagePickerKeyFor(
+              field,
+            );
+
+            final image = _selectedImages[imageKey];
+
+            if (image != null) {
+              data[imageKey] = image.path;
+            }
+          }
         }
       }
     }
 
     return data;
+  }
+
+  // =========================================================
+  // IMAGE PICKER
+  // =========================================================
+
+  Future<void> _pickImage(
+    ProductFieldData field,
+  ) async {
+    final image = await _imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+
+    if (image == null) {
+      return;
+    }
+
+    setState(() {
+      _selectedImages[_imagePickerKeyFor(field)] = image;
+    });
+  }
+
+  void _showAssetImagePreview(
+    String imagePath,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(
+            16,
+          ),
+          child: InteractiveViewer(
+            child: Padding(
+              padding: const EdgeInsets.all(
+                12,
+              ),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showFileImagePreview(
+    XFile image,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(
+            16,
+          ),
+          child: InteractiveViewer(
+            child: Padding(
+              padding: const EdgeInsets.all(
+                12,
+              ),
+              child: Image.file(
+                File(
+                  image.path,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // =========================================================
@@ -292,29 +432,30 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Column(
       children: [
-        // =====================================================
-        // CONFIGURATION SECTIONS
-        // =====================================================
-
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount:
-            widget.product.configurationSections.length,
-            itemBuilder: (context, sectionIndex,) {
-              final section = widget.product.configurationSections[sectionIndex];
-              return _buildSection(section);
+            padding: const EdgeInsets.all(
+              16,
+            ),
+            itemCount: widget.product.configurationSections.length,
+            itemBuilder: (
+              context,
+              sectionIndex,
+            ) {
+              final section =
+                  widget.product.configurationSections[sectionIndex];
+
+              return _buildSection(
+                section,
+              );
             },
           ),
         ),
-
-        // =====================================================
-        // BOTTOM ACTION AREA
-        // =====================================================
-
         _buildBottomActionArea(),
       ],
     );
@@ -325,10 +466,11 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   Widget _buildSection(
-      ProductConfigurationSection section,
-      ) {
-    final bool complete =
-    _isSectionComplete(section);
+    ProductConfigurationSection section,
+  ) {
+    final bool complete = _isSectionComplete(
+      section,
+    );
 
     return Card(
       margin: const EdgeInsets.only(
@@ -342,20 +484,29 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
             fontSize: 16,
           ),
         ),
-
-        trailing: complete ? const Icon(Icons.check_circle, color: Colors.green,) : const Icon(Icons.keyboard_arrow_down,),
-
-        children: section.fields.where(_isFieldVisible).map((field) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              12,
-            ),
-            child: _buildField(field),
-          );
-        }).toList(),
+        trailing: complete
+            ? const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+              )
+            : const Icon(
+                Icons.keyboard_arrow_down,
+              ),
+        children: section.fields.where(_isFieldVisible).map(
+          (field) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(
+                16,
+                8,
+                16,
+                12,
+              ),
+              child: _buildField(
+                field,
+              ),
+            );
+          },
+        ).toList(),
       ),
     );
   }
@@ -365,14 +516,18 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   Widget _buildField(
-      ProductFieldData field,
-      ) {
+    ProductFieldData field,
+  ) {
     switch (field.type) {
       case ProductFieldType.text:
-        return _buildTextField(field);
+        return _buildTextField(
+          field,
+        );
 
       case ProductFieldType.dropdown:
-        return _buildDropdown(field);
+        return _buildDropdownField(
+          field,
+        );
     }
   }
 
@@ -383,91 +538,107 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   Widget _buildTextField(
       ProductFieldData field,
       ) {
-    return Column(
+    final textField = _buildTextInput(
+      field,
+    );
+
+    if (field.imagePath == null) {
+      return textField;
+    }
+
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // -----------------------------------------------------
-        // OPTIONAL MEASUREMENT IMAGE
-        // -----------------------------------------------------
-
-        if (field.imagePath != null) ...[
-          Center(
-            child: Image.asset(
-              field.imagePath!,
-              height: 180,
-              fit: BoxFit.contain,
-              errorBuilder: (
-                  context,
-                  error,
-                  stackTrace,
-                  ) {
-                return const SizedBox(
-                  height: 100,
-                  child: Center(
-                    child: Text(
-                      'Image not found',
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          const SizedBox(height: 12),
-        ],
-
-        // -----------------------------------------------------
-        // TEXT INPUT
-        // -----------------------------------------------------
-
-        TextField(
-          controller:
-          _textControllers[field.key],
-
-          minLines:
-          field.multiline ? 4 : 1,
-
-          maxLines:
-          field.multiline ? 6 : 1,
-
-          keyboardType:
-          field.multiline
-              ? TextInputType.multiline
-              : TextInputType.text,
-
-          textInputAction:
-          field.multiline
-              ? TextInputAction.newline
-              : TextInputAction.next,
-
-          onChanged: (_) {
-            setState(() {
-              _errors[field.key] = null;
-
-              _clearHiddenDependentFields(
-                field.key,
-              );
-            });
-          },
-
-          decoration: InputDecoration(
-            labelText: field.required
-                ? '${field.label} *'
-                : field.label,
-
-            hintText: field.hintText,
-
-            errorText:
-            _errors[field.key],
-
-            alignLabelWithHint:
-            field.multiline,
-
-            border:
-            const OutlineInputBorder(),
+        Expanded(
+          child: textField,
+        ),
+        const SizedBox(
+          width: 2,
+        ),
+        Expanded(
+          child: _buildMeasurementImage(
+            field.imagePath!,
           ),
         ),
       ],
+    );
+  }
+
+
+  Widget _buildTextInput(
+    ProductFieldData field,
+  ) {
+    return TextField(
+      controller: _textControllers[field.key],
+      minLines: field.multiline ? 4 : 1,
+      maxLines: field.multiline ? 6 : 1,
+      keyboardType:
+          field.multiline ? TextInputType.multiline : TextInputType.text,
+      textInputAction:
+          field.multiline ? TextInputAction.newline : TextInputAction.next,
+      onChanged: (_) {
+        setState(() {
+          _errors[field.key] = null;
+
+          _clearHiddenDependentFields(
+            field.key,
+          );
+        });
+      },
+      decoration: InputDecoration(
+        labelText: field.required ? '${field.label} *' : field.label,
+        hintText: field.hintText,
+        errorText: _errors[field.key],
+        alignLabelWithHint: field.multiline,
+        border: const OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildMeasurementImage(
+    String imagePath,
+  ) {
+    return InkWell(
+      onTap: () {
+        _showAssetImagePreview(
+          imagePath,
+        );
+      },
+      borderRadius: BorderRadius.circular(
+        8,
+      ),
+      child: Container(
+        height: 180,
+        width: double.infinity,
+        padding: const EdgeInsets.all(
+          8,
+        ),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color(
+              0xFFE0E0E0,
+            ),
+          ),
+          borderRadius: BorderRadius.circular(
+            8,
+          ),
+        ),
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.contain,
+          errorBuilder: (
+            context,
+            error,
+            stackTrace,
+          ) {
+            return const Center(
+              child: Text(
+                'Image not found',
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -475,53 +646,221 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // DROPDOWN
   // =========================================================
 
-  Widget _buildDropdown(
-      ProductFieldData field,
-      ) {
-    return DropdownButtonFormField<String>(
-      value:
-      _dropdownValues[field.key],
+  Widget _buildDropdownField(
+    ProductFieldData field,
+  ) {
+    final dropdown = _buildDropdown(
+      field,
+    );
 
-      isExpanded: true,
+    final otherTextField = _buildOtherTextField(
+      field,
+    );
 
-      decoration: InputDecoration(
-        labelText: field.required
-            ? '${field.label} *'
-            : field.label,
+    final showOther = _isOtherSelected(
+      field,
+    );
 
-        errorText:
-        _errors[field.key],
+    final showPicker = _shouldShowImagePicker(
+      field,
+    );
 
-        border:
-        const OutlineInputBorder(),
-      ),
-
-      items: field.options.map((option) {
-        return DropdownMenuItem<String>(
-          value: option,
-          child: Text(
-            option,
-            overflow:
-            TextOverflow.ellipsis,
+    if (showOther) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 3,
+            child: dropdown,
           ),
-        );
-      }).toList(),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            flex: 7,
+            child: otherTextField,
+          ),
+        ],
+      );
+    }
 
+    if (showPicker) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: dropdown,
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            child: _buildImagePickerBox(
+              field,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return dropdown;
+  }
+
+  Widget _buildDropdown(
+    ProductFieldData field,
+  ) {
+    return DropdownButtonFormField<String>(
+      value: _dropdownValues[field.key],
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: field.required ? '${field.label} *' : field.label,
+        errorText: _errors[field.key],
+        border: const OutlineInputBorder(),
+      ),
+      items: field.options.map(
+        (option) {
+          return DropdownMenuItem<String>(
+            value: option,
+            child: Text(
+              option,
+              overflow: TextOverflow.ellipsis,
+            ),
+          );
+        },
+      ).toList(),
       onChanged: (value) {
         setState(() {
-          _dropdownValues[field.key] =
-              value;
-
+          _dropdownValues[field.key] = value;
           _errors[field.key] = null;
 
-          // If controlling dropdown changed,
-          // clear values from fields that have
-          // now become hidden.
+          if (!_isOtherSelected(field)) {
+            _otherControllers[field.key]?.clear();
+          }
+
+          if (!_shouldShowImagePicker(field)) {
+            _selectedImages[_imagePickerKeyFor(field)] = null;
+          }
+
           _clearHiddenDependentFields(
             field.key,
           );
         });
       },
+    );
+  }
+
+  Widget _buildOtherTextField(
+    ProductFieldData field,
+  ) {
+    return TextField(
+      controller: _otherControllers[field.key],
+      textInputAction: TextInputAction.next,
+      onChanged: (_) {
+        setState(() {
+          _errors[field.key] = null;
+        });
+      },
+      decoration: InputDecoration(
+        labelText: 'Please specify ${field.label}',
+        hintText: 'Type custom ${field.label.toLowerCase()}',
+        errorText: _errors[field.key],
+        border: const OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildImagePickerBox(
+    ProductFieldData field,
+  ) {
+    final imageKey = _imagePickerKeyFor(
+      field,
+    );
+
+    final selectedImage = _selectedImages[imageKey];
+
+    return InkWell(
+      onTap: () {
+        if (selectedImage == null) {
+          _pickImage(
+            field,
+          );
+        } else {
+          _showFileImagePreview(
+            selectedImage,
+          );
+        }
+      },
+      borderRadius: BorderRadius.circular(
+        8,
+      ),
+      child: Container(
+        height: 140,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: const Color(
+            0xFFF7F7F7,
+          ),
+          border: Border.all(
+            color: const Color(
+              0xFFD6D6D6,
+            ),
+          ),
+          borderRadius: BorderRadius.circular(
+            8,
+          ),
+        ),
+        child: selectedImage == null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.cloud_upload_outlined,
+                    size: 32,
+                    color: Colors.black54,
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    'Tap to upload image',
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                ],
+              )
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                      8,
+                    ),
+                    child: Image.file(
+                      File(
+                        selectedImage.path,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: IconButton.filled(
+                      onPressed: () {
+                        setState(() {
+                          _selectedImages[imageKey] = null;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.close,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 
@@ -544,66 +883,55 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
           boxShadow: [
             BoxShadow(
               blurRadius: 5,
-              color: Color(0x22000000),
-              offset: Offset(0, -2),
+              color: Color(
+                0x22000000,
+              ),
+              offset: Offset(
+                0,
+                -2,
+              ),
             ),
           ],
         ),
         child: Column(
-          mainAxisSize:
-          MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // =================================================
-            // QUANTITY
-            // =================================================
-
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed:
-                  _decreaseQuantity,
+                  onPressed: _decreaseQuantity,
                   icon: const Icon(
                     Icons.remove_circle_outline,
                   ),
                 ),
-
                 Container(
-                  constraints:
-                  const BoxConstraints(
+                  constraints: const BoxConstraints(
                     minWidth: 50,
                   ),
-                  alignment:
-                  Alignment.center,
+                  alignment: Alignment.center,
                   child: Text(
                     _quantity.toString(),
-                    style:
-                    const TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
-                      fontWeight:
-                      FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-
                 IconButton(
-                  onPressed:
-                  _increaseQuantity,
+                  onPressed: _increaseQuantity,
                   icon: const Icon(
                     Icons.add_circle_outline,
                   ),
                 ),
               ],
             ),
-
-            const SizedBox(height: 8),
-
-            // =================================================
-            // API ACTION BUTTON
-            // =================================================
-
-            ApiActionButton<Map<String, dynamic>>(title: 'Add to Configurator', onCall: () async {
+            const SizedBox(
+              height: 8,
+            ),
+            ApiActionButton<Map<String, dynamic>>(
+              title: 'Add to Configurator',
+              onCall: () async {
                 if (!_validateForm()) {
                   return ApiResponse<Map<String, dynamic>>.failure(
                     message: 'Please fill all required fields.',
@@ -611,11 +939,14 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
                 }
 
                 final configuration = _collectFormData();
-                return ProductRepository.addToConfigurator(productId: widget.product.id, configuration: configuration, quantity: _quantity,);
+
+                return ProductRepository.addToConfigurator(
+                  productId: widget.product.id,
+                  configuration: configuration,
+                  quantity: _quantity,
+                );
               },
-
               successMessage: 'Successfully added to configurator!',
-
               onSuccess: (data) {
                 /*
                  * Later:
@@ -624,7 +955,6 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
                  * - update badge
                  */
               },
-
               onError: (message) {
                 /*
                  * Error UI is handled
@@ -644,8 +974,11 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
   @override
   void dispose() {
-    for (final controller
-    in _textControllers.values) {
+    for (final controller in _textControllers.values) {
+      controller.dispose();
+    }
+
+    for (final controller in _otherControllers.values) {
       controller.dispose();
     }
 

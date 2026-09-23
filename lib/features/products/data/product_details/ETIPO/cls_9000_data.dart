@@ -8,8 +8,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
   id: 'ETI_9000INVL',
   title: '9000INVL (Inverted) Series Enclosed Track Conveyor Lubricators',
   imagePath: AppAssets.etipo9000Invl,
-  description:
-  '9000INVL Series lubrication system for inverted enclosed track conveyor applications.',
+  description: '9000INVL Series lubrication system for inverted enclosed track conveyor applications.',
 
   // =========================================================
   // CONFIGURATION
@@ -40,7 +39,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'otherChainSize',
           label: 'Other Chain Size',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           hintText: 'Enter conveyor chain size',
         ),
 
@@ -55,7 +54,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'otherIndustrialChainManufacturer',
           label: 'Other Chain Manufacturer',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           hintText: 'Enter chain manufacturer',
         ),
 
@@ -101,7 +100,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'conveyorIndex',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
@@ -145,7 +144,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'ovenStatus',
           label: 'Is Conveyor Located in an Oven?',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -158,7 +157,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'ovenTemp',
           label: 'Oven Temperature',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           visibleWhenFieldKey: 'appEnviroment',
           visibleWhenValue: 'Oven',
         ),
@@ -266,14 +265,14 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'openRaceStyle',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'sealedStyle',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Extended',
             'Flush',
@@ -285,21 +284,21 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'powerChain',
           label: 'Power Chain',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'chainPins',
           label: 'Chain Pins',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'catDriveStatus',
           label: 'Caterpillar Drive',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -310,7 +309,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'catDriveNum',
           label: 'Caterpillar Drive Quantity',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           visibleWhenFieldKey: 'catDriveStatus',
           visibleWhenValue: 'Yes',
         ),
@@ -319,7 +318,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'railLubrication',
           label: 'Rail Lubrication',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -330,7 +329,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'externalLubeStatus',
           label: 'External Lubrication',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -341,28 +340,28 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'lubeBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeViscosity',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'sideLubeStatus',
           label: 'Lubrication from the Side of Chain',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -373,7 +372,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'topLubeStatus',
           label: 'Lubrication from the Top of Chain',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -384,7 +383,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'reservoirSize',
           label: 'Reservoir Size',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             '10 Gallon',
             '65 Gallon',
@@ -395,14 +394,14 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'reservoirQuantity',
           label: 'Reservoir Size Quantity',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'chainCleanStatus',
           label: 'Is the Conveyor Chain Clean?',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -422,7 +421,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'mightyLubeMonitoring',
           label: 'Mighty Lube Monitoring',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -433,7 +432,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'ctrStatus',
           label: 'CTR Controller',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -444,7 +443,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'plcConnection',
           label: 'PLC Connection',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -455,7 +454,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'monitorControlStatus',
           label: 'Monitoring Controller',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -466,7 +465,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'otherControllerInfo',
           label: 'Other Describe',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           multiline: true,
         ),
 
@@ -475,7 +474,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           label:
           'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           multiline: true,
         ),
 
@@ -483,7 +482,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'controllerSpecialOptionsSpecify',
           label: 'Please Specify',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           multiline: true,
         ),
       ],
@@ -513,35 +512,35 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           key: 'conductor2',
           label: '2 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conductor4',
           label: '4 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conductor7',
           label: '7 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conductor12',
           label: '12 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'junctionBoxNum',
           label: 'Junction Box Quantities',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
       ],
     ),
@@ -572,7 +571,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/3/CLS/b.png',
+          imagePath: AppAssets.etioB,
         ),
 
         ProductFieldData(
@@ -581,7 +580,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/3/CLS/G.png',
+          imagePath: AppAssets.etioG,
         ),
 
         ProductFieldData(
@@ -590,7 +589,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Height',
-          imagePath: 'assets/Measurements/3/CLS/H.png',
+          imagePath: AppAssets.etioH,
         ),
 
         ProductFieldData(
@@ -600,7 +599,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Center of Power Wheel to Center of Power Wheel',
-          imagePath: 'assets/Measurements/3/CLS/S.png',
+          imagePath: AppAssets.etioS,
         ),
 
         ProductFieldData(
@@ -609,7 +608,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/3/CLS/K2.png',
+          imagePath: AppAssets.etioK2,
         ),
 
         ProductFieldData(
@@ -618,7 +617,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/3/CLS/L2.png',
+          imagePath: AppAssets.etioL2,
         ),
 
         ProductFieldData(
@@ -627,17 +626,16 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/3/CLS/M2.png',
+          imagePath: AppAssets.etioM2,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackN2',
-          label:
-          'Enclosed Track (Inverted) Free Rail Vertical Position (Height) (N2)',
+          label: 'Enclosed Track (Inverted) Free Rail Vertical Position (Height) (N2)',
           type: ProductFieldType.text,
           required: true,
           hintText: 'Top of Power Rail to Bottom of Free Rail',
-          imagePath: 'assets/Measurements/3/CLS/N2.png',
+          imagePath: AppAssets.etioN2,
         ),
 
         ProductFieldData(
@@ -646,7 +644,7 @@ const ProductDetailData etipo9000InvlData = ProductDetailData(
           type: ProductFieldType.text,
           required: true,
           hintText: 'Center of Trolley Wheel to Center of Trolley Wheel',
-          imagePath: 'assets/Measurements/3/CLS/S2.png',
+          imagePath: AppAssets.etioS2,
         ),
       ],
     ),

@@ -45,6 +45,60 @@ class ProductFieldData {
   final bool multiline;
 
   // =========================================================
+  // DROPDOWN OTHER VALUE
+  // =========================================================
+
+  /// Shows a custom text field below a dropdown when
+  /// the selected option is "Other" or any configured value.
+  ///
+  /// Example:
+  ///
+  /// showOtherTextField: true
+  ///
+  /// If user selects "Other", they can type their own value.
+  /// The typed value will be sent to API instead of "Other".
+  final bool showOtherTextField;
+
+  /// Dropdown option value that should show the custom
+  /// "Other" text field.
+  ///
+  /// Default is "Other".
+  final String otherOptionValue;
+
+  /// Optional hint for the custom "Other" text field.
+  ///
+  /// Example:
+  /// Enter chain manufacturer
+  final String? otherHintText;
+
+  // =========================================================
+  // IMAGE PICKER SUPPORT
+  // =========================================================
+
+  /// Shows an image picker next to this dropdown when
+  /// the selected value matches [imagePickerWhenValue].
+  ///
+  /// Example:
+  ///
+  /// showImagePicker: true
+  /// imagePickerWhenValue: 'Yes - Will Attach'
+  final bool showImagePicker;
+
+  /// Dropdown value that should show image picker.
+  ///
+  /// Example:
+  /// Yes - Will Attach
+  final String? imagePickerWhenValue;
+
+  /// Key used for selected/uploaded image data.
+  ///
+  /// Example:
+  /// plantLayoutImage
+  ///
+  /// If null, UI can generate one from field key.
+  final String? imagePickerKey;
+
+  // =========================================================
   // CONDITIONAL VISIBILITY
   // =========================================================
 
@@ -84,6 +138,12 @@ class ProductFieldData {
     this.hintText,
     this.imagePath,
     this.multiline = false,
+    this.showOtherTextField = false,
+    this.otherOptionValue = 'Other',
+    this.otherHintText,
+    this.showImagePicker = false,
+    this.imagePickerWhenValue,
+    this.imagePickerKey,
     this.visibleWhenFieldKey,
     this.visibleWhenValue,
   });

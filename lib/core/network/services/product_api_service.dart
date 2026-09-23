@@ -106,6 +106,22 @@ class ProductApiService {
         );
 
     // -------------------------------------------------------
+    // ETIPO OP-41A
+    // -------------------------------------------------------
+
+      case 'ETI_OP41A':
+        return _addEtipoOp41a(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+
+      case 'ETI_MLAIO':
+        return _addEtiMlaio(
+          configuration: configuration,
+          quantity: quantity,
+        );
+    // -------------------------------------------------------
     // ETOPO 2100L
     // -------------------------------------------------------
 
@@ -131,6 +147,12 @@ class ProductApiService {
 
       case 'ETO_OP48E':
         return _addEtopoOp48e(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'ETO_OP41A':
+        return _addEtopoOp41a(
           configuration: configuration,
           quantity: quantity,
         );
@@ -195,6 +217,19 @@ class ProductApiService {
           quantity: quantity,
         );
 
+
+    // -------------------------------------------------------
+// FLAT TOP - CATERPILLAR DRIVE LUBRICATORS
+// Product ID: FT_CDL
+// POST /api/ft_cdl
+// -------------------------------------------------------
+
+      case 'FT_CDL':
+        return _addFlatTopCaterpillarDriveLubricators(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
     // -------------------------------------------------------
     // FLAT TOP OP-40E
     // -------------------------------------------------------
@@ -204,6 +239,7 @@ class ProductApiService {
           configuration: configuration,
           quantity: quantity,
         );
+
 
     // -------------------------------------------------------
     // C CHANNEL - OVERSPRAY ELIMINATOR BRUSH
@@ -307,6 +343,19 @@ class ProductApiService {
 
       case 'IBR_OP4OE':
         return _addInBoardRollerChainOp40e(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // -------------------------------------------------------
+// IN-BOARD ROLLER CHAIN
+// OPCO 300 SERIES AUTOMATIC SEALED WHEEL LUBRICATOR
+// Product ID: IBRC_300
+// POST /api/ibrc_300
+// -------------------------------------------------------
+
+      case 'IBRC_300':
+        return _addInBoardRollerChain300(
           configuration: configuration,
           quantity: quantity,
         );
@@ -499,6 +548,49 @@ class ProductApiService {
 
       case 'OHP_PMM':
         return _addOverheadPmm(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // -------------------------------------------------------
+    // POWER AND FREE OVERHEAD OR INVERTED
+    // NON-POWERED MIGHTY LUBE BRUSH CLEANERS 300I / 400I / 600I
+    // Product ID: PFO_CCS_300I
+    // -------------------------------------------------------
+
+      case 'PFO_CCS_300I':
+        return _addPfoNonPoweredBrushCleaners300i400i600i(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // -------------------------------------------------------
+    // POWER AND FREE OVERHEAD OR INVERTED
+    // OP-8 POWER BRUSH CLEANING SYSTEM
+    // Product ID: PFO_CCS_OP8
+    // -------------------------------------------------------
+
+      case 'PFO_CCS_OP8':
+        return _addPfoOp8PowerBrushCleaningSystem(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // -------------------------------------------------------
+    // POWER AND FREE OVERHEAD OR INVERTED
+    // OP-8NP NON-POWER BRUSH CLEANING SYSTEM
+    // Product ID: PFO_CCS_OP8NP
+    // -------------------------------------------------------
+
+      case 'PFO_CCS_OP8NP':
+        return _addPfoOp8npNonPowerBrushCleaningSystem(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+
+      case 'PFO_CGS_FR314':
+        return _addPfoFreeRail314LoadWheelGreaser(
           configuration: configuration,
           quantity: quantity,
         );
@@ -700,6 +792,44 @@ class ProductApiService {
     );
   }
 
+
+  // =========================================================
+  // ETIPO OP-41A
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addEtipoOp41a({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'ETI_OP41AData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.etipoOp41a,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addEtiMlaio({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'ETI_MLAIOData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.etiMlaio,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
   // =========================================================
   // ETOPO 2100L SERIES SELF-CONTAINED CONVEYOR LUBRICATORS
   // =========================================================
@@ -755,6 +885,27 @@ class ProductApiService {
 
     return ApiClient.post<Map<String, dynamic>>(
       url: ApiEndpoints.etopoOp48e,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // =========================================================
+  // ETIPO OP-41A
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addEtopoOp41a({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'ETO_OP41AData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.etopoOp41a,
       body: body,
       parser: _mapParser,
     );
@@ -877,6 +1028,27 @@ class ProductApiService {
 
     return ApiClient.post<Map<String, dynamic>>(
       url: ApiEndpoints.flatTopMightyLubeLubricator,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+// FLAT TOP - CATERPILLAR DRIVE LUBRICATORS
+// =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addFlatTopCaterpillarDriveLubricators({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'FT_CDLData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.flatTopCdl,
       body: body,
       parser: _mapParser,
     );
@@ -1055,8 +1227,7 @@ class ProductApiService {
   // POST /api/ift_iftl
   // =========================================================
 
-  static Future<ApiResponse<Map<String, dynamic>>>
-  _addInFloorTowLineMightyLube({
+  static Future<ApiResponse<Map<String, dynamic>>> _addInFloorTowLineMightyLube({
     required Map<String, dynamic> configuration,
     required int quantity,
   }) {
@@ -1072,6 +1243,7 @@ class ProductApiService {
     );
   }
 
+
   // =========================================================
   // IN FLOOR TOW LINE
   // OP-40E
@@ -1081,8 +1253,7 @@ class ProductApiService {
   // POST /api/ift_op4oe
   // =========================================================
 
-  static Future<ApiResponse<Map<String, dynamic>>>
-  _addInFloorTowLineOp40e({
+  static Future<ApiResponse<Map<String, dynamic>>> _addInFloorTowLineOp40e({
     required Map<String, dynamic> configuration,
     required int quantity,
   }) {
@@ -1145,6 +1316,28 @@ class ProductApiService {
 
     return ApiClient.post<Map<String, dynamic>>(
       url: ApiEndpoints.inBoardRollerChainOp40e,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // =========================================================
+// IN-BOARD ROLLER CHAIN
+// OPCO 300 SERIES AUTOMATIC SEALED WHEEL LUBRICATOR
+// =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addInBoardRollerChain300({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'IBRC_300Data': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.inBoardRollerChain300,
       body: body,
       parser: _mapParser,
     );
@@ -1659,5 +1852,110 @@ class ProductApiService {
     }
 
     return <String, dynamic>{};
+  }
+
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // NON-POWERED MIGHTY LUBE BRUSH CLEANERS 300I / 400I / 600I
+  //
+  // Product ID: PFO_CCS_300I
+  // Request Body: PFO_CCS_300IData
+  // POST /api/pfo_ccs_300i
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoNonPoweredBrushCleaners300i400i600i({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CCS_300IData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoNonPoweredBrushCleaners300i400i600i,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // OP-8 POWER BRUSH CLEANING SYSTEM
+  //
+  // Product ID: PFO_CCS_OP8
+  // Request Body: PFO_CCS_OP8Data
+  // POST /api/pfo_ccs_op8
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoOp8PowerBrushCleaningSystem({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CCS_OP8Data': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoOp8PowerBrushCleaningSystem,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // OP-8NP NON-POWER BRUSH CLEANING SYSTEM
+  //
+  // Product ID: PFO_CCS_OP8NP
+  // Request Body: PFO_CCS_OP8NPData
+  // POST /api/pfo_ccs_op8np
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoOp8npNonPowerBrushCleaningSystem({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CCS_OP8NPData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoOp8npNonPowerBrushCleaningSystem,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // FREE RAIL 314 "LOAD" WHEEL GREASER
+  //
+  // Product ID: PFO_CGS_FR314
+  // Request Body: PFO_CGS_FR314Data
+  // POST /api/pfo_cgs_fr314
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoFreeRail314LoadWheelGreaser({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CGS_FR314Data': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoFreeRail314LoadWheelGreaser,
+      body: body,
+      parser: _mapParser,
+    );
   }
 }

@@ -19,6 +19,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
           type: ProductFieldType.text,
+            required: true
         ),
 
         // -----------------------------------------------------
@@ -36,6 +37,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
             '3/8" Log Chain',
             'Other',
           ],
+            required: true
         ),
 
         // Website shows additional field when Other is selected.
@@ -45,6 +47,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           type: ProductFieldType.text,
           visibleWhenFieldKey: 'chainSize',
           visibleWhenValue: 'Other',
+          required: true
         ),
 
         // -----------------------------------------------------
@@ -66,6 +69,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
             'Wilkie Brothers',
             'Other',
           ],
+          required: true
         ),
 
         ProductFieldData(
@@ -80,6 +84,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length',
           type: ProductFieldType.text,
+            required: true
         ),
 
         // Website confirmed exact options.
@@ -93,12 +98,14 @@ const ProductDetailData etopo2100LData = ProductDetailData(
             'm Meter',
             'mm Millimeter',
           ],
+            required: true
         ),
 
         ProductFieldData(
           key: 'conveyorSpeed',
           label: 'Conveyor Speed (Min/Max)',
           type: ProductFieldType.text,
+            required: true
         ),
 
         // Website confirmed exact options.
@@ -110,12 +117,14 @@ const ProductDetailData etopo2100LData = ProductDetailData(
             'Feet / minute',
             'Meters / minute',
           ],
+            required: true
         ),
 
         ProductFieldData(
           key: 'conveyorIndex',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
+            required: true
         ),
 
         // Website confirmed exact options.
@@ -127,6 +136,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
             'Right to Left',
             'Left to Right',
           ],
+            required: true
         ),
 
         // -----------------------------------------------------
@@ -160,20 +170,19 @@ const ProductDetailData etopo2100LData = ProductDetailData(
 
         ProductFieldData(
           key: 'surroundingTemp',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
           options: const [
             'Yes',
             'No',
           ],
+            required: true
         ),
 
         // Website confirmed exact options + required marker.
         ProductFieldData(
           key: 'conveyorLoaded',
-          label:
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
+          label: 'Is the Conveyor Loaded or Unloaded at Planned Install Location? *',
           type: ProductFieldType.dropdown,
           required: true,
           options: const [
@@ -184,8 +193,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
 
         ProductFieldData(
           key: 'conveyorSwing',
-          label:
-          'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
+          label: 'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side *',
           type: ProductFieldType.dropdown,
           required: true,
           options: const [
@@ -230,15 +238,18 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
           ],
+
         ),
         ProductFieldData(
           key: 'newMonitoringSystem',
           label: 'Add New Monitoring System',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -258,11 +269,13 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'wheelOpenType',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'wheelClosedType',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'powerChain',
@@ -273,6 +286,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'chainPins',
           label: 'Chain Pins',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -282,41 +296,49 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'catDriveStatus',
           label: 'Caterpillar Drive',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'catDriveNum',
           label: 'Caterpillar Drive Quantity',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'railLubeStatus',
           label: 'Rail Lubrication',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'externalLubeStatus',
           label: 'External Lubrication',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'lubeBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'lubeType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'lubeViscosity',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'sideLubeStatus',
           label: 'Lubrication from the Side of Chain',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -326,6 +348,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'topLubeStatus',
           label: 'Lubrication from the Top of Chain',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -335,6 +358,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'chainCleanStatus',
           label: 'Is the Conveyor Chain Clean?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -356,6 +380,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'wireMeasurementUnit',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Feet',
             'Inches',
@@ -367,26 +392,31 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'conductor2',
           label: '2 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'conductor4',
           label: '4 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'conductor7',
           label: '7 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'conductor12',
           label: '12 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
         ProductFieldData(
           key: 'junctionBoxNum',
           label: 'Junction Box Quantities',
           type: ProductFieldType.text,
+          required: true,
         ),
       ],
     ),
@@ -402,6 +432,7 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'etUnitType',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: const [
             'Feet',
             'Inches',
@@ -414,49 +445,54 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'etOverheadB',
           label: 'Enclosed Track (Overhead) Power Trolley Wheel (B)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Diameter)',
-          imagePath: 'assets/Measurements/4/CMS/B.png',
+          imagePath: AppAssets.etioB,
         ),
 
         ProductFieldData(
           key: 'etOverheadG',
           label: 'Enclosed Track (Overhead) Power Rail (G)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Width)',
-          imagePath: 'assets/Measurements/4/CMS/G.png',
+          imagePath: AppAssets.etioG,
         ),
 
         ProductFieldData(
           key: 'etOverheadH',
           label: 'Enclosed Track (Overhead) Power Rail (H)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Height)',
-          imagePath: 'assets/Measurements/4/CMS/H.png',
+          imagePath: AppAssets.etioH,
         ),
 
         ProductFieldData(
           key: 'etOverheadS',
-          label:
-          'Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
+          label: 'Enclosed Track (Overhead) Trolley Pitch [Spacing] Minimum - For variable pitch chain, Provide the Minimum Pitch Dimension (S)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Center of Power Wheel to Center of Power Wheel)',
-          imagePath: 'assets/Measurements/4/CMS/S.png',
+          imagePath: AppAssets.etioS,
         ),
 
         ProductFieldData(
           key: 'etOverheadK2',
           label: 'Enclosed Track (Overhead) Free Trolley Wheel (K2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Diameter)',
-          imagePath: 'assets/Measurements/4/CMS/K2.png',
+          imagePath: AppAssets.etioK2,
         ),
 
         ProductFieldData(
           key: 'etOverheadL2',
           label: 'Enclosed Track (Overhead) Free Rail (L2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Width)',
-          imagePath: 'assets/Measurements/4/CMS/L2.png',
+          imagePath: AppAssets.etioL2,
         ),
 
         // Website explicitly shows Height here.
@@ -464,33 +500,50 @@ const ProductDetailData etopo2100LData = ProductDetailData(
           key: 'etOverheadM2',
           label: 'Enclosed Track (Overhead) Free Rail (M2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Height)',
-          imagePath: 'assets/Measurements/4/CMS/M2.png',
-        ),
-
-        // Current website itself shows this oddly named field.
-        // Kept because website is our source of truth.
-        ProductFieldData(
-          key: 'measurementDropdown',
-          label: 'Dropdown',
-          type: ProductFieldType.text,
+          imagePath: AppAssets.etioM2,
         ),
 
         ProductFieldData(
           key: 'etOverheadN2',
-          label:
-          'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
+          label: 'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Top of Power Rail to Bottom of Free Rail)',
-          imagePath: 'assets/Measurements/4/CMS/N2.png',
+          imagePath: AppAssets.etioN2,
         ),
 
         ProductFieldData(
           key: 'etOverheadS2',
           label: 'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)',
           type: ProductFieldType.text,
+          required: true,
           hintText: '(Center of Trolley Wheel to Center of Trolley Wheel)',
-          imagePath: 'assets/Measurements/4/CMS/S2.png',
+          imagePath: AppAssets.etioS2,
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Existing app-specific field.
+    // Kept optional.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          required: false,
+          multiline: true,
+          hintText:
+          'Enter any additional notes or instructions here...',
         ),
       ],
     ),

@@ -26,24 +26,26 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
       id: 'general',
       title: 'General Information',
       fields: [
-        // ---------------------------------------------------
-        // Name of Conveyor System
-        // ---------------------------------------------------
-
         ProductFieldData(
-          key: 'conveyorName',
-          label: 'Name of Conveyor System',
-          type: ProductFieldType.text,
+            key: 'conveyorName',
+            label: 'Name of Conveyor System',
+            type: ProductFieldType.text,
+            required: true
         ),
 
         // ---------------------------------------------------
-        // Conveyor Chain Size
+        // CONVEYOR CHAIN SIZE
+        //
+        // Website recording only confirmed "Other".
+        // Legacy options are intentionally not promoted to
+        // current website truth.
         // ---------------------------------------------------
 
         ProductFieldData(
           key: 'conveyorChainSize',
           label: 'Conveyor Chain Size',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'X348 Chain (3")',
             'X458 Chain (4")',
@@ -55,178 +57,198 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
 
         ProductFieldData(
           key: 'otherConveyorChainSize',
-          label: 'Other Conveyor Chain Size',
+          label: 'Conveyor Chain Size - Other Details',
           type: ProductFieldType.text,
           visibleWhenFieldKey: 'conveyorChainSize',
           visibleWhenValue: 'Other',
+          required: true,
         ),
 
         // ---------------------------------------------------
-        // Chain Manufacturer
+        // CHAIN MANUFACTURER
         //
-        // Only "Other" was confirmed from the current
-        // website recording. Legacy Flutter options are not
-        // treated as current website options.
+        // Website recording only confirmed "Other".
         // ---------------------------------------------------
 
         ProductFieldData(
           key: 'chainManufacturer',
           label: 'Chain Manufacturer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
+            'Daifuku',
+            'Frost',
+            'NKC',
+            'Pacline',
+            'Rapid',
+            'WEBB',
+            'Webb-Stiles',
+            'Wilkie Brothers',
             'Other',
           ],
         ),
 
         ProductFieldData(
-          key: 'otherChainManufacturer',
-          label: 'Other Chain Manufacturer',
-          type: ProductFieldType.text,
-          visibleWhenFieldKey: 'chainManufacturer',
-          visibleWhenValue: 'Other',
+            key: 'otherChainManufacturer',
+            label: 'Chain Manufacturer - Other Details',
+            type: ProductFieldType.text,
+            visibleWhenFieldKey: 'chainManufacturer',
+            visibleWhenValue: 'Other',
+            required: true
         ),
-
-        // ---------------------------------------------------
-        // Conveyor Length
-        // ---------------------------------------------------
 
         ProductFieldData(
-          key: 'conveyorLength',
-          label: 'Conveyor Length',
-          type: ProductFieldType.text,
+            key: 'conveyorLength',
+            label: 'Conveyor Length',
+            type: ProductFieldType.text,
+            required: true
         ),
 
-        // Only Feet was confirmed in the website recording.
         ProductFieldData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
-          type: ProductFieldType.text,
-          hintText: 'Feet',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Feet',
+            'Inches',
+            'm Meter',
+            'mm Millimeter',
+          ],
         ),
-
-        // ---------------------------------------------------
-        // Conveyor Speed
-        // ---------------------------------------------------
 
         ProductFieldData(
-          key: 'conveyorSpeed',
-          label: 'Conveyor Speed (Min/Max)',
-          type: ProductFieldType.text,
+            key: 'conveyorSpeed',
+            label: 'Conveyor Speed (Min/Max)',
+            type: ProductFieldType.text,
+            required: true
         ),
 
-        // Only Feet / minute was confirmed in the recording.
         ProductFieldData(
           key: 'conveyorSpeedUnit',
           label: 'Conveyor Speed Unit',
-          type: ProductFieldType.text,
-          hintText: 'Feet / minute',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Feet / minute',
+            'Meters / minute',
+          ],
         ),
 
         ProductFieldData(
           key: 'indexingVariableSpeedConditions',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
+          required: true,
         ),
 
+        // Current website extraction identified this as a
+        // text box, so legacy Right-to-Left / Left-to-Right
+        // dropdown is intentionally not reused.
         ProductFieldData(
-          key: 'travelDirection',
-          label: 'Direction of Travel',
-          type: ProductFieldType.text,
+            key: 'travelDirection',
+            label: 'Direction of Travel',
+            type: ProductFieldType.dropdown,
+            required: true,
+            options: [
+              'Right to Left',
+              'Left to Right'
+            ]
         ),
 
-        // ---------------------------------------------------
-        // Application Environment
-        // ---------------------------------------------------
-
+        // Website confirmed "Other" and conditional input.
+        // Other environment options were not confirmed.
         ProductFieldData(
           key: 'applicationEnvironment',
           label: 'Application Environment',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
+            'Ambient',
+            'Caustic (i.e. Phosphate / E-Coat, etc.)',
+            'Oven',
+            'Wash Down',
+            'Intrinsic',
+            'Food Grade',
             'Other',
           ],
-          required: true,
         ),
 
         ProductFieldData(
           key: 'otherApplicationEnvironment',
-          label: 'Other Application Environment',
+          label: 'Application Environment - Other Details',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'applicationEnvironment',
           visibleWhenValue: 'Other',
         ),
 
-        // ---------------------------------------------------
-        // Temperature
-        // ---------------------------------------------------
-
         ProductFieldData(
           key: 'surroundingTemperature',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System is below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System is below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
           ],
         ),
 
-        // ---------------------------------------------------
-        // Loaded / Unloaded
-        //
-        // Website confirms this is a dropdown, but the exact
-        // option labels were not clearly opened in recording.
-        // Keeping as text avoids inventing options.
-        // ---------------------------------------------------
-
+        // Exact option labels were not confirmed from the
+        // website recording, therefore kept as text rather
+        // than importing legacy Loaded/Unloaded values.
         ProductFieldData(
           key: 'conveyorLoadedStatus',
-          label:
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+          label: 'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
           type: ProductFieldType.text,
           required: true,
         ),
-
-        // ---------------------------------------------------
-        // Conveyor Swing / Sway
-        // ---------------------------------------------------
 
         ProductFieldData(
           key: 'conveyorSwingStatus',
-          label:
-          'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side',
+          label: 'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
           ],
-          required: true,
         ),
 
-        // ---------------------------------------------------
-        // Single / Double Strand
-        //
-        // Dropdown was visible, but its options were not opened.
-        // ---------------------------------------------------
-
+        // Current website extraction identifies this as text.
         ProductFieldData(
           key: 'conveyorStrand',
           label: 'Is Conveyor Single or Double Strand',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Single',
+            'Double',
+          ],
         ),
 
-        // ---------------------------------------------------
-        // WEBSITE ATTACHMENTS
-        //
-        // The current website also contains:
-        //
-        // I Have A Plant Layout To Attach
-        // I Have The Required Pictures Of Each Chain To Attach
-        //
-        // These are intentionally not added here because the
-        // reusable ProductConfigurationForm currently does not
-        // support file attachment fields.
-        // ---------------------------------------------------
+        ProductFieldData(
+          key: 'plantLayout',
+          label: 'I Have A Plant Layout To Attach',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes - Will Attach',
+            'No - Do Not Have',
+          ],
+        ),
+
+
+        ProductFieldData(
+          key: 'chainPicture',
+          label: 'I Have The Required Pictures Of Each Chain To Attach',
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Yes - Will Attach',
+            'No - Do Not Have',
+          ],
+        ),
       ],
     ),
 
@@ -260,13 +282,13 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
 
     ProductConfigurationSection(
       id: 'monitoringSystem',
-      title:
-      'New Monitoring System or Adding to Existing Monitoring System',
+      title: 'New Monitoring System or Adding to Existing Monitoring System',
       fields: [
         ProductFieldData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -277,6 +299,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'newMonitoringSystem',
           label: 'Add New Monitoring System',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -297,9 +320,11 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'wheelOpenRaceStyle',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
-            'Yes',
-            'No',
+            'No Applicable',
+            'Open Inside',
+            'Open Outside',
           ],
         ),
 
@@ -307,9 +332,11 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'wheelSealedStyle',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
-            'Yes',
-            'No',
+            'Extended',
+            'Flush',
+            'Recessed',
           ],
         ),
 
@@ -317,6 +344,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'openInsideShieldedOutside',
           label: 'Open Inside / Shielded Outside',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -327,6 +355,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'freeTrolleyWheels',
           label: 'Free Trolley Wheels',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -337,6 +366,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'guideRollers',
           label: 'Guide Rollers',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -347,9 +377,11 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'guideRollersOpenRaceStyle',
           label: 'Guide Rollers Open Race Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
-            'Yes',
-            'No',
+            'No Applicable',
+            'Open Inside',
+            'Open Outside',
           ],
         ),
 
@@ -357,9 +389,11 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'guideRollersSealedStyle',
           label: 'Guide Rollers Sealed Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
-            'Yes',
-            'No',
+            'Extended',
+            'Flush',
+            'Recessed',
           ],
         ),
 
@@ -367,6 +401,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'openHole',
           label: 'Open Hole',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -377,6 +412,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'dogActuator',
           label: 'Dog Actuator',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -387,6 +423,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'pivotPoints',
           label: 'Pivot Points',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -397,6 +434,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'kingPin',
           label: 'King Pin',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -407,6 +445,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'outboardWheels',
           label: 'Outboard Wheels',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -417,6 +456,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'railLubrication',
           label: 'Rail Lubrication',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -427,18 +467,21 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'currentLubricationEquipmentBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
+          required: true
         ),
 
         ProductFieldData(
           key: 'currentLubricantType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
+          required: true
         ),
 
         ProductFieldData(
           key: 'currentLubricantViscosityGrade',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
+          required: true
         ),
       ],
     ),
@@ -455,6 +498,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'chainMasterController',
           label: 'ChainMaster Controller',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -465,9 +509,11 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'timer',
           label: 'Timer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
-            'Yes',
-            'No',
+            'Not Required',
+            '12 Hours',
+            '1000 Hour'
           ],
         ),
 
@@ -475,6 +521,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'electricOnOff',
           label: 'Electric On/Off',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -485,6 +532,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'pneumaticOnOff',
           label: 'Pneumatic On/Off',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -495,6 +543,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'mightyLubeMonitoring',
           label: 'Mighty Lube Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -505,6 +554,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'plcConnection',
           label: 'PLC Connection',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -515,6 +565,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           key: 'otherControllerDescription',
           label: 'Other Describe',
           type: ProductFieldType.text,
+          required: true,
           multiline: true,
         ),
 
@@ -523,9 +574,9 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
         // Keeping it as text prevents inventing values.
         ProductFieldData(
           key: 'specialControllerOptions',
-          label:
-          'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
+          label: 'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
           type: ProductFieldType.text,
+          required: true
         ),
 
         ProductFieldData(
@@ -533,6 +584,7 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
           label: 'Please Specify',
           type: ProductFieldType.text,
           multiline: true,
+          required: true
         ),
       ],
     ),
@@ -545,90 +597,113 @@ const ProductDetailData inFloorTowLineOp40eData = ProductDetailData(
       id: 'measurements',
       title: 'In Floor Towline: Measurements',
       fields: [
-        // Only Feet was visibly confirmed.
+        // Website only visibly confirmed "Feet".
         ProductFieldData(
           key: 'measurementUnit',
           label: 'Measurement Unit',
-          type: ProductFieldType.text,
+          type: ProductFieldType.dropdown,
+          required: true,
+          options: [
+            'Feet',
+            'Inches',
+            'm Meter',
+            'mm Millimeter',
+          ],
           hintText: 'Feet',
         ),
 
         ProductFieldData(
-          key: 'inFloorTowlineChainDropA',
-          label: 'In Floor Towline Chain Drop (A)',
-          type: ProductFieldType.text,
-          hintText: 'Top of Rail to Center of Chain',
+            key: 'inFloorTowlineChainDropA',
+            label: 'In Floor Towline Chain Drop (A)',
+            type: ProductFieldType.text,
+            hintText: 'Top of Rail to Center of Chain',
+            required: true,
+            imagePath: AppAssets.FTL_CLS_MLFTL_A
         ),
-
         ProductFieldData(
-          key: 'inFloorTowlinePowerTrolleyWheelB',
-          label: 'In Floor Towline Power Trolley Wheel (B)',
-          type: ProductFieldType.text,
-          hintText: 'Diameter',
+            key: 'inFloorTowlinePowerTrolleyWheelB',
+            label: 'In Floor Towline Power Trolley Wheel (B)',
+            type: ProductFieldType.text,
+            hintText: 'Diameter',
+            required: true,
+            imagePath: AppAssets.FTL_CLS_MLFTL_B
         ),
-
         ProductFieldData(
           key: 'inFloorTowlinePowerRailG',
           label: 'In Floor Towline Power Rail (G)',
           type: ProductFieldType.text,
           hintText: 'Width',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_G,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlinePowerRailH',
           label: 'In Floor Towline Power Rail (H)',
           type: ProductFieldType.text,
           hintText: 'Height',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_H,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlineRailOffsetJ',
           label: 'In Floor Towline Rail Offset (J)',
           type: ProductFieldType.text,
-          hintText:
-          'Outside of Rail Channel to Outside of Rail Channel',
+          hintText: 'Outside of Rail Channel to Outside of Rail Channel',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_J,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlineConveyorHousingS1',
           label: 'In Floor Towline Conveyor Housing (S1)',
           type: ProductFieldType.text,
           hintText: 'Depth',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_S1,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlineConveyorHousingT1',
           label: 'In Floor Towline Conveyor Housing (T1)',
           type: ProductFieldType.text,
           hintText: 'Width',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_T1,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlineConveyorHousingWallU1',
           label: 'In Floor Towline Conveyor Housing Wall (U1)',
           type: ProductFieldType.text,
           hintText: 'Thickness',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_U1,
         ),
-
         ProductFieldData(
-          key: 'inFloorTowlineConveyorHousingFloorV1',
+          key: 'inFloorTowlineConveyorHousingV1',
           label: 'In Floor Towline Conveyor Housing Floor (V1)',
           type: ProductFieldType.text,
           hintText: 'Thickness',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_V1,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlineConveyorHousingOffsetW1',
           label: 'In Floor Towline Conveyor Housing Offset (W1)',
           type: ProductFieldType.text,
           hintText: 'Outside of Housing to Center of Chain',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_W1,
         ),
-
         ProductFieldData(
           key: 'inFloorTowlineFloorX1',
           label: 'In Floor Towline Floor (X1)',
           type: ProductFieldType.text,
+          hintText: 'Thickness',
+          required: true,
+          imagePath: AppAssets.FTL_CLS_MLFTL_X1,
         ),
+
+        // Two additional dropdowns were visible in the website
+        // recording, but their labels/options were not readable.
+        // They are intentionally not invented here.
       ],
     ),
 

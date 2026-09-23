@@ -20,9 +20,7 @@ class ShoppingPage extends StatefulWidget {
 
 class _ShoppingPageState extends State<ShoppingPage> {
   dynamic cartItems = [];
-
   int totalQuantities = 0;
-
   bool cartLoading = false;
   bool orderLoading = false;
   bool editLoading = false;
@@ -33,22 +31,20 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   void _validateTextField(
-      String value,
-      int index,
-      dynamic stateHolders,
-      ) {
+    String value,
+    int index,
+    dynamic stateHolders,
+  ) {
     if (stateHolders[index]["required"] == false) {
       return;
     }
 
     setState(() {
       if (value.trim().isEmpty) {
-        stateHolders[index]["error"] =
-        'This field is required.';
+        stateHolders[index]["error"] = 'This field is required.';
       } else if (stateHolders[index]["isNum"] == true) {
         if (!RegExp(r'^-?\d+(\.\d+)?$').hasMatch(value)) {
-          stateHolders[index]["error"] =
-          'Please enter a valid number.';
+          stateHolders[index]["error"] = 'Please enter a valid number.';
         } else {
           stateHolders[index]["error"] = null;
         }
@@ -62,15 +58,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // VALIDATE CONFIGURATION
   // =========================================================
 
-  bool _validateNewInfo(
-      List<dynamic> stateHolders,
-      ) {
+  bool _validateNewInfo(List<dynamic> stateHolders) {
     for (var field in stateHolders) {
       if (field["error"] != null) {
         return false;
       }
     }
-
     return true;
   }
 
@@ -83,24 +76,20 @@ class _ShoppingPageState extends State<ShoppingPage> {
       cartLoading = true;
     });
 
-    final response =
-    await CartRepository.getOrders();
+    final response = await CartRepository.getOrders();
 
     if (!mounted) {
       return;
     }
 
     if (response.success) {
-      cartItems =
-          response.data ?? [];
+      cartItems = response.data ?? [];
     } else {
       cartItems = [];
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            response.message ??
-                'Error when loading cart!',
+            response.message ?? 'Error when loading cart!',
           ),
         ),
       );
@@ -109,20 +98,17 @@ class _ShoppingPageState extends State<ShoppingPage> {
     totalQuantities = 0;
 
     for (var configuration in cartItems) {
-      final dynamic quantity =
-      configuration["quantity"];
+      final dynamic quantity = configuration["quantity"];
 
       if (quantity is int) {
         totalQuantities += quantity;
       } else {
-        totalQuantities +=
-            int.tryParse(
+        totalQuantities += int.tryParse(
               quantity?.toString() ?? '0',
             ) ??
-                0;
+            0;
       }
     }
-
     setState(() {
       cartLoading = false;
     });
@@ -133,8 +119,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   Future<bool> saveDraft() async {
-    if (cartItems == null ||
-        cartItems.isEmpty) {
+    if (cartItems == null || cartItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -142,7 +127,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
         ),
       );
-
       return false;
     }
 
@@ -157,25 +141,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
         continue;
       }
 
-      final dynamic configurationID =
-      item["configurationID"];
-
+      final dynamic configurationID = item["configurationID"];
       if (configurationID == null) {
         continue;
       }
 
-      final String normalizedID =
-      configurationID
-          .toString()
-          .trim();
-
+      final String normalizedID = configurationID.toString().trim();
       if (normalizedID.isEmpty) {
         continue;
       }
-
-      configurationIDs.add(
-        normalizedID,
-      );
+      configurationIDs.add(normalizedID);
     }
 
     if (configurationIDs.isEmpty) {
@@ -186,16 +161,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
         ),
       );
-
       return false;
     }
 
-    String? draftName =
-    await showDialog<String>(
+    String? draftName = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController controller =
-        TextEditingController();
+        TextEditingController controller = TextEditingController();
 
         return AlertDialog(
           title: const Text(
@@ -203,15 +175,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
           content: TextField(
             controller: controller,
-            decoration:
-            const InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Draft Name",
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text(
                 "Cancel",
                 style: TextStyle(
@@ -220,9 +190,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
               ),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(controller.text),
+              onPressed: () => Navigator.of(context).pop(controller.text),
               child: const Text(
                 "OK",
                 style: TextStyle(
@@ -235,8 +203,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       },
     );
 
-    if (draftName == null ||
-        draftName.trim().isEmpty) {
+    if (draftName == null || draftName.trim().isEmpty) {
       return false;
     }
 
@@ -244,8 +211,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       return false;
     }
 
-    bool? confirmSave =
-    await showDialog<bool>(
+    bool? confirmSave = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -257,9 +223,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(false),
+              onPressed: () => Navigator.of(context).pop(false),
               child: const Text(
                 "Cancel",
                 style: TextStyle(
@@ -268,9 +232,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
               ),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(true),
+              onPressed: () => Navigator.of(context).pop(true),
               child: const Text(
                 "Save",
                 style: TextStyle(
@@ -290,12 +252,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       cartLoading = true;
     });
-
-    final response =
-    await DraftRepository.saveDraft(
+    final response = await DraftRepository.saveDraft(
       draftTitle: draftName.trim(),
-      configurationIDs:
-      configurationIDs,
+      configurationIDs: configurationIDs,
     );
 
     if (!mounted) {
@@ -306,10 +265,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       cartLoading = false;
     });
 
-    final bool status =
-        response.success &&
-            response.data == true;
-
+    final bool status = response.success && response.data == true;
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -318,15 +274,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
         ),
       );
-
       return true;
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          response.message ??
-              'Error when saving draft!',
+          response.message ?? 'Error when saving draft!',
         ),
       ),
     );
@@ -352,8 +306,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   Future<bool> finalize() async {
-    if (cartItems == null ||
-        cartItems.isEmpty) {
+    if (cartItems == null || cartItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -372,17 +325,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
         continue;
       }
 
-      final dynamic configurationID =
-      item["configurationID"];
+      final dynamic configurationID = item["configurationID"];
 
       if (configurationID == null) {
         continue;
       }
 
-      final String normalizedID =
-      configurationID
-          .toString()
-          .trim();
+      final String normalizedID = configurationID.toString().trim();
 
       if (normalizedID.isEmpty) {
         continue;
@@ -405,8 +354,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       return false;
     }
 
-    final bool? confirmFinalize =
-    await showDialog<bool>(
+    final bool? confirmFinalize = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -418,9 +366,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(false),
+              onPressed: () => Navigator.of(context).pop(false),
               child: const Text(
                 "Cancel",
                 style: TextStyle(
@@ -429,9 +375,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
               ),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(true),
+              onPressed: () => Navigator.of(context).pop(true),
               child: const Text(
                 "Finalize",
                 style: TextStyle(
@@ -456,10 +400,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
       cartLoading = true;
     });
 
-    final response =
-    await ConfigurationRepository.finalize(
-      configurationIDs:
-      configurationIDs,
+    final response = await ConfigurationRepository.finalize(
+      configurationIDs: configurationIDs,
     );
 
     if (!mounted) {
@@ -470,9 +412,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       cartLoading = false;
     });
 
-    final bool status =
-        response.success &&
-            response.data == true;
+    final bool status = response.success && response.data == true;
 
     if (status) {
       await showDialog(
@@ -490,8 +430,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child:
-                const Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -504,8 +443,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          response.message ??
-              'Error when finalizing configuration!',
+          response.message ?? 'Error when finalizing configuration!',
         ),
       ),
     );
@@ -529,29 +467,24 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   void _resetStates(
-      List<dynamic> stateHolders,
-      dynamic numRequested,
-      ) {
+    List<dynamic> stateHolders,
+    dynamic numRequested,
+  ) {
     for (var state in stateHolders) {
       if (state["controller"] is int) {
         setState(() {
-          state["controller"] =
-          state["initial"];
+          state["controller"] = state["initial"];
         });
       } else {
-        var controller =
-        state["controller"]
-        as TextEditingController;
+        var controller = state["controller"] as TextEditingController;
 
         setState(() {
-          controller.text =
-          state["initial"];
+          controller.text = state["initial"];
         });
       }
     }
 
-    numRequested["controller"] =
-    numRequested["initial"];
+    numRequested["controller"] = numRequested["initial"];
 
     setState(() {});
   }
@@ -561,11 +494,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   Future<bool> _submitNewData(
-      dynamic configurationID,
-      Map<String, dynamic> newData,
-      List<dynamic> stateHolders,
-      dynamic numRequested,
-      ) async {
+    dynamic configurationID,
+    Map<String, dynamic> newData,
+    List<dynamic> stateHolders,
+    dynamic numRequested,
+  ) async {
     if (!_validateNewInfo(
       stateHolders,
     )) {
@@ -576,55 +509,37 @@ class _ShoppingPageState extends State<ShoppingPage> {
       editLoading = true;
     });
 
-    for (var formField
-    in stateHolders) {
-      if (formField
-      is! Map<String, dynamic>) {
+    for (var formField in stateHolders) {
+      if (formField is! Map<String, dynamic>) {
         continue;
       }
 
-      var controller =
-      formField["controller"];
+      var controller = formField["controller"];
 
-      var initial =
-      formField["initial"];
+      var initial = formField["initial"];
 
       if (controller is int) {
         if (controller != initial) {
-          newData[
-          formField["field"]] =
-              controller;
+          newData[formField["field"]] = controller;
         }
-      } else if (controller
-      is TextEditingController) {
-        if (controller.text !=
-            initial.toString()) {
-          newData[
-          formField["field"]] =
-              controller.text;
+      } else if (controller is TextEditingController) {
+        if (controller.text != initial.toString()) {
+          newData[formField["field"]] = controller.text;
         }
       }
     }
 
-    final int numRequestedValue =
-    numRequested["controller"]
-    is int
-        ? numRequested[
-    "controller"]
+    final int numRequestedValue = numRequested["controller"] is int
+        ? numRequested["controller"]
         : int.tryParse(
-      numRequested[
-      "controller"]
-          .toString(),
-    ) ??
-        1;
+              numRequested["controller"].toString(),
+            ) ??
+            1;
 
-    final response =
-    await CartRepository.updateOrder(
-      configurationID:
-      configurationID,
+    final response = await CartRepository.updateOrder(
+      configurationID: configurationID,
       newData: newData,
-      numRequested:
-      numRequestedValue,
+      numRequested: numRequestedValue,
     );
 
     if (!mounted) {
@@ -635,9 +550,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       editLoading = false;
     });
 
-    final bool status =
-        response.success &&
-            response.data == true;
+    final bool status = response.success && response.data == true;
 
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -653,8 +566,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            response.message ??
-                'Error when updating form!',
+            response.message ?? 'Error when updating form!',
           ),
         ),
       );
@@ -668,23 +580,19 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   int setEntryData(
-      dynamic stateHolders,
-      List<List<String>> options,
-      List<String> labels,
-      MapEntry<dynamic, dynamic> entry,
-      ) {
+    dynamic stateHolders,
+    List<List<String>> options,
+    List<String> labels,
+    MapEntry<dynamic, dynamic> entry,
+  ) {
     labels.add(
       entry.key,
     );
 
-    if (entry.value.runtimeType ==
-        List &&
+    if (entry.value.runtimeType == List &&
         entry.value.isNotEmpty &&
-        entry.value[0]["value"]
-            .runtimeType !=
-            List) {
-      List mappedOptions =
-      entry.value as List;
+        entry.value[0]["value"].runtimeType != List) {
+      List mappedOptions = entry.value as List;
 
       List<String> newList = [];
 
@@ -694,56 +602,39 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
       bool hasSelected = false;
 
-      for (var option
-      in mappedOptions) {
+      for (var option in mappedOptions) {
         newList.add(
           option["value"],
         );
 
-        if (option["isSelected"]
-        as bool ==
-            true) {
+        if (option["isSelected"] as bool == true) {
           hasSelected = true;
 
-          int optionKey =
-          option["key"];
+          int optionKey = option["key"];
 
           stateHolders.add(
             {
-              "controller":
-              optionKey,
-              "initial":
-              optionKey,
-              "field":
-              entry.key,
+              "controller": optionKey,
+              "initial": optionKey,
+              "field": entry.key,
             },
           );
         }
       }
 
-      if (!hasSelected &&
-          mappedOptions.isNotEmpty) {
+      if (!hasSelected && mappedOptions.isNotEmpty) {
         stateHolders.add(
           {
-            "controller":
-            mappedOptions[0]
-            ["key"],
-            "initial":
-            mappedOptions[0]
-            ["key"],
-            "field":
-            entry.key,
+            "controller": mappedOptions[0]["key"],
+            "initial": mappedOptions[0]["key"],
+            "field": entry.key,
           },
         );
       }
-    } else if (entry.value
-        .runtimeType !=
-        List &&
-        entry.value.runtimeType !=
-            int &&
+    } else if (entry.value.runtimeType != List &&
+        entry.value.runtimeType != int &&
         entry.value is Map &&
-        entry.value["value"] ==
-            null) {
+        entry.value["value"] == null) {
       entry.value.remove("_id");
 
       labels.remove(
@@ -760,44 +651,24 @@ class _ShoppingPageState extends State<ShoppingPage> {
       if (entry.value is int) {
         stateHolders.add(
           {
-            "controller":
-            TextEditingController(
-              text:
-              entry.value
-                  .toString(),
+            "controller": TextEditingController(
+              text: entry.value.toString(),
             ),
-            "initial":
-            entry.value
-                .toString(),
-            "field":
-            entry.key,
+            "initial": entry.value.toString(),
+            "field": entry.key,
           },
         );
       } else {
         stateHolders.add(
           {
-            "controller":
-            TextEditingController(
-              text:
-              entry.value[
-              "value"]
-                  .toString(),
+            "controller": TextEditingController(
+              text: entry.value["value"].toString(),
             ),
-            "initial":
-            entry.value[
-            "value"]
-                .toString(),
-            "field":
-            entry.key,
-            "required":
-            entry.value[
-            "required"],
-            "isString":
-            entry.value[
-            "isString"],
-            "isNum":
-            entry.value[
-            "isNum"],
+            "initial": entry.value["value"].toString(),
+            "field": entry.key,
+            "required": entry.value["required"],
+            "isString": entry.value["isString"],
+            "isNum": entry.value["isNum"],
             "error": null,
           },
         );
@@ -814,22 +685,20 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   int setStateData(
-      dynamic stateHolders,
-      List<List<String>> options,
-      List<String> labels,
-      Map orderInfo,
-      ) {
+    dynamic stateHolders,
+    List<List<String>> options,
+    List<String> labels,
+    Map orderInfo,
+  ) {
     int numberOfFields = 0;
 
-    for (var entry
-    in orderInfo.entries) {
-      numberOfFields +=
-          setEntryData(
-            stateHolders,
-            options,
-            labels,
-            entry,
-          );
+    for (var entry in orderInfo.entries) {
+      numberOfFields += setEntryData(
+        stateHolders,
+        options,
+        labels,
+        entry,
+      );
     }
 
     return numberOfFields;
@@ -840,10 +709,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   void _showCurrentConfiguration(
-      dynamic configurationID,
-      bool isEditable,
-      int numRequested,
-      ) async {
+    dynamic configurationID,
+    bool isEditable,
+    int numRequested,
+  ) async {
     try {
       dynamic stateHolders = [];
 
@@ -852,26 +721,21 @@ class _ShoppingPageState extends State<ShoppingPage> {
         "initial": numRequested,
       };
 
-      List<List<String>> options =
-      [];
+      List<List<String>> options = [];
 
       List<String> labels = [];
 
-      Map<String, dynamic>
-      newData = {};
+      Map<String, dynamic> newData = {};
 
-      final response =
-      await CartRepository.getOrder(
-        configurationID:
-        configurationID,
+      final response = await CartRepository.getOrder(
+        configurationID: configurationID,
       );
 
       if (!mounted) {
         return;
       }
 
-      if (!response.success ||
-          response.data == null) {
+      if (!response.success || response.data == null) {
         setState(() {
           orderLoading = false;
         });
@@ -879,8 +743,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              response.message ??
-                  'Error when loading configuration!',
+              response.message ?? 'Error when loading configuration!',
             ),
           ),
         );
@@ -888,18 +751,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
         return;
       }
 
-      final Map<String, dynamic>
-      configuration =
-      Map<String, dynamic>.from(
+      final Map<String, dynamic> configuration = Map<String, dynamic>.from(
         response.data as Map,
       );
 
-      final dynamic rawConfigurationData =
-      configuration[
-      "configurationData"];
+      final dynamic rawConfigurationData = configuration["configurationData"];
 
-      if (rawConfigurationData
-      is! Map) {
+      if (rawConfigurationData is! Map) {
         setState(() {
           orderLoading = false;
         });
@@ -915,9 +773,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         return;
       }
 
-      Map<String, dynamic>
-      configurationData =
-      Map<String, dynamic>.from(
+      Map<String, dynamic> configurationData = Map<String, dynamic>.from(
         rawConfigurationData,
       );
 
@@ -929,8 +785,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         orderLoading = false;
       });
 
-      int numberOfFields =
-      setStateData(
+      int numberOfFields = setStateData(
         stateHolders,
         options,
         labels,
@@ -942,54 +797,39 @@ class _ShoppingPageState extends State<ShoppingPage> {
       }
 
       showModalBottomSheet(
-        backgroundColor:
-        const Color(
+        backgroundColor: const Color(
           0xFF579AF6,
         ),
         showDragHandle: true,
         context: context,
         isScrollControlled: true,
-        shape:
-        const RoundedRectangleBorder(
-          borderRadius:
-          BorderRadius.vertical(
-            top:
-            Radius.circular(15),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(15),
           ),
         ),
         builder: (context) {
           return Padding(
-            padding:
-            EdgeInsets.only(
-              bottom:
-              MediaQuery.of(context)
-                  .viewInsets
-                  .bottom,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            child:
-            SingleChildScrollView(
+            child: SingleChildScrollView(
               child: Container(
-                color:
-                const Color(
+                color: const Color(
                   0xffffffff,
                 ),
-                padding:
-                const EdgeInsets
-                    .fromLTRB(
+                padding: const EdgeInsets.fromLTRB(
                   20.0,
                   5.0,
                   20.0,
                   0,
                 ),
                 child: Column(
-                  mainAxisSize:
-                  MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (!isEditable)
                       const Padding(
-                        padding:
-                        EdgeInsets
-                            .fromLTRB(
+                        padding: EdgeInsets.fromLTRB(
                           0,
                           20.0,
                           0,
@@ -997,202 +837,125 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         ),
                         child: Text(
                           "Current configuration",
-                          style:
-                          TextStyle(
-                            fontSize:
-                            20,
-                            fontWeight:
-                            FontWeight
-                                .bold,
-                            color:
-                            Colors
-                                .black87,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
                           ),
                         ),
                       ),
-
                     if (isEditable)
                       Flexible(
                         child: Padding(
-                          padding:
-                          const EdgeInsets
-                              .fromLTRB(
+                          padding: const EdgeInsets.fromLTRB(
                             0,
                             20.0,
                             0,
                             0.0,
                           ),
                           child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment
-                                .center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                onPressed:
-                                    () {
+                                onPressed: () {
                                   _resetStates(
                                     stateHolders,
                                     numRequestedState,
                                   );
 
-                                  Navigator.of(
-                                      context)
-                                      .pop();
+                                  Navigator.of(context).pop();
                                 },
-                                icon:
-                                const Icon(
-                                  Icons
-                                      .cancel,
-                                  color:
-                                  Colors
-                                      .red,
-                                  size:
-                                  40.0,
+                                icon: const Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                  size: 40.0,
                                 ),
                               ),
-
                               const Text(
                                 "   Edit configuration?   ",
-                                style:
-                                TextStyle(
-                                  fontSize:
-                                  20,
-                                  fontWeight:
-                                  FontWeight
-                                      .bold,
-                                  color:
-                                  Colors
-                                      .black87,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
                                 ),
                               ),
-
                               editLoading
                                   ? const CircularProgressIndicator()
                                   : IconButton(
-                                onPressed:
-                                    () async {
-                                  bool valid =
-                                  await _submitNewData(
-                                    configurationID,
-                                    newData,
-                                    stateHolders,
-                                    numRequestedState,
-                                  );
+                                      onPressed: () async {
+                                        bool valid = await _submitNewData(
+                                          configurationID,
+                                          newData,
+                                          stateHolders,
+                                          numRequestedState,
+                                        );
 
-                                  if (valid &&
-                                      mounted) {
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.of(context)
-                                        .pop();
-                                  }
-                                },
-                                icon:
-                                const Icon(
-                                  Icons
-                                      .check_circle,
-                                  color:
-                                  Colors
-                                      .green,
-                                  size:
-                                  40.0,
-                                ),
-                              ),
+                                        if (valid && mounted) {
+                                          // ignore: use_build_context_synchronously
+                                          Navigator.of(context).pop();
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                        size: 40.0,
+                                      ),
+                                    ),
                             ],
                           ),
                         ),
                       ),
-
                     if (isEditable)
-                      CommonWidgets
-                          .buildCounter(
-                        numRequestedState[
-                        "controller"],
-                        callback:
-                            (int newNumRequested) =>
-                        {
+                      CommonWidgets.buildCounter(
+                        numRequestedState["controller"],
+                        callback: (int newNumRequested) => {
                           setState(
-                                () {
-                              numRequestedState[
-                              "controller"] =
-                                  newNumRequested;
+                            () {
+                              numRequestedState["controller"] = newNumRequested;
                             },
                           )
                         },
                       ),
-
-                    CommonWidgets
-                        .buildSectionDivider(),
-
+                    CommonWidgets.buildSectionDivider(),
                     const SizedBox(
                       height: 20,
                     ),
-
                     ConstrainedBox(
-                      constraints:
-                      BoxConstraints(
-                        maxHeight:
-                        MediaQuery.of(
-                          context,
-                        ).size.height *
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(
+                              context,
+                            ).size.height *
                             0.5,
                       ),
-                      child:
-                      ListView.builder(
+                      child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount:
-                        numberOfFields,
-                        itemBuilder:
-                            (
-                            context,
-                            index,
-                            ) {
-                          if (stateHolders[
-                          index]
-                          ["controller"]
-                          is int) {
-                            return CommonWidgets
-                                .buildDropdownFieldError(
-                              isEditable:
-                              isEditable,
-                              labels[
-                              index],
-                              options[
-                              index],
-                              stateHolders[
-                              index]
-                              [
-                              "controller"],
-                                  (value) {
+                        itemCount: numberOfFields,
+                        itemBuilder: (
+                          context,
+                          index,
+                        ) {
+                          if (stateHolders[index]["controller"] is int) {
+                            return CommonWidgets.buildDropdownFieldError(
+                              isEditable: isEditable,
+                              labels[index],
+                              options[index],
+                              stateHolders[index]["controller"],
+                              (value) {
                                 setState(
-                                      () {
-                                    stateHolders[index]
-                                    [
-                                    "controller"] =
-                                        value;
+                                  () {
+                                    stateHolders[index]["controller"] = value;
                                   },
                                 );
                               },
                             );
                           }
 
-                          return CommonWidgets
-                              .buildTextField(
-                            labels[
-                            index],
-                            stateHolders[
-                            index]
-                            [
-                            "controller"],
-                            isEditable:
-                            isEditable,
-                            errorText:
-                            stateHolders[
-                            index]
-                            [
-                            "error"],
-                            callback:
-                                (value) =>
-                            {
+                          return CommonWidgets.buildTextField(
+                            labels[index],
+                            stateHolders[index]["controller"],
+                            isEditable: isEditable,
+                            errorText: stateHolders[index]["error"],
+                            callback: (value) => {
                               _validateTextField(
                                 value,
                                 index,
@@ -1230,13 +993,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // =========================================================
 
   Future<bool> removeOrder(
-      dynamic configurationID,
-      ) async {
-    bool? confirmDelete =
-    await showDialog<bool>(
+    dynamic configurationID,
+  ) async {
+    bool? confirmDelete = await showDialog<bool>(
       context: context,
-      builder:
-          (BuildContext context) {
+      builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
             "Confirm Deletion",
@@ -1246,9 +1007,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(false),
+              onPressed: () => Navigator.of(context).pop(false),
               child: const Text(
                 "Cancel",
                 style: TextStyle(
@@ -1257,9 +1016,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
               ),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(true),
+              onPressed: () => Navigator.of(context).pop(true),
               child: const Text(
                 "Delete",
                 style: TextStyle(
@@ -1280,10 +1037,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
       deleteLoading = true;
     });
 
-    final response =
-    await CartRepository.deleteOrder(
-      configurationID:
-      configurationID,
+    final response = await CartRepository.deleteOrder(
+      configurationID: configurationID,
     );
 
     if (!mounted) {
@@ -1294,9 +1049,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       deleteLoading = false;
     });
 
-    final bool status =
-        response.success &&
-            response.data == true;
+    final bool status = response.success && response.data == true;
 
     if (status) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1313,8 +1066,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          response.message ??
-              'Error when deleting configuration!',
+          response.message ?? 'Error when deleting configuration!',
         ),
       ),
     );
@@ -1328,498 +1080,349 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   @override
   Widget build(
-      BuildContext context,
-      ) {
-    double left =
-        MediaQuery.of(context)
-            .size
-            .width *
-            0.23;
+    BuildContext context,
+  ) {
+    double left = MediaQuery.of(context).size.width * 0.23;
 
     return Scaffold(
       appBar: CustomAppBar(
-        link:
-        const ApplicationCatalogPage(),
-        customIcon:
-        Icons.description,
+        link: const ApplicationCatalogPage(),
+        customIcon: Icons.description,
         reload: false,
-        cartItemCount:
-        totalQuantities,
+        cartItemCount: totalQuantities,
       ),
-
-      drawer:
-      const CustomDrawer(),
-
+      drawer: const CustomDrawer(),
       body: cartLoading
           ? const Center(
-        child:
-        CircularProgressIndicator(),
-      )
-          : Column(
-        children: [
-          Expanded(
-            child:
-            cartItems.isEmpty
-                ? Padding(
-              padding:
-              EdgeInsets
-                  .fromLTRB(
-                left,
-                0,
-                0,
-                100,
-              ),
-              child:
-              Column(
-                mainAxisAlignment:
-                MainAxisAlignment
-                    .center,
-                children: [
-                  Icon(
-                    Icons
-                        .shopping_cart_outlined,
-                    size:
-                    80,
-                    color:
-                    Colors
-                        .grey
-                        .shade400,
-                  ),
-                  const Text(
-                    "No products in the cart.",
-                    style:
-                    TextStyle(
-                      fontSize:
-                      18,
-                      color:
-                      Colors
-                          .black,
-                    ),
-                  ),
-                ],
-              ),
+              child: CircularProgressIndicator(),
             )
-                : ListView
-                .builder(
-              itemCount:
-              cartItems
-                  .length,
-              itemBuilder:
-                  (
-                  context,
-                  index,
-                  ) {
-                final product =
-                cartItems[
-                index];
-
-                final dynamic
-                configurationID =
-                product[
-                "configurationID"];
-
-                final String
-                productName =
-                    product[
-                    "productName"]
-                        ?.toString() ??
-                        "Unknown Product";
-
-                final int
-                quantity =
-                product[
-                "quantity"]
-                is int
-                    ? product[
-                "quantity"]
-                    : int.tryParse(
-                  product["quantity"]?.toString() ??
-                      '1',
-                ) ??
-                    1;
-
-                return GestureDetector(
-                  onTap:
-                      () {
-                    setState(
-                          () {
-                        orderLoading =
-                        true;
-                      },
-                    );
-
-                    _showCurrentConfiguration(
-                      configurationID,
-                      false,
-                      quantity,
-                    );
-                  },
-                  child:
-                  Card(
-                    margin:
-                    const EdgeInsets
-                        .symmetric(
-                      vertical:
-                      8,
-                      horizontal:
-                      16,
-                    ),
-                    elevation:
-                    3,
-                    shape:
-                    RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(
-                          10),
-                    ),
-                    child:
-                    Padding(
-                      padding:
-                      const EdgeInsets.all(
-                          12),
-                      child:
-                      Row(
-                        crossAxisAlignment:
-                        CrossAxisAlignment
-                            .center,
-                        children: [
-                          ClipRRect(
-                            borderRadius:
-                            BorderRadius.circular(8),
-                            child:
-                            Image.asset(
-                              imageList[productName] ??
-                                  "assets/Industrial.png",
-                              width:
-                              60,
-                              height:
-                              60,
-                              fit:
-                              BoxFit.cover,
-                              errorBuilder:
-                                  (
-                                  context,
-                                  error,
-                                  stackTrace,
-                                  ) =>
-                                  Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey[300],
-                                    child: const Icon(
-                                      Icons.image_not_supported,
-                                      size: 30,
-                                    ),
-                                  ),
-                            ),
+          : Column(
+              children: [
+                Expanded(
+                  child: cartItems.isEmpty
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            left,
+                            0,
+                            0,
+                            100,
                           ),
-
-                          const SizedBox(
-                            width:
-                            12,
-                          ),
-
-                          Expanded(
-                            child:
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  productName,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                const SizedBox(
-                                  height:
-                                  2,
-                                ),
-
-                                Text(
-                                  'Number requested: $quantity',
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-
-                                if (product["configurationName"] != null &&
-                                    product["configurationName"]
-                                        .toString()
-                                        .trim()
-                                        .isNotEmpty)
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.only(
-                                      top: 2,
-                                    ),
-                                    child:
-                                    Text(
-                                      product["configurationName"].toString(),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black45,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-
-                          Row(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (!orderLoading)
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.blue,
-                                  ),
-                                  onPressed: () {
-                                    setState(
-                                          () {
-                                        orderLoading = true;
-                                      },
-                                    );
-
-                                    _showCurrentConfiguration(
-                                      configurationID,
-                                      true,
-                                      quantity,
-                                    );
-                                  },
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                size: 80,
+                                color: Colors.grey.shade400,
+                              ),
+                              const Text(
+                                "No products in the cart.",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
                                 ),
-
-                              if (orderLoading)
-                                const CircularProgressIndicator(),
-
-                              if (deleteLoading)
-                                const CircularProgressIndicator(),
-
-                              if (!deleteLoading)
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    final bool success =
-                                    await removeOrder(
-                                      configurationID,
-                                    );
-
-                                    if (!success ||
-                                        !mounted) {
-                                      return;
-                                    }
-
-                                    setState(
-                                          () {
-                                        cartItems.removeAt(
-                                          index,
-                                        );
-
-                                        totalQuantities -=
-                                            quantity;
-
-                                        if (totalQuantities <
-                                            0) {
-                                          totalQuantities =
-                                          0;
-                                        }
-                                      },
-                                    );
-                                  },
-                                ),
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                        )
+                      : ListView.builder(
+                          itemCount: cartItems.length,
+                          itemBuilder: (
+                            context,
+                            index,
+                          ) {
+                            final product = cartItems[index];
 
-          if (cartItems.isNotEmpty)
-            Container(
-              padding:
-              const EdgeInsets
-                  .symmetric(
-                vertical: 16,
-                horizontal: 16,
-              ),
-              decoration:
-              BoxDecoration(
-                color:
-                Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color:
-                    Colors.black
-                        .withValues(
-                      alpha:
-                      0.1,
-                    ),
-                    blurRadius:
-                    5,
-                    spreadRadius:
-                    2,
-                    offset:
-                    const Offset(
-                      0,
-                      -2,
-                    ),
-                  ),
-                ],
-              ),
-              child:
-              Column(
-                mainAxisSize:
-                MainAxisSize
-                    .min,
-                children: [
-                  const SizedBox(
-                    height:
-                    10,
-                  ),
+                            final dynamic configurationID = product["configurationID"];
+                            final String productName = product["productName"]?.toString() ?? "Unknown Product";
+                            final int quantity = product["quantity"] is int
+                                ? product["quantity"]
+                                : int.tryParse(
+                                      product["quantity"]?.toString() ?? '1',
+                                    ) ??
+                                    1;
 
-                  Container(
-                    width:
-                    double
-                        .infinity,
-                    decoration:
-                    BoxDecoration(
-                      borderRadius:
-                      BorderRadius.circular(
-                          12),
-                      gradient:
-                      const LinearGradient(
-                        colors: [
-                          Colors.blueAccent,
-                          Colors.lightBlueAccent,
-                        ],
-                        begin:
-                        Alignment.topLeft,
-                        end:
-                        Alignment.bottomRight,
-                      ),
-                    ),
-                    child:
-                    TextButton(
-                      onPressed:
-                          () async {
-                        final bool
-                        success =
-                        await saveDraft();
+                            return GestureDetector(
+                              onTap: () {
+                                setState(
+                                  () {
+                                    orderLoading = true;
+                                  },
+                                );
 
-                        if (!success ||
-                            !mounted) {
-                          return;
-                        }
+                                _showCurrentConfiguration(
+                                  configurationID,
+                                  false,
+                                  quantity,
+                                );
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 16,
+                                ),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      // ClipRRect(
+                                      //   borderRadius: BorderRadius.circular(8),
+                                      //   child: Image.asset(
+                                      //     imageList[productName] ?? "assets/Industrial.png",
+                                      //     width: 60,
+                                      //     height: 60,
+                                      //     fit: BoxFit.cover,
+                                      //     errorBuilder: (
+                                      //       context,
+                                      //       error,
+                                      //       stackTrace,
+                                      //     ) =>
+                                      //         Container(
+                                      //       width: 60,
+                                      //       height: 60,
+                                      //       color: Colors.grey[300],
+                                      //       child: const Icon(
+                                      //         Icons.image_not_supported,
+                                      //         size: 30,
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              productName,
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 2,
+                                            ),
+                                            Text(
+                                              'Number requested: $quantity',
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            if (product["configurationName"] !=
+                                                    null &&
+                                                product["configurationName"]
+                                                    .toString()
+                                                    .trim()
+                                                    .isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 2,
+                                                ),
+                                                child: Text(
+                                                  product["configurationName"]
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black45,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          if (!orderLoading)
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: Colors.blue,
+                                              ),
+                                              onPressed: () {
+                                                setState(
+                                                  () {
+                                                    orderLoading = true;
+                                                  },
+                                                );
 
-                        setState(
-                              () {
-                            cartItems =
-                            [];
-                            totalQuantities =
-                            0;
+                                                _showCurrentConfiguration(
+                                                  configurationID,
+                                                  true,
+                                                  quantity,
+                                                );
+                                              },
+                                            ),
+                                          if (orderLoading)
+                                            const CircularProgressIndicator(),
+                                          if (deleteLoading)
+                                            const CircularProgressIndicator(),
+                                          if (!deleteLoading)
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () async {
+                                                final bool success =
+                                                    await removeOrder(
+                                                  configurationID,
+                                                );
+
+                                                if (!success || !mounted) {
+                                                  return;
+                                                }
+
+                                                setState(
+                                                  () {
+                                                    cartItems.removeAt(
+                                                      index,
+                                                    );
+
+                                                    totalQuantities -= quantity;
+
+                                                    if (totalQuantities < 0) {
+                                                      totalQuantities = 0;
+                                                    }
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
                           },
-                        );
-                      },
-                      child:
-                      const Text(
-                        "SAVE CONFIGURATION",
-                        style:
-                        TextStyle(
-                          fontSize:
-                          16,
-                          fontWeight:
-                          FontWeight.bold,
-                          color:
-                          Colors.white,
                         ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height:
-                    15,
-                  ),
-
+                ),
+                if (cartItems.isNotEmpty)
                   Container(
-                    width:
-                    double
-                        .infinity,
-                    decoration:
-                    BoxDecoration(
-                      borderRadius:
-                      BorderRadius.circular(
-                          12),
-                      gradient:
-                      const LinearGradient(
-                        colors: [
-                          Colors.blueAccent,
-                          Colors.lightBlueAccent,
-                        ],
-                        begin:
-                        Alignment.topLeft,
-                        end:
-                        Alignment.bottomRight,
-                      ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 16,
                     ),
-                    child:
-                    TextButton(
-                      onPressed:
-                          () async {
-                        final bool
-                        success =
-                        await finalize();
-
-                        if (!success ||
-                            !mounted) {
-                          return;
-                        }
-
-                        setState(
-                              () {
-                            cartItems =
-                            [];
-                            totalQuantities =
-                            0;
-                          },
-                        );
-                      },
-                      child:
-                      const Text(
-                        "FINALIZE CONFIGURATION",
-                        style:
-                        TextStyle(
-                          fontSize:
-                          16,
-                          fontWeight:
-                          FontWeight.bold,
-                          color:
-                          Colors.white,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(
+                            alpha: 0.1,
+                          ),
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: const Offset(
+                            0,
+                            -2,
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: TextButton(
+                            onPressed: () async {
+                              final bool success = await saveDraft();
+
+                              if (!success || !mounted) {
+                                return;
+                              }
+
+                              setState(
+                                () {
+                                  cartItems = [];
+                                  totalQuantities = 0;
+                                },
+                              );
+                            },
+                            child: const Text(
+                              "SAVE CONFIGURATION",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: TextButton(
+                            onPressed: () async {
+                              final bool success = await finalize();
+
+                              if (!success || !mounted) {
+                                return;
+                              }
+
+                              setState(
+                                () {
+                                  cartItems = [];
+                                  totalQuantities = 0;
+                                },
+                              );
+                            },
+                            child: const Text(
+                              "FINALIZE CONFIGURATION",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
                   ),
-
-                  const SizedBox(
-                    height:
-                    20,
-                  ),
-                ],
-              ),
+              ],
             ),
-        ],
-      ),
     );
   }
 }

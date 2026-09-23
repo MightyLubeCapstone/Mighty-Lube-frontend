@@ -1,11 +1,11 @@
-
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mighty_lube/api.dart';
+import 'package:mighty_lube/features/auth/repositories/user_repository.dart';
 import 'package:password_strength_checker/password_strength_checker.dart';
-import 'dart:async';
-import 'package:dropdown_search/dropdown_search.dart';
 
 import '../../../core/widget/header_logo.dart';
 
@@ -13,11 +13,16 @@ class PWDRequirements {
   final String name;
   final bool Function(String) check;
 
-  PWDRequirements(this.name, this.check);
+  PWDRequirements(
+      this.name,
+      this.check,
+      );
 }
 
 class CreateAccountPage extends StatefulWidget {
-  const CreateAccountPage({super.key});
+  const CreateAccountPage({
+    super.key,
+  });
 
   @override
   State<CreateAccountPage> createState() => _CreateAccountPageState();
@@ -25,62 +30,116 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController companyController = TextEditingController();
+
   final TextEditingController firstNameController = TextEditingController();
+
   final TextEditingController lastNameController = TextEditingController();
+
   final TextEditingController phoneController = TextEditingController();
+
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController usernameController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+
+  final TextEditingController confirmPasswordController =
+  TextEditingController();
+
   final TextEditingController securityPinController = TextEditingController();
 
   List<String> _countries = [];
 
+  String? countrytype;
+
+  String? _errorPassword;
+
+  String? _errorConfirmPassword;
+
+  String? _errorUser;
+
+  String? _errorEmail;
+
+  String? _errorSecurityPin;
+
+  String? _errorCountry;
+
+  Timer? _delay;
+
+  List<PWDRequirements> requirements = [
+    PWDRequirements(
+      'Password must be at least 8 characters',
+          (input) => input.length >= 8,
+    ),
+    PWDRequirements(
+      'Password must contain at least one uppercase letter',
+          (input) => RegExp(r'[A-Z]').hasMatch(input),
+    ),
+    PWDRequirements(
+      'Password must contain at least one lowercase letter',
+          (input) => RegExp(r'[a-z]').hasMatch(input),
+    ),
+    PWDRequirements(
+      'Password must contain at least one number',
+          (input) => RegExp(r'[0-9]').hasMatch(input),
+    ),
+    PWDRequirements(
+      'Password must contain at least one special character',
+          (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input),
+    ),
+  ];
+
+  List<PWDRequirements> _remains = [];
+
+  final passNotifier = ValueNotifier<PasswordStrength?>(
+    null,
+  );
+
   @override
   void initState() {
     super.initState();
+
     _loadCountries();
   }
 
   // Load countries dynamically from a JSON file
   Future<void> _loadCountries() async {
-    final String response =
-        await rootBundle.loadString('assets/countries.json');
-    final List<dynamic> data = json.decode(response);
+    final String response = await rootBundle.loadString(
+      'assets/countries.json',
+    );
+
+    final List<dynamic> data = json.decode(
+      response,
+    );
+
     setState(() {
       _countries = data.cast<String>();
     });
   }
 
-  String? countrytype;
-  String? _errorPassword;
-  String? _errorConfirmPassword;
-  String? _errorUser;
-  String? _errorEmail;
-  String? _errorSecurityPin;
-  String? _errorCountry;
-  Timer? _delay;
-
-  List<PWDRequirements> requirements = [
-    PWDRequirements('Password must be at least 8 characters', (input) => input.length >= 8),
-    PWDRequirements('Password must contain at least one uppercase letter', (input) => RegExp(r'[A-Z]').hasMatch(input)),
-    PWDRequirements('Password must contain at least one lowercase letter',
-        (input) => RegExp(r'[a-z]').hasMatch(input)),
-    PWDRequirements('Password must contain at least one number',
-        (input) => RegExp(r'[0-9]').hasMatch(input)),
-    PWDRequirements('Password must contain at least one special character',
-        (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input)),
-  ];
-  List<PWDRequirements> _remains = [];
-
   Future<bool> _validateInputs() async {
-    _validateEmail(emailController.text);
-    _validatePassword(passwordController.text);
+    _validateEmail(
+      emailController.text,
+    );
+
+    _validatePassword(
+      passwordController.text,
+    );
+
     _validateConfirmPassword(
-        passwordController.text, confirmPasswordController.text);
-    _validateSecurityPin(securityPinController.text);
+      passwordController.text,
+      confirmPasswordController.text,
+    );
+
+    _validateSecurityPin(
+      securityPinController.text,
+    );
+
     _validateCountry();
-    await _validateUser(usernameController.text);
+
+    await _validateUser(
+      usernameController.text,
+    );
 
     if ((_errorPassword?.isNotEmpty ?? false) ||
         (_errorConfirmPassword?.isNotEmpty ?? false) ||
@@ -89,16 +148,21 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         (_errorSecurityPin?.isNotEmpty ?? false) ||
         (_errorCountry?.isNotEmpty ?? false)) {
       setState(() {});
+
       return false;
     }
 
     return true;
   }
 
-  void _validatePassword(String password) {
+  void _validatePassword(
+      String password,
+      ) {
     setState(() {
       _errorPassword = null;
+
       _remains = requirements.where((req) => !req.check(password)).toList();
+
       if (RegExp(r'.{8,}').hasMatch(password) == false) {
         _errorPassword = 'Password must be at least 8 characters';
       } else if (RegExp(r'[A-Z]').hasMatch(password) == false) {
@@ -114,9 +178,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  void _validateConfirmPassword(String password, String confirmPassword) {
+  void _validateConfirmPassword(
+      String password,
+      String confirmPassword,
+      ) {
     setState(() {
       _errorConfirmPassword = null;
+
       if (password != confirmPassword) {
         _errorConfirmPassword = 'Passwords do not match';
       } else {
@@ -125,7 +193,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  Future<void> _validateUser(String username) async {
+  Future<void> _validateUser(
+      String username,
+      ) async {
     _errorUser = null;
 
     try {
@@ -136,30 +206,47 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       } else if (username.length > 24) {
         _errorUser = 'Username must be at most 24 characters';
       } else {
-        var userCheck = await UserAPI().checkUser(username);
-        if (userCheck != 'Username available!') {
-          _errorUser = userCheck;
+        final userCheck = await UserRepository.checkUser(
+          username: username,
+        );
+
+        if (!userCheck.success ||
+            userCheck.data == null ||
+            userCheck.data != 'Username available!') {
+          _errorUser = userCheck.message ?? userCheck.data ?? 'Username unavailable';
         } else {
           _errorUser = null;
         }
       }
-    } catch (e) {
+    } catch (_) {
       _errorUser = 'Error checking username';
     }
 
     setState(() {});
   }
 
-  void _validateUserDelayed(String username) {
+  void _validateUserDelayed(
+      String username,
+      ) {
     if (_delay?.isActive ?? false) {
       _delay!.cancel();
     }
-    _delay = Timer(const Duration(milliseconds: 500), () {
-      _validateUser(username);
-    });
+
+    _delay = Timer(
+      const Duration(
+        milliseconds: 500,
+      ),
+          () {
+        _validateUser(
+          username,
+        );
+      },
+    );
   }
 
-  void _validateEmail(String email) {
+  void _validateEmail(
+      String email,
+      ) {
     setState(() {
       if (email.isEmpty) {
         _errorEmail = 'Email is Required';
@@ -173,7 +260,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  void _validateSecurityPin(String securityPin) {
+  void _validateSecurityPin(
+      String securityPin,
+      ) {
     setState(() {
       if (securityPin.trim().isEmpty) {
         _errorSecurityPin = 'Security PIN is required';
@@ -193,16 +282,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  @override
-  void dispose() {
-    _delay?.cancel();
-    securityPinController.dispose();
-    super.dispose();
-  }
-
-  final passNotifier = ValueNotifier<PasswordStrength?>(null);
-
-  Future<void> createAccount(BuildContext context) async {
+  Future<void> createAccount(
+      BuildContext context,
+      ) async {
     if (!await _validateInputs()) {
       return;
     }
@@ -218,61 +300,131 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final country = countrytype!.trim();
 
     try {
-      final result = await UserAPI().makeAccount(username, password, firstName,
-          lastName, email, phoneNumber, companyName, securityPin, country);
-      if (result.success) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
+      final result = await UserRepository.makeAccount(
+        username: username,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+        companyName: companyName,
+        securityPin: securityPin,
+        country: country,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (result.success && result.data == true) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/dashboard',
+        );
       } else {
         _showAccountCreationError(
           context,
           result.message ?? 'Unable to create account.',
         );
       }
-    } catch (e) {
-      _showAccountCreationError(context, 'Unable to create account.');
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      _showAccountCreationError(
+        context,
+        'Unable to create account.',
+      );
     }
   }
 
-  void _showAccountCreationError(BuildContext context, String message) {
+  void _showAccountCreationError(
+      BuildContext context,
+      String message,
+      ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Account creation failed'),
-        content: Text(message),
+        title: const Text(
+          'Account creation failed',
+        ),
+        content: Text(
+          message,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Ok'),
-          )
+            child: const Text(
+              'Ok',
+            ),
+          ),
         ],
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    _delay?.cancel();
+
+    companyController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    securityPinController.dispose();
+    passNotifier.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const HeaderLogo(pressable: false),
-          const SizedBox(height: 10),
+          const HeaderLogo(
+            pressable: false,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
               child: Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.all(
+                  20,
+                ),
+                margin: const EdgeInsets.only(
+                  top: 10,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(
+                    20,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
+                      color: Colors.black.withValues(
+                        alpha: 0.1,
+                      ),
                       spreadRadius: 5,
                       blurRadius: 15,
-                      offset: const Offset(0, 10),
+                      offset: const Offset(
+                        0,
+                        10,
+                      ),
                     ),
                   ],
                 ),
@@ -289,90 +441,176 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     buildTextField(
-                        'Company Name:*', 'Company Name', companyController,
-                        borderColor: Colors.grey),
-                    const SizedBox(height: 15),
-                    const Text('Name:*'),
-                    const SizedBox(height: 8),
+                      'Company Name:*',
+                      'Company Name',
+                      companyController,
+                      borderColor: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Text(
+                      'Name:*',
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     Row(
                       children: [
                         Expanded(
                           child: buildTextField(
-                              '', 'First Name', firstNameController,
-                              borderColor: Colors.grey),
+                            '',
+                            'First Name',
+                            firstNameController,
+                            borderColor: Colors.grey,
+                          ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(
+                          width: 10,
+                        ),
                         Expanded(
                           child: buildTextField(
-                              '', 'Last Name', lastNameController,
-                              borderColor: Colors.grey),
+                            '',
+                            'Last Name',
+                            lastNameController,
+                            borderColor: Colors.grey,
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     buildTextField(
-                        'Phone Number:', 'Phone Number', phoneController,
-                        borderColor: Colors.grey),
-                    const SizedBox(height: 15),
+                      'Phone Number:',
+                      'Phone Number',
+                      phoneController,
+                      borderColor: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     buildTextField(
-                        'Email Address:*', 'Email Address', emailController,
-                        borderColor: Colors.grey, onChanged: (value) {
-                      _validateEmail(value);
-                    }, errorText: _errorEmail != null ? '' : null),
+                      'Email Address:*',
+                      'Email Address',
+                      emailController,
+                      borderColor: Colors.grey,
+                      onChanged: (value) {
+                        _validateEmail(
+                          value,
+                        );
+                      },
+                      errorText: _errorEmail != null ? '' : null,
+                    ),
                     if (_errorEmail != null)
                       Text(
                         _errorEmail!,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
                       ),
-                    const SizedBox(height: 15),
-                    buildTextField('Username:*', 'Username', usernameController,
-                        borderColor: Colors.grey, onChanged: (value) {
-                      _validateUserDelayed(value);
-                    }, errorText: _errorUser != null ? '' : null),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    buildTextField(
+                      'Username:*',
+                      'Username',
+                      usernameController,
+                      borderColor: Colors.grey,
+                      onChanged: (value) {
+                        _validateUserDelayed(
+                          value,
+                        );
+                      },
+                      errorText: _errorUser != null ? '' : null,
+                    ),
                     if (_errorUser != null)
                       Text(
                         _errorUser!,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
                       ),
-                    const SizedBox(height: 15),
-                    buildTextField('Password:*', 'Password', passwordController,
-                        obscureText: true,
-                        borderColor: Colors.grey, onChanged: (value) {
-                      _validatePassword(value);
-                      passNotifier.value =
-                          PasswordStrength.calculate(text: value);
-                    }, errorText: _errorPassword != null ? '' : null),
-                    const SizedBox(height: 15),
-                    buildTextField('Confirm Password:* ', 'Confirm Password',
-                        confirmPasswordController,
-                        obscureText: true,
-                        borderColor: Colors.grey, onChanged: (value) {
-                      _validateConfirmPassword(passwordController.text, value);
-                    }, errorText: _errorConfirmPassword != null ? '' : null),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    buildTextField(
+                      'Password:*',
+                      'Password',
+                      passwordController,
+                      obscureText: true,
+                      borderColor: Colors.grey,
+                      onChanged: (value) {
+                        _validatePassword(
+                          value,
+                        );
+
+                        passNotifier.value = PasswordStrength.calculate(
+                          text: value,
+                        );
+                      },
+                      errorText: _errorPassword != null ? '' : null,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    buildTextField(
+                      'Confirm Password:* ',
+                      'Confirm Password',
+                      confirmPasswordController,
+                      obscureText: true,
+                      borderColor: Colors.grey,
+                      onChanged: (value) {
+                        _validateConfirmPassword(
+                          passwordController.text,
+                          value,
+                        );
+                      },
+                      errorText: _errorConfirmPassword != null ? '' : null,
+                    ),
                     if (_errorConfirmPassword != null)
                       Text(
                         _errorConfirmPassword!,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
                       ),
-                    const SizedBox(height: 15),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     buildTextField(
-                        'Security PIN:*', 'Security PIN', securityPinController,
-                        borderColor: Colors.grey, onChanged: (value) {
-                      _validateSecurityPin(value);
-                    }, errorText: _errorSecurityPin != null ? '' : null),
+                      'Security PIN:*',
+                      'Security PIN',
+                      securityPinController,
+                      borderColor: Colors.grey,
+                      onChanged: (value) {
+                        _validateSecurityPin(
+                          value,
+                        );
+                      },
+                      errorText: _errorSecurityPin != null ? '' : null,
+                    ),
                     if (_errorSecurityPin != null)
                       Text(
                         _errorSecurityPin!,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
                       ),
-                    const SizedBox(height: 15),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     if (_remains.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 8),
+                          const SizedBox(
+                            height: 8,
+                          ),
                           const Text(
                             'Password must meet the following requirements:',
                             style: TextStyle(
@@ -384,33 +622,49 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           for (var req in _remains)
                             Text(
                               '- ${req.name}',
-                              style: const TextStyle(color: Colors.red),
+                              style: const TextStyle(
+                                color: Colors.red,
+                              ),
                             ),
                         ],
                       ),
-                    const SizedBox(height: 8),
-                    PasswordStrengthChecker(strength: passNotifier),
-                    const SizedBox(height: 15),
-                    const Text('Country:'),
-                    const SizedBox(height: 8),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    PasswordStrengthChecker(
+                      strength: passNotifier,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Text(
+                      'Country:',
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     DropdownSearch<String>(
                       items: _countries, // List of countries
                       selectedItem: countrytype,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(
+                              12,
+                            ),
                           ),
                           filled: true,
                           fillColor:
-                              Colors.grey[200], // Softer background color
+                          Colors.grey[200], // Softer background color
                           hintText: 'Select Country',
                           hintStyle: const TextStyle(
                             fontSize: 16,
                             color: Colors.grey, // Subtle hint text
                           ),
                           contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 20),
+                            horizontal: 15,
+                            vertical: 20,
+                          ),
                         ),
                       ),
                       popupProps: PopupProps.dialog(
@@ -419,13 +673,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           backgroundColor: Colors.white,
                           elevation: 8,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(
+                              20,
+                            ),
                           ),
                         ),
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
                             labelText:
-                                'Search Country', // Label for the search box
+                            'Search Country', // Label for the search box
                             labelStyle: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey, // Text color for the label
@@ -436,10 +692,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   .grey, // Lighter color for the placeholder
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(
+                                12,
+                              ),
                             ),
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
                           ),
                           style: const TextStyle(
                             fontSize: 16,
@@ -449,7 +709,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         itemBuilder: (context, item, isSelected) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             child: Text(
                               item,
                               style: TextStyle(
@@ -467,25 +729,30 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       ),
                       dropdownBuilder: (context, selectedItem) {
                         return Text(
-                          selectedItem ?? "Select Country",
+                          selectedItem ?? 'Select Country',
                           style: const TextStyle(
-                              fontSize: 16, color: Colors.black),
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
                         );
                       },
                       filterFn: (item, filter) {
-                        return item
-                            .toLowerCase()
-                            .startsWith(filter.toLowerCase());
+                        return item.toLowerCase().startsWith(
+                          filter.toLowerCase(),
+                        );
                       },
                       onChanged: (value) {
                         setState(() {
                           countrytype = value;
+
                           _errorCountry = null;
                         });
                       },
                     ),
                     if (_errorCountry != null) ...[
-                      const SizedBox(height: 6),
+                      const SizedBox(
+                        height: 6,
+                      ),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -497,15 +764,28 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 30),
-                    buildGradientButton('Register', () {
-                      createAccount(
-                          context); // Call createAccount method on button press
-                    }),
-                    const SizedBox(height: 10),
-                    buildGrayButton('Cancel', () {
-                      Navigator.pop(context); // Navigate back on cancel
-                    }),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    buildGradientButton(
+                      'Register',
+                          () {
+                        createAccount(
+                          context,
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildGrayButton(
+                      'Cancel',
+                          () {
+                        Navigator.pop(
+                          context,
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -518,26 +798,38 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   // Helper method to create text fields with consistent styling
   Widget buildTextField(
-      String label, String hint, TextEditingController controller,
-      {bool obscureText = false,
-      String? errorText,
-      required Color borderColor,
-      void Function(String)? onChanged}) {
+      String label,
+      String hint,
+      TextEditingController controller, {
+        bool obscureText = false,
+        String? errorText,
+        required Color borderColor,
+        void Function(String)? onChanged,
+      }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label.isNotEmpty) Text(label),
-        const SizedBox(height: 8),
+        if (label.isNotEmpty)
+          Text(
+            label,
+          ),
+        const SizedBox(
+          height: 8,
+        ),
         TextField(
           controller: controller,
           obscureText: obscureText,
           onChanged: onChanged,
           decoration: InputDecoration(
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(
+                12,
+              ),
             ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 20,
+            ),
             filled: true,
             fillColor: Colors.grey[100],
             hintText: hint,
@@ -549,13 +841,21 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   // Helper method to create the gradient "Register" button
-  Widget buildGradientButton(String text, VoidCallback onPressed) {
+  Widget buildGradientButton(
+      String text,
+      VoidCallback onPressed,
+      ) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(
+          12,
+        ),
         gradient: const LinearGradient(
-          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+          colors: [
+            Colors.blueAccent,
+            Colors.lightBlueAccent,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -575,11 +875,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   // Helper method to create the gray "Cancel" button
-  Widget buildGrayButton(String text, VoidCallback onPressed) {
+  Widget buildGrayButton(
+      String text,
+      VoidCallback onPressed,
+      ) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(
+          12,
+        ),
         color: Colors.grey[300],
       ),
       child: TextButton(

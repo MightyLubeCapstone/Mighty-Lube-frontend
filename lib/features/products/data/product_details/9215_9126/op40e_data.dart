@@ -260,8 +260,7 @@ const ProductDetailData op40eData = ProductDetailData(
 
     ProductConfigurationSection(
       id: 'monitoring',
-      title:
-      'New Monitoring System or Adding to Existing Monitoring System',
+      title: 'New Monitoring System or Adding to Existing Monitoring System',
       fields: [
         ProductFieldData(
           key: 'existingMonitoring',
@@ -570,7 +569,7 @@ const ProductDetailData op40eData = ProductDetailData(
           'Chain on Edge Drag Line Chain Drop (A) - Top of Rail to Center of Chain',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementA,
+          imagePath: AppAssets.mlcelA,
         ),
 
         ProductFieldData(
@@ -579,7 +578,7 @@ const ProductDetailData op40eData = ProductDetailData(
           'Chain on Edge Drag Line Power Rail (G) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementG,
+          imagePath: AppAssets.mlcelG,
         ),
 
         ProductFieldData(
@@ -588,7 +587,7 @@ const ProductDetailData op40eData = ProductDetailData(
           'Chain on Edge Drag Line Power Rail (H) - Height',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementH,
+          imagePath: AppAssets.mlcelH,
         ),
 
         ProductFieldData(
@@ -597,7 +596,7 @@ const ProductDetailData op40eData = ProductDetailData(
           'Chain on Edge Drag Line Rail Offset (J) - Inside of Rail Channel to Inside of Rail Channel',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementJ,
+          imagePath: AppAssets.mlcelJ,
         ),
 
         ProductFieldData(
@@ -606,7 +605,7 @@ const ProductDetailData op40eData = ProductDetailData(
           'Chain on Edge Drag Line Wear Bar (X) - Width',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementX,
+          imagePath: AppAssets.mlcelX,
         ),
 
         ProductFieldData(
@@ -615,16 +614,15 @@ const ProductDetailData op40eData = ProductDetailData(
           'Chain on Edge Drag Line Wear Bar (Y) - Thickness',
           type: ProductFieldType.text,
           required: true,
-          imagePath: AppAssets.coeMeasurementY,
+          imagePath: AppAssets.mlcelY,
         ),
 
         ProductFieldData(
           key: 'coeLineZ',
-          label:
-          'Chain on Edge Drag Line Wear Bar Offset (Z) - Inside Edge of Rail to Inside Edge of Wear Bar',
+          label: 'Chain on Edge Drag Line Wear Bar Offset (Z) - Inside Edge of Rail to Inside Edge of Wear Bar',
           type: ProductFieldType.text,
           required: true,
-          imagePath: 'assets/Measurements/2/Z_OP40E.png',
+          imagePath: AppAssets.op40eZ,
         ),
       ],
     ),

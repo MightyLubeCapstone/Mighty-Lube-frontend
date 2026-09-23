@@ -29,12 +29,14 @@ ProductDetailData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'chainSize',
           label: 'Conveyor Chain Size',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'X348 Chain (3")',
             'X458 Chain (4")',
@@ -48,6 +50,7 @@ ProductDetailData(
           key: 'otherChainSize',
           label: 'Please Specify Other Conveyor Chain Size',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'chainSize',
           visibleWhenValue: 'Other',
         ),
@@ -56,6 +59,7 @@ ProductDetailData(
           key: 'chainManufacturer',
           label: 'Chain Manufacturer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Daifuku',
             'Frost',
@@ -73,6 +77,7 @@ ProductDetailData(
           key: 'otherChainManufacturer',
           label: 'Please Specify Other Chain Manufacturer',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'chainManufacturer',
           visibleWhenValue: 'Other',
         ),
@@ -81,6 +86,7 @@ ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         // Website shows this as a dropdown, but its exact options
@@ -89,18 +95,21 @@ ProductDetailData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorSpeed',
           label: 'Conveyor Speed (Min/Max)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorSpeedUnit',
           label: 'Conveyor Speed Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet / minute',
             'Meters / minute',
@@ -111,6 +120,7 @@ ProductDetailData(
           key: 'indexingVariableSpeedConditions',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         // Only one option was confirmed from the supplied website data,
@@ -119,6 +129,7 @@ ProductDetailData(
           key: 'travelDirection',
           label: 'Direction of Travel',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Example: Left to Right',
         ),
 
@@ -142,15 +153,16 @@ ProductDetailData(
           key: 'otherApplicationEnvironment',
           label: 'Please Specify Other Application Environment',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'applicationEnvironment',
           visibleWhenValue: 'Other',
         ),
 
         ProductFieldData(
           key: 'surroundingTemperature',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System is below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System is below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -159,8 +171,7 @@ ProductDetailData(
 
         ProductFieldData(
           key: 'conveyorLoadedStatus',
-          label:
-          'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
+          label: 'Is the Conveyor Loaded or Unloaded at Planned Install Location?',
           type: ProductFieldType.dropdown,
           required: true,
           options: [
@@ -174,6 +185,7 @@ ProductDetailData(
           label:
           'Does Conveyor Swing, Sway, Surge, or Move Side-to-Side?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -184,6 +196,7 @@ ProductDetailData(
           key: 'conveyorStrandType',
           label: 'Is Conveyor Single or Double Strand',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Single',
             'Double',
@@ -194,6 +207,7 @@ ProductDetailData(
           key: 'plantLayoutAvailable',
           label: 'I Have A Plant Layout To Attach',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes - Will Attach',
             'No - Do Not Have',
@@ -207,6 +221,7 @@ ProductDetailData(
           key: 'plantLayoutFile',
           label: 'Please attach plant layout',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Plant layout attachment',
           visibleWhenFieldKey: 'plantLayoutAvailable',
           visibleWhenValue: 'Yes - Will Attach',
@@ -216,6 +231,7 @@ ProductDetailData(
           key: 'chainPhotosAvailable',
           label: 'I Have The Required Pictures Of Each Chain To Attach',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes - Will Attach',
             'No - Do Not Have',
@@ -228,6 +244,7 @@ ProductDetailData(
           key: 'chainPhotosFile',
           label: 'Please attach required chain photos',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Required chain photos attachment',
           visibleWhenFieldKey: 'chainPhotosAvailable',
           visibleWhenValue: 'Yes - Will Attach',
@@ -246,12 +263,14 @@ ProductDetailData(
         ProductFieldData(
           key: 'operatingVoltage',
           label: 'Operating Voltage - Single Phase (Volts/Hz)',
+          required: true,
           type: ProductFieldType.text,
         ),
         ProductFieldData(
           key: 'controlVoltage',
           label: 'Control Voltage (Volts/Hz)',
           type: ProductFieldType.text,
+          required: true,
         ),
       ],
     ),
@@ -262,13 +281,13 @@ ProductDetailData(
 
     ProductConfigurationSection(
       id: 'monitoring_system',
-      title:
-      'New Monitoring System or Adding to Existing Monitoring System',
+      title: 'New Monitoring System or Adding to Existing Monitoring System',
       fields: [
         // Exact website dropdown options were not supplied.
         ProductFieldData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
+          required: true,
           type: ProductFieldType.text,
         ),
 
@@ -277,6 +296,7 @@ ProductDetailData(
           key: 'newMonitoringSystem',
           label: 'Add New Monitoring System',
           type: ProductFieldType.text,
+          required: true,
         ),
       ],
     ),
@@ -293,6 +313,7 @@ ProductDetailData(
           key: 'wheelOpenRaceStyle',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -303,6 +324,7 @@ ProductDetailData(
           key: 'wheelSealedStyle',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -313,6 +335,7 @@ ProductDetailData(
           key: 'openInsideShieldedOutside',
           label: 'Open Inside / Shielded Outside',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -323,6 +346,7 @@ ProductDetailData(
           key: 'powerChain',
           label: 'Power Chain',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -333,6 +357,7 @@ ProductDetailData(
           key: 'chainPins',
           label: 'Chain Pins',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -343,6 +368,7 @@ ProductDetailData(
           key: 'sliderPlates',
           label: 'Slider Plates',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -353,6 +379,7 @@ ProductDetailData(
           key: 'outboardWheels',
           label: 'Outboard Wheels',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -363,6 +390,7 @@ ProductDetailData(
           key: 'caterpillarDrive',
           label: 'Caterpillar Drive',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -373,6 +401,7 @@ ProductDetailData(
           key: 'caterpillarDriveQuantity',
           label: 'Caterpillar Drive Quantity',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'caterpillarDrive',
           visibleWhenValue: 'Yes',
         ),
@@ -381,6 +410,7 @@ ProductDetailData(
           key: 'railLubrication',
           label: 'Rail Lubrication',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -391,6 +421,7 @@ ProductDetailData(
           key: 'externalLubrication',
           label: 'External Lubrication',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -401,18 +432,21 @@ ProductDetailData(
           key: 'currentLubricationEquipmentBrand',
           label: 'Current Lubrication Equipment Brand',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'currentLubricantType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'currentLubricantViscosityGrade',
           label: 'Current Lubricant Viscosity / Grade',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         // Exact website choices were not supplied.
@@ -420,18 +454,21 @@ ProductDetailData(
           key: 'reservoirSize',
           label: 'Reservoir Size',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'reservoirSizeQuantity',
           label: 'Reservoir Size Quantity',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorChainClean',
           label: 'Is the Conveyor Chain Clean?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -452,6 +489,7 @@ ProductDetailData(
           key: 'mightyLubeMonitoring',
           label: 'Mighty Lube Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -463,6 +501,7 @@ ProductDetailData(
           key: 'ctrController',
           label: 'CTR Controller',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         // Source says dropdown/input but exact options are unknown.
@@ -470,12 +509,14 @@ ProductDetailData(
           key: 'plcConnection',
           label: 'PLC Connection',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'monitoringController',
           label: 'Monitoring Controller',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -492,15 +533,16 @@ ProductDetailData(
         // Exact dropdown choices were not supplied.
         ProductFieldData(
           key: 'specialControllerOptions',
-          label:
-          'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts',
+          label: 'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'controllerPleaseSpecify',
           label: 'Please Specify',
           type: ProductFieldType.text,
+          required: true,
           multiline: true,
         ),
       ],
@@ -515,92 +557,104 @@ ProductDetailData(
       title: 'Flat Top: Measurements',
       fields: [
         ProductFieldData(
-          key: 'measurementUnit',
+          key: 'ftUnitType',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
-            'Meter',
-            'Millimeter',
+            'm Meter',
+            'mm Millimeter',
           ],
         ),
 
         ProductFieldData(
-          key: 'flatTopPowerRailG',
-          label: 'Flat Top Power Rail (G)',
+          key: 'ftTopG',
+          label: 'Flat Top Measurement G',
           type: ProductFieldType.text,
-          hintText: 'Width',
+          required: true,
+          imagePath: AppAssets.FT_G,
         ),
 
         ProductFieldData(
-          key: 'flatTopPowerRailH',
-          label: 'Flat Top Power Rail (H)',
+          key: 'ftTopH',
+          label: 'Flat Top Measurement H',
           type: ProductFieldType.text,
-          hintText: 'Height',
+          required: true,
+          imagePath: AppAssets.FT_H,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerWheelA1',
-          label: 'Flat Top Roller Wheel (A1)',
+          key: 'ftTopA1',
+          label: 'Flat Top Measurement A1',
           type: ProductFieldType.text,
-          hintText: 'Diameter',
+          required: true,
+          imagePath: AppAssets.FT_A1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerWheelB1',
-          label: 'Flat Top Roller Wheel (B1)',
+          key: 'ftTopB1',
+          label: 'Flat Top Measurement B1',
           type: ProductFieldType.text,
-          hintText: 'Width',
+          required: true,
+          imagePath: AppAssets.FT_B1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerSleeveH1',
-          label: 'Flat Top Roller Sleeve (H1)',
+          key: 'ftTopH1',
+          label: 'Flat Top Measurement H1',
           type: ProductFieldType.text,
-          hintText: 'Width',
+          required: true,
+          imagePath: AppAssets.FT_H1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRailJ1',
-          label: 'Flat Top Rail (J1)',
+          key: 'ftTopJ1',
+          label: 'Flat Top Measurement J1',
           type: ProductFieldType.text,
-          hintText: 'Thickness',
+          required: true,
+          imagePath: AppAssets.FT_J1,
         ),
 
         ProductFieldData(
-          key: 'flatTopDoubleChainPitchL1',
-          label: 'Flat Top Double Chain Pitch (L1)',
+          key: 'ftTopL1',
+          label: 'Flat Top Measurement L1',
           type: ProductFieldType.text,
-          hintText: 'Center of Chain to Center of Chain',
+          required: true,
+          imagePath: AppAssets.FT_L1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerWheelPitchM1',
-          label: 'Flat Top Roller Wheel Pitch (M1)',
+          key: 'ftTopM1',
+          label: 'Flat Top Measurement M1',
           type: ProductFieldType.text,
-          hintText: 'Inside of Left Roller to Inside of Right Roller',
+          required: true,
+          imagePath: AppAssets.FT_M1,
         ),
 
         ProductFieldData(
-          key: 'flatTopMountingPlateN1',
-          label: 'Flat Top Mounting Plate (N1)',
+          key: 'ftTopN1',
+          label: 'Flat Top Measurement N1',
           type: ProductFieldType.text,
-          hintText: 'Width',
+          required: true,
+          imagePath: AppAssets.FT_N1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRailPitchP1',
-          label: 'Flat Top Rail Pitch (P1)',
+          key: 'ftTopP1',
+          label: 'Flat Top Measurement P1',
           type: ProductFieldType.text,
-          hintText: 'Outside of Left Rail to Outside of Right Rail',
+          required: true,
+          imagePath: AppAssets.FT_P1,
         ),
 
         ProductFieldData(
-          key: 'flatTopDoubleStrandPitchR1',
-          label: 'Flat Top Double Strand Pitch (R1)',
+          key: 'ftTopR1',
+          label: 'Flat Top Measurement R1',
           type: ProductFieldType.text,
-          hintText: 'Center of Strand to Center of Strand',
+          required: true,
+          imagePath: AppAssets.FT_R1,
         ),
       ],
     ),
@@ -617,6 +671,7 @@ ProductDetailData(
           key: 'wireMeasurementUnit',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -629,30 +684,60 @@ ProductDetailData(
           key: 'wire2Conductor',
           label: '2 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'wire4Conductor',
           label: '4 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'wire7Conductor',
           label: '7 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'wire12Conductor',
           label: '12 Conductor',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'junctionBoxQuantities',
           label: 'Junction Box Quantities',
           type: ProductFieldType.text,
+          required: true,
+        ),
+      ],
+    ),
+
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Not shown on current website recording.
+    // Kept as optional because this application currently
+    // supports technician notes across configurations.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          required: false,
+          multiline: true,
+          hintText:
+          'Enter any additional notes or instructions here...',
         ),
       ],
     ),

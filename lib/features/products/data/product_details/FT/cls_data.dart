@@ -22,6 +22,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
         ProductFieldData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
+          required: true,
           type: ProductFieldType.text,
         ),
 
@@ -29,6 +30,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'chainSize',
           label: 'Conveyor Chain Size',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'X348 Chain (3")',
             'X458 Chain (4")',
@@ -43,12 +45,14 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           label: 'Other Conveyor Chain Size',
           type: ProductFieldType.text,
           visibleWhenFieldKey: 'chainSize',
+          required: true,
           visibleWhenValue: 'Other',
         ),
 
         ProductFieldData(
           key: 'chainManufacturer',
           label: 'Chain Manufacturer',
+          required: true,
           type: ProductFieldType.dropdown,
           options: [
             'Daifuku',
@@ -67,6 +71,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'otherChainManufacturer',
           label: 'Other Chain Manufacturer',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'chainManufacturer',
           visibleWhenValue: 'Other',
         ),
@@ -75,12 +80,14 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -93,12 +100,14 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'conveyorSpeed',
           label: 'Conveyor Speed (Min/Max)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorSpeedUnit',
           label: 'Conveyor Speed Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet / minute',
             'Meters / minute',
@@ -109,12 +118,14 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'indexingVariableSpeedConditions',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'travelDirection',
           label: 'Direction of Travel',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Right to Left',
             'Left to Right',
@@ -141,15 +152,16 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'otherApplicationEnvironment',
           label: 'Other Application Environment',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'applicationEnvironment',
           visibleWhenValue: 'Other',
         ),
 
         ProductFieldData(
           key: 'surroundingTemperature',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -184,6 +196,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'conveyorStrandType',
           label: 'Is Conveyor Single or Double Strand',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Single',
             'Double',
@@ -241,6 +254,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -251,6 +265,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'newMonitoringSystem',
           label: 'Add New Monitoring System',
           type: ProductFieldType.text,
+          required: true,
         ),
       ],
     ),
@@ -267,6 +282,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'wheelOpenRaceStyle',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'No Applicable',
             'Open Inside',
@@ -278,6 +294,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'wheelSealedStyle',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Extended',
             'Flush',
@@ -289,6 +306,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'openInsideShieldedOutside',
           label: 'Open Inside / Shielded Outside',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -299,6 +317,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'freeTrolleyWheels',
           label: 'Free Trolley Wheels',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -309,6 +328,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'guideRollers',
           label: 'Guide Rollers',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -319,6 +339,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'guideRollersOpenRaceStyle',
           label: 'Guide Rollers Open Race Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'No Applicable',
             'Open Inside',
@@ -330,6 +351,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'guideRollersSealedStyle',
           label: 'Guide Rollers Sealed Style',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Extended',
             'Flush',
@@ -341,6 +363,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'openHole',
           label: 'Open Hole',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -351,6 +374,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'dogActuator',
           label: 'Dog Actuator',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -361,6 +385,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'pivotPoints',
           label: 'Pivot Points',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -371,12 +396,14 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'kingPin',
           label: 'King Pin',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'outboardWheels',
           label: 'Outboard Wheels',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -387,6 +414,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'railLubrication',
           label: 'Rail Lubrication',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -396,6 +424,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
         ProductFieldData(
           key: 'currentLubricationEquipmentBrand',
           label: 'Current Lubrication Equipment (Brand)',
+          required: true,
           type: ProductFieldType.text,
         ),
 
@@ -403,12 +432,14 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'currentLubricantType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'currentLubricantViscosityGrade',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
+          required: true,
         ),
       ],
     ),
@@ -425,6 +456,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'chainMasterController',
           label: 'ChainMaster Controller',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -435,6 +467,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'timer',
           label: 'Timer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Not Required',
             '12 Hour',
@@ -446,6 +479,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'electricOnOff',
           label: 'Electric On/Off',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'On',
             'Off',
@@ -456,6 +490,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'pneumaticOnOff',
           label: 'Pneumatic On/Off',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'On',
             'Off',
@@ -466,6 +501,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'mightyLubeMonitoring',
           label: 'Mighty Lube Monitoring',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -476,6 +512,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'plcConnection',
           label: 'PLC Connection',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -486,14 +523,15 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           key: 'controllerOtherDescribe',
           label: 'Other Describe',
           type: ProductFieldType.text,
+          required: true,
           multiline: true,
         ),
 
         ProductFieldData(
           key: 'specialControllerOptions',
-          label:
-          'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
+          label: 'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
@@ -501,6 +539,7 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
           label: 'Please Specify',
           type: ProductFieldType.text,
           multiline: true,
+          required: true,
         ),
       ],
     ),
@@ -514,9 +553,10 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
       title: 'Flat Top: Measurements',
       fields: [
         ProductFieldData(
-          key: 'measurementUnit',
+          key: 'ftUnitType',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -526,82 +566,115 @@ const ProductDetailData flatTopOp40eData = ProductDetailData(
         ),
 
         ProductFieldData(
-          key: 'flatTopPowerRailG',
-          label: 'Flat Top Power Rail (G)',
+          key: 'ftTopG',
+          label: 'Flat Top Measurement G',
           type: ProductFieldType.text,
-          hintText: '(Widh)',
+          required: true,
+          imagePath: AppAssets.FT_G,
         ),
 
         ProductFieldData(
-          key: 'flatTopPowerRailH',
-          label: 'Flat Top Power Rail (H)',
+          key: 'ftTopH',
+          label: 'Flat Top Measurement H',
           type: ProductFieldType.text,
-          hintText: '(Height)',
+          required: true,
+          imagePath: AppAssets.FT_H,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerWheelA1',
-          label: 'Flat Top Roller Wheel (A1)',
+          key: 'ftTopA1',
+          label: 'Flat Top Measurement A1',
           type: ProductFieldType.text,
-          hintText: '(Diameter)',
+          required: true,
+          imagePath: AppAssets.FT_A1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerWheelB1',
-          label: 'Flat Top Roller Wheel (B1)',
+          key: 'ftTopB1',
+          label: 'Flat Top Measurement B1',
           type: ProductFieldType.text,
-          hintText: '(Width)',
+          required: true,
+          imagePath: AppAssets.FT_B1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerSleeveH1',
-          label: 'Flat Top Roller Sleeve (H1)',
+          key: 'ftTopH1',
+          label: 'Flat Top Measurement H1',
           type: ProductFieldType.text,
-          hintText: '(Width)',
+          required: true,
+          imagePath: AppAssets.FT_H1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRailJ1',
-          label: 'Flat Top Rail (J1)',
+          key: 'ftTopJ1',
+          label: 'Flat Top Measurement J1',
           type: ProductFieldType.text,
-          hintText: '(Thickness)',
+          required: true,
+          imagePath: AppAssets.FT_J1,
         ),
 
         ProductFieldData(
-          key: 'flatTopDoubleChainPitchL1',
-          label: 'Flat Top Double Chain Pitch (L1)',
+          key: 'ftTopL1',
+          label: 'Flat Top Measurement L1',
           type: ProductFieldType.text,
-          hintText: '(Center of Chain to Center of Chain)',
+          required: true,
+          imagePath: AppAssets.FT_L1,
         ),
 
         ProductFieldData(
-          key: 'flatTopRollerWheelPitchM1',
-          label: 'Flat Top Roller Wheel Pitch (M1)',
+          key: 'ftTopM1',
+          label: 'Flat Top Measurement M1',
           type: ProductFieldType.text,
+          required: true,
+          imagePath: AppAssets.FT_M1,
+        ),
+
+        ProductFieldData(
+          key: 'ftTopN1',
+          label: 'Flat Top Measurement N1',
+          type: ProductFieldType.text,
+          required: true,
+          imagePath: AppAssets.FT_N1,
+        ),
+
+        ProductFieldData(
+          key: 'ftTopP1',
+          label: 'Flat Top Measurement P1',
+          type: ProductFieldType.text,
+          required: true,
+          imagePath: AppAssets.FT_P1,
+        ),
+
+        ProductFieldData(
+          key: 'ftTopR1',
+          label: 'Flat Top Measurement R1',
+          type: ProductFieldType.text,
+          required: true,
+          imagePath: AppAssets.FT_R1,
+        ),
+      ],
+    ),
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Not shown on current website recording.
+    // Kept as optional because this application currently
+    // supports technician notes across configurations.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          required: false,
+          multiline: true,
           hintText:
-          '(Inside of Left Roller to Inside of Right Roller)',
-        ),
-
-        ProductFieldData(
-          key: 'flatTopMountingPlateN1',
-          label: 'Flat Top Mounting Plate (N1)',
-          type: ProductFieldType.text,
-          hintText: '(Width)',
-        ),
-
-        ProductFieldData(
-          key: 'flatTopRailPitchP1',
-          label: 'Flat Top Rail Pitch (P1)',
-          type: ProductFieldType.text,
-          hintText:
-          '(Outside of Left Rail to Outside of Right Rail)',
-        ),
-
-        ProductFieldData(
-          key: 'flatTopDoubleStrandPitchR1',
-          label: 'Flat Top Double Strand Pitch (R1)',
-          type: ProductFieldType.text,
-          hintText: '(Center of Strand to Center of Strand)',
+          'Enter any additional notes or instructions here...',
         ),
       ],
     ),

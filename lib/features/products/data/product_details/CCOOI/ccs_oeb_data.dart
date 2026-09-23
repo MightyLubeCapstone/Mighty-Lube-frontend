@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../../../core/constants/app_assets.dart';
 import '../../../models/product_detail_data.dart';
 
@@ -6,15 +8,10 @@ ProductDetailData(
   // =========================================================
   // PRODUCT INFORMATION
   // =========================================================
-
   id: 'FRO_OEB',
-
   title: 'Overspray Eliminator Brush',
-
   imagePath: AppAssets.cChannelOversprayEliminatorBrush,
-
-  description:
-  'The Overspray Eliminator Brush is also known as the part saver brush '
+  description: 'The Overspray Eliminator Brush is also known as the part saver brush '
       'because it prevents contamination of parts by lubricant overspray. '
       'The part saver brush assembly mounts on the conveyor at the location '
       'of the lubricator.',
@@ -40,6 +37,7 @@ ProductDetailData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         // ---------------------------------------------------
@@ -51,6 +49,7 @@ ProductDetailData(
           key: 'conveyorChainSize',
           label: 'Conveyor Chain Size',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'X348 Chain (3")',
             'X458 Chain (4")',
@@ -69,6 +68,7 @@ ProductDetailData(
           key: 'chainManufacturer',
           label: 'Chain Manufacturer',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Daifuku',
             'Frost',
@@ -90,12 +90,14 @@ ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length',
           type: ProductFieldType.text,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -134,6 +136,7 @@ ProductDetailData(
           key: 'otherApplicationEnvironment',
           label: 'Other Application Environment',
           type: ProductFieldType.text,
+          required: true,
           visibleWhenFieldKey: 'applicationEnvironment',
           visibleWhenValue: 'Other',
         ),
@@ -144,9 +147,9 @@ ProductDetailData(
 
         ProductFieldData(
           key: 'surroundingTemperature',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System — is it below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System — is it below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Yes',
             'No',
@@ -171,6 +174,7 @@ ProductDetailData(
           key: 'measurementUnit',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
+          required: true,
           options: [
             'Feet',
             'Inches',
@@ -188,40 +192,44 @@ ProductDetailData(
           label: 'Overhead P&F Free Rail Chain Drop (A)',
           type: ProductFieldType.text,
           hintText: 'Top of Rail to Center of Chain',
-          imagePath: 'assets/Measurements/7/CCS/A.png',
+          required: true,
+          imagePath: AppAssets.CCO_CCS_A,
         ),
 
         ProductFieldData(
           key: 'overheadFreeRailPowerTrolleyWheelB',
           label: 'Overhead P&F Free Rail Power Trolley Wheel (B)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/7/CCS/B.png',
+          imagePath: AppAssets.CCO_CCS_B,
         ),
 
         ProductFieldData(
           key: 'overheadFreeRailRailG',
           label: 'Overhead P&F Free Rail Rail (G)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/7/CCS/G.png',
+          imagePath: AppAssets.CCO_CCS_G,
         ),
 
         ProductFieldData(
           key: 'overheadFreeRailRailH',
           label: 'Overhead P&F Free Rail Rail (H)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Height',
-          imagePath: 'assets/Measurements/7/CCS/H.png',
+          imagePath: AppAssets.CCO_CCS_H,
         ),
 
         ProductFieldData(
           key: 'overheadFreeRailTrolleyWheelVerticalL',
-          label:
-          'Overhead P&F Free Rail Free Trolley Wheel Position (Vertical) (L)',
+          label: 'Overhead P&F Free Rail Free Trolley Wheel Position (Vertical) (L)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Center of Free Trolley Wheel to Bottom of Rail',
-          imagePath: 'assets/Measurements/7/CCS/L.png',
+          imagePath: AppAssets.CCO_CCS_L,
         ),
 
         // ---------------------------------------------------
@@ -232,41 +240,45 @@ ProductDetailData(
           key: 'invertedPowerFreeChainDropA',
           label: 'Inverted Power and Free Chain Drop (A)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Center of Chain to Opposite Edge of Rail',
-          imagePath: 'assets/Measurements/7/CCS/A_Color.png',
+          imagePath: AppAssets.CCO_CCS_A_Color,
         ),
 
         ProductFieldData(
           key: 'invertedPowerFreePowerTrolleyWheelB',
           label: 'Inverted Power and Free Power Trolley Wheel (B)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Diameter',
-          imagePath: 'assets/Measurements/7/CCS/B2.png',
+          imagePath: AppAssets.CCO_CCS_B2,
         ),
 
         ProductFieldData(
           key: 'invertedPowerFreeRailG',
           label: 'Inverted Power and Free Rail (G)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Width',
-          imagePath: 'assets/Measurements/7/CCS/G2.png',
+          imagePath: AppAssets.CCO_CCS_G2,
         ),
 
         ProductFieldData(
           key: 'invertedPowerFreeRailH',
           label: 'Inverted Power and Free Rail (H)',
           type: ProductFieldType.text,
+          required: true,
           hintText: 'Height',
-          imagePath: 'assets/Measurements/7/CCS/H2.png',
+          imagePath: AppAssets.CCO_CCS_H2,
         ),
 
         ProductFieldData(
           key: 'invertedPowerFreeTrolleyWheelPitchK',
           label: 'Inverted Power and Free Trolley Wheel Pitch (K)',
           type: ProductFieldType.text,
-          hintText:
-          'Center of Trolley Wheel to Center of Trolley Wheel',
-          imagePath: 'assets/Measurements/7/CCS/K.png',
+          required: true,
+          hintText: 'Center of Trolley Wheel to Center of Trolley Wheel',
+          imagePath: AppAssets.CCO_CCS_K,
         ),
       ],
     ),

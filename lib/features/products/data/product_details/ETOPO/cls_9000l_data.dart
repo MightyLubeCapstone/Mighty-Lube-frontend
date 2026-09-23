@@ -19,14 +19,14 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'conveyorName',
           label: 'Name of Conveyor System',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'chainSize',
           label: 'Conveyor Chain Size',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'X348 Chain (3")',
             'X458 Chain (4")',
@@ -49,7 +49,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'industrialChainManufacturer',
           label: 'Chain Manufacturer',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Daifuku',
             'Frost',
@@ -76,14 +76,14 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'conveyorLength',
           label: 'Conveyor Length',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorLengthUnit',
           label: 'Conveyor Length Unit',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Feet',
             'Inches',
@@ -96,14 +96,14 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'conveyorSpeed',
           label: 'Conveyor Speed (Min/Max)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conveyorSpeedUnit',
           label: 'Conveyor Speed Unit',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Feet / minute',
             'Meters / minute',
@@ -114,14 +114,14 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'conveyorIndex',
           label: 'Indexing or Variable Speed Conditions',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'travelDirection',
           label: 'Direction of Travel',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Right to Left',
             'Left to Right',
@@ -155,10 +155,9 @@ const ProductDetailData etopo9000LData = ProductDetailData(
 
         ProductFieldData(
           key: 'surroundingTemp',
-          label:
-          'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
+          label: 'Temperature of Surrounding Area at Planned Location of Lubrication System it below 30°F or above 120°F?',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -203,7 +202,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'existingMonitoring',
           label: 'Connecting to Existing Monitoring',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -214,7 +213,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'newMonitoringSystem',
           label: 'Add New Monitoring System',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -235,7 +234,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'wheelOpenType',
           label: 'Wheel: Open Race Style',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -246,7 +245,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'wheelClosedType',
           label: 'Wheel: Sealed Style',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -257,7 +256,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'powerChain',
           label: 'Power Chain',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -268,7 +267,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'chainPins',
           label: 'Chain Pins',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -279,7 +278,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'catDriveStatus',
           label: 'Caterpillar Drive',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -290,14 +289,14 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'catDriveNum',
           label: 'Caterpillar Drive Quantity',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'railLubeStatus',
           label: 'Rail Lubrication',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -308,7 +307,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'externalLubeStatus',
           label: 'External Lubrication',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -319,28 +318,28 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'lubeBrand',
           label: 'Current Lubrication Equipment (Brand)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeType',
           label: 'Current Lubricant Type',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'lubeViscosity',
           label: 'Current Lubricant Viscosity/Grade',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'sideLubeStatus',
           label: 'Lubrication from the Side of Chain',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -351,7 +350,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'topLubeStatus',
           label: 'Lubrication from the Top of Chain',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -362,21 +361,21 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'reservoirSize',
           label: 'Reservoir Size',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'reservoirSizeQuantity',
           label: 'Reservoir Size Quantity',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'chainCleanStatus',
           label: 'Is the Conveyor Chain Clean?',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -395,10 +394,9 @@ const ProductDetailData etopo9000LData = ProductDetailData(
       fields: [
         ProductFieldData(
           key: 'specialControllerOptions',
-          label:
-          'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
+          label: 'Special Options to Add on to Controller, I/O Link, Plug and Play, Dry Contacts (please specify)',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Yes',
             'No',
@@ -427,7 +425,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'wireMeasurementUnit',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Feet',
             'Inches',
@@ -440,35 +438,35 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'conductor2',
           label: '2 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conductor4',
           label: '4 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conductor7',
           label: '7 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'conductor12',
           label: '12 Conductor',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
 
         ProductFieldData(
           key: 'junctionBoxNum',
           label: 'Junction Box Quantities',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
         ),
       ],
     ),
@@ -485,7 +483,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'enclosedUnitType',
           label: 'Measurement Unit',
           type: ProductFieldType.dropdown,
-          required: false,
+          required: true,
           options: const [
             'Feet',
             'Inches',
@@ -498,9 +496,9 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           key: 'enclosedTrackB',
           label: 'Enclosed Track (Overhead) Power Trolley Wheel (B)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           hintText: '(Diameter)',
-          imagePath: 'assets/Measurements/4/CMS/B.png',
+          imagePath: AppAssets.etioB,
         ),
 
         ProductFieldData(
@@ -509,7 +507,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           type: ProductFieldType.text,
           required: false,
           hintText: '(Width)',
-          imagePath: 'assets/Measurements/4/CMS/G.png',
+          imagePath: AppAssets.etioG,
         ),
 
         ProductFieldData(
@@ -518,7 +516,7 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           type: ProductFieldType.text,
           required: false,
           hintText: '(Height)',
-          imagePath: 'assets/Measurements/4/CMS/H.png',
+          imagePath: AppAssets.etioH,
         ),
 
         ProductFieldData(
@@ -528,55 +526,75 @@ const ProductDetailData etopo9000LData = ProductDetailData(
           type: ProductFieldType.text,
           required: false,
           hintText: '(Center of Power Wheel to Center of Power Wheel)',
-          imagePath: 'assets/Measurements/4/CMS/S.png',
+          imagePath: AppAssets.etioS,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackK2',
           label: 'Enclosed Track (Overhead) Free Trolley Wheel (K2)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           hintText: '(Diameter)',
-          imagePath: 'assets/Measurements/4/CMS/K2.png',
+          imagePath: AppAssets.etioK2,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackL2',
           label: 'Enclosed Track (Overhead) Free Rail (L2)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           hintText: '(Width)',
-          imagePath: 'assets/Measurements/4/CMS/L2.png',
+          imagePath: AppAssets.etioL2,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackM2',
           label: 'Enclosed Track (Overhead) Free Rail (M2)',
           type: ProductFieldType.text,
-          required: false,
+          required: true,
           hintText: '(Height)',
-          imagePath: 'assets/Measurements/4/CMS/M2.png',
+          imagePath: AppAssets.etioM2,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackN2',
-          label:
-          'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
+          label: 'Enclosed Track (Overhead) Free Rail Vertical Position (Height) (N2)',
           type: ProductFieldType.text,
           required: false,
           hintText: '(Top of Power Rail to Bottom of Free Rail)',
-          imagePath: 'assets/Measurements/4/CMS/N2.png',
+          imagePath: AppAssets.etioN2,
         ),
 
         ProductFieldData(
           key: 'enclosedTrackS2',
-          label:
-          'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)',
+          label: 'Enclosed Track (Overhead) Power Trolley Wheel Pitch (S2)',
           type: ProductFieldType.text,
           required: false,
-          hintText:
-          '(Center of Trolley Wheel to Center of Trolley Wheel)',
-          imagePath: 'assets/Measurements/4/CMS/S2.png',
+          hintText: '(Center of Trolley Wheel to Center of Trolley Wheel)',
+          imagePath: AppAssets.etioS2,
+        ),
+      ],
+    ),
+
+
+    // =======================================================
+    // TECHNICIAN NOTE
+    //
+    // Existing app-specific field.
+    // Kept optional.
+    // =======================================================
+
+    ProductConfigurationSection(
+      id: 'technician',
+      title: 'Technician Note',
+      fields: [
+        ProductFieldData(
+          key: 'technicianNote',
+          label: 'Technician Note',
+          type: ProductFieldType.text,
+          required: false,
+          multiline: true,
+          hintText: 'Enter any additional notes or instructions here...',
         ),
       ],
     ),

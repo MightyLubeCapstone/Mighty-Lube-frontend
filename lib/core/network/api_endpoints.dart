@@ -170,6 +170,22 @@ class ApiEndpoints {
   }
 
   // ---------------------------------------------------------
+  // ETIPO - OP-41A
+  // Enclosed Track Inverted Conveyor Lubricators
+  //
+  // Product ID: ETI_OP41A
+  // POST /api/eti_op41a
+  // ---------------------------------------------------------
+
+  static String get etipoOp41a {
+    return '$apiBaseUrl/eti_op41a';
+  }
+
+  static String get etiMlaio {
+    return '$apiBaseUrl/eti_mlaio';
+  }
+
+  // ---------------------------------------------------------
   // ETOPO - 2100L SERIES SELF-CONTAINED
   // CONVEYOR LUBRICATORS
   //
@@ -203,6 +219,10 @@ class ApiEndpoints {
 
   static String get etopoOp48e {
     return '$apiBaseUrl/eto_op48e';
+  }
+
+  static String get etopoOp41a {
+    return '$apiBaseUrl/eto_op41a';
   }
 
   // ---------------------------------------------------------
@@ -272,6 +292,10 @@ class ApiEndpoints {
 
   static String get flatTopMightyLubeLubricator {
     return '$apiBaseUrl/ft_mlcel';
+  }
+
+  static String get flatTopCdl {
+    return '$apiBaseUrl/ft_cdl';
   }
 
   // ---------------------------------------------------------
@@ -404,6 +428,18 @@ class ApiEndpoints {
 
   static String get inBoardRollerChainOp40e {
     return '$apiBaseUrl/ibr_op4oe';
+  }
+
+  // ---------------------------------------------------------
+// IN-BOARD ROLLER CHAIN
+// OPCO 300 SERIES AUTOMATIC SEALED WHEEL LUBRICATOR
+//
+// Product ID: IBRC_300
+// POST /api/ibrc_300
+// ---------------------------------------------------------
+
+  static String get inBoardRollerChain300 {
+    return '$apiBaseUrl/ibrc_300';
   }
 
   // ---------------------------------------------------------
@@ -581,6 +617,55 @@ class ApiEndpoints {
     return '$apiBaseUrl/ohp_pmm';
   }
 
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // NON-POWERED MIGHTY LUBE BRUSH CLEANERS 300I / 400I / 600I
+  //
+  // Product ID: PFO_CCS_300I
+  // POST /api/pfo_ccs_300i
+  // ---------------------------------------------------------
+
+  static String get pfoNonPoweredBrushCleaners300i400i600i {
+    return '$apiBaseUrl/pfo_ccs_300i';
+  }
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // OP-8 POWER BRUSH CLEANING SYSTEM
+  // CONVEYOR CHAIN & TROLLEY WHEEL CLEANER
+  //
+  // Product ID: PFO_CCS_OP8
+  // POST /api/pfo_ccs_op8
+  // ---------------------------------------------------------
+
+  static String get pfoOp8PowerBrushCleaningSystem {
+    return '$apiBaseUrl/pfo_ccs_op8';
+  }
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // OP-8NP NON-POWER BRUSH CLEANING SYSTEM
+  //
+  // Product ID: PFO_CCS_OP8NP
+  // POST /api/pfo_ccs_op8np
+  // ---------------------------------------------------------
+
+  static String get pfoOp8npNonPowerBrushCleaningSystem {
+    return '$apiBaseUrl/pfo_ccs_op8np';
+  }
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // FREE RAIL 314 "LOAD" WHEEL GREASER
+  //
+  // Product ID: PFO_CGS_FR314
+  // POST /api/pfo_cgs_fr314
+  // ---------------------------------------------------------
+
+  static String get pfoFreeRail314LoadWheelGreaser {
+    return '$apiBaseUrl/pfo_cgs_fr314';
+  }
 // =========================================================
 // FUTURE PRODUCT ENDPOINTS
 // =========================================================
