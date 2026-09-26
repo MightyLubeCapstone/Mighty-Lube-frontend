@@ -6,7 +6,28 @@ import 'package:image_picker/image_picker.dart';
 import '../../features/products/models/product_detail_data.dart';
 import '../../features/products/repositories/product_repository.dart';
 import '../network/api_response.dart';
+import '../network/Services/image_upload_service.dart';
 import 'api_action_button.dart';
+
+// ===========================================================
+// IMAGE UPLOAD FAILURE ACTION
+// ===========================================================
+//
+// If image upload fails:
+//
+// retry
+//   → upload the SAME image again.
+//
+// continueWithoutImage
+//   → skip ONLY that failed image and continue saving the
+//     configuration.
+//
+// ===========================================================
+
+enum _ImageUploadFailureAction {
+  retry,
+  continueWithoutImage,
+}
 
 class ProductConfigurationForm extends StatefulWidget {
   final ProductDetailData product;
@@ -78,28 +99,28 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   bool _hasOtherOption(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     if (field.type != ProductFieldType.dropdown) {
       return false;
     }
 
     return field.options.any(
-      (option) => option.trim().toLowerCase() == 'other',
+          (option) => option.trim().toLowerCase() == 'other',
     );
   }
 
   bool _isOtherSelected(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     final selectedValue = _dropdownValues[field.key];
 
     return selectedValue?.trim().toLowerCase() == 'other';
   }
 
   bool _shouldShowImagePicker(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     if (field.type != ProductFieldType.dropdown) {
       return false;
     }
@@ -111,6 +132,7 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     }
 
     final hasYes = value.contains('yes');
+
     final hasAttachOrUpload =
         value.contains('attach') || value.contains('upload');
 
@@ -118,8 +140,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   }
 
   String _imagePickerKeyFor(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     return '${field.key}Image';
   }
 
@@ -128,8 +150,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   bool _isFieldVisible(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     final controllingKey = field.visibleWhenFieldKey;
     final requiredValue = field.visibleWhenValue;
 
@@ -145,8 +167,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   }
 
   String? _getFieldValue(
-    String key,
-  ) {
+      String key,
+      ) {
     if (_dropdownValues.containsKey(key)) {
       return _dropdownValues[key];
     }
@@ -163,8 +185,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   void _clearHiddenDependentFields(
-    String changedFieldKey,
-  ) {
+      String changedFieldKey,
+      ) {
     for (final section in widget.product.configurationSections) {
       for (final field in section.fields) {
         if (field.visibleWhenFieldKey != changedFieldKey) {
@@ -181,7 +203,9 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
         if (field.type == ProductFieldType.dropdown) {
           _dropdownValues[field.key] = null;
+
           _otherControllers[field.key]?.clear();
+
           _selectedImages[_imagePickerKeyFor(field)] = null;
         }
 
@@ -199,8 +223,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   bool _isSectionComplete(
-    ProductConfigurationSection section,
-  ) {
+      ProductConfigurationSection section,
+      ) {
     for (final field in section.fields) {
       if (!_isFieldVisible(field)) {
         continue;
@@ -257,6 +281,7 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
           if (field.required && (value == null || value.isEmpty)) {
             _errors[field.key] = '${field.label} is required';
+
             valid = false;
           } else {
             _errors[field.key] = null;
@@ -268,12 +293,14 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
           if (field.required && (value == null || value.trim().isEmpty)) {
             _errors[field.key] = 'Please select ${field.label}';
+
             valid = false;
           } else if (_isOtherSelected(field)) {
             final otherValue = _otherControllers[field.key]?.text.trim();
 
             if (otherValue == null || otherValue.isEmpty) {
               _errors[field.key] = 'Please specify ${field.label}';
+
               valid = false;
             } else {
               _errors[field.key] = null;
@@ -291,10 +318,267 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   }
 
   // =========================================================
-  // COLLECT API DATA
+  // IMAGE UPLOAD
+  // =========================================================
+  //
+  // Upload selected images one-by-one.
+  //
+  // SUCCESS:
+  //   Save permanent object-storage metadata.
+  //
+  // FAILURE:
+  //   Ask user:
+  //
+  //   1. Try Again
+  //   2. Add Without Image
+  //
+  // If multiple images exist:
+  //
+  // Image 1 success
+  // Image 2 failure
+  //
+  // Only Image 2 is retried/skipped.
+  // Image 1 is NOT uploaded again.
+  //
   // =========================================================
 
-  Map<String, dynamic> _collectFormData() {
+  Future<Map<String, dynamic>> _uploadSelectedImagesWithRetry() async {
+    final Map<String, dynamic> uploadedImages = {};
+
+    for (final section in widget.product.configurationSections) {
+      for (final field in section.fields) {
+        // -----------------------------------------------------
+        // Currently image picker belongs to dropdown fields.
+        // -----------------------------------------------------
+
+        if (field.type != ProductFieldType.dropdown) {
+          continue;
+        }
+
+        // -----------------------------------------------------
+        // Ignore hidden fields.
+        // -----------------------------------------------------
+
+        if (!_isFieldVisible(field)) {
+          continue;
+        }
+
+        // -----------------------------------------------------
+        // Upload only when current dropdown selection requires
+        // an image.
+        // -----------------------------------------------------
+
+        if (!_shouldShowImagePicker(field)) {
+          continue;
+        }
+
+        final imageKey = _imagePickerKeyFor(
+          field,
+        );
+
+        final image = _selectedImages[imageKey];
+
+        // -----------------------------------------------------
+        // User did not select an image.
+        // Nothing needs to be uploaded.
+        // -----------------------------------------------------
+
+        if (image == null) {
+          continue;
+        }
+
+        bool currentImageFinished = false;
+
+        while (!currentImageFinished) {
+          // ---------------------------------------------------
+          // UPLOAD CURRENT IMAGE
+          // ---------------------------------------------------
+
+          final response = await ImageUploadService.uploadImage(
+            image,
+            projectKey: widget.product.id,
+          );
+
+          // ---------------------------------------------------
+          // SUCCESS
+          // ---------------------------------------------------
+
+          if (response.success) {
+            final responseData = response.data;
+
+            if (responseData != null) {
+              final fileData = responseData['file'];
+
+              if (fileData is Map) {
+                final uploadedFile =
+                Map<String, dynamic>.from(fileData);
+
+                final objectKey = uploadedFile['objectKey'];
+
+                if (objectKey is String &&
+                    objectKey.trim().isNotEmpty) {
+                  uploadedImages[imageKey] = uploadedFile;
+
+                  currentImageFinished = true;
+
+                  continue;
+                }
+              }
+            }
+          }
+
+          // ---------------------------------------------------
+          // FAILURE
+          // ---------------------------------------------------
+          //
+          // This also covers:
+          //
+          // - backend failure
+          // - network failure
+          // - invalid response
+          // - missing objectKey
+          //
+          // ---------------------------------------------------
+
+          if (!mounted) {
+            return uploadedImages;
+          }
+
+          String failureMessage =
+              response.message ?? 'The selected image could not be uploaded.';
+
+          if (response.success) {
+            failureMessage =
+            'The image was uploaded but the server returned an invalid response.';
+          }
+
+          final action = await _showImageUploadFailureDialog(
+            imageName: image.name,
+            message: failureMessage,
+          );
+
+          // ---------------------------------------------------
+          // TRY AGAIN
+          // ---------------------------------------------------
+          //
+          // while-loop continues with SAME image.
+          //
+          // ---------------------------------------------------
+
+          if (action == _ImageUploadFailureAction.retry) {
+            continue;
+          }
+
+          // ---------------------------------------------------
+          // ADD WITHOUT IMAGE
+          // ---------------------------------------------------
+          //
+          // Skip this image.
+          //
+          // If other images exist, continue uploading them.
+          //
+          // ---------------------------------------------------
+
+          currentImageFinished = true;
+        }
+      }
+    }
+
+    return uploadedImages;
+  }
+
+  // =========================================================
+  // IMAGE UPLOAD FAILURE DIALOG
+  // =========================================================
+
+  Future<_ImageUploadFailureAction> _showImageUploadFailureDialog({
+    required String imageName,
+    required String message,
+  }) async {
+    final result = await showDialog<_ImageUploadFailureAction>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Image Upload Failed',
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'We could not upload "$imageName".',
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Text(
+                message,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              const Text(
+                'Would you like to try uploading the image again '
+                    'or add the configuration without this image?',
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(
+                  _ImageUploadFailureAction.continueWithoutImage,
+                );
+              },
+              child: const Text(
+                'Add Without Image',
+              ),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(
+                  _ImageUploadFailureAction.retry,
+                );
+              },
+              child: const Text(
+                'Try Again',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? _ImageUploadFailureAction.continueWithoutImage;
+  }
+
+  // =========================================================
+  // COLLECT API DATA
+  // =========================================================
+  //
+  // IMPORTANT:
+  //
+  // We no longer save:
+  //
+  // /Users/.../image.jpg
+  // /data/user/.../image.jpg
+  //
+  // We save only permanent object-storage metadata:
+  //
+  // {
+  //   objectKey: "...",
+  //   originalName: "...",
+  //   contentType: "...",
+  //   size: ...
+  // }
+  //
+  // =========================================================
+
+  Map<String, dynamic> _collectFormData({
+    Map<String, dynamic> uploadedImages = const {},
+  }) {
     final Map<String, dynamic> data = {};
 
     for (final section in widget.product.configurationSections) {
@@ -303,26 +587,40 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
           continue;
         }
 
+        // -----------------------------------------------------
+        // TEXT
+        // -----------------------------------------------------
+
         if (field.type == ProductFieldType.text) {
-          data[field.key] = _textControllers[field.key]?.text.trim() ?? '';
+          data[field.key] =
+              _textControllers[field.key]?.text.trim() ?? '';
         }
+
+        // -----------------------------------------------------
+        // DROPDOWN
+        // -----------------------------------------------------
 
         if (field.type == ProductFieldType.dropdown) {
           if (_isOtherSelected(field)) {
-            data[field.key] = _otherControllers[field.key]?.text.trim() ?? '';
+            data[field.key] =
+                _otherControllers[field.key]?.text.trim() ?? '';
           } else {
             data[field.key] = _dropdownValues[field.key] ?? '';
           }
+
+          // ---------------------------------------------------
+          // IMAGE METADATA
+          // ---------------------------------------------------
 
           if (_shouldShowImagePicker(field)) {
             final imageKey = _imagePickerKeyFor(
               field,
             );
 
-            final image = _selectedImages[imageKey];
+            final uploadedImage = uploadedImages[imageKey];
 
-            if (image != null) {
-              data[imageKey] = image.path;
+            if (uploadedImage != null) {
+              data[imageKey] = uploadedImage;
             }
           }
         }
@@ -337,8 +635,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   Future<void> _pickImage(
-    ProductFieldData field,
-  ) async {
+      ProductFieldData field,
+      ) async {
     final image = await _imagePicker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 85,
@@ -348,14 +646,22 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
       return;
     }
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       _selectedImages[_imagePickerKeyFor(field)] = image;
     });
   }
 
+  // =========================================================
+  // ASSET IMAGE PREVIEW
+  // =========================================================
+
   void _showAssetImagePreview(
-    String imagePath,
-  ) {
+      String imagePath,
+      ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -379,9 +685,13 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     );
   }
 
+  // =========================================================
+  // SELECTED FILE IMAGE PREVIEW
+  // =========================================================
+
   void _showFileImagePreview(
-    XFile image,
-  ) {
+      XFile image,
+      ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -433,8 +743,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     return Column(
       children: [
         Expanded(
@@ -444,11 +754,11 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
             ),
             itemCount: widget.product.configurationSections.length,
             itemBuilder: (
-              context,
-              sectionIndex,
-            ) {
+                context,
+                sectionIndex,
+                ) {
               final section =
-                  widget.product.configurationSections[sectionIndex];
+              widget.product.configurationSections[sectionIndex];
 
               return _buildSection(
                 section,
@@ -466,8 +776,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   Widget _buildSection(
-    ProductConfigurationSection section,
-  ) {
+      ProductConfigurationSection section,
+      ) {
     final bool complete = _isSectionComplete(
       section,
     );
@@ -486,14 +796,14 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
         ),
         trailing: complete
             ? const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-              )
+          Icons.check_circle,
+          color: Colors.green,
+        )
             : const Icon(
-                Icons.keyboard_arrow_down,
-              ),
+          Icons.keyboard_arrow_down,
+        ),
         children: section.fields.where(_isFieldVisible).map(
-          (field) {
+              (field) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(
                 16,
@@ -516,8 +826,8 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   // =========================================================
 
   Widget _buildField(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     switch (field.type) {
       case ProductFieldType.text:
         return _buildTextField(
@@ -564,18 +874,17 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     );
   }
 
-
   Widget _buildTextInput(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     return TextField(
       controller: _textControllers[field.key],
       minLines: field.multiline ? 4 : 1,
       maxLines: field.multiline ? 6 : 1,
       keyboardType:
-          field.multiline ? TextInputType.multiline : TextInputType.text,
+      field.multiline ? TextInputType.multiline : TextInputType.text,
       textInputAction:
-          field.multiline ? TextInputAction.newline : TextInputAction.next,
+      field.multiline ? TextInputAction.newline : TextInputAction.next,
       onChanged: (_) {
         setState(() {
           _errors[field.key] = null;
@@ -595,9 +904,13 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     );
   }
 
+  // =========================================================
+  // MEASUREMENT IMAGE
+  // =========================================================
+
   Widget _buildMeasurementImage(
-    String imagePath,
-  ) {
+      String imagePath,
+      ) {
     return InkWell(
       onTap: () {
         _showAssetImagePreview(
@@ -627,10 +940,10 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
           imagePath,
           fit: BoxFit.contain,
           errorBuilder: (
-            context,
-            error,
-            stackTrace,
-          ) {
+              context,
+              error,
+              stackTrace,
+              ) {
             return const Center(
               child: Text(
                 'Image not found',
@@ -643,12 +956,12 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
   }
 
   // =========================================================
-  // DROPDOWN
+  // DROPDOWN FIELD
   // =========================================================
 
   Widget _buildDropdownField(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     final dropdown = _buildDropdown(
       field,
     );
@@ -706,9 +1019,13 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     return dropdown;
   }
 
+  // =========================================================
+  // DROPDOWN
+  // =========================================================
+
   Widget _buildDropdown(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     return DropdownButtonFormField<String>(
       value: _dropdownValues[field.key],
       isExpanded: true,
@@ -718,7 +1035,7 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
         border: const OutlineInputBorder(),
       ),
       items: field.options.map(
-        (option) {
+            (option) {
           return DropdownMenuItem<String>(
             value: option,
             child: Text(
@@ -731,11 +1048,31 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
       onChanged: (value) {
         setState(() {
           _dropdownValues[field.key] = value;
+
           _errors[field.key] = null;
+
+          // ---------------------------------------------------
+          // CLEAR OTHER VALUE
+          // ---------------------------------------------------
 
           if (!_isOtherSelected(field)) {
             _otherControllers[field.key]?.clear();
           }
+
+          // ---------------------------------------------------
+          // CLEAR IMAGE
+          //
+          // Example:
+          //
+          // User:
+          // Yes - Attach Image
+          //       ↓
+          // selects image
+          //       ↓
+          // changes dropdown to No
+          //
+          // Old image must not remain selected.
+          // ---------------------------------------------------
 
           if (!_shouldShowImagePicker(field)) {
             _selectedImages[_imagePickerKeyFor(field)] = null;
@@ -749,9 +1086,13 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     );
   }
 
+  // =========================================================
+  // OTHER TEXT FIELD
+  // =========================================================
+
   Widget _buildOtherTextField(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     return TextField(
       controller: _otherControllers[field.key],
       textInputAction: TextInputAction.next,
@@ -769,9 +1110,13 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
     );
   }
 
+  // =========================================================
+  // IMAGE PICKER BOX
+  // =========================================================
+
   Widget _buildImagePickerBox(
-    ProductFieldData field,
-  ) {
+      ProductFieldData field,
+      ) {
     final imageKey = _imagePickerKeyFor(
       field,
     );
@@ -811,55 +1156,55 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
         ),
         child: selectedImage == null
             ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.cloud_upload_outlined,
-                    size: 32,
-                    color: Colors.black54,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    'Tap to upload image',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                ],
-              )
-            : Stack(
-                fit: StackFit.expand,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                      8,
-                    ),
-                    child: Image.file(
-                      File(
-                        selectedImage.path,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: IconButton.filled(
-                      onPressed: () {
-                        setState(() {
-                          _selectedImages[imageKey] = null;
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.close,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.cloud_upload_outlined,
+              size: 32,
+              color: Colors.black54,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Text(
+              'Tap to upload image',
+              style: TextStyle(
+                color: Colors.grey.shade700,
               ),
+            ),
+          ],
+        )
+            : Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(
+                8,
+              ),
+              child: Image.file(
+                File(
+                  selectedImage.path,
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              top: 6,
+              right: 6,
+              child: IconButton.filled(
+                onPressed: () {
+                  setState(() {
+                    _selectedImages[imageKey] = null;
+                  });
+                },
+                icon: const Icon(
+                  Icons.close,
+                  size: 18,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -896,6 +1241,10 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // =================================================
+            // QUANTITY
+            // =================================================
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -926,19 +1275,69 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
                 ),
               ],
             ),
+
             const SizedBox(
               height: 8,
             ),
+
+            // =================================================
+            // ADD TO CONFIGURATOR
+            // =================================================
+
             ApiActionButton<Map<String, dynamic>>(
               title: 'Add to Configurator',
               onCall: () async {
+                // =============================================
+                // STEP 1
+                // VALIDATE FORM
+                // =============================================
+
                 if (!_validateForm()) {
                   return ApiResponse<Map<String, dynamic>>.failure(
                     message: 'Please fill all required fields.',
                   );
                 }
 
-                final configuration = _collectFormData();
+                // =============================================
+                // STEP 2
+                // UPLOAD SELECTED IMAGES
+                // =============================================
+                //
+                // Success:
+                //   Keep permanent image metadata.
+                //
+                // Failure:
+                //   Popup asks:
+                //
+                //   Try Again
+                //        OR
+                //   Add Without Image
+                //
+                // =============================================
+
+                final uploadedImages =
+                await _uploadSelectedImagesWithRetry();
+
+                // =============================================
+                // STEP 3
+                // COLLECT CONFIGURATION
+                // =============================================
+                //
+                // Only successfully uploaded images are added.
+                //
+                // Failed images skipped by the user are NOT
+                // included.
+                //
+                // =============================================
+
+                final configuration = _collectFormData(
+                  uploadedImages: uploadedImages,
+                );
+
+                // =============================================
+                // STEP 4
+                // SAVE CONFIGURATION
+                // =============================================
 
                 return ProductRepository.addToConfigurator(
                   productId: widget.product.id,
@@ -950,6 +1349,7 @@ class _ProductConfigurationFormState extends State<ProductConfigurationForm> {
               onSuccess: (data) {
                 /*
                  * Later:
+                 *
                  * - refresh cart
                  * - navigate
                  * - update badge

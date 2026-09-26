@@ -6,7 +6,7 @@ class AppAssets {
   // =========================================================
 
   static const String applicationIndustrial = 'assets/Industrial/Title.png';
-  static const String applicationProtein = 'assets/Protein.png';
+  static const String applicationProtein = 'assets/Protein/title.png';
   static const String applicationTechnician = 'assets/Technician.png';
 
   // =========================================================
@@ -285,8 +285,6 @@ class AppAssets {
   static const String OHP_CSS_M_M2 = 'assets/industrial/OHP(20)/CCS/Mesurment/M2.png';
 
 
-
-
   // OHP - Greaser Systems
   static const String OHP_CGS_GPC = 'assets/industrial/OHP(20)/CGS/title.png';
 
@@ -370,50 +368,53 @@ class AppAssets {
 
 
   // ---------------------------------------------------------
-  // PFO - Lubrication Systems
+  // PFO - Conveyor Lubrication Systems
   // ---------------------------------------------------------
 
-  static const String pfoLubricationSystems =
-      'assets/industrial/PFO(16)/CLS/CLS.png';
+  static const String pfoLubricationSystems = 'assets/industrial/PFO(16)/CLS/CLS.png';
+  static const String PFO_CLS_9000L = 'assets/industrial/PFO(16)/CLS/9000L.png';
+  static const String PFO_CLS_9000LCCL = 'assets/industrial/PFO(16)/CLS/9000LCCL.png';
+  static const String PFO_CLS_9000LTCL = 'assets/industrial/PFO(16)/CLS/9000LTCL.png';
+  static const String PFO_CLS_CDL = 'assets/industrial/PFO(16)/CLS/CDL.png';
+  static const String PFO_CLS_ES = 'assets/industrial/PFO(16)/CLS/ES.png';
+  static const String PFO_CLS_OP55 = 'assets/industrial/PFO(16)/CLS/OP55.png';
+  static const String PFO_CLS_OP139A = 'assets/industrial/PFO(16)/CLS/OP139A.png';
 
-  static const String PFO_CLS_9000L =
-      'assets/industrial/PFO(16)/CLS/9000L.png';
-
-  static const String PFO_CLS_9000LECCCL =
-      'assets/industrial/PFO(16)/CLS/9000LECCCL.png';
-
-  static const String PFO_CLS_9000LTCL =
-      'assets/industrial/PFO(16)/CLS/9000LTCL.png';
-
-  static const String PFO_CLS_CDL =
-      'assets/industrial/PFO(16)/CLS/CDL.png';
-
-  static const String PFO_CLS_ES =
-      'assets/industrial/PFO(16)/CLS/ES.png';
-
-  static const String PFO_CLS_OP55 =
-      'assets/industrial/PFO(16)/CLS/OP55.png';
-
-  static const String PFO_CLS_OP139A =
-      'assets/industrial/PFO(16)/CLS/OP139A.png';
+  // PFO - CLS -  MEASUREMENT iMAGES
+  static const String PFO_CLS_9000l_A = 'assets/industrial/PFO(16)/CLS/9000L/A.png';
+  static const String PFO_CLS_9000l_B = 'assets/industrial/PFO(16)/CLS/9000L/B.png';
+  static const String PFO_CLS_9000l_G = 'assets/industrial/PFO(16)/CLS/9000L/G.png';
+  static const String PFO_CLS_9000l_G2 = 'assets/industrial/PFO(16)/CLS/9000L/G2.png';
+  static const String PFO_CLS_9000l_H = 'assets/industrial/PFO(16)/CLS/9000L/H.png';
+  static const String PFO_CLS_9000l_H2 = 'assets/industrial/PFO(16)/CLS/9000L/H2.png';
+  static const String PFO_CLS_9000l_K2 = 'assets/industrial/PFO(16)/CLS/9000L/K2.png';
+  static const String PFO_CLS_9000l_L = 'assets/industrial/PFO(16)/CLS/9000L/L.png';
+  static const String PFO_CLS_9000l_L2 = 'assets/industrial/PFO(16)/CLS/9000L/L2.png';
+  static const String PFO_CLS_9000l_M2 = 'assets/industrial/PFO(16)/CLS/9000L/M2.png';
+  static const String PFO_CLS_9000l_N2 = 'assets/industrial/PFO(16)/CLS/9000L/N2.png';
 
 
   // ---------------------------------------------------------
   // PFO - Monitor Systems
   // ---------------------------------------------------------
 
-  static const String pfoMonitorSystems =
-      'assets/industrial/PFO(16)/CMS/CMS.png';
+  static const String pfoMonitorSystems = 'assets/industrial/PFO(16)/CMS/CMS.png';
+  static const String PFO_CMS_MLAIO = 'assets/industrial/PFO(16)/CMS/MLAIO.png';
+  static const String PFO_CMS_PMLMS = 'assets/industrial/PFO(16)/CMS/PMLMS.png';
+  static const String PFO_CMS_PMMS = 'assets/industrial/PFO(16)/CMS/PMMS.png';
+  static const String PFO_CMS_SLMLMS = 'assets/industrial/PFO(16)/CMS/SLMLMS.png';
 
-  static const String PFO_CMS_MLAIO =
-      'assets/industrial/PFO(16)/CMS/MLAIO.png';
 
-  static const String PFO_CMS_PMLMS =
-      'assets/industrial/PFO(16)/CMS/PMLMS.png';
 
-  static const String PFO_CMS_PMMS =
-      'assets/industrial/PFO(16)/CMS/PMMS.png';
 
-  static const String PFO_CMS_SLMLMS =
-      'assets/industrial/PFO(16)/CMS/SLMLMS.png';
+
+
+
+// =========================================================
+// Protein - MAIN PRODUCTS
+// =========================================================
+  static const String PROTEIN_FGCO = 'assets/Protein/FGC/title.png';
+  static const String PROTEIN_FGLAM = 'assets/Protein/FGL/title.png';
+
+
 }

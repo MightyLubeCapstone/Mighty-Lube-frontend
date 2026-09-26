@@ -57,19 +57,34 @@ class _DraftsPageState extends State<DraftsPage> {
   }
 
   Future<void> getDrafts() async {
-    setState(() {
-      draftsLoading = true;
-    });
-
-    widget.draftItems = await DraftApiService.getDrafts() as List;
-
-    if (!mounted) {
-      return;
+    if (mounted) {
+      setState(() {
+        draftsLoading = true;
+      });
     }
 
-    setState(() {
-      draftsLoading = false;
-    });
+    try {
+      final response = await DraftApiService.getDrafts();
+
+      if (!mounted) {
+        return;
+      }
+
+      if (response.success && response.data != null) {
+        setState(() {
+          widget.draftItems = response.data!;
+        });
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Failed to load drafts: $e');
+      debugPrintStack(stackTrace: stackTrace);
+    } finally {
+      if (mounted) {
+        setState(() {
+          draftsLoading = false;
+        });
+      }
+    }
   }
 
   Future<bool> removeDraft(
@@ -235,16 +250,35 @@ class _DraftsPageState extends State<DraftsPage> {
 
     getDrafts();
   }
+  void _showDraftInfo(int index) {
+    final dynamic draft = widget.draftItems[index];
 
-  void _showDraftInfo(
-      int index,
-      ) {
-    dynamic cart = widget.draftItems[index]['cart'];
+    final List<dynamic> items =
+    draft['items'] is List ? draft['items'] as List<dynamic> : [];
 
-    int totalNumRequested = 0;
+    int totalQuantity = 0;
 
-    for (var order in cart) {
-      totalNumRequested += order['numRequested'] as int;
+    for (final item in items) {
+      if (item is Map) {
+        totalQuantity += int.tryParse(
+          item['quantity']?.toString() ?? '0',
+        ) ??
+            0;
+      }
+    }
+
+    final String? createdAt = draft['createdAt']?.toString();
+
+    String formattedDate = 'Unknown';
+
+    if (createdAt != null && createdAt.isNotEmpty) {
+      final parsedDate = DateTime.tryParse(createdAt);
+
+      if (parsedDate != null) {
+        formattedDate = DateFormat.yMMMMd().format(
+          parsedDate.toLocal(),
+        );
+      }
     }
 
     showModalBottomSheet(
@@ -254,9 +288,7 @@ class _DraftsPageState extends State<DraftsPage> {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(
-            15,
-          ),
+          top: Radius.circular(15),
         ),
       ),
       builder: (context) {
@@ -290,7 +322,9 @@ class _DraftsPageState extends State<DraftsPage> {
                       ),
                     ),
                   ),
+
                   CommonWidgets.buildSectionDivider(),
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                       20.0,
@@ -299,16 +333,18 @@ class _DraftsPageState extends State<DraftsPage> {
                       0.0,
                     ),
                     child: Text(
-                      'Date Saved: \n${DateFormat.yMMMMd().format(DateTime.parse(widget.draftItems[index]['dateSaved']).toLocal())}',
+                      'Date Saved: \n$formattedDate',
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
                       ),
                     ),
                   ),
+
                   const SizedBox(
                     height: 10,
                   ),
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                       20.0,
@@ -317,7 +353,7 @@ class _DraftsPageState extends State<DraftsPage> {
                       0.0,
                     ),
                     child: Text(
-                      'Number of items in saved draft: \n$totalNumRequested',
+                      'Number of items in saved draft: \n$totalQuantity',
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -332,6 +368,8 @@ class _DraftsPageState extends State<DraftsPage> {
       },
     );
   }
+
+
 
   @override
   Widget build(
@@ -429,7 +467,7 @@ class _DraftsPageState extends State<DraftsPage> {
                                     bool status =
                                     await restoreDraft(
                                       widget.draftItems[index]
-                                      ['cartID'],
+                                      ['draftID'],
                                     );
 
                                     if (status) {

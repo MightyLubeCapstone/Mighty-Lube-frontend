@@ -540,8 +540,8 @@ class ProductApiService {
           quantity: quantity,
         );
 
-      case 'OHP_001':
-        return _addOverhead001(
+      case 'SLMLMS':
+        return _addslmlms(
           configuration: configuration,
           quantity: quantity,
         );
@@ -591,6 +591,176 @@ class ProductApiService {
 
       case 'PFO_CGS_FR314':
         return _addPfoFreeRail314LoadWheelGreaser(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'PFO_CGS_FR317':
+        return _addPfoFreeRail317GuideWheelGreaser(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'PFO_CGS_GPC':
+        return _addPfoGreaserPowerChain(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'PFO_CLS_9000LIBEAM':
+        return _addPfo9000lbeam(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'PFO_CLS_9000LETCL':
+        return _addPfo9000LETCL(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case '9000LCCL':
+        return _addPfo9000lCentralSystemPowerAndFreeCChannelConveyorLubricators(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'PFO_CLS_CDL':
+        return _addPfoCaterpillarDriveLubricators(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+      case 'PFO_CLS_ES':
+        return _addPfoESeries(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // ========================================================
+    // PFO - CONVEYOR LUBRICATION SYSTEMS
+    // OP-139A
+    //
+    // Product ID:
+    // PFO_CLS_OP139A
+    //
+    // API:
+    // POST /api/pfo_cls_op139a
+    // ========================================================
+
+      case 'PFO_CLS_OP139A':
+        return _addPfoOp139A(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+
+    // ========================================================
+    // PFO - CONVEYOR MONITOR SYSTEMS
+    // MULTI LINE (PERMANENT) ALL IN ONE
+    // MONITORING + LUBRICATION
+    //
+    // Product ID:
+    // PFO_CMS_MLAIO
+    //
+    // Endpoint:
+    // POST /api/pfo_cms_mlaio
+    // ========================================================
+
+      case 'PFO_CMS_MLAIO':
+        return _addPfoMultiLinePermanentAllInOne(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // ========================================================
+    // PFO - CONVEYOR MONITOR SYSTEMS
+    // PORTABLE (MULTI-LINE) MIGHTY LUBE® MONITORING SYSTEM
+    //
+    // Product ID:
+    // PFO_CMS_PMLMS
+    //
+    // Endpoint:
+    // POST /api/pfo_cms_pmlms
+    // ========================================================
+
+      case 'PFO_CMS_PMLMS':
+        return _addPfoPortableMultiLineMonitoringSystem(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+
+    // ========================================================
+    // PFO - CONVEYOR MONITOR SYSTEMS
+    // PAINT MARKER FOR MONITORING SYSTEM (OPTIONAL)
+    //
+    // Product ID:
+    // PFO_CMS_PMMS
+    //
+    // Endpoint:
+    // POST /api/pfo_cms_pmms
+    // ========================================================
+
+      case 'PFO_CMS_PMMS':
+        return _addPfoPaintMarkerMonitoringSystem(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+
+
+
+
+
+    // ========================================================
+    // PROTEIN
+    // FOOD GRADE CLEANER OP-8SS
+    //
+    // Product ID:
+    // PROTEIN_OP8SS
+    //
+    // Endpoint:
+    // POST /api/protein_op8ss
+    // ========================================================
+
+      case 'PROTEIN_OP8SS':
+        return _addProteinFoodGradeCleanerOp8ss(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+
+    // ========================================================
+    // PROTEIN
+    // FOOD GRADE LUBRICATION AND MONITOR
+    //
+    // Product ID:
+    // PROTEIN_FGLM
+    //
+    // Endpoint:
+    // POST /api/protein_fglm
+    // ========================================================
+
+      case 'PROTEIN_FGLM':
+        return _addProteinFoodGradeLubricationMonitor(
+          configuration: configuration,
+          quantity: quantity,
+        );
+
+    // ========================================================
+    // TECHNICIAN
+    // TECHNICIAN NOTES
+    //
+    // Product ID:
+    // TECHNICIAN_NOTES
+    //
+    // Endpoint:
+    // POST /api/technician_notes
+    // ========================================================
+
+      case 'TECHNICIAN_NOTES':
+        return _addTechnicianNotes(
           configuration: configuration,
           quantity: quantity,
         );
@@ -1754,17 +1924,17 @@ class ProductApiService {
   }
 
 
-  static Future<ApiResponse<Map<String, dynamic>>> _addOverhead001({
+  static Future<ApiResponse<Map<String, dynamic>>> _addslmlms({
     required Map<String, dynamic> configuration,
     required int quantity,
   }) {
     final Map<String, dynamic> body = {
-      'OHP_001Data': configuration,
+      'SLMLMSData': configuration,
       'numRequested': quantity,
     };
 
     return ApiClient.post<Map<String, dynamic>>(
-      url: ApiEndpoints.overhead001,
+      url: ApiEndpoints.overheadslmlms,
       body: body,
       parser: _mapParser,
     );
@@ -1954,6 +2124,605 @@ class ProductApiService {
 
     return ApiClient.post<Map<String, dynamic>>(
       url: ApiEndpoints.pfoFreeRail314LoadWheelGreaser,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // FREE RAIL 317 "GUIDE" WHEEL GREASER
+  //
+  // Product ID: PFO_CGS_FR317
+  // Request Body: PFO_CGS_FR317Data
+  // POST /api/pfo_cgs_fr317
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoFreeRail317GuideWheelGreaser({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CGS_FR317Data': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoFreeRail317GuideWheelGreaser,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // GREASER POWER CHAIN
+  //
+  // Product ID: PFO_CGS_GPC
+  // Request Body: PFO_CGS_GPCData
+  // POST /api/pfo_cgs_gpc
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoGreaserPowerChain({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CGS_GPCData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoGreaserPowerChain,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // =========================================================
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // 9000L SERIES CENTRAL OVERHEAD I-BEAM CONVEYOR LUBRICATORS
+  //
+  // Product ID: PFO_CLS_9000L
+  // Request Body: PFO_CLS_9000LData
+  // POST /api/pfo_cls_9000l
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfo9000lbeam({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CLS_9000LIBEAMData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfo9000LIBEAM,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+  // PFO - CONVEYOR LUBRICATION SYSTEMS
+  // 9000L SERIES CENTRAL SYSTEM ENCLOSED TRACK
+  // CONVEYOR LUBRICATORS
+  //
+  // Product ID: PFO_CLS_9000LECCCL
+  // Request Body: PFO_CLS_9000LECCCLData
+  // POST /api/pfo_cls_9000lecccl
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfo9000LETCL({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CLS_9000LETCLData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfo9000LETCL,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+// =========================================================
+// PFO - CONVEYOR LUBRICATION SYSTEMS
+// 9000L SERIES CENTRAL SYSTEM POWER AND FREE
+// C-CHANNEL CONVEYOR LUBRICATORS
+//
+// Product ID: 9000LCCL
+// Request Body: 9000LCCLData
+// POST /api/9000lccl
+// =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfo9000lCentralSystemPowerAndFreeCChannelConveyorLubricators({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      '9000LCCLData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfo9000lCCL,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoCaterpillarDriveLubricators({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CLS_CDLData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoCaterpillarDriveLubricators,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addPfoESeries({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    final Map<String, dynamic> body = {
+      'PFO_CLS_ESData': configuration,
+      'numRequested': quantity,
+    };
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoESeries,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // ============================================================
+  // PFO - CONVEYOR LUBRICATION SYSTEMS
+  // OP-139A
+  //
+  // Product ID:
+  // PFO_CLS_OP139A
+  //
+  // Endpoint:
+  // POST /api/pfo_cls_op139a
+  //
+  // Body:
+  // {
+  //   "PFO_CLS_OP139AData": configuration,
+  //   "numRequested": quantity
+  // }
+  //
+  // The backend first validates the configuration using the
+  // PFO_CLS_OP139A product-specific Mongoose model.
+  //
+  // The validated configuration is then persisted inside the
+  // generic ProductConfiguration collection.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addPfoOp139A({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build backend request body.
+    //
+    // IMPORTANT:
+    // The key "PFO_CLS_OP139AData" must remain exactly the same
+    // as the key expected by:
+    //
+    // routes/PFO/CLS/PFO_CLS_OP139A.js
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'PFO_CLS_OP139AData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Send configuration to the OP-139A backend endpoint.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoOp139A,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+
+  // ============================================================
+  // PFO - CONVEYOR MONITOR SYSTEMS
+  // MULTI LINE (PERMANENT) ALL IN ONE
+  // MONITORING + LUBRICATION
+  //
+  // Product ID:
+  // PFO_CMS_MLAIO
+  //
+  // Endpoint:
+  // POST /api/pfo_cms_mlaio
+  //
+  // Request Body:
+  // {
+  //   "PFO_CMS_MLAIOData": configuration,
+  //   "numRequested": quantity
+  // }
+  //
+  // Backend Flow:
+  //
+  // Flutter configuration
+  //        ↓
+  // POST /api/pfo_cms_mlaio
+  //        ↓
+  // PFO_CMS_MLAIO.js route
+  //        ↓
+  // PFO_CMS_MLAIO Mongoose validation model
+  //        ↓
+  // ProductConfiguration
+  //
+  // IMPORTANT:
+  // The product-specific Mongoose model is used only for
+  // validation. The final configuration is persisted in the
+  // generic ProductConfiguration collection.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>> _addPfoMultiLinePermanentAllInOne({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build request body.
+    //
+    // IMPORTANT:
+    // "PFO_CMS_MLAIOData" must exactly match the key expected
+    // by the backend route.
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'PFO_CMS_MLAIOData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Submit the product configuration.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoMultiLinePermanentAllInOne,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // ============================================================
+  // PFO - CONVEYOR MONITOR SYSTEMS
+  // PORTABLE (MULTI-LINE) MIGHTY LUBE® MONITORING SYSTEM
+  //
+  // Product ID:
+  // PFO_CMS_PMLMS
+  //
+  // Endpoint:
+  // POST /api/pfo_cms_pmlms
+  //
+  // Request Body:
+  // {
+  //   "PFO_CMS_PMLMSData": configuration,
+  //   "numRequested": quantity
+  // }
+  //
+  // Backend Flow:
+  //
+  // Flutter Product Configurator
+  //          ↓
+  // POST /api/pfo_cms_pmlms
+  //          ↓
+  // routes/PFO/CMS/PFO_CMS_PMLMS.js
+  //          ↓
+  // models/PFO/CMS/PFO_CMS_PMLMS.js
+  //          ↓
+  // Product-specific validation
+  //          ↓
+  // ProductConfiguration
+  //
+  // IMPORTANT:
+  // PFO_CMS_PMLMS is only the validation model.
+  // The final configuration is stored in the generic
+  // ProductConfiguration collection.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoPortableMultiLineMonitoringSystem({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build request body.
+    //
+    // IMPORTANT:
+    // "PFO_CMS_PMLMSData" must exactly match the request key
+    // expected by the backend route.
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'PFO_CMS_PMLMSData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Submit Portable Multi-Line Monitoring configuration.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoPortableMultiLineMonitoringSystem,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // ============================================================
+  // PFO - CONVEYOR MONITOR SYSTEMS
+  // PAINT MARKER FOR MONITORING SYSTEM (OPTIONAL)
+  //
+  // Product ID:
+  // PFO_CMS_PMMS
+  //
+  // Endpoint:
+  // POST /api/pfo_cms_pmms
+  //
+  // Request Body:
+  // {
+  //   "PFO_CMS_PMMSData": configuration,
+  //   "numRequested": quantity
+  // }
+  //
+  // Backend Flow:
+  //
+  // Flutter Product Configurator
+  //          ↓
+  // POST /api/pfo_cms_pmms
+  //          ↓
+  // routes/PFO/CMS/PFO_CMS_PMMS.js
+  //          ↓
+  // models/PFO/CMS/PFO_CMS_PMMS.js
+  //          ↓
+  // Product-specific validation
+  //          ↓
+  // ProductConfiguration
+  //
+  // IMPORTANT:
+  // The PFO_CMS_PMMS Mongoose model is used only for
+  // validating this product's configuration.
+  //
+  // The final configuration is stored in the generic
+  // ProductConfiguration collection.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addPfoPaintMarkerMonitoringSystem({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build request body.
+    //
+    // IMPORTANT:
+    // "PFO_CMS_PMMSData" must exactly match the key expected
+    // by the backend route.
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'PFO_CMS_PMMSData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Send configuration to the backend.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.pfoPaintMarkerMonitoringSystem,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+
+
+
+
+
+
+
+  // ============================================================
+  // PROTEIN
+  // FOOD GRADE CLEANER OP-8SS
+  //
+  // IMPORTANT:
+  // PROTEIN_OP8SS is only the product-specific validation
+  // model. Final persistence is handled by the generic
+  // ProductConfiguration model.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addProteinFoodGradeCleanerOp8ss({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build backend request body.
+    //
+    // PROTEIN_OP8SSData must exactly match the request key
+    // expected by the Node.js backend route.
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'PROTEIN_OP8SSData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Submit configuration.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.proteinFoodGradeCleanerOp8ss,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+  // ============================================================
+  // PROTEIN
+  // FOOD GRADE LUBRICATION AND MONITOR
+  //
+  // Product ID:
+  // PROTEIN_FGLM
+  //
+  // Endpoint:
+  // POST /api/protein_fglm
+  //
+  // Request Body:
+  //
+  // {
+  //   "PROTEIN_FGLMData": configuration,
+  //   "numRequested": quantity
+  // }
+  //
+  // FLOW:
+  //
+  // Flutter Product Configurator
+  //          ↓
+  // POST /api/protein_fglm
+  //          ↓
+  // routes/Protein/PROTEIN_FGLM.js
+  //          ↓
+  // models/Protein/PROTEIN_FGLM.js
+  //          ↓
+  // Product-specific validation
+  //          ↓
+  // ProductConfiguration
+  //
+  // IMPORTANT:
+  // PROTEIN_FGLM is only used for product-specific validation.
+  //
+  // The final configuration is persisted using the generic
+  // ProductConfiguration model.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addProteinFoodGradeLubricationMonitor({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build backend request body.
+    //
+    // "PROTEIN_FGLMData" must exactly match the key expected
+    // by the Node.js backend route.
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'PROTEIN_FGLMData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Submit Food Grade Lubrication and Monitor configuration.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.proteinFoodGradeLubricationMonitor,
+      body: body,
+      parser: _mapParser,
+    );
+  }
+
+
+  // ============================================================
+  // TECHNICIAN
+  // TECHNICIAN NOTES
+  //
+  // Product ID:
+  // TECHNICIAN_NOTES
+  //
+  // Endpoint:
+  // POST /api/technician_notes
+  //
+  // Request Body:
+  //
+  // {
+  //   "TECHNICIAN_NOTESData": {
+  //     "notes": "..."
+  //   },
+  //   "numRequested": 1
+  // }
+  //
+  // FLOW:
+  //
+  // Technician Notes Configurator
+  //          ↓
+  // ProductApiService.addOrder()
+  //          ↓
+  // _addTechnicianNotes()
+  //          ↓
+  // POST /api/technician_notes
+  //          ↓
+  // Backend Technician Notes Route
+  //
+  // IMPORTANT:
+  // Quantity is handled by the generic configurator flow.
+  // Only the technician-specific configuration is sent inside
+  // TECHNICIAN_NOTESData.
+  // ============================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  _addTechnicianNotes({
+    required Map<String, dynamic> configuration,
+    required int quantity,
+  }) {
+    // ----------------------------------------------------------
+    // Build request body.
+    //
+    // "TECHNICIAN_NOTESData" must exactly match the request key
+    // expected by the backend route.
+    // ----------------------------------------------------------
+
+    final Map<String, dynamic> body = {
+      'TECHNICIAN_NOTESData': configuration,
+      'numRequested': quantity,
+    };
+
+    // ----------------------------------------------------------
+    // Send Technician Notes configuration to backend.
+    // ----------------------------------------------------------
+
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.technicianNotes,
       body: body,
       parser: _mapParser,
     );

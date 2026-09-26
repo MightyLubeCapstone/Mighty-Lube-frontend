@@ -79,8 +79,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     final role = prefs
         .getString(
-          'role',
-        )
+      'role',
+    )
         ?.toLowerCase();
 
     if (token == null || token.isEmpty) {
@@ -217,8 +217,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<bool> _handleAuthStatus(
-    int? statusCode,
-  ) async {
+      int? statusCode,
+      ) async {
     if (statusCode == 401) {
       await _redirectToLogin();
 
@@ -253,7 +253,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       Navigator.pushNamedAndRemoveUntil(
         context,
         '/login',
-        (_) => false,
+            (_) => false,
       );
     }
   }
@@ -276,31 +276,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     Navigator.pushNamedAndRemoveUntil(
       context,
       '/dashboard',
-      (_) => false,
+          (_) => false,
     );
   }
 
 
-  List<String> _allowedAdminStatuses(String? currentStatus) {
-    switch (currentStatus ?? 'requested') {
-      case 'requested':
-        return const [
-          'requested',
-          'pending',
-        ];
-      case 'pending':
-        return const [
-          'pending',
-          'done',
-        ];
-      case 'done':
-        return const [
-          'done',
-        ];
-      default:
-        return const [];
-    }
-  }
+  List<String> _allowedAdminStatuses(String? currentStatus) => const [
+    'requested',
+    'pending',
+    'done',
+  ];
 
   // =========================================================
   // CHANGE ADMIN STATUS
@@ -406,9 +391,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<void> _changeRole(
-    AdminUser user,
-    String? role,
-  ) async {
+      AdminUser user,
+      String? role,
+      ) async {
     if (role == null ||
         role == user.role ||
         _updatingUsers.contains(
@@ -418,7 +403,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
 
     setState(
-      () => _updatingUsers.add(
+          () => _updatingUsers.add(
         user.userID,
       ),
     );
@@ -469,7 +454,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     } finally {
       if (mounted) {
         setState(
-          () => _updatingUsers.remove(
+              () => _updatingUsers.remove(
             user.userID,
           ),
         );
@@ -504,28 +489,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
 
   void _setConfigurationFilters(
-    AdminListFilters filters,
-  ) {
+      AdminListFilters filters,
+      ) {
     setState(
-      () => _configurationFilters = filters,
+          () => _configurationFilters = filters,
     );
 
     _loadConfigurations();
   }
 
   void _setGroupConfigurationsByStatus(
-    bool value,
-  ) {
+      bool value,
+      ) {
     setState(
-      () => _groupConfigurationsByStatus = value,
+          () => _groupConfigurationsByStatus = value,
     );
   }
 
   void _setUserFilters(
-    AdminListFilters filters,
-  ) {
+      AdminListFilters filters,
+      ) {
     setState(
-      () => _userFilters = filters,
+          () => _userFilters = filters,
     );
 
     _loadUsers();
@@ -536,8 +521,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<void> _editConfiguration(
-    AdminConfiguration configuration,
-  ) async {
+      AdminConfiguration configuration,
+      ) async {
     final changes = await showDialog<Map<String, dynamic>>(
       context: context,
       barrierDismissible: false,
@@ -589,8 +574,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<void> _deleteConfiguration(
-    AdminConfiguration configuration,
-  ) async {
+      AdminConfiguration configuration,
+      ) async {
     final confirmed = await _confirmDelete(
       title: 'Delete configuration?',
       message: '“${configuration.name}” will be permanently deleted.',
@@ -601,7 +586,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
 
     setState(
-      () => _deletingConfigurations.add(
+          () => _deletingConfigurations.add(
         configuration.id,
       ),
     );
@@ -636,7 +621,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       setState(() {
         _configurations.removeWhere(
-          (item) => item.id == configuration.id,
+              (item) => item.id == configuration.id,
         );
 
         _recalculateSummary();
@@ -653,7 +638,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     } finally {
       if (mounted) {
         setState(
-          () => _deletingConfigurations.remove(
+              () => _deletingConfigurations.remove(
             configuration.id,
           ),
         );
@@ -666,8 +651,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<void> _editUser(
-    AdminUser user,
-  ) async {
+      AdminUser user,
+      ) async {
     final changes = await showDialog<Map<String, dynamic>>(
       context: context,
       barrierDismissible: false,
@@ -723,9 +708,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<String?> _resetUserPassword(
-    AdminUser user,
-    String password,
-  ) async {
+      AdminUser user,
+      String password,
+      ) async {
     try {
       final response = await AdminRepository.resetUserPassword(
         userID: user.userID,
@@ -746,8 +731,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       final currentUsername = prefs
           .getString(
-            'username',
-          )
+        'username',
+      )
           ?.toLowerCase();
 
       final isSelf = currentUsername != null &&
@@ -770,7 +755,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           Navigator.pushNamedAndRemoveUntil(
             context,
             '/login',
-            (_) => false,
+                (_) => false,
           );
         }
       }
@@ -782,8 +767,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   void _viewUser(
-    AdminUser user,
-  ) {
+      AdminUser user,
+      ) {
     showDialog<void>(
       context: context,
       builder: (_) => _UserDetails(
@@ -797,8 +782,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<void> _deleteUser(
-    AdminUser user,
-  ) async {
+      AdminUser user,
+      ) async {
     final confirmed = await _confirmDelete(
       title: 'Delete user?',
       message: '“${user.name}” (${user.username}) will be permanently deleted.',
@@ -809,7 +794,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
 
     setState(
-      () => _deletingUsers.add(
+          () => _deletingUsers.add(
         user.userID,
       ),
     );
@@ -843,8 +828,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       }
 
       setState(
-        () => _users.removeWhere(
-          (item) => item.userID == user.userID,
+            () => _users.removeWhere(
+              (item) => item.userID == user.userID,
         ),
       );
 
@@ -859,7 +844,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     } finally {
       if (mounted) {
         setState(
-          () => _deletingUsers.remove(
+              () => _deletingUsers.remove(
             user.userID,
           ),
         );
@@ -872,56 +857,56 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     required String message,
   }) async {
     return await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            icon: const Icon(
-              Icons.warning_amber_rounded,
-              color: Colors.red,
-              size: 42,
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          Icons.warning_amber_rounded,
+          color: Colors.red,
+          size: 42,
+        ),
+        title: Text(
+          title,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(
+              context,
+              false,
             ),
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
+            child: const Text(
+              'Cancel',
             ),
-            content: Text(
-              message,
-              textAlign: TextAlign.center,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(
-                  context,
-                  false,
-                ),
-                child: const Text(
-                  'Cancel',
-                ),
-              ),
-              FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                onPressed: () => Navigator.pop(
-                  context,
-                  true,
-                ),
-                icon: const Icon(
-                  Icons.delete_outline,
-                ),
-                label: const Text(
-                  'Delete permanently',
-                ),
-              ),
-            ],
           ),
-        ) ??
+          FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () => Navigator.pop(
+              context,
+              true,
+            ),
+            icon: const Icon(
+              Icons.delete_outline,
+            ),
+            label: const Text(
+              'Delete permanently',
+            ),
+          ),
+        ],
+      ),
+    ) ??
         false;
   }
 
   void _message(
-    String message, {
-    bool error = false,
-  }) {
+      String message, {
+        bool error = false,
+      }) {
     if (!mounted) {
       return;
     }
@@ -957,7 +942,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       Navigator.pushNamedAndRemoveUntil(
         context,
         '/login',
-        (_) => false,
+            (_) => false,
       );
     }
   }
@@ -968,8 +953,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     return DefaultTabController(
       length: 2,
       child: Builder(
@@ -994,8 +979,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     width: 20,
                   ),
                   if (MediaQuery.sizeOf(
-                        context,
-                      ).width >=
+                    context,
+                  ).width >=
                       620)
                     const Text(
                       'Admin dashboard',
@@ -1126,14 +1111,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _configurationList(
-    bool compact,
-  ) {
+      bool compact,
+      ) {
     if (!_groupConfigurationsByStatus) {
       return compact
           ? _configurationCards()
           : _configurationTable(
-              _configurations,
-            );
+        _configurations,
+      );
     }
 
     final sections = [
@@ -1141,15 +1126,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         MapEntry(
           status,
           _configurations
-              .where(
-                (item) => (item.adminStatus ?? 'requested') == status,
-              )
+              .where((item) => (item.adminWorkflowStatus ?? 'requested') == status,)
               .toList(),
         ),
     ]
         .where(
           (entry) => entry.value.isNotEmpty,
-        )
+    )
         .toList();
 
     if (sections.isEmpty) {
@@ -1170,11 +1153,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
           compact
               ? _configurationCards(
-                  items: section.value,
-                )
+            items: section.value,
+          )
               : _configurationTable(
-                  section.value,
-                ),
+            section.value,
+          ),
           const SizedBox(
             height: 18,
           ),
@@ -1188,8 +1171,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Widget _configurationTable(
-    List<AdminConfiguration> items,
-  ) =>
+      List<AdminConfiguration> items,
+      ) =>
       _tableContainer(
         empty: items.isEmpty,
         emptyText: 'No configurations found.',
@@ -1208,32 +1191,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
             DataColumn(
               label: Text(
-                'Admin status',
-              ),
-            ),
-            DataColumn(
-              label: Text(
                 'Product',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Created',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Updated',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Submitted',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Completion date',
               ),
             ),
             DataColumn(
@@ -1244,12 +1202,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
             DataColumn(
               label: Text(
-                'Details',
+                'Configuration dates',
               ),
             ),
             DataColumn(
               label: Text(
-                'Change status',
+                'Completion date',
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Admin status',
               ),
             ),
             DataColumn(
@@ -1260,8 +1223,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ],
           rows: items
               .map(
-                _configurationRow,
-              )
+            _configurationRow,
+          )
               .toList(),
         ),
       );
@@ -1270,40 +1233,46 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       AdminConfiguration item,
       ) {
     final adminStatus = item.adminWorkflowStatus ?? 'requested';
-
-    final allowedStatuses = _allowedAdminStatuses(
-      adminStatus,
-    );
+    final allowedStatuses = _allowedAdminStatuses(adminStatus);
+    final imageCount = _configurationImageEntries(item).length;
 
     return DataRow(
       cells: [
+        // =====================================================
+        // CONFIGURATION NAME + IMAGE INDICATOR
+        // =====================================================
         DataCell(
-          _responsiveText(
-            item.name,
-            .15,
-            130,
-            240,
-          ),
-        ),
-        DataCell(
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              _StatusBadge(
-                adminStatus,
+              _responsiveText(
+                item.name,
+                .15,
+                130,
+                240,
               ),
-              if (adminStatus == 'pending') ...[
-                const SizedBox(
-                  height: 4,
-                ),
-                _PendingAgePill(
-                  configuration: item,
+              if (imageCount > 0) ...[
+                const SizedBox(width: 6),
+                Tooltip(
+                  message:
+                  '$imageCount attached image${imageCount == 1 ? '' : 's'}',
+                  child: TextButton.icon(
+                    onPressed: () => _showConfigurationImages(item),
+                    icon: const Icon(
+                      Icons.photo_library_outlined,
+                      size: 18,
+                    ),
+                    label: Text('$imageCount'),
+                  ),
                 ),
               ],
             ],
           ),
         ),
+
+        // =====================================================
+        // PRODUCT
+        // =====================================================
         DataCell(
           _responsiveText(
             item.productName.trim().isNotEmpty
@@ -1314,112 +1283,87 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             190,
           ),
         ),
+
+        // =====================================================
+        // QUANTITY
+        // =====================================================
         DataCell(
-          _dateAgeCell(
-            item.createdAt,
-            .12,
-            125,
-            190,
-          ),
+          Text('${item.numRequested}'),
         ),
+
+        // =====================================================
+        // CONFIGURATION DATES
+        // =====================================================
         DataCell(
-          _hasDistinctUpdate(
-            item,
-          )
-              ? _dateAgeCell(
-            item.updatedAt,
-            .12,
-            125,
-            190,
-          )
-              : const Text(
-            '—',
-          ),
+          _configurationDatesCell(item),
         ),
+
+        // =====================================================
+        // COMPLETION DATE
+        // =====================================================
         DataCell(
           _responsiveText(
-            _date(
-              item.submittedAt,
-            ),
+            _date(item.adminCompletedAt),
             .12,
             125,
             190,
           ),
         ),
+
+        // =====================================================
+        // ADMIN STATUS
+        // =====================================================
         DataCell(
-          _responsiveText(
-            _date(
-              item.adminCompletedAt,
-            ),
-            .12,
-            125,
-            190,
-          ),
-        ),
-        DataCell(
-          Text(
-            '${item.numRequested}',
-          ),
-        ),
-        DataCell(
-          IconButton(
-            tooltip: 'View details',
-            onPressed: () => showDialog<void>(
-              context: context,
-              builder: (_) => _ConfigurationDetails(
-                configuration: item,
-              ),
-            ),
-            icon: const Icon(
-              Icons.visibility_outlined,
-            ),
-          ),
-        ),
-        DataCell(
-          _updatingConfigurations.contains(
-            item.id,
-          )
+          _updatingConfigurations.contains(item.id)
               ? const SizedBox.square(
             dimension: 22,
             child: CircularProgressIndicator(
               strokeWidth: 2,
             ),
           )
-              : DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: allowedStatuses.contains(
-                adminStatus,
-              )
-                  ? adminStatus
-                  : null,
-              hint: Text(
-                adminStatus,
-              ),
-              items: allowedStatuses
-                  .map(
-                    (value) => DropdownMenuItem(
-                  value: value,
-                  child: Text(
-                    _titleCase(
-                      value,
+              : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: allowedStatuses.contains(adminStatus)
+                      ? adminStatus
+                      : null,
+                  hint: Text(
+                    _titleCase(adminStatus),
+                  ),
+                  items: allowedStatuses
+                      .map(
+                        (value) => DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        _titleCase(value),
+                      ),
                     ),
+                  )
+                      .toList(),
+                  onChanged: (value) => _changeStatus(
+                    item,
+                    value,
                   ),
                 ),
-              )
-                  .toList(),
-              onChanged: adminStatus == 'done'
-                  ? null
-                  : (value) => _changeStatus(
-                item,
-                value,
               ),
-            ),
+              if (adminStatus == 'pending') ...[
+                const SizedBox(height: 4),
+                _PendingAgePill(
+                  configuration: item,
+                ),
+              ],
+            ],
           ),
         ),
+
+        // =====================================================
+        // ACTIONS - VIEW / EDIT / DELETE
+        // =====================================================
         DataCell(
-          _deletingConfigurations.contains(
-            item.id,
-          )
+          _deletingConfigurations.contains(item.id)
               ? const SizedBox.square(
             dimension: 22,
             child: CircularProgressIndicator(
@@ -1430,22 +1374,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                tooltip: 'Edit configuration',
-                onPressed: () => _editConfiguration(
-                  item,
+                tooltip: 'View details',
+                onPressed: () => showDialog<void>(
+                  context: context,
+                  builder: (_) => _ConfigurationDetails(
+                    configuration: item,
+                  ),
                 ),
                 icon: const Icon(
+                  Icons.visibility_outlined,
+                ),
+              ),
+              IconButton(
+                tooltip: 'Edit configuration',
+                onPressed: () => _editConfiguration(item),
+                icon: const Icon(
                   Icons.edit_outlined,
-                  color: Color(
-                    0xFF2563EB,
-                  ),
+                  color: Color(0xFF2563EB),
                 ),
               ),
               IconButton(
                 tooltip: 'Delete configuration',
-                onPressed: () => _deleteConfiguration(
-                  item,
-                ),
+                onPressed: () => _deleteConfiguration(item),
                 icon: const Icon(
                   Icons.delete_outline,
                   color: Colors.red,
@@ -1455,6 +1405,110 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _configurationDatesCell(AdminConfiguration item) {
+    Widget line(String label, DateTime? value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 1),
+      child: Text(
+        '$label: ${_date(value)}',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(fontSize: 12),
+      ),
+    );
+
+    return SizedBox(
+      width: 190,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          line('Created', item.createdAt),
+          line(
+            'Updated',
+            _hasDistinctUpdate(item) ? item.updatedAt : null,
+          ),
+          line('Submitted', item.submittedAt),
+        ],
+      ),
+    );
+  }
+
+  List<MapEntry<String, Map<String, dynamic>>> _configurationImageEntries(
+      AdminConfiguration item,
+      )
+  {
+    final images = <MapEntry<String, Map<String, dynamic>>>[];
+
+    for (final entry in item.configurationData.entries) {
+      if (_isConfigurationImage(entry.key, entry.value)) {
+        images.add(
+          MapEntry(
+            entry.key,
+            Map<String, dynamic>.from(entry.value as Map),
+          ),
+        );
+      }
+    }
+
+    return images;
+  }
+
+  Future<void> _showConfigurationImages(AdminConfiguration item) async {
+    final images = _configurationImageEntries(item);
+
+    if (images.isEmpty || !mounted) {
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'Attached images (${images.length})',
+        ),
+        content: SizedBox(
+          width: 520,
+          child: SingleChildScrollView(
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                for (final image in images)
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _ConfigurationImageThumbnail(
+                        configurationID: item.id,
+                        imageKey: image.key,
+                        imageData: image.value,
+                      ),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: 110,
+                        child: Text(
+                          _readableLabel(_imageParentKey(image.key)),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1497,165 +1551,165 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _usersTable() => _tableContainer(
-        empty: _users.isEmpty,
-        emptyText: 'No users found.',
-        table: DataTable(
-          columnSpacing: _columnSpacing(),
-          horizontalMargin: 12,
-          headingRowHeight: 44,
-          dataRowMinHeight: 54,
-          dataRowMaxHeight: 58,
-          dividerThickness: .65,
-          columns: const [
-            DataColumn(
-              label: Text(
-                'Name',
+    empty: _users.isEmpty,
+    emptyText: 'No users found.',
+    table: DataTable(
+      columnSpacing: _columnSpacing(),
+      horizontalMargin: 12,
+      headingRowHeight: 44,
+      dataRowMinHeight: 54,
+      dataRowMaxHeight: 58,
+      dividerThickness: .65,
+      columns: const [
+        DataColumn(
+          label: Text(
+            'Name',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Username',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Email',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Phone',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Company',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Country',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Created',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Updated',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Role',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Change role',
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Actions',
+          ),
+        ),
+      ],
+      rows: _users
+          .map(
+            (user) => DataRow(
+          cells: [
+            DataCell(
+              _responsiveText(
+                user.name,
+                .11,
+                100,
+                180,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Username',
+            DataCell(
+              _responsiveText(
+                user.username,
+                .13,
+                125,
+                210,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Email',
+            DataCell(
+              _responsiveText(
+                user.email,
+                .14,
+                135,
+                230,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Phone',
+            DataCell(
+              _responsiveText(
+                user.phone,
+                .09,
+                100,
+                150,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Company',
+            DataCell(
+              _responsiveText(
+                user.company,
+                .12,
+                110,
+                200,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Country',
+            DataCell(
+              _responsiveText(
+                user.country,
+                .08,
+                80,
+                130,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Created',
+            DataCell(
+              _responsiveText(
+                _date(
+                  user.createdAt,
+                ),
+                .12,
+                125,
+                190,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Updated',
+            DataCell(
+              _responsiveText(
+                _date(
+                  user.updatedAt,
+                ),
+                .12,
+                125,
+                190,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Role',
+            DataCell(
+              _RoleBadge(
+                user.role,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Change role',
+            DataCell(
+              _userRoleControl(
+                user,
               ),
             ),
-            DataColumn(
-              label: Text(
-                'Actions',
+            DataCell(
+              _userActions(
+                user,
               ),
             ),
           ],
-          rows: _users
-              .map(
-                (user) => DataRow(
-                  cells: [
-                    DataCell(
-                      _responsiveText(
-                        user.name,
-                        .11,
-                        100,
-                        180,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        user.username,
-                        .13,
-                        125,
-                        210,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        user.email,
-                        .14,
-                        135,
-                        230,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        user.phone,
-                        .09,
-                        100,
-                        150,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        user.company,
-                        .12,
-                        110,
-                        200,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        user.country,
-                        .08,
-                        80,
-                        130,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        _date(
-                          user.createdAt,
-                        ),
-                        .12,
-                        125,
-                        190,
-                      ),
-                    ),
-                    DataCell(
-                      _responsiveText(
-                        _date(
-                          user.updatedAt,
-                        ),
-                        .12,
-                        125,
-                        190,
-                      ),
-                    ),
-                    DataCell(
-                      _RoleBadge(
-                        user.role,
-                      ),
-                    ),
-                    DataCell(
-                      _userRoleControl(
-                        user,
-                      ),
-                    ),
-                    DataCell(
-                      _userActions(
-                        user,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              .toList(),
         ),
-      );
+      )
+          .toList(),
+    ),
+  );
 
   // =========================================================
   // CONFIGURATION CARDS
@@ -1707,12 +1761,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       width: 8,
                     ),
                     _StatusBadge(
-                      item.adminStatus ?? 'requested',
+                      item.adminWorkflowStatus ?? 'requested',
                       compact: true,
                     ),
                   ],
                 ),
-                if (item.adminStatus == 'pending') ...[
+                if (item.adminWorkflowStatus == 'pending') ...[
                   const SizedBox(
                     height: 12,
                   ),
@@ -1740,13 +1794,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _configurationInfoGrid(
-    AdminConfiguration item,
-  ) =>
+      AdminConfiguration item,
+      ) =>
       LayoutBuilder(
         builder: (
-          context,
-          constraints,
-        ) {
+            context,
+            constraints,
+            ) {
           const gap = 10.0;
 
           final width = (constraints.maxWidth - gap) / 2;
@@ -1758,8 +1812,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               item.productName.trim().isNotEmpty
                   ? item.productName
                   : (item.productType.trim().isNotEmpty
-                      ? item.productType
-                      : '—'),
+                  ? item.productType
+                  : '—'),
             ),
             _InfoTileData(
               Icons.numbers_outlined,
@@ -1797,8 +1851,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
 
   String _productConfigurationPreview(
-    AdminConfiguration item,
-  ) {
+      AdminConfiguration item,
+      ) {
     final previews = <String>[];
 
     for (final entry in item.configurationData.entries) {
@@ -1938,8 +1992,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _configurationStatusActionRow(
-    AdminConfiguration item,
-  ) =>
+      AdminConfiguration item,
+      ) =>
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -2001,7 +2055,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ? adminStatus
           : null,
       decoration: _fieldDecoration(
-        'Change status',
+        'Admin status',
         Icons.pending_actions,
       ),
       items: allowedStatuses
@@ -2016,9 +2070,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
       )
           .toList(),
-      onChanged: adminStatus == 'done'
-          ? null
-          : (value) => _changeStatus(
+      onChanged: (value) => _changeStatus(
         item,
         value,
       ),
@@ -2028,101 +2080,101 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
 
   Widget _userRoleControl(
-    AdminUser user,
-  ) =>
+      AdminUser user,
+      ) =>
       _updatingUsers.contains(
         user.userID,
       )
           ? const SizedBox.square(
-              dimension: 22,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            )
+        dimension: 22,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      )
           : DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: roles.contains(
-                  user.role,
-                )
-                    ? user.role
-                    : null,
-                hint: Text(
-                  user.role,
-                ),
-                items: roles
-                    .map(
-                      (value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(
-                          _titleCase(
-                            value,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) => _changeRole(
-                  user,
+        child: DropdownButton<String>(
+          value: roles.contains(
+            user.role,
+          )
+              ? user.role
+              : null,
+          hint: Text(
+            user.role,
+          ),
+          items: roles
+              .map(
+                (value) => DropdownMenuItem(
+              value: value,
+              child: Text(
+                _titleCase(
                   value,
                 ),
               ),
-            );
+            ),
+          )
+              .toList(),
+          onChanged: (value) => _changeRole(
+            user,
+            value,
+          ),
+        ),
+      );
 
   Widget _userActions(
-    AdminUser user,
-  ) =>
+      AdminUser user,
+      ) =>
       _deletingUsers.contains(
         user.userID,
       )
           ? const SizedBox.square(
-              dimension: 22,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            )
+        dimension: 22,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      )
           : SizedBox(
-              width: 132,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    tooltip: 'View user',
-                    onPressed: () => _viewUser(
-                      user,
-                    ),
-                    icon: const Icon(
-                      Icons.visibility_outlined,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Edit user',
-                    onPressed: () => _editUser(
-                      user,
-                    ),
-                    icon: const Icon(
-                      Icons.edit_outlined,
-                      color: Color(
-                        0xFF2563EB,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Delete user',
-                    onPressed: () => _deleteUser(
-                      user,
-                    ),
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
+        width: 132,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              tooltip: 'View user',
+              onPressed: () => _viewUser(
+                user,
               ),
-            );
+              icon: const Icon(
+                Icons.visibility_outlined,
+              ),
+            ),
+            IconButton(
+              tooltip: 'Edit user',
+              onPressed: () => _editUser(
+                user,
+              ),
+              icon: const Icon(
+                Icons.edit_outlined,
+                color: Color(
+                  0xFF2563EB,
+                ),
+              ),
+            ),
+            IconButton(
+              tooltip: 'Delete user',
+              onPressed: () => _deleteUser(
+                user,
+              ),
+              icon: const Icon(
+                Icons.delete_outline,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _emptyCard(
-    String text,
-  ) =>
+      String text,
+      ) =>
       _AdminListCard(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -2155,108 +2207,108 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
         child: empty
             ? Padding(
-                padding: const EdgeInsets.all(
-                  48,
-                ),
-                child: Center(
-                  child: Text(
-                    emptyText,
-                  ),
-                ),
-              )
+          padding: const EdgeInsets.all(
+            48,
+          ),
+          child: Center(
+            child: Text(
+              emptyText,
+            ),
+          ),
+        )
             : LayoutBuilder(
-                builder: (
-                  context,
-                  constraints,
-                ) =>
-                    SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: constraints.maxWidth,
-                    ),
-                    child: table,
+          builder: (
+              context,
+              constraints,
+              ) =>
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: constraints.maxWidth,
                   ),
+                  child: table,
                 ),
               ),
+        ),
       );
 
   Widget _summaryCards() => LayoutBuilder(
-        builder: (
-          context,
-          constraints,
+    builder: (
+        context,
+        constraints,
         ) {
-          final compact = constraints.maxWidth < 760;
+      final compact = constraints.maxWidth < 760;
 
-          final gap = compact ? 6.0 : 10.0;
+      final gap = compact ? 6.0 : 10.0;
 
-          final width = (constraints.maxWidth - gap * 3) / 4;
+      final width = (constraints.maxWidth - gap * 3) / 4;
 
-          final showIcons = constraints.maxWidth >= 760;
+      final showIcons = constraints.maxWidth >= 760;
 
-          return Row(
-            children: [
-              _SummaryCard(
-                'Total',
-                _summary.total,
-                Icons.inventory_2_outlined,
-                const Color(
-                  0xFF579AF6,
-                ),
-                width: width,
-                showIcon: showIcons,
-              ),
-              SizedBox(
-                width: gap,
-              ),
-              _SummaryCard(
-                'Requested',
-                _summary.requested,
-                Icons.inbox_outlined,
-                Colors.blue,
-                width: width,
-                showIcon: showIcons,
-              ),
-              SizedBox(
-                width: gap,
-              ),
-              _SummaryCard(
-                'Pending',
-                _summary.pending,
-                Icons.pending_actions,
-                Colors.orange,
-                width: width,
-                showIcon: showIcons,
-              ),
-              SizedBox(
-                width: gap,
-              ),
-              _SummaryCard(
-                'Done',
-                _summary.done,
-                Icons.task_alt,
-                Colors.green,
-                width: width,
-                showIcon: showIcons,
-              ),
-            ],
-          );
-        },
+      return Row(
+        children: [
+          _SummaryCard(
+            'Total',
+            _summary.total,
+            Icons.inventory_2_outlined,
+            const Color(
+              0xFF579AF6,
+            ),
+            width: width,
+            showIcon: showIcons,
+          ),
+          SizedBox(
+            width: gap,
+          ),
+          _SummaryCard(
+            'Requested',
+            _summary.requested,
+            Icons.inbox_outlined,
+            Colors.blue,
+            width: width,
+            showIcon: showIcons,
+          ),
+          SizedBox(
+            width: gap,
+          ),
+          _SummaryCard(
+            'Pending',
+            _summary.pending,
+            Icons.pending_actions,
+            Colors.orange,
+            width: width,
+            showIcon: showIcons,
+          ),
+          SizedBox(
+            width: gap,
+          ),
+          _SummaryCard(
+            'Done',
+            _summary.done,
+            Icons.task_alt,
+            Colors.green,
+            width: width,
+            showIcon: showIcons,
+          ),
+        ],
       );
+    },
+  );
 
   EdgeInsets _pagePadding() => EdgeInsets.all(
-        MediaQuery.sizeOf(
-                  context,
-                ).width <
-                700
-            ? 12
-            : 24,
-      );
+    MediaQuery.sizeOf(
+      context,
+    ).width <
+        700
+        ? 12
+        : 24,
+  );
 
   double _columnSpacing() => MediaQuery.sizeOf(
-            context,
-          ).width >=
-          1200
+    context,
+  ).width >=
+      1200
       ? 24
       : 12;
 
@@ -2264,18 +2316,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       MediaQuery.sizeOf(
         context,
       ).width <
-      760;
+          760;
 
   Widget _responsiveText(
-    String value,
-    double fraction,
-    double minimum,
-    double maximum,
-  ) {
+      String value,
+      double fraction,
+      double minimum,
+      double maximum,
+      ) {
     final width = (MediaQuery.sizeOf(
-              context,
-            ).width *
-            fraction)
+      context,
+    ).width *
+        fraction)
         .clamp(
       minimum,
       maximum,
@@ -2295,24 +2347,24 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   String _date(
-    DateTime? value,
-  ) =>
+      DateTime? value,
+      ) =>
       value == null
           ? '—'
           : DateFormat.yMMMd().add_jm().format(
-                value.toLocal(),
-              );
+        value.toLocal(),
+      );
 
   Widget _dateAgeCell(
-    DateTime? value,
-    double fraction,
-    double minimum,
-    double maximum,
-  ) {
+      DateTime? value,
+      double fraction,
+      double minimum,
+      double maximum,
+      ) {
     final width = (MediaQuery.sizeOf(
-              context,
-            ).width *
-            fraction)
+      context,
+    ).width *
+        fraction)
         .clamp(
       minimum,
       maximum,
@@ -2408,8 +2460,8 @@ class _AdminListFilterBar extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final custom = filters.dateFilter == 'custom';
 
     return Container(
@@ -2430,9 +2482,9 @@ class _AdminListFilterBar extends StatelessWidget {
       ),
       child: LayoutBuilder(
         builder: (
-          context,
-          constraints,
-        ) {
+            context,
+            constraints,
+            ) {
           final compact = constraints.maxWidth < 720;
 
           final halfWidth = (constraints.maxWidth - 8) / 2;
@@ -2446,46 +2498,46 @@ class _AdminListFilterBar extends StatelessWidget {
           final sortWidth = compact
               ? halfWidth
               : (remaining * .26).clamp(
-                  200.0,
-                  280.0,
-                );
+            200.0,
+            280.0,
+          );
 
           final dateWidth = compact
               ? halfWidth
               : (remaining * .29).clamp(
-                  220.0,
-                  320.0,
-                );
+            220.0,
+            320.0,
+          );
 
           final statusWidth = compact
               ? halfWidth
               : (remaining * .20).clamp(
-                  170.0,
-                  230.0,
-                );
+            170.0,
+            230.0,
+          );
 
           final groupWidth = compact
               ? (constraints.maxWidth - sortWidth - 44 - 16).clamp(
-                  104.0,
-                  180.0,
-                )
+            104.0,
+            180.0,
+          )
               : (constraints.maxWidth -
-                      desktopGap -
-                      44 -
-                      sortWidth -
-                      dateWidth -
-                      statusWidth)
-                  .clamp(
-                  190.0,
-                  280.0,
-                );
+              desktopGap -
+              44 -
+              sortWidth -
+              dateWidth -
+              statusWidth)
+              .clamp(
+            190.0,
+            280.0,
+          );
 
           final customDateWidth = compact
               ? halfWidth
               : (constraints.maxWidth - dateWidth - 24).clamp(
-                  180.0,
-                  220.0,
-                );
+            180.0,
+            220.0,
+          );
 
           return Wrap(
             spacing: compact ? 8 : 12,
@@ -2584,9 +2636,9 @@ class _AdminListFilterBar extends StatelessWidget {
                     filters.copyWith(
                       startDate: date,
                       endDate: filters.endDate != null &&
-                              filters.endDate!.isBefore(
-                                date,
-                              )
+                          filters.endDate!.isBefore(
+                            date,
+                          )
                           ? date
                           : filters.endDate,
                     ),
@@ -2641,13 +2693,13 @@ class _AdminListFilterBar extends StatelessWidget {
           items: options.entries
               .map(
                 (entry) => DropdownMenuItem(
-                  value: entry.key,
-                  child: Text(
-                    entry.value,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              )
+              value: entry.key,
+              child: Text(
+                entry.value,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          )
               .toList(),
           onChanged: (value) {
             if (value != null) {
@@ -2740,8 +2792,8 @@ class _SortDirectionButton extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final descending = sortOrder == 'desc';
 
     return Tooltip(
@@ -2780,61 +2832,61 @@ class _GroupByStatusCheckbox extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final content = compact
         ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                selected ? Icons.check_box : Icons.check_box_outline_blank,
-                size: 18,
-                color: selected
-                    ? const Color(
-                        0xFF2563EB,
-                      )
-                    : null,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Flexible(
-                child: Text(
-                  'Group',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    color: selected
-                        ? const Color(
-                            0xFF2563EB,
-                          )
-                        : null,
-                  ),
-                ),
-              ),
-            ],
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          selected ? Icons.check_box : Icons.check_box_outline_blank,
+          size: 18,
+          color: selected
+              ? const Color(
+            0xFF2563EB,
           )
+              : null,
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Flexible(
+          child: Text(
+            'Group',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: selected
+                  ? const Color(
+                0xFF2563EB,
+              )
+                  : null,
+            ),
+          ),
+        ),
+      ],
+    )
         : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Checkbox(
-                value: selected,
-                visualDensity: VisualDensity.compact,
-                onChanged: onChanged == null
-                    ? null
-                    : (value) => onChanged!(
-                          value ?? false,
-                        ),
-              ),
-              const Text(
-                'Group by status',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          );
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: selected,
+          visualDensity: VisualDensity.compact,
+          onChanged: onChanged == null
+              ? null
+              : (value) => onChanged!(
+            value ?? false,
+          ),
+        ),
+        const Text(
+          'Group by status',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
 
     return Tooltip(
       message: 'Group by status',
@@ -2845,8 +2897,8 @@ class _GroupByStatusCheckbox extends StatelessWidget {
         onTap: onChanged == null
             ? null
             : () => onChanged!(
-                  !selected,
-                ),
+          !selected,
+        ),
         child: Container(
           width: width,
           constraints: const BoxConstraints(
@@ -2856,28 +2908,28 @@ class _GroupByStatusCheckbox extends StatelessWidget {
           padding: compact
               ? EdgeInsets.zero
               : const EdgeInsets.only(
-                  left: 8,
-                  right: 12,
-                ),
+            left: 8,
+            right: 12,
+          ),
           decoration: BoxDecoration(
             color: selected
                 ? const Color(
-                    0xFFE8F1FF,
-                  )
+              0xFFE8F1FF,
+            )
                 : const Color(
-                    0xFFF8FAFC,
-                  ),
+              0xFFF8FAFC,
+            ),
             borderRadius: BorderRadius.circular(
               8,
             ),
             border: Border.all(
               color: selected
                   ? const Color(
-                      0xFF2563EB,
-                    )
+                0xFF2563EB,
+              )
                   : const Color(
-                      0xFFDCE4F0,
-                    ),
+                0xFFDCE4F0,
+              ),
             ),
           ),
           child: content,
@@ -2900,8 +2952,8 @@ class _ConfigurationAgeStack extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final createdAge = _elapsedAge(
       configuration.createdAt,
     )?.value;
@@ -2932,8 +2984,8 @@ class _ConfigurationAgeStack extends StatelessWidget {
             ),
           ),
           if (_hasDistinctUpdate(
-                configuration,
-              ) &&
+            configuration,
+          ) &&
               updatedAge != null) ...[
             const SizedBox(
               height: 3,
@@ -2975,8 +3027,8 @@ class _AgePill extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: double.infinity,
         alignment: Alignment.center,
@@ -3024,8 +3076,8 @@ class _ConfigurationCardActions extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -3047,15 +3099,15 @@ class _ConfigurationCardActions extends StatelessWidget {
             tooltip: 'Delete configuration',
             icon: isDeleting
                 ? const SizedBox.square(
-                    dimension: 14,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+              dimension: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            )
                 : const Icon(
-                    Icons.delete_outline,
-                    color: Colors.red,
-                  ),
+              Icons.delete_outline,
+              color: Colors.red,
+            ),
             onPressed: isDeleting ? null : onDelete,
           ),
         ],
@@ -3084,10 +3136,10 @@ class _ConfigurationCardActions extends StatelessWidget {
 
 class _InfoTileData {
   const _InfoTileData(
-    this.icon,
-    this.label,
-    this.value,
-  );
+      this.icon,
+      this.label,
+      this.value,
+      );
 
   final IconData icon;
 
@@ -3105,8 +3157,8 @@ class _InfoTile extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         constraints: const BoxConstraints(
           minHeight: 58,
@@ -3188,8 +3240,8 @@ class _StatusSectionHeader extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(
@@ -3237,13 +3289,13 @@ class _ConfigurationAgeBlocks extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     return LayoutBuilder(
       builder: (
-        context,
-        constraints,
-      ) {
+          context,
+          constraints,
+          ) {
         final compact = constraints.maxWidth < 460;
 
         final hasUpdate = _hasDistinctUpdate(
@@ -3318,8 +3370,8 @@ class _AgeFocusBlock extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     return Container(
       width: width,
       padding: const EdgeInsets.symmetric(
@@ -3394,8 +3446,8 @@ class _PendingAgePanel extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final age = _pendingAge(
       configuration,
     );
@@ -3472,8 +3524,8 @@ class _PendingAgePill extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final age = _pendingAge(
       configuration,
     );
@@ -3511,24 +3563,20 @@ class _PendingAgePill extends StatelessWidget {
 
 class _PendingAge {
   const _PendingAge(
-    this.value,
-  );
+      this.value,
+      );
 
   final String value;
 }
 
 _PendingAge? _pendingAge(
-  AdminConfiguration configuration,
-) {
-  if (configuration.adminStatus != 'pending') {
+    AdminConfiguration configuration,
+    ) {
+  if (configuration.adminWorkflowStatus != 'pending') {
     return null;
   }
 
-  final start = configuration.adminStartedAt ??
-      configuration.adminRequestedAt ??
-      configuration.submittedAt ??
-      configuration.updatedAt ??
-      configuration.createdAt;
+  final start = configuration.adminStartedAt;
 
   if (start == null) {
     return null;
@@ -3566,15 +3614,15 @@ _PendingAge? _pendingAge(
 
 class _ElapsedAge {
   const _ElapsedAge(
-    this.value,
-  );
+      this.value,
+      );
 
   final String value;
 }
 
 _ElapsedAge? _elapsedAge(
-  DateTime? date,
-) {
+    DateTime? date,
+    ) {
   if (date == null) {
     return null;
   }
@@ -3606,8 +3654,8 @@ _ElapsedAge? _elapsedAge(
 }
 
 bool _hasDistinctUpdate(
-  AdminConfiguration configuration,
-) {
+    AdminConfiguration configuration,
+    ) {
   final created = configuration.createdAt;
 
   final updated = configuration.updatedAt;
@@ -3621,11 +3669,11 @@ bool _hasDistinctUpdate(
   }
 
   return updated
-          .difference(
-            created,
-          )
-          .abs()
-          .inMinutes >=
+      .difference(
+    created,
+  )
+      .abs()
+      .inMinutes >=
       1;
 }
 
@@ -3642,8 +3690,8 @@ class _ConfigurationDetails extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       _AdminDetailsDialog(
         icon: Icons.tune,
         title: configuration.name,
@@ -3671,9 +3719,7 @@ class _ConfigurationDetails extends StatelessWidget {
                   ),
                   _PlainInfo(
                     'Admin status',
-                    _titleCase(
-                      configuration.adminStatus ?? 'requested',
-                    ),
+                    configuration.adminWorkflowStatus ?? 'requested',
                   ),
                   _PlainInfo(
                     'Product name',
@@ -3748,35 +3794,122 @@ class _ConfigurationDetails extends StatelessWidget {
       );
 
   Widget _configurationDataView(
-    Map<String, dynamic> data,
-  ) {
+      Map<String, dynamic> data,
+      ) {
+    final imageEntries = <String, Map<String, dynamic>>{};
+
+    for (final entry in data.entries) {
+      if (_isConfigurationImage(
+        entry.key,
+        entry.value,
+      )) {
+        imageEntries[entry.key] = Map<String, dynamic>.from(
+          entry.value as Map,
+        );
+      }
+    }
+
     final simpleEntries = data.entries.where(
-      (entry) =>
-          entry.key != '_id' &&
+          (entry) =>
+      entry.key != '_id' &&
           !_isNested(
             entry.value,
           ),
     );
 
     final nestedEntries = data.entries.where(
-      (entry) => _isNested(
+          (entry) =>
+      _isNested(
         entry.value,
-      ),
+      ) &&
+          !_isConfigurationImage(
+            entry.key,
+            entry.value,
+          ),
+    );
+
+    final orphanImages = imageEntries.entries.where(
+          (entry) {
+        final parentKey = _imageParentKey(
+          entry.key,
+        );
+
+        return !data.containsKey(
+          parentKey,
+        );
+      },
     );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (simpleEntries.isNotEmpty)
-          _plainInfoGrid([
-            for (final entry in simpleEntries)
-              _PlainInfo(
-                _readableLabel(
-                  entry.key,
-                ),
-                entry.value,
-              ),
-          ]),
+          LayoutBuilder(
+            builder: (
+                context,
+                constraints,
+                ) {
+              final width = _compactFieldWidth(
+                constraints.maxWidth,
+              );
+
+              return Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  for (final entry in simpleEntries)
+                    SizedBox(
+                      width: width,
+                      child: _configurationField(
+                        entry: entry,
+                        imageData: imageEntries[
+                        '${entry.key}Image'
+                        ],
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+
+        if (orphanImages.isNotEmpty) ...[
+          if (simpleEntries.isNotEmpty)
+            const SizedBox(
+              height: 12,
+            ),
+          LayoutBuilder(
+            builder: (
+                context,
+                constraints,
+                ) {
+              final width = _compactFieldWidth(
+                constraints.maxWidth,
+              );
+
+              return Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  for (final entry in orphanImages)
+                    SizedBox(
+                      width: width,
+                      child: _ConfigurationImageField(
+                        configurationID: configuration.id,
+                        imageKey: entry.key,
+                        label: _readableLabel(
+                          _imageParentKey(
+                            entry.key,
+                          ),
+                        ),
+                        imageData: entry.value,
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+
         if (nestedEntries.isNotEmpty) ...[
           const SizedBox(
             height: 14,
@@ -3797,8 +3930,530 @@ class _ConfigurationDetails extends StatelessWidget {
       ],
     );
   }
+
+  Widget _configurationField({
+    required MapEntry<String, dynamic> entry,
+    Map<String, dynamic>? imageData,
+  }) {
+    if (imageData == null) {
+      return _plainInfoRow(
+        _readableLabel(
+          entry.key,
+        ),
+        entry.value,
+      );
+    }
+
+    return _ConfigurationValueWithImage(
+      configurationID: configuration.id,
+      imageKey: '${entry.key}Image',
+      label: _readableLabel(
+        entry.key,
+      ),
+      value: entry.value,
+      imageData: imageData,
+    );
+  }
 }
 
+// =========================================================
+// CONFIGURATION IMAGE HELPERS
+// =========================================================
+
+bool _isConfigurationImage(
+    String key,
+    dynamic value,
+    ) {
+  if (!key.endsWith('Image') || value is! Map) {
+    return false;
+  }
+
+  final data = Map<String, dynamic>.from(
+    value,
+  );
+
+  final objectKey = data['objectKey']
+      ?.toString()
+      .trim();
+
+  return objectKey != null &&
+      objectKey.isNotEmpty;
+}
+
+String _imageParentKey(
+    String imageKey,
+    ) {
+  if (!imageKey.endsWith('Image')) {
+    return imageKey;
+  }
+
+  return imageKey.substring(
+    0,
+    imageKey.length - 'Image'.length,
+  );
+}
+
+class _ConfigurationValueWithImage extends StatelessWidget {
+  const _ConfigurationValueWithImage({
+    required this.configurationID,
+    required this.imageKey,
+    required this.label,
+    required this.value,
+    required this.imageData,
+  });
+
+  final String configurationID;
+
+  final String imageKey;
+
+  final String label;
+
+  final dynamic value;
+
+  final Map<String, dynamic> imageData;
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) =>
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: const Color(
+            0xFFF8FAFC,
+          ),
+          borderRadius: BorderRadius.circular(
+            8,
+          ),
+          border: Border.all(
+            color: const Color(
+              0xFFE2E8F0,
+            ),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(
+                  0xFF64748B,
+                ),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SelectableText(
+                    value?.toString().isEmpty ?? true
+                        ? '—'
+                        : value.toString(),
+                    maxLines: 4,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                _ConfigurationImageThumbnail(
+                  configurationID: configurationID,
+                  imageKey: imageKey,
+                  imageData: imageData,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+}
+
+class _ConfigurationImageField extends StatelessWidget {
+  const _ConfigurationImageField({
+    required this.configurationID,
+    required this.imageKey,
+    required this.label,
+    required this.imageData,
+  });
+
+  final String configurationID;
+
+  final String imageKey;
+
+  final String label;
+
+  final Map<String, dynamic> imageData;
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) =>
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: const Color(
+            0xFFF8FAFC,
+          ),
+          borderRadius: BorderRadius.circular(
+            8,
+          ),
+          border: Border.all(
+            color: const Color(
+              0xFFE2E8F0,
+            ),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(
+                  0xFF64748B,
+                ),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            _ConfigurationImageThumbnail(
+              configurationID: configurationID,
+              imageKey: imageKey,
+              imageData: imageData,
+            ),
+          ],
+        ),
+      );
+}
+
+class _ConfigurationImageThumbnail extends StatefulWidget {
+  const _ConfigurationImageThumbnail({
+    required this.configurationID,
+    required this.imageKey,
+    required this.imageData,
+  });
+
+  final String configurationID;
+
+  final String imageKey;
+
+  final Map<String, dynamic> imageData;
+
+  @override
+  State<_ConfigurationImageThumbnail> createState() =>
+      _ConfigurationImageThumbnailState();
+}
+
+class _ConfigurationImageThumbnailState
+    extends State<_ConfigurationImageThumbnail> {
+  String? _url;
+
+  String? _error;
+
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadImage();
+  }
+
+  Future<void> _loadImage() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final response =
+      await AdminRepository.getConfigurationImageUrl(
+        configurationID: widget.configurationID,
+        imageKey: widget.imageKey,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      final url = response.data?['url']
+          ?.toString()
+          .trim();
+
+      if (!response.success ||
+          url == null ||
+          url.isEmpty) {
+        setState(() {
+          _loading = false;
+          _error =
+              response.message ??
+                  'Image unavailable';
+        });
+
+        return;
+      }
+
+      setState(() {
+        _url = url;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _loading = false;
+        _error = 'Image unavailable';
+      });
+    }
+  }
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) {
+    if (_loading) {
+      return Container(
+        width: 64,
+        height: 64,
+        alignment: Alignment.center,
+        decoration: _thumbnailDecoration(),
+        child: const SizedBox.square(
+          dimension: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        ),
+      );
+    }
+
+    if (_error != null ||
+        _url == null) {
+      return Tooltip(
+        message: _error ?? 'Image unavailable',
+        child: InkWell(
+          onTap: _loadImage,
+          borderRadius: BorderRadius.circular(
+            8,
+          ),
+          child: Container(
+            width: 64,
+            height: 64,
+            alignment: Alignment.center,
+            decoration: _thumbnailDecoration(),
+            child: const Icon(
+              Icons.broken_image_outlined,
+              color: Color(
+                0xFF94A3B8,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Tooltip(
+      message: 'Click to enlarge',
+      child: InkWell(
+        onTap: _showPreview,
+        borderRadius: BorderRadius.circular(
+          8,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(
+            8,
+          ),
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: _thumbnailDecoration(),
+            child: Image.network(
+              _url!,
+              fit: BoxFit.cover,
+              errorBuilder: (
+                  context,
+                  error,
+                  stackTrace,
+                  ) =>
+              const Center(
+                child: Icon(
+                  Icons.broken_image_outlined,
+                  color: Color(
+                    0xFF94A3B8,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _thumbnailDecoration() =>
+      BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(
+          8,
+        ),
+        border: Border.all(
+          color: const Color(
+            0xFFE2E8F0,
+          ),
+        ),
+      );
+
+  Future<void> _showPreview() async {
+    final url = _url;
+
+    if (url == null ||
+        url.isEmpty ||
+        !mounted) {
+      return;
+    }
+
+    final originalName =
+    widget.imageData['originalName']
+        ?.toString()
+        .trim();
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) =>
+          Dialog(
+            insetPadding: const EdgeInsets.all(
+              24,
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 1000,
+                maxHeight: 800,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      16,
+                      10,
+                      8,
+                      10,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            originalName == null ||
+                                originalName.isEmpty
+                                ? 'Configuration image'
+                                : originalName,
+                            maxLines: 1,
+                            overflow:
+                            TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight:
+                              FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Close',
+                          onPressed: () =>
+                              Navigator.pop(
+                                dialogContext,
+                              ),
+                          icon: const Icon(
+                            Icons.close,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    height: 1,
+                  ),
+                  Flexible(
+                    child: InteractiveViewer(
+                      minScale: 0.5,
+                      maxScale: 5,
+                      child: Image.network(
+                        url,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (
+                            context,
+                            child,
+                            progress,
+                            ) {
+                          if (progress == null) {
+                            return child;
+                          }
+
+                          return const Center(
+                            child:
+                            CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (
+                            context,
+                            error,
+                            stackTrace,
+                            ) =>
+                        const Padding(
+                          padding:
+                          EdgeInsets.all(
+                            40,
+                          ),
+                          child: Column(
+                            mainAxisSize:
+                            MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons
+                                    .broken_image_outlined,
+                                size: 48,
+                                color: Color(
+                                  0xFF94A3B8,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Unable to load image.',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+}
 // =========================================================
 // EDIT CONFIGURATION
 // =========================================================
@@ -3899,13 +4554,13 @@ class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       _AdminEditDialog(
         icon: Icons.tune,
         title: 'Edit configuration',
         subtitle:
-            'Update the name, quantity, or configured product information.',
+        'Update the name, quantity, or configured product information.',
         onSave: _save,
         child: Form(
           key: _formKey,
@@ -3977,24 +4632,24 @@ class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
 
   Widget _configurationFields() {
     final editableEntries = _configurationData.entries.where(
-      (entry) =>
-          entry.key != '_id' &&
+          (entry) =>
+      entry.key != '_id' &&
           !_isNested(
             entry.value,
           ),
     );
 
     final nestedEntries = _configurationData.entries.where(
-      (entry) => _isNested(
+          (entry) => _isNested(
         entry.value,
       ),
     );
 
     return LayoutBuilder(
       builder: (
-        context,
-        constraints,
-      ) {
+          context,
+          constraints,
+          ) {
         final width = _compactFieldWidth(
           constraints.maxWidth,
         );
@@ -4013,12 +4668,12 @@ class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
                       controller: _controllers[entry.key],
                       keyboardType: entry.value is num
                           ? const TextInputType.numberWithOptions(
-                              decimal: true,
-                            )
+                        decimal: true,
+                      )
                           : TextInputType.text,
                       maxLines: entry.key.toLowerCase().contains(
-                                'note',
-                              )
+                        'note',
+                      )
                           ? 3
                           : 1,
                       decoration: _fieldDecoration(
@@ -4106,25 +4761,25 @@ class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
 // =========================================================
 
 bool _isNested(
-  dynamic value,
-) =>
+    dynamic value,
+    ) =>
     value is Map || value is List;
 
 dynamic _restoreFieldType(
-  String value,
-  dynamic original,
-) {
+    String value,
+    dynamic original,
+    ) {
   if (original is int) {
     return int.tryParse(
-          value,
-        ) ??
+      value,
+    ) ??
         original;
   }
 
   if (original is double) {
     return double.tryParse(
-          value,
-        ) ??
+      value,
+    ) ??
         original;
   }
 
@@ -4136,17 +4791,17 @@ dynamic _restoreFieldType(
 }
 
 InputDecoration _fieldDecoration(
-  String label,
-  IconData? icon,
-) =>
+    String label,
+    IconData? icon,
+    ) =>
     InputDecoration(
       labelText: label,
       prefixIcon: icon == null
           ? null
           : Icon(
-              icon,
-              size: 20,
-            ),
+        icon,
+        size: 20,
+      ),
       border: const OutlineInputBorder(),
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(
@@ -4160,8 +4815,8 @@ InputDecoration _fieldDecoration(
     );
 
 String _readableLabel(
-  String key,
-) {
+    String key,
+    ) {
   const overrides = {
     'cc5ChainSize': 'CC5 chain size',
     'appEnviroment': 'Application environment',
@@ -4176,15 +4831,15 @@ String _readableLabel(
 
   final spaced = key
       .replaceAllMapped(
-        RegExp(
-          r'([a-z0-9])([A-Z])',
-        ),
+    RegExp(
+      r'([a-z0-9])([A-Z])',
+    ),
         (match) => '${match[1]} ${match[2]}',
-      )
+  )
       .replaceAll(
-        '_',
-        ' ',
-      )
+    '_',
+    ' ',
+  )
       .trim();
 
   return spaced.isEmpty
@@ -4193,8 +4848,8 @@ String _readableLabel(
 }
 
 IconData _fieldIcon(
-  String key,
-) {
+    String key,
+    ) {
   final lower = key.toLowerCase();
 
   if (lower.contains(
@@ -4204,8 +4859,8 @@ IconData _fieldIcon(
   }
 
   if (lower.contains(
-        'length',
-      ) ||
+    'length',
+  ) ||
       lower.contains(
         'measurement',
       )) {
@@ -4219,8 +4874,8 @@ IconData _fieldIcon(
   }
 
   if (lower.contains(
-        'temp',
-      ) ||
+    'temp',
+  ) ||
       lower.contains(
         'environment',
       )) {
@@ -4255,8 +4910,8 @@ IconData _fieldIcon(
 }
 
 String _friendlyDate(
-  dynamic raw,
-) {
+    dynamic raw,
+    ) {
   if (raw == null) {
     return '—';
   }
@@ -4264,27 +4919,27 @@ String _friendlyDate(
   final date = raw is DateTime
       ? raw
       : DateTime.tryParse(
-          raw.toString(),
-        );
+    raw.toString(),
+  );
 
   return date == null
       ? '—'
       : DateFormat.yMMMd().add_jm().format(
-            date.toLocal(),
-          );
+    date.toLocal(),
+  );
 }
 
 String _nestedSummary(
-  dynamic value,
-) {
+    dynamic value,
+    ) {
   if (value is Map) {
     return value.entries
         .map(
           (entry) => '${_readableLabel(entry.key.toString())}: ${entry.value}',
-        )
+    )
         .join(
-          ' · ',
-        );
+      ' · ',
+    );
   }
 
   if (value is List) {
@@ -4295,11 +4950,11 @@ String _nestedSummary(
 }
 
 Widget _detailField(
-  String label,
-  dynamic value,
-  IconData icon,
-  double width,
-) =>
+    String label,
+    dynamic value,
+    IconData icon,
+    double width,
+    ) =>
     SizedBox(
       width: width,
       child: InputDecorator(
@@ -4316,9 +4971,9 @@ Widget _detailField(
 
 class _PlainInfo {
   const _PlainInfo(
-    this.label,
-    this.value,
-  );
+      this.label,
+      this.value,
+      );
 
   final String label;
 
@@ -4337,8 +4992,8 @@ class _PlainSectionBox extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: double.infinity,
         padding: const EdgeInsets.all(
@@ -4386,8 +5041,8 @@ class _PlainSubsection extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: double.infinity,
         padding: const EdgeInsets.all(
@@ -4423,13 +5078,13 @@ class _PlainSubsection extends StatelessWidget {
 }
 
 Widget _plainInfoGrid(
-  List<_PlainInfo> items,
-) =>
+    List<_PlainInfo> items,
+    ) =>
     LayoutBuilder(
       builder: (
-        context,
-        constraints,
-      ) {
+          context,
+          constraints,
+          ) {
         final width = _compactFieldWidth(
           constraints.maxWidth,
         );
@@ -4452,9 +5107,9 @@ Widget _plainInfoGrid(
     );
 
 Widget _plainInfoRow(
-  String label,
-  dynamic value,
-) =>
+    String label,
+    dynamic value,
+    ) =>
     Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
@@ -4502,9 +5157,9 @@ Widget _plainInfoRow(
     );
 
 Widget _plainLinkedInfo(
-  String label,
-  dynamic value,
-) =>
+    String label,
+    dynamic value,
+    ) =>
     Padding(
       padding: const EdgeInsets.only(
         bottom: 8,
@@ -4520,8 +5175,8 @@ Widget _plainLinkedInfo(
     );
 
 double _compactFieldWidth(
-  double maxWidth,
-) {
+    double maxWidth,
+    ) {
   if (maxWidth < 520) {
     return maxWidth;
   }
@@ -4544,8 +5199,8 @@ class _EditorSectionTitle extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Row(
         children: [
           Icon(
@@ -4574,8 +5229,8 @@ class _EmptyProductEditor extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: double.infinity,
         padding: const EdgeInsets.all(
@@ -4625,8 +5280,8 @@ class _EditUserDialog extends StatefulWidget {
   final AdminUser user;
 
   final Future<String?> Function(
-    String password,
-  ) onResetPassword;
+      String password,
+      ) onResetPassword;
 
   @override
   State<_EditUserDialog> createState() => _EditUserDialogState();
@@ -4703,14 +5358,14 @@ class _EditUserDialogState extends State<_EditUserDialog> {
     Navigator.pop(
       context,
       _fields.map(
-        (
-          key,
-          value,
-        ) =>
+            (
+            key,
+            value,
+            ) =>
             MapEntry(
-          key,
-          value.text.trim(),
-        ),
+              key,
+              value.text.trim(),
+            ),
       ),
     );
   }
@@ -4756,7 +5411,7 @@ class _EditUserDialogState extends State<_EditUserDialog> {
       _confirmPassword.clear();
 
       _passwordMessage =
-          'Password reset successfully. Existing sessions were signed out.';
+      'Password reset successfully. Existing sessions were signed out.';
 
       _passwordError = false;
     });
@@ -4764,8 +5419,8 @@ class _EditUserDialogState extends State<_EditUserDialog> {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       _AdminEditDialog(
         icon: Icons.manage_accounts_outlined,
         title: 'Edit user',
@@ -4796,9 +5451,9 @@ class _EditUserDialogState extends State<_EditUserDialog> {
               ),
               LayoutBuilder(
                 builder: (
-                  context,
-                  constraints,
-                ) {
+                    context,
+                    constraints,
+                    ) {
                   final fieldWidth = _compactFieldWidth(
                     constraints.maxWidth,
                   );
@@ -4871,167 +5526,167 @@ class _EditUserDialogState extends State<_EditUserDialog> {
       );
 
   Widget _passwordSection() => Form(
-        key: _passwordFormKey,
-        child: Container(
-          padding: const EdgeInsets.all(
-            18,
-          ),
-          decoration: BoxDecoration(
-            color: const Color(
-              0xFFFFFBEB,
-            ),
-            borderRadius: BorderRadius.circular(
-              14,
-            ),
-            border: Border.all(
-              color: const Color(
-                0xFFFDE68A,
-              ),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const _EditorSectionTitle(
-                icon: Icons.password_outlined,
-                title: 'Reset password',
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              const Text(
-                'No old password or security PIN is required. All existing sessions for this user will be signed out.',
-                style: TextStyle(
-                  color: Color(
-                    0xFF78716C,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: _password,
-                obscureText: _passwordHidden,
-                decoration: InputDecoration(
-                  labelText: 'New password',
-                  prefixIcon: const Icon(
-                    Icons.lock_outline,
-                  ),
-                  border: const OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white,
-                  suffixIcon: IconButton(
-                    onPressed: () => setState(
-                      () => _passwordHidden = !_passwordHidden,
-                    ),
-                    icon: Icon(
-                      _passwordHidden
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                    ),
-                  ),
-                ),
-                validator: (value) => value == null || value.length < 8
-                    ? 'Password must contain at least 8 characters.'
-                    : null,
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              TextFormField(
-                controller: _confirmPassword,
-                obscureText: _confirmPasswordHidden,
-                decoration: InputDecoration(
-                  labelText: 'Confirm new password',
-                  prefixIcon: const Icon(
-                    Icons.lock_reset_outlined,
-                  ),
-                  border: const OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white,
-                  suffixIcon: IconButton(
-                    onPressed: () => setState(
-                      () => _confirmPasswordHidden = !_confirmPasswordHidden,
-                    ),
-                    icon: Icon(
-                      _confirmPasswordHidden
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                    ),
-                  ),
-                ),
-                validator: (value) =>
-                    value != _password.text ? 'Passwords do not match.' : null,
-              ),
-              if (_passwordMessage != null) ...[
-                const SizedBox(
-                  height: 12,
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      _passwordError ? Icons.error_outline : Icons.check_circle,
-                      size: 20,
-                      color: _passwordError ? Colors.red : Colors.green,
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                      child: Text(
-                        _passwordMessage!,
-                        style: TextStyle(
-                          color: _passwordError
-                              ? Colors.red.shade700
-                              : Colors.green.shade700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              const SizedBox(
-                height: 16,
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(
-                      0xFFB45309,
-                    ),
-                  ),
-                  onPressed: _resettingPassword ? null : _resetPassword,
-                  icon: _resettingPassword
-                      ? const SizedBox.square(
-                          dimension: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Icon(
-                          Icons.lock_reset,
-                        ),
-                  label: Text(
-                    _resettingPassword
-                        ? 'Resetting password…'
-                        : 'Update password',
-                  ),
-                ),
-              ),
-            ],
+    key: _passwordFormKey,
+    child: Container(
+      padding: const EdgeInsets.all(
+        18,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(
+          0xFFFFFBEB,
+        ),
+        borderRadius: BorderRadius.circular(
+          14,
+        ),
+        border: Border.all(
+          color: const Color(
+            0xFFFDE68A,
           ),
         ),
-      );
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _EditorSectionTitle(
+            icon: Icons.password_outlined,
+            title: 'Reset password',
+          ),
+          const SizedBox(
+            height: 6,
+          ),
+          const Text(
+            'No old password or security PIN is required. All existing sessions for this user will be signed out.',
+            style: TextStyle(
+              color: Color(
+                0xFF78716C,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          TextFormField(
+            controller: _password,
+            obscureText: _passwordHidden,
+            decoration: InputDecoration(
+              labelText: 'New password',
+              prefixIcon: const Icon(
+                Icons.lock_outline,
+              ),
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: Colors.white,
+              suffixIcon: IconButton(
+                onPressed: () => setState(
+                      () => _passwordHidden = !_passwordHidden,
+                ),
+                icon: Icon(
+                  _passwordHidden
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+              ),
+            ),
+            validator: (value) => value == null || value.length < 8
+                ? 'Password must contain at least 8 characters.'
+                : null,
+          ),
+          const SizedBox(
+            height: 14,
+          ),
+          TextFormField(
+            controller: _confirmPassword,
+            obscureText: _confirmPasswordHidden,
+            decoration: InputDecoration(
+              labelText: 'Confirm new password',
+              prefixIcon: const Icon(
+                Icons.lock_reset_outlined,
+              ),
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: Colors.white,
+              suffixIcon: IconButton(
+                onPressed: () => setState(
+                      () => _confirmPasswordHidden = !_confirmPasswordHidden,
+                ),
+                icon: Icon(
+                  _confirmPasswordHidden
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+              ),
+            ),
+            validator: (value) =>
+            value != _password.text ? 'Passwords do not match.' : null,
+          ),
+          if (_passwordMessage != null) ...[
+            const SizedBox(
+              height: 12,
+            ),
+            Row(
+              children: [
+                Icon(
+                  _passwordError ? Icons.error_outline : Icons.check_circle,
+                  size: 20,
+                  color: _passwordError ? Colors.red : Colors.green,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Expanded(
+                  child: Text(
+                    _passwordMessage!,
+                    style: TextStyle(
+                      color: _passwordError
+                          ? Colors.red.shade700
+                          : Colors.green.shade700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(
+            height: 16,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(
+                  0xFFB45309,
+                ),
+              ),
+              onPressed: _resettingPassword ? null : _resetPassword,
+              icon: _resettingPassword
+                  ? const SizedBox.square(
+                dimension: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              )
+                  : const Icon(
+                Icons.lock_reset,
+              ),
+              label: Text(
+                _resettingPassword
+                    ? 'Resetting password…'
+                    : 'Update password',
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 
   Widget _userField(
-    String key,
-    String label,
-    IconData icon,
-    double width, {
-    bool required = false,
-  }) =>
+      String key,
+      String label,
+      IconData icon,
+      double width, {
+        bool required = false,
+      }) =>
       SizedBox(
         width: width,
         child: TextFormField(
@@ -5045,8 +5700,8 @@ class _EditUserDialogState extends State<_EditUserDialog> {
           ),
           validator: required
               ? (value) => value == null || value.trim().isEmpty
-                  ? '$label is required.'
-                  : null
+              ? '$label is required.'
+              : null
               : null,
         ),
       );
@@ -5065,8 +5720,8 @@ class _UserDetails extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       _AdminDetailsDialog(
         icon: Icons.manage_accounts_outlined,
         title: user.name,
@@ -5083,9 +5738,9 @@ class _UserDetails extends StatelessWidget {
             ),
             LayoutBuilder(
               builder: (
-                context,
-                constraints,
-              ) {
+                  context,
+                  constraints,
+                  ) {
                 final width = _compactFieldWidth(
                   constraints.maxWidth,
                 );
@@ -5191,8 +5846,8 @@ class _AdminDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final screen = MediaQuery.sizeOf(
       context,
     );
@@ -5345,8 +6000,8 @@ class _AdminEditDialog extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final screen = MediaQuery.sizeOf(
       context,
     );
@@ -5504,8 +6159,8 @@ class _AdminListCard extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: double.infinity,
         margin: margin,
@@ -5542,8 +6197,8 @@ class _InfoLine extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Padding(
         padding: const EdgeInsets.only(
           bottom: 8,
@@ -5589,13 +6244,13 @@ class _InfoLine extends StatelessWidget {
 
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard(
-    this.label,
-    this.total,
-    this.icon,
-    this.color, {
-    required this.width,
-    required this.showIcon,
-  });
+      this.label,
+      this.total,
+      this.icon,
+      this.color, {
+        required this.width,
+        required this.showIcon,
+      });
 
   final String label;
 
@@ -5611,8 +6266,8 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         width: width,
         padding: EdgeInsets.symmetric(
@@ -5682,9 +6337,9 @@ class _SummaryCard extends StatelessWidget {
 
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge(
-    this.status, {
-    this.compact = false,
-  });
+      this.status, {
+        this.compact = false,
+      });
 
   final String status;
 
@@ -5692,8 +6347,8 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final color = switch (status) {
       'done' => Colors.green,
       'pending' => Colors.orange,
@@ -5712,15 +6367,15 @@ class _StatusBadge extends StatelessWidget {
 
 class _RoleBadge extends StatelessWidget {
   const _RoleBadge(
-    this.role,
-  );
+      this.role,
+      );
 
   final String role;
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       _Badge(
         label: _titleCase(
           role,
@@ -5744,8 +6399,8 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Container(
         padding: EdgeInsets.symmetric(
           horizontal: compact ? 7 : 10,
@@ -5784,8 +6439,8 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(
-    BuildContext context,
-  ) =>
+      BuildContext context,
+      ) =>
       Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -5818,9 +6473,10 @@ class _ErrorView extends StatelessWidget {
       );
 }
 
+
 String _titleCase(
-  String value,
-) =>
+    String value,
+    ) =>
     value.isEmpty
         ? value
         : '${value[0].toUpperCase()}${value.substring(1).toLowerCase()}';

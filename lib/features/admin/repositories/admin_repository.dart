@@ -18,6 +18,25 @@ class AdminRepository {
     );
   }
 
+
+  // =========================================================
+  // GET CONFIGURATION IMAGE SIGNED URL
+  //
+  // Returns temporary signed URL metadata for an image
+  // stored inside configurationData.
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  getConfigurationImageUrl({
+    required String configurationID,
+    required String imageKey,
+  }) {
+    return AdminApiService.getConfigurationImageUrl(
+      configurationID: configurationID,
+      imageKey: imageKey,
+    );
+  }
+
   static Future<ApiResponse<AdminConfiguration>> getConfiguration({
     required String configurationID,
   }) {

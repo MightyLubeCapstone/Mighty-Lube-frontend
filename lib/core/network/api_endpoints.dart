@@ -609,8 +609,8 @@ class ApiEndpoints {
     return '$apiBaseUrl/ohp_pml';
   }
 
-  static String get overhead001 {
-    return '$apiBaseUrl/ohp_001';
+  static String get overheadslmlms {
+    return '$apiBaseUrl/slmlms';
   }
 
   static String get overheadPmm {
@@ -665,6 +665,254 @@ class ApiEndpoints {
 
   static String get pfoFreeRail314LoadWheelGreaser {
     return '$apiBaseUrl/pfo_cgs_fr314';
+  }
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // FREE RAIL 317 "GUIDE" WHEEL GREASER
+  //
+  // Product ID: PFO_CGS_FR317
+  // POST /api/pfo_cgs_fr317
+  // ---------------------------------------------------------
+
+  static String get pfoFreeRail317GuideWheelGreaser {
+    return '$apiBaseUrl/pfo_cgs_fr317';
+  }
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // GREASER POWER CHAIN
+  //
+  // Product ID: PFO_CGS_GPC
+  // POST /api/pfo_cgs_gpc
+  // ---------------------------------------------------------
+
+  static String get pfoGreaserPowerChain {
+    return '$apiBaseUrl/pfo_cgs_gpc';
+  }
+
+  // ---------------------------------------------------------
+  // POWER AND FREE OVERHEAD OR INVERTED
+  // 9000L SERIES CENTRAL OVERHEAD I-BEAM CONVEYOR LUBRICATORS
+  //
+  // Product ID: PFO_CLS_9000L
+  // POST /api/pfo_cls_9000l
+  // ---------------------------------------------------------
+
+  static String get pfo9000LIBEAM {
+    return '$apiBaseUrl/pfo_cls_9000lIbeam';
+  }
+
+  // =========================================================
+  // PFO - CONVEYOR LUBRICATION SYSTEMS
+  // 9000L SERIES CENTRAL SYSTEM ENCLOSED TRACK
+  // CONVEYOR LUBRICATORS
+  //
+  // Product ID: PFO_CLS_9000LECCCL
+  // POST /api/pfo_cls_9000lecccl
+  // =========================================================
+
+  static String get pfo9000LETCL {
+    return '$apiBaseUrl/pfo_cls_9000letcl';
+  }
+
+  static String
+  get pfo9000lCCL {
+    return '$apiBaseUrl/pfo_cls_9000lccl';
+  }
+
+
+  // Product ID: PFO_CLS_CDL
+  // POST /api/pfo_cls_cdl
+  static String get pfoCaterpillarDriveLubricators {
+    return '$apiBaseUrl/pfo_cls_cdl';
+  }
+
+  // Product ID: PFO_CLS_ES
+  // POST /api/pfo_cls_es
+  static String get pfoESeries {
+    return '$apiBaseUrl/pfo_cls_es';
+  }
+
+  // ==========================================================
+  // PFO - CONVEYOR LUBRICATION SYSTEMS
+  // OP-139A
+  // ==========================================================
+  //
+  // Product ID:
+  // PFO_CLS_OP139A
+  //
+  // Backend:
+  // POST /api/pfo_cls_op139a
+  //
+  // Request body:
+  // {
+  //   "PFO_CLS_OP139AData": { ... },
+  //   "numRequested": 1
+  // }
+  //
+  // ==========================================================
+
+  static String get pfoOp139A {
+    return '$apiBaseUrl/pfo_cls_op139a';
+  }
+
+  // ==========================================================
+  // PFO - CONVEYOR MONITOR SYSTEMS
+  // MULTI LINE (PERMANENT) ALL IN ONE MONITORING + LUBRICATION
+  // ==========================================================
+  //
+  // Product ID:
+  // PFO_CMS_MLAIO
+  //
+  // Backend Endpoint:
+  // POST /api/pfo_cms_mlaio
+  //
+  // Request Body:
+  // {
+  //   "PFO_CMS_MLAIOData": { ... },
+  //   "numRequested": 1
+  // }
+  //
+  // ==========================================================
+
+  static String get pfoMultiLinePermanentAllInOne {
+    return '$apiBaseUrl/pfo_cms_mlaio';
+  }
+
+  // ==========================================================
+  // PFO - CONVEYOR MONITOR SYSTEMS
+  // PORTABLE (MULTI-LINE) MIGHTY LUBE® MONITORING SYSTEM
+  // ==========================================================
+  //
+  // Product ID:
+  // PFO_CMS_PMLMS
+  //
+  // Backend Endpoint:
+  // POST /api/pfo_cms_pmlms
+  //
+  // Request Body:
+  // {
+  //   "PFO_CMS_PMLMSData": { ... },
+  //   "numRequested": 1
+  // }
+  //
+  // ==========================================================
+
+  static String get pfoPortableMultiLineMonitoringSystem {
+    return '$apiBaseUrl/pfo_cms_pmlms';
+  }
+
+  // ==========================================================
+  // PFO - CONVEYOR MONITOR SYSTEMS
+  // PAINT MARKER FOR MONITORING SYSTEM (OPTIONAL)
+  // ==========================================================
+  //
+  // Product ID:
+  // PFO_CMS_PMMS
+  //
+  // Backend Endpoint:
+  // POST /api/pfo_cms_pmms
+  //
+  // Request Body:
+  // {
+  //   "PFO_CMS_PMMSData": { ... },
+  //   "numRequested": 1
+  // }
+  //
+  // ==========================================================
+
+  static String get pfoPaintMarkerMonitoringSystem {
+    return '$apiBaseUrl/pfo_cms_pmms';
+  }
+
+
+
+
+
+  // ==========================================================
+  // PROTEIN
+  // FOOD GRADE CLEANER OP-8SS
+  // ==========================================================
+  //
+  // Product ID:
+  // PROTEIN_OP8SS
+  //
+  // Backend Endpoint:
+  // POST /api/protein_op8ss
+  //
+  // Request Body:
+  // {
+  //   "PROTEIN_OP8SSData": { ... },
+  //   "numRequested": 1
+  // }
+  //
+  // ==========================================================
+
+  static String get proteinFoodGradeCleanerOp8ss {
+    return '$apiBaseUrl/protein_op8ss';
+  }
+
+  // ==========================================================
+  // PROTEIN
+  // FOOD GRADE LUBRICATION AND MONITOR
+  // ==========================================================
+  //
+  // Product ID:
+  // PROTEIN_FGLM
+  //
+  // Backend Endpoint:
+  // POST /api/protein_fglm
+  //
+  // Request Body:
+  // {
+  //   "PROTEIN_FGLMData": { ... },
+  //   "numRequested": 1
+  // }
+  //
+  // ==========================================================
+
+  static String get proteinFoodGradeLubricationMonitor {
+    return '$apiBaseUrl/protein_fglm';
+  }
+
+
+  // ==========================================================
+  // TECHNICIAN = TECHNICIAN NOTES
+  // ==========================================================
+
+  static String get technicianNotes {
+    return '$apiBaseUrl/technician_notes';
+  }
+
+
+
+
+
+  // ============================================================
+  // IMAGE UPLOAD
+  // POST /api/uploads/image
+  // ============================================================
+
+  static String get uploadImage {
+    return '$apiBaseUrl/uploads/image';
+  }
+
+  // ============================================================
+  // ADMIN - CONFIGURATION IMAGE SIGNED URL
+  //
+  // POST /api/admin/configurations/:configurationID/image-url
+  //
+  // Request Body:
+  // {
+  //   "imageKey": "someFieldImage"
+  // }
+  //
+  // Returns a temporary signed URL for viewing the private image.
+  // ============================================================
+
+  static String adminConfigurationImageUrl(String configurationID,) {
+    return '$apiBaseUrl/admin/configurations/$configurationID/image-url';
   }
 // =========================================================
 // FUTURE PRODUCT ENDPOINTS

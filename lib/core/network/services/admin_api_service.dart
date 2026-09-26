@@ -85,6 +85,60 @@ class AdminApiService {
     );
   }
 
+
+  // =========================================================
+  // GET ADMIN CONFIGURATION IMAGE SIGNED URL
+  //
+  // POST /api/admin/configurations/:configurationID/image-url
+  //
+  // Backend validates that:
+  // - configuration exists
+  // - imageKey exists inside configurationData
+  // - stored objectKey belongs to the configuration user
+  //
+  // Returns temporary signed URL for private Object Storage.
+  // =========================================================
+
+  // =========================================================
+  // GET CONFIGURATION IMAGE SIGNED URL
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>>
+  getConfigurationImageUrl({
+    required String configurationID,
+    required String imageKey,
+  }) {
+    return ApiClient.post<Map<String, dynamic>>(
+      url: ApiEndpoints.adminConfigurationImageUrl(
+        Uri.encodeComponent(
+          configurationID,
+        ),
+      ),
+      body: {
+        'imageKey': imageKey,
+      },
+      parser: (data) {
+        if (data is! Map) {
+          return <String, dynamic>{};
+        }
+
+        final map = Map<String, dynamic>.from(
+          data,
+        );
+
+        final file = map['file'];
+
+        if (file is Map) {
+          return Map<String, dynamic>.from(
+            file,
+          );
+        }
+
+        return <String, dynamic>{};
+      },
+    );
+  }
+
   // =========================================================
   // UPDATE CONFIGURATION
   // =========================================================
