@@ -1,332 +1,1197 @@
 # Mighty Lube Configurator
 
-Flutter frontend for configuring Mighty Lube industrial and protein conveyor products. Users can sign in, browse product families, configure products, manage carts and drafts, finalize configurations, and view saved configurations. Admin users can manage configurations and users from the admin dashboard.
+Flutter frontend for configuring Mighty Lube conveyor products.
+
+The application allows users to:
+
+- Sign in and manage their account
+- Browse Industrial, Protein, and Technician products
+- Configure products
+- Upload configuration-related images
+- Add configurations to the cart
+- Save and restore drafts
+- Finalize configurations
+- View saved configurations
+- Manage configurations through the Admin Dashboard
+
+The frontend has been migrated from a **product-specific page architecture**
+to a **reusable, data-driven Product Configurator architecture**.
+
+---
 
 ## Quick Info
 
-```yaml
-name: mighty_lube
-version: 2.0.2+9
-environment:
-  sdk: ^3.5.2
-```
+The application supports:
 
-- Live branch: `addTechNote`
-- Active version branch: `adminDashboard`
-- Debug backend: `http://localhost:8080`
-- Release backend: `https://configurator-67eol.sevalla.app`
-- Release API root: `https://configurator-67eol.sevalla.app/api`
-- Admin route: `/admin`
+| Application | Configurable Products |
+| --- | ---: |
+| Industrial | 76 |
+| Protein | 2 |
+| Technician | 1 |
+| **Total** | **79** |
 
-<details>
-<summary>Branch And Release Details</summary>
-
-### Branches
-
-- `addTechNote`
-  - Current live project baseline.
-  - Live Android version: `2.0.1` (`versionCode` `8`).
-  - Live iOS version: `2.0.1` (`CFBundleVersion` `8`).
-  - Adds technician notes for each created configuration.
-  - Includes code quality improvements.
-- `adminDashboard`
-  - Active version branch for admin dashboard updates.
-  - Android version: `2.0.2` (`versionCode` `9`).
-  - iOS version: `2.0.2` (`CFBundleVersion` `9`).
-  - Adds server-side sorting, date filtering, and configuration status filtering.
-  - Adds configuration status grouping.
-  - Adds created/updated elapsed-time indicators in configuration lists, cards, view dialogs, and edit dialogs.
-  - Keeps Users tab sorting/date filtering separate from configuration-only status controls.
-
-### Version Mapping
-
-- Flutter project version: `2.0.2+9`
-
-| Branch | Purpose | Android version | iOS version |
-| --- | --- | --- | --- |
-| `addTechNote` | Current live baseline | `2.0.1` / code `8` | `2.0.1` / build `8` |
-| `adminDashboard` | Active admin dashboard version | `2.0.2` / code `9` | `2.0.2` / build `9` |
-
-Android:
-
-- `versionName`: `2.0.2`
-- `versionCode`: `9`
-- Source: `android/app/build.gradle` uses `flutter.versionName` and `flutter.versionCode`.
-
-iOS:
-
-- `CFBundleShortVersionString`: `2.0.2`
-- `CFBundleVersion`: `9`
-- Source: `ios/Runner/Info.plist` uses `$(FLUTTER_BUILD_NAME)` and `$(FLUTTER_BUILD_NUMBER)`.
-
-</details>
-
-<details>
-<summary>Technology Stack</summary>
-
-- Flutter and Dart for the application UI.
-- Material widgets for screens, forms, navigation, dialogs, and dashboard controls.
-- `http` for REST API communication.
-- `shared_preferences` for storing session data such as `sessionID`, `username`, and `role`.
-- `provider` for shared UI/application state where used.
-- `dropdown_search` for searchable dropdown inputs.
-- `intl` for date/time formatting.
-- `flutter_svg` for SVG logo rendering.
-- `url_launcher` for external links.
-- `photo_view` for zoomable measurement/product images.
-- `password_strength_checker` for password validation UI.
-
-</details>
-
-<details>
-<summary>Project Structure</summary>
+Backend environments:
 
 ```text
-lib/
-  main.dart                         App entry point and route registration
-  env.dart                          Backend URL config and session observer
-  api.dart                          User, cart, draft, order, and configuration APIs
-  admin/admin_api.dart              Admin configuration/user API client
-  admin/UI/admin_dashboard.dart     Admin dashboard UI
-  LoginPage/UI/                     Login, create account, forgot password, reset password
-  dashboard/UI/                     User dashboard, configurations, drafts, profile
-  industrial/                       Industrial product selection and configuration flows
-  protien/                          Protein product selection and configuration flows
-  application/UI/                   Application page
-  shopping_cart.dart                Cart display and finalize flow
-  app_bar.dart                      Shared app bar
-  drawer.dart                       Shared navigation drawer
-  helper_widgets.dart               Shared form/configuration widgets
+Development:
+http://localhost:8080
+
+Production:
+https://configurator-67eol.sevalla.app
 ```
 
-Assets are declared in `pubspec.yaml` and stored mainly under:
+Production API root:
 
 ```text
-assets/
-  industrial/                       Product category and product images
-  Measurements/                     Measurement/detail images used by configurators
-  countries.json                    Country list for account creation
-  ML_Logo-w-tag-vector.svg          Main logo
-  WhiteML_Logo-w-tag-vector.svg     White logo
-  FGLM.png                          Protein product image
-  FGCO.png                          Protein product image
+https://configurator-67eol.sevalla.app/api
 ```
 
-Platform folders:
-
-- Android
-- iOS
-- macOS
-- Windows
-- Linux
-- Web
-
-</details>
-
-<details>
-<summary>Routing</summary>
-
-Routes are registered in `lib/main.dart`.
-
-| Route | Purpose |
-| --- | --- |
-| `/` | Landing/home screen |
-| `/login` | User login |
-| `/create_account` | Account registration |
-| `/forgot_password` | Forgot-password entry point |
-| `/dashboard` | User dashboard |
-| `/configurations` | User saved configurations |
-| `/drafts` | User saved drafts |
-| `/profile` | User profile |
-| `/admin` | Administrator dashboard |
-| `/protein_home` | Protein product family landing page |
-| `/FGLM` | FGLM configurator |
-| `/FGCO` | FGCO configurator |
-| `/application` | Application page |
-| `/industrial` | Industrial product family landing page |
-
-Navigation uses Flutter named routes and normal `Navigator` calls. A `SessionObserver` is registered as a navigator observer so session validity is checked during navigation.
-
-</details>
-
-<details>
-<summary>Backend And API</summary>
-
-The backend host is configured in `lib/env.dart`.
-
-```dart
-String get baseUrl {
-  return const String.fromEnvironment(
-    'API_HOST',
-    defaultValue: kReleaseMode ? productionBaseUrl : localBaseUrl,
-  );
-}
-
-String get apiBaseUrl => '$baseUrl/api';
-```
-
-Run with a specific backend:
-
-```bash
-flutter run --dart-define=API_HOST=http://localhost:8080
-flutter run --dart-define=API_HOST=https://configurator-67eol.sevalla.app
-```
-
-Release builds default to the production backend automatically on Android, iOS,
-and macOS. Pass `--dart-define=API_HOST=...` only when you want to override that
-default.
-
-Main API client classes:
-
-- `UserAPI` in `lib/api.dart`: sessions, account creation, profile updates, password reset, username checks, current-user info, and admin-role checks.
-- `FormAPI` in `lib/api.dart`: submits product configuration/order form data.
-- `CartAPI` in `lib/api.dart`: reads, updates, deletes, and restores cart orders.
-- `DraftAPI` in `lib/api.dart`: reads, saves, and deletes drafts.
-- `ConfigurationAPI` in `lib/api.dart`: reads and finalizes user configurations.
-- `AdminAPI` in `lib/admin/admin_api.dart`: admin-only configuration and user management.
-
-Admin API models:
-
-- `ConfigurationSummary`
-- `AdminConfigurations`
-- `AdminConfiguration`
-- `AdminUser`
-- `AdminListFilters`
-- `AdminApiException`
-
-</details>
-
-<details>
-<summary>Admin Dashboard</summary>
-
-The admin dashboard is available at:
+Admin route:
 
 ```text
 /admin
 ```
 
-Admin access is guarded by the locally stored `role` value and backend session validation. Non-admin users are redirected back to the normal dashboard.
+---
 
-Configuration features:
+# Architecture Migration
 
-- Load configurations with server-side sorting.
-- Filter configurations by created/updated date windows.
-- Filter configurations by status: `all`, `requested`, `pending`, `done`.
-- Group configurations by status.
-- View filtered summary counts.
-- View configuration details.
-- Edit configuration name and product configuration values.
-- Change configuration status.
-- Delete configurations.
-- Show created/updated elapsed-time information in table rows, cards, view dialogs, and edit dialogs.
-- Highlight pending duration.
-- Mobile-friendly card layout for narrow screens.
+## Previous Architecture
 
-Users features:
+Previously, most products had dedicated UI/configuration pages.
 
-- Load users with server-side sorting.
-- Filter users by created/updated date windows.
-- View user details.
-- Edit user profile data.
-- Change user role.
-- Reset user password.
-- Delete users.
-- Mobile-friendly card layout for narrow screens.
+Typical flow:
 
-</details>
+```text
+Catalog
+    ↓
+Product
+    ↓
+Dedicated Product Page
+    ↓
+Product-Specific Form Logic
+    ↓
+API
+```
 
-<details>
-<summary>User Flows</summary>
+Product folders commonly contained their own:
 
-### Authentication
+- Product page
+- Configuration page
+- Form fields
+- Validation
+- Dropdown handling
+- Measurement/image page
+- API submission logic
 
-1. User opens the app and navigates to login or account creation.
-2. Login calls `UserAPI.loginUser`.
-3. On success, the backend session ID and user metadata are saved in `SharedPreferences`.
-4. `SessionObserver` checks session validity during route changes.
-5. If the session is missing or expired, the user is redirected to `/login`.
-6. Logout calls `UserAPI.logoutUser` and clears local session data.
+This worked for individual products but resulted in repeated UI and
+configuration logic as the catalog grew.
 
-Stored local session keys:
+---
 
-- `sessionID`
-- `username`
-- `role`
+## Current Architecture
 
-### Account Creation
+The Product Configurator now uses a reusable data-driven architecture.
 
-1. User enters personal details, country, password, confirm password, and security PIN.
-2. The app validates required fields, username availability, password strength, confirm-password match, and security PIN.
-3. `UserAPI.makeAccount` sends the account payload to the backend.
-4. On success, the user is routed into the dashboard experience.
+```text
+Application Catalog
+        ↓
+ProductItem
+        ↓
+ProductDetailData
+        ↓
+ProductConfigurationForm
+        ↓
+ProductRepository
+        ↓
+ProductApiService
+        ↓
+ApiClient
+        ↓
+Backend API
+```
 
-### Password Reset
+Product-specific configuration is stored as data.
 
-1. User enters an email on the forgot-password screen.
-2. `UserAPI.forgotPassword` submits the email.
-3. User is routed to the security PIN screen.
-4. `UserAPI.validateSecurityPin` validates the email and PIN through `/api/email/forgot/verify-pin`.
-5. On success, the user is routed to the password reset screen.
-6. `UserAPI.resetPassword` updates the password through `/api/email/forgot`.
+Common configuration behavior is handled by the reusable
+`ProductConfigurationForm`.
 
-Password rules:
+Example:
 
-- At least 8 characters.
-- At least one uppercase letter.
-- At least one lowercase letter.
-- At least one number.
-- At least one special character.
-- Confirm password must match.
+```dart
+ProductItem(
+  title: 'Mighty Lube CC5 Chain Lubricator',
+  imagePath: AppAssets.mlcc5ChainLubricator,
+  detail: cc5ChainLubricatorData,
+)
+```
 
-### Cart, Draft, And Final Configuration
+The `detail` property connects the catalog product to its configuration
+definition.
 
-1. User selects a product family and product.
-2. User enters configuration data.
-3. Product configuration is added to the cart.
-4. User can edit cart quantity/configuration data where supported.
-5. User can save work as a draft.
-6. User can restore a draft later.
-7. User finalizes the cart as a named configuration.
-8. Finalized configurations are available from the dashboard.
+---
 
-</details>
+# Why the Architecture Was Changed
 
-<details>
-<summary>Product Configuration</summary>
+The previous architecture required separate configuration pages for many
+products.
 
-The app separates product configuration by business area:
+With a large catalog this caused:
 
-- Industrial products under `lib/industrial/`.
-- Protein products under `lib/protien/`.
+- Repeated form code
+- Repeated validation
+- Repeated dropdown logic
+- Product-specific navigation code
+- More files to maintain
+- More changes when adding common functionality
 
-Industrial flows are organized by product family and product type. Each product folder usually contains:
+The new architecture separates:
 
-- A home or product page.
-- A configuration page.
-- An image/measurement page.
+```text
+Product Data
+     ↓
+What the product requires
 
-Configuration pages collect product-specific values and add them to the cart through API/state flows. Measurement images are loaded from `assets/Measurements/` and product/category images are loaded from `assets/industrial/`.
+Common Form
+     ↓
+How the configuration is displayed and processed
+```
 
-</details>
+This allows common functionality to be implemented once and reused across
+the product catalog.
 
-<details>
-<summary>UI And Responsiveness</summary>
+---
 
-The app uses Material widgets and shared UI helpers. Dashboard and admin layouts use responsive checks based on `MediaQuery` and `LayoutBuilder`.
+# Product Catalog
 
-Current responsive approach:
+The application contains three main product/application groups:
 
-- Wide screens use table-style admin views where appropriate.
-- Mobile screens use stacked cards to avoid horizontal scrolling.
-- View/edit dialogs use constrained max widths and scrollable content.
-- Form fields wrap into compact groups on wider screens and become full-width on mobile.
+```text
+Application Catalog
+│
+├── Industrial
+├── Protein
+└── Technician
+```
 
-</details>
+Current total:
 
-<details>
-<summary>Setup, Analysis, And Release Build</summary>
+```text
+Industrial     76
+Protein         2
+Technician      1
+-----------------
+Total          79
+```
 
-Install Flutter, then install project dependencies:
+---
+
+# Industrial Catalog
+
+Industrial contains:
+
+```text
+11 Main Categories
+76 Configurable Products
+```
+
+The current main categories are:
+
+1. CC5 Chain
+2. 9125/9126 Caterpillar Drive
+3. Enclosed Track Inverted Power Only and PF
+4. Enclosed Track Overhead Power Only and P&F
+5. Flat Top
+6. Free Carrier
+7. C Channel Overhead Or Inverted
+8. In Floor Tow Line
+9. In-Board Roller Chain
+10. Over Head Power Rail L-Beam
+11. Power and Free Overhead Or Inverted
+
+Industrial products can use hierarchical navigation.
+
+Typical structure:
+
+```text
+Industrial
+    ↓
+Main Category
+    ↓
+Solution Type
+    ↓
+Product
+```
+
+Common solution types include:
+
+```text
+Conveyor Cleaning Solutions
+Conveyor Greaser Systems
+Conveyor Lubrication Systems
+Conveyor Monitor Systems
+```
+
+Some Industrial categories also contain direct products.
+
+---
+
+# Protein Catalog
+
+Protein currently contains two direct configurable products:
+
+```text
+Protein
+│
+├── Food Grade Cleaner OP-8SS
+│
+└── Food Grade Lubrication and Monitor
+```
+
+Unlike most Industrial products, there is currently no intermediate
+category/sub-category level.
+
+Both products use the common Product Configurator architecture.
+
+---
+
+# Technician
+
+Technician currently contains one configurable item:
+
+```text
+Technician
+│
+└── Technician Note
+```
+
+---
+
+# Product Data Architecture
+
+Product-specific configuration definitions are stored in data files.
+
+Conceptually:
+
+```text
+features/
+└── products/
+    └── data/
+        ├── industrial_catalog.dart
+        ├── protein_catalog.dart
+        │
+        └── product_details/
+            ├── Industrial(76)/
+            └── Protein/
+```
+
+Each product data file can define:
+
+- Product information
+- Configuration sections
+- Text fields
+- Dropdown fields
+- Dropdown options
+- Required fields
+- Optional fields
+- Conditional fields
+- Dependent fields
+- Reference images
+- Measurement images
+- Image-upload requirements
+
+The product data describes **what** needs to be collected.
+
+`ProductConfigurationForm` controls **how** the form behaves.
+
+---
+
+# Reusable Product Configuration Form
+
+The common:
+
+```text
+ProductConfigurationForm
+```
+
+handles shared configuration functionality.
+
+It currently supports:
+
+- Dynamic form generation
+- Text fields
+- Dropdown fields
+- Required validation
+- Optional fields
+- Conditional fields
+- Dependent fields
+- `Other` option handling
+- Custom values
+- Quantity selection
+- Reference images
+- Measurement images
+- Customer image selection
+- Image preview
+- Image removal
+- Image upload
+- Configuration submission
+
+This functionality no longer needs to be reimplemented separately for
+every product.
+
+---
+
+# Required Field Validation
+
+Required fields are defined by product data.
+
+Example:
+
+```dart
+ProductFieldData(
+  key: 'conveyorName',
+  label: 'Conveyor Name',
+  type: ProductFieldType.text,
+  required: true,
+)
+```
+
+The common form validates visible required fields before the configuration
+is submitted.
+
+---
+
+# Conditional Fields
+
+Fields can depend on another field.
+
+Example:
+
+```text
+Parent Question
+      ↓
+Specific Selection
+      ↓
+Additional Field Appears
+```
+
+When the controlling value changes and a dependent field is no longer
+applicable, its hidden value is cleared.
+
+This prevents stale hidden configuration data from being submitted.
+
+---
+
+# Other Option Handling
+
+Dropdowns can support:
+
+```text
+Other
+```
+
+When `Other` is selected, the user can enter a custom value.
+
+Example:
+
+```text
+Manufacturer
+
+Daifuku
+Frost
+Rapid
+Other
+```
+
+If the user enters:
+
+```text
+Custom Manufacturer
+```
+
+the submitted value becomes:
+
+```text
+Custom Manufacturer
+```
+
+instead of the literal value:
+
+```text
+Other
+```
+
+Backend validation must therefore allow custom values for fields that
+support `Other`.
+
+---
+
+# Quantity
+
+Quantity is handled by the common Product Configurator.
+
+Minimum quantity:
+
+```text
+1
+```
+
+The quantity is submitted together with the product configuration.
+
+---
+
+# Static Product / Measurement Images
+
+Static images are stored as Flutter assets.
+
+They are used for:
+
+- Product images
+- Product-category images
+- Reference images
+- Measurement diagrams
+
+Reference and measurement images can be previewed from the configuration
+form.
+
+These images are separate from customer-uploaded images.
+
+---
+
+# Customer Image Upload
+
+Customer image upload support has been added to applicable configuration
+fields.
+
+Flow:
+
+```text
+Select Image
+    ↓
+Preview / Remove
+    ↓
+Upload Image
+    ↓
+Receive Permanent File Metadata
+    ↓
+Add Metadata to Configuration
+    ↓
+Submit Configuration
+```
+
+The application does **not** store local device image paths.
+
+For example, local paths such as:
+
+```text
+/data/user/.../image.jpg
+```
+
+must not be persisted.
+
+Instead, configuration data stores permanent uploaded-file metadata.
+
+Example:
+
+```json
+{
+  "objectKey": "product-configurations/.../image.jpg",
+  "originalName": "factory.jpg",
+  "contentType": "image/jpeg",
+  "size": 123456
+}
+```
+
+---
+
+# Image Upload Architecture
+
+Image upload is separated from the product configuration UI.
+
+```text
+ProductConfigurationForm
+        ↓
+ImageUploadService
+        ↓
+ApiClient.postMultipart()
+        ↓
+Backend Upload API
+        ↓
+Object Storage
+```
+
+The multipart request sends:
+
+```text
+image
+projectKey
+```
+
+The backend uses the authenticated user and project/product information
+to organize the uploaded object.
+
+---
+
+# Image Upload Failure Handling
+
+If an image upload fails, the user can choose:
+
+```text
+Try Again
+```
+
+or:
+
+```text
+Add Without Image
+```
+
+Retry only retries the failed image.
+
+Previously successful image uploads are preserved and are not uploaded
+again unnecessarily.
+
+---
+
+# Supported Image Types
+
+Multipart image upload supports:
+
+```text
+JPG / JPEG
+PNG
+WEBP
+```
+
+Expected MIME types:
+
+```text
+.jpg / .jpeg → image/jpeg
+.png         → image/png
+.webp        → image/webp
+```
+
+The frontend explicitly sends the image MIME type with the multipart
+request.
+
+---
+
+# Product Configuration Flow
+
+The current product flow is:
+
+```text
+Open Application Catalog
+        ↓
+Select Application
+        ↓
+Select Category / Product
+        ↓
+Load ProductDetailData
+        ↓
+Open ProductConfigurationForm
+        ↓
+Generate Dynamic Fields
+        ↓
+Enter Configuration
+        ↓
+Validate Required Fields
+        ↓
+Upload Selected Images
+        ↓
+Collect Configuration Data
+        ↓
+Select Quantity
+        ↓
+ProductRepository
+        ↓
+ProductApiService
+        ↓
+Backend
+```
+
+---
+
+# API Architecture
+
+API/networking responsibilities are separated from product UI.
+
+```text
+UI
+ ↓
+Repository
+ ↓
+API Service
+ ↓
+ApiClient
+ ↓
+Backend
+```
+
+The product ID is used to route the configuration to the corresponding
+backend API.
+
+This keeps HTTP implementation outside product data definitions and
+configuration UI.
+
+---
+
+# API Debug Logging
+
+Detailed API logging is available during development/testing.
+
+Logging can include:
+
+- HTTP method
+- URL
+- Sanitized headers
+- Request data
+- Multipart information
+- Response status
+- Response body
+- Request duration
+- Errors
+
+Sensitive information is masked/excluded from detailed logs.
+
+Examples:
+
+```text
+Authorization
+Token
+Session
+Password
+Secret
+```
+
+Production should not rely on detailed development logging.
+
+---
+
+# Authentication
+
+The application supports:
+
+- Login
+- Account creation
+- Logout
+- Forgot password
+- Security PIN validation
+- Password reset
+- Session validation
+- User role handling
+
+Session information is stored locally where required and backend session
+validation is used during authenticated application flows.
+
+---
+
+# Account Creation
+
+Account creation includes validation for user information and password
+requirements.
+
+Password rules include:
+
+- Minimum 8 characters
+- Uppercase letter
+- Lowercase letter
+- Number
+- Special character
+- Confirm password match
+
+---
+
+# Cart Flow
+
+Configured products are added to the common configurator/cart workflow.
+
+```text
+Product
+   ↓
+Configuration
+   ↓
+Add to Configurator
+   ↓
+Cart
+   ↓
+Finalize Configuration
+```
+
+Quantity and product configuration data are maintained as part of the
+configuration item.
+
+---
+
+# Draft Functionality
+
+Users can save unfinished work as drafts.
+
+Drafts support:
+
+- Load
+- View
+- Restore
+- Delete
+
+The newer draft structure uses concepts including:
+
+```text
+draftID
+items
+quantity
+createdAt
+```
+
+Draft restoration returns the user to the configuration/cart workflow.
+
+---
+
+# Final Configuration
+
+Users can finalize configured cart items into saved configurations.
+
+Typical user flow:
+
+```text
+Select Product
+      ↓
+Configure Product
+      ↓
+Add to Cart
+      ↓
+Continue Configuring
+      ↓
+Save Draft
+      OR
+Finalize
+      ↓
+Saved Configuration
+```
+
+---
+
+# Admin Dashboard
+
+The application includes an Admin Dashboard for configuration and user
+management.
+
+Admin route:
+
+```text
+/admin
+```
+
+Admin access is restricted to authorized Admin users.
+
+---
+
+# Admin Configuration Table
+
+The updated configuration table focuses on:
+
+```text
+Configuration Name
+
+Product
+
+Quantity
+
+Configuration Dates
+
+Completion Date
+
+Admin Status
+
+Actions
+```
+
+This keeps the table focused on the most useful configuration information.
+
+---
+
+# Configuration Dates
+
+Configuration lifecycle dates are grouped together.
+
+The Configuration Dates section contains:
+
+```text
+Created
+Updated
+Submitted
+```
+
+Completion Date is displayed separately.
+
+---
+
+# Admin Configuration Actions
+
+Admin actions include:
+
+```text
+View
+Edit
+Delete
+```
+
+The View action opens detailed configuration information.
+
+---
+
+# Admin Workflow
+
+Configuration processing has a separate Admin workflow.
+
+Statuses:
+
+```text
+Requested
+Pending
+Done
+```
+
+Admin can move configurations between these statuses.
+
+This workflow is separate from the normal configuration lifecycle status.
+
+---
+
+# Admin Workflow Timestamps
+
+Admin workflow transitions maintain timestamps such as:
+
+```text
+adminRequestedAt
+adminStartedAt
+adminCompletedAt
+```
+
+Conceptually:
+
+```text
+Requested
+    ↓
+adminRequestedAt
+
+Pending
+    ↓
+adminStartedAt
+
+Done
+    ↓
+adminCompletedAt
+```
+
+---
+
+# Pending Duration
+
+Pending duration starts from the actual time the configuration enters:
+
+```text
+Pending
+```
+
+The timer uses:
+
+```text
+adminStartedAt
+```
+
+It does not use the original configuration creation time.
+
+If a configuration leaves Pending and later returns to Pending, a new
+Pending timing period starts.
+
+---
+
+# Admin Image Support
+
+The Admin Dashboard detects customer-uploaded image metadata stored inside
+configuration data.
+
+When images are available, Admin can see an attached-image indicator/count.
+
+Example:
+
+```text
+Configuration Name          Images
+
+Conveyor Configuration      📷 2
+```
+
+Admin can open the images directly from the configuration interface.
+
+---
+
+# Admin Image Preview
+
+Admin image functionality supports:
+
+- Attached-image count
+- Image gallery
+- Thumbnail
+- Larger image preview
+
+Uploaded objects are private.
+
+Permanent public image URLs are not stored.
+
+When an Admin needs to view an image:
+
+```text
+Admin
+   ↓
+Request Image
+   ↓
+Backend
+   ↓
+Temporary Signed URL
+   ↓
+Display Image
+```
+
+Signed URLs are temporary and should never be stored in configuration
+data.
+
+---
+
+# Admin User Management
+
+Admin user functionality includes:
+
+- Load users
+- Search/filter users where supported
+- View user information
+- Edit user information
+- Change role
+- Reset password
+- Delete user
+
+Admin layouts support desktop/table and smaller-screen presentation where
+applicable.
+
+---
+
+# Old vs New Architecture
+
+| Previous Architecture | Current Architecture |
+| --- | --- |
+| Dedicated product pages | Common `ProductConfigurationForm` |
+| Product-specific forms | Data-driven forms |
+| Repeated field UI | Shared field rendering |
+| Repeated validation | Centralized validation |
+| Product-specific navigation | `ProductItem.detail` |
+| Product data mixed with UI | Product data separated from UI |
+| Common changes required many files | Common behavior changed centrally |
+| No shared customer image workflow | Common image-upload workflow |
+| API logic closer to individual flows | Repository/API service architecture |
+| Harder to maintain large catalog | Architecture designed for 79 products |
+
+---
+
+# Current Project Structure
+
+The migrated frontend is conceptually organized as:
+
+```text
+lib/
+│
+├── main.dart
+│
+├── core/
+│   │
+│   ├── constants/
+│   │   └── app_assets.dart
+│   │
+│   └── network/
+│       ├── api_client.dart
+│       ├── api_endpoints.dart
+│       ├── api_response.dart
+│       │
+│       └── Services/
+│           └── image_upload_service.dart
+│
+├── features/
+│   │
+│   ├── products/
+│   │   │
+│   │   ├── data/
+│   │   │   ├── industrial_catalog.dart
+│   │   │   ├── protein_catalog.dart
+│   │   │   │
+│   │   │   └── product_details/
+│   │   │       ├── Industrial(76)/
+│   │   │       └── Protein/
+│   │   │
+│   │   └── models/
+│   │       └── product_item.dart
+│   │
+│   ├── product_configurator/
+│   │   │
+│   │   └── screens/
+│   │       └── product_configuration_form.dart
+│   │
+│   ├── cart/
+│   ├── admin/
+│   └── ...
+│
+└── ...
+```
+
+The important architectural separation is:
+
+```text
+Catalog
+    → Navigation / Product Hierarchy
+
+ProductDetailData
+    → Product-Specific Fields
+
+ProductConfigurationForm
+    → Common Form UI / Behavior
+
+Repository
+    → Data Access
+
+API Service
+    → Product/API Operations
+
+ApiClient
+    → HTTP / Multipart / Logging
+
+Backend
+    → Validation / Persistence / Storage
+```
+
+---
+
+# Adding a New Product
+
+For most new products:
+
+```text
+1. Add product to the correct catalog
+
+2. Create ProductDetailData
+
+3. Define configuration sections
+
+4. Define fields
+
+5. Define required/optional behavior
+
+6. Define conditional fields if required
+
+7. Connect using ProductItem.detail
+
+8. Add/verify product ID
+
+9. Add/verify API mapping
+
+10. Make sure backend field names match frontend keys
+
+11. Test submission
+```
+
+Do **not** create another dedicated configuration page when the requirement
+can be handled by the reusable configurator.
+
+---
+
+# Updating an Existing Product
+
+Most product changes should only require updating its data definition.
+
+Examples:
+
+```text
+Add Field
+Remove Field
+Change Label
+Change Dropdown Options
+Change Required Status
+Add Conditional Field
+Add Reference Image
+Add Measurement Image
+Add Customer Image Requirement
+```
+
+Change `ProductConfigurationForm` only when the behavior should be shared
+or supported across products.
+
+---
+
+# Frontend / Backend Field Contract
+
+Frontend field keys and backend model fields must remain aligned.
+
+For example:
+
+Frontend:
+
+```dart
+key: 'wheelOpenType'
+```
+
+Backend:
+
+```javascript
+wheelOpenType
+```
+
+Avoid using different names for the same field between frontend and
+backend.
+
+---
+
+# Backend Validation for Other Values
+
+When a frontend dropdown contains:
+
+```text
+Other
+```
+
+the frontend can replace `Other` with arbitrary user-entered text.
+
+Therefore, the backend should not use a restrictive enum for that field
+unless the architecture explicitly stores custom values separately.
+
+Do not create additional fields such as:
+
+```text
+otherManufacturer
+otherChainSize
+```
+
+unless the frontend actually sends those fields.
+
+---
+
+# Image Storage Rules
+
+Always follow these rules:
+
+```text
+DO NOT store local device image paths.
+
+DO NOT persist temporary signed URLs.
+
+STORE permanent objectKey and image metadata.
+
+GENERATE signed URLs only when viewing private images.
+
+KEEP customer uploads separate from static Flutter assets.
+```
+
+---
+
+# Development Setup
+
+Install Flutter dependencies:
 
 ```bash
 flutter pub get
@@ -336,14 +1201,6 @@ Run locally:
 
 ```bash
 flutter run
-```
-
-Run for specific targets:
-
-```bash
-flutter run -d chrome
-flutter run -d macos
-flutter run -d android
 ```
 
 Run static analysis:
@@ -358,36 +1215,158 @@ Run tests:
 flutter test
 ```
 
-Android release signing reads `key.properties` from:
+---
+
+# Local Backend Development
+
+The local backend normally runs on:
 
 ```text
-android/app/key.properties
+http://localhost:8080
 ```
 
-Expected properties:
+For Android development using ADB reverse:
 
-```properties
-keyAlias=...
-keyPassword=...
-storeFile=...
-storePassword=...
+```bash
+adb reverse tcp:8080 tcp:8080
 ```
 
-Build a release APK:
+When multiple devices are connected:
+
+```bash
+adb -s <device-id> reverse tcp:8080 tcp:8080
+```
+
+The Flutter app can then use:
+
+```text
+http://localhost:8080
+```
+
+for the backend on the forwarded Android device.
+
+---
+
+# Release Backend
+
+Production backend:
+
+```text
+https://configurator-67eol.sevalla.app
+```
+
+Production API:
+
+```text
+https://configurator-67eol.sevalla.app/api
+```
+
+Environment-specific URLs should remain centralized in the application
+environment/network configuration.
+
+Do not hard-code production URLs inside product configuration files.
+
+---
+
+# Build Commands
+
+Android APK:
 
 ```bash
 flutter build apk --release
 ```
 
-</details>
+Android App Bundle:
 
-<details>
-<summary>Platform Notes</summary>
+```bash
+flutter build appbundle --release
+```
 
-- macOS builds require `com.apple.security.network.client` for outbound API access.
-- Web assets and splash/icon files are present under `web/`.
-- Native platform folders are included for Android, iOS, macOS, Linux, Windows, and web.
-- Android release signing is configured in `android/app/build.gradle`.
-- iOS and macOS native project files are included under `ios/` and `macos/`.
+Always verify the current version/build number before creating a release.
 
-</details>
+---
+
+# Security Notes
+
+Never commit sensitive credentials to Git.
+
+Do not commit:
+
+```text
+API Secrets
+Access Tokens
+Object Storage Secret Keys
+Database Passwords
+Private Certificates
+Production .env Files
+Signing Passwords
+```
+
+Private repository access does not replace proper secret management.
+
+---
+
+# Notes for the Next Engineer
+
+When working on this project:
+
+1. Keep product-specific configuration inside product data files.
+2. Keep shared form behavior inside `ProductConfigurationForm`.
+3. Avoid creating duplicate product-specific screens.
+4. Keep frontend and backend field names synchronized.
+5. Keep API/networking logic outside product data files.
+6. Keep required validation synchronized with backend validation.
+7. Remember that `Other` can become custom user text.
+8. Never persist local image paths.
+9. Never persist temporary signed URLs.
+10. Keep static assets and customer uploads separate.
+11. Keep configuration lifecycle status and Admin workflow status separate.
+12. Add common functionality centrally whenever possible.
+
+---
+
+# Current Migration Result
+
+The frontend has moved from a collection of product-specific configuration
+pages to a reusable Product Configurator architecture supporting:
+
+```text
+76 Industrial Products
+ 2 Protein Products
+ 1 Technician Item
+----------------------
+79 Configurable Items
+```
+
+The current architecture now provides:
+
+- Data-driven product configuration
+- Reusable product forms
+- Centralized validation
+- Conditional fields
+- Dependent fields
+- `Other` custom-value handling
+- Quantity management
+- Product/reference images
+- Measurement images
+- Customer image uploads
+- Upload retry/skip handling
+- Permanent image metadata
+- Multipart API support
+- Repository/API service separation
+- Development API logging
+- Cart integration
+- Draft management
+- Final configurations
+- Admin configuration management
+- Admin user management
+- Requested / Pending / Done workflow
+- Admin workflow timestamps
+- Pending-duration tracking
+- Customer-image indicators
+- Private image access through signed URLs
+
+The main development principle going forward is:
+
+> **Product-specific data belongs in product data files. Common behavior
+> belongs in the reusable configuration architecture.**
