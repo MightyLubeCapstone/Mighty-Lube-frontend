@@ -5,7 +5,7 @@ class AppAssets {
   // APPLICATION
   // =========================================================
 
-  static const String applicationIndustrial = 'assets/Industrial/Title.png';
+  static const String applicationIndustrial = 'assets/industrial/Title.png';
   static const String applicationProtein = 'assets/Protein/title.png';
   static const String applicationTechnician = 'assets/Technician.png';
 
@@ -16,7 +16,7 @@ class AppAssets {
   static const String cc5Chain = 'assets/industrial/CC5 Chain (2)/title.png';
   static const String caterpillarDrive = 'assets/industrial/Caterpillar Drive ( 3 )/Title.png';
   static const String enclosedTrackInverted = 'assets/industrial/Enclosed Track Inverted Power Only and P&F (8)/Title.png';
-  static const String enclosedTrackOverhead = 'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/Title.png';
+  static const String enclosedTrackOverhead = 'assets/industrial/Enclosed Track Overhead Power Only and P&F (10)/title.png';
   static const String flatTop = 'assets/industrial/Flat Top (4)/Title.png';
   static const String freeCarrier = 'assets/industrial/Free Carrier (2)/Title.png';
   static const String cChannelOverhead = 'assets/industrial/FreeRail.png';
@@ -161,8 +161,8 @@ class AppAssets {
   static const String cChannelOversprayEliminatorBrush = 'assets/industrial/C Channel Overhead Or Inverted(6)/CCS/oeb.png';
 
   static const String cChannelGreaserSystems = 'assets/industrial/C Channel Overhead Or Inverted(6)/CGS/Title.png';
-  static const String cChannelFr314 = 'assets/industrial/C Channel Overhead Or Inverted(6)/CGS/title.png';
-  static const String cChannelFr317 = 'assets/industrial/C Channel Overhead Or Inverted(6)/CGS/title.png';
+  static const String cChannelFr314 = 'assets/industrial/C Channel Overhead Or Inverted(6)/CGS/314/title.png';
+  static const String cChannelFr317 = 'assets/industrial/C Channel Overhead Or Inverted(6)/CGS/317/title.png';
 
   static const String cChannelLubricationSystems = 'assets/industrial/C Channel Overhead Or Inverted(6)/CLS/Title.png';
   static const String cChannel9000L = 'assets/industrial/C Channel Overhead Or Inverted(6)/CLS/9000/title.png';
@@ -267,7 +267,7 @@ class AppAssets {
   static const String OHP_CSS_OP8NP = 'assets/industrial/OHP(20)/CCS/OP8NP.png';
   static const String OHP_CSS_OP13 = 'assets/industrial/OHP(20)/CCS/OP13.png';
   static const String OHP_CSS_OP55 = 'assets/industrial/OHP(20)/CCS/OP55.png';
-  static const String OHP_CSS_YCB = 'assets/industrial/OHP(20)/CCS/OP55.png';
+  static const String OHP_CSS_YCB = 'assets/industrial/OHP(20)/CCS/YCB.png';
 
   // OHP - CCS -  MEASUREMENT iMAGES
   static const String OHP_CSS_M_A = 'assets/industrial/OHP(20)/CCS/Mesurment/A.png';

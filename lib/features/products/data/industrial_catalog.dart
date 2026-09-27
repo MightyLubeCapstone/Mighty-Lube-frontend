@@ -553,7 +553,7 @@ final List<ProductItem> industrialCatalog = [
 
           ProductItem(
             title: 'OP-13 Sanitary Hook Cleaner',
-              imagePath: AppAssets.OHP_CSS_OEB,
+              imagePath: AppAssets.OHP_CSS_OP13,
             detail: overheadOp13SanitaryHookCleanerData
           ),
 

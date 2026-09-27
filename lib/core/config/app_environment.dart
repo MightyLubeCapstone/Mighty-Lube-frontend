@@ -12,7 +12,7 @@ class AppEnvironmentConfig {
   // Change only this value to switch API server.
   // =========================================================
 
-  static const AppEnvironment environment = AppEnvironment.development;
+  static const AppEnvironment environment = AppEnvironment.production;
 
   // =========================================================
   // TESTING / DEBUG LOGGING
@@ -34,7 +34,7 @@ class AppEnvironmentConfig {
   // Keep this false for production release builds.
   // =========================================================
 
-  static const bool testingMode = true;
+  static const bool testingMode = false;
 
   // =========================================================
   // BASE URLS
@@ -64,5 +64,4 @@ class AppEnvironmentConfig {
 
   static bool get isDevelopment => environment == AppEnvironment.development;
   static bool get isProduction => environment == AppEnvironment.production;
-  static bool get isTestingMode => testingMode;
 }

@@ -1,13 +1,11 @@
 name: mighty_lube
 description: "A new Flutter project."
 publish_to: 'none'
-# NOTE:
-# iOS App Store already has version 2.0.0, so both platforms are being
-# moved to 2.0.1 to keep Android and iOS versions aligned.
-# The current Android production version may still be older until the next
-# Android release version 1.0.0 and build number 7
-version: 2.0.2+9
 
+  #Major application changes in this release.
+  #Version updated from 2.0.1+9 to 3.0.1+12.
+
+version: 3.0.1+12
 environment:
   sdk: ^3.5.2
 

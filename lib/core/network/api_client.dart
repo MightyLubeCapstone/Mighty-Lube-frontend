@@ -42,9 +42,7 @@ class ApiClient {
     if (requiresAuth) {
       final prefs = await SharedPreferences.getInstance();
 
-      final sessionID = prefs.getString(
-        'sessionID',
-      );
+      final sessionID = prefs.getString('sessionID',);
 
       if (sessionID != null && sessionID.trim().isNotEmpty) {
         requestHeaders['Authorization'] = 'Bearer ${sessionID.trim()}';
@@ -657,6 +655,7 @@ class ApiClient {
     required Map<String, String> headers,
     dynamic body,
   }) {
+    // API logging disabled
     if (!AppEnvironmentConfig.testingMode) {
       return;
     }
@@ -710,6 +709,8 @@ class ApiClient {
     );
   }
 
+
+
   static void _logResponse({
     required String method,
     required String url,
@@ -717,6 +718,7 @@ class ApiClient {
     required String responseBody,
     required Duration duration,
   }) {
+    // API response logging disabled
     if (!AppEnvironmentConfig.testingMode) {
       return;
     }
@@ -924,9 +926,7 @@ class ApiClient {
     }
 
     try {
-      const encoder = JsonEncoder.withIndent(
-        '  ',
-      );
+      const encoder = JsonEncoder.withIndent('  ',);
 
       return encoder.convert(
         data,

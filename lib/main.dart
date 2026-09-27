@@ -94,11 +94,6 @@ import 'features/configurations/screens/configurations.dart';
 import 'features/cart/screens/drafts.dart';
 import 'features/profile/screens/profile.dart';
 
-// protien pages
-import 'protien/FGLM/UI/FGLM.dart';
-import 'protien/FGCO/UI/FGCO.dart';
-import 'protien/protein_home.dart';
-
 // application pages
 
 // admin pages

@@ -16,7 +16,6 @@ class ApiResponseHandler {
     T Function(dynamic data)? parser,
   }) {
     final dynamic decodedBody = _decodeBody(responseBody);
-
     dynamic rawData = decodedBody;
 
     String? message;
@@ -46,10 +45,7 @@ class ApiResponseHandler {
       // parser has been supplied.
       // =====================================================
 
-      if (
-      parser == null &&
-          decodedBody.containsKey('data')
-      ) {
+      if (parser == null && decodedBody.containsKey('data')) {
         rawData = decodedBody['data'];
       }
     }
@@ -85,9 +81,7 @@ class ApiResponseHandler {
     required dynamic responseBody,
   }) {
     final dynamic decodedBody = _decodeBody(responseBody);
-
     String message = _defaultMessage(statusCode);
-
     dynamic data;
 
     if (decodedBody is Map<String, dynamic>) {
@@ -108,8 +102,7 @@ class ApiResponseHandler {
       if (decodedBody.containsKey('data')) {
         data = decodedBody['data'];
       }
-    } else if (decodedBody is String &&
-        decodedBody.trim().isNotEmpty) {
+    } else if (decodedBody is String && decodedBody.trim().isNotEmpty) {
       message = decodedBody.trim();
     }
 
@@ -175,28 +168,16 @@ class ApiResponseHandler {
   // =========================================================
 
   static String? _stringifyErrorMessage(dynamic message) {
-    if (message is String &&
-        message.trim().isNotEmpty) {
+    if (message is String && message.trim().isNotEmpty) {
       return message;
     }
 
-    if (message is List &&
-        message.isNotEmpty) {
-      return message
-          .map(
-            (item) => item.toString(),
-      )
-          .join('\n');
+    if (message is List && message.isNotEmpty) {
+      return message.map((item) => item.toString(),).join('\n');
     }
 
-    if (message is Map &&
-        message.isNotEmpty) {
-      return message.entries
-          .map(
-            (entry) =>
-        '${entry.key}: ${entry.value}',
-      )
-          .join('\n');
+    if (message is Map && message.isNotEmpty) {
+      return message.entries.map((entry) => '${entry.key}: ${entry.value}',).join('\n');
     }
 
     if (message != null) {
