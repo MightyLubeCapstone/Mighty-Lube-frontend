@@ -1,39 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../core/network/api_response.dart';
+import '../../../core/widget/product_configuration_form.dart';
+import '../../products/service/product_catalog_resolver.dart';
 
 import '../models/admin_models.dart';
 import '../repositories/admin_repository.dart';
 
+import '../widgets/common/admin_filter_bar.dart';
+import '../widgets/common/admin_summary_cards.dart';
+
+import '../widgets/configuration/configuration_dialogs.dart';
+import '../widgets/configuration/configuration_image_gallery.dart';
+import '../widgets/configuration/configuration_list.dart';
+
+import '../widgets/users/user_cards.dart';
+import '../widgets/users/user_dialogs.dart';
+import '../widgets/users/user_table.dart';
+
 class AdminDashboardPage extends StatefulWidget {
-  const AdminDashboardPage({super.key});
+  const AdminDashboardPage({
+    super.key,
+  });
 
   @override
-  State<AdminDashboardPage> createState() => _AdminDashboardPageState();
+  State<AdminDashboardPage> createState() =>
+      _AdminDashboardPageState();
 }
 
-class _AdminDashboardPageState extends State<AdminDashboardPage> {
-  static const navy = Color(0xFF17223B);
+class _AdminDashboardPageState
+    extends State<AdminDashboardPage> {
+  static const Color navy =
+  Color(0xFF17223B);
 
-  static const background = Color(0xFFF4F7FB);
+  static const Color background =
+  Color(0xFFF4F7FB);
 
-  static const statuses = [
-    'requested',
-    'pending',
-    'done',
-  ];
-
-  static const roles = [
+  static const List<String> roles = [
     'user',
     'admin',
   ];
 
-  ConfigurationSummary _summary = const ConfigurationSummary();
+  // =========================================================
+  // DATA
+  // =========================================================
+
+  AdminConfigurationSummary _summary =
+  const AdminConfigurationSummary();
 
   List<AdminConfiguration> _configurations = [];
 
   List<AdminUser> _users = [];
+
+  // =========================================================
+  // LOADING / ERROR
+  // =========================================================
 
   bool _loadingConfigurations = true;
 
@@ -43,6 +66,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   String? _userError;
 
+  // =========================================================
+  // UPDATE / DELETE STATE
+  // =========================================================
+
   final Set<String> _updatingConfigurations = {};
 
   final Set<String> _updatingUsers = {};
@@ -51,13 +78,101 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   final Set<String> _deletingUsers = {};
 
-  AdminListFilters _configurationFilters = const AdminListFilters(
+  // =========================================================
+  // FILTERS
+  // =========================================================
+
+  AdminConfigurationFilters _configurationFilters =
+  const AdminConfigurationFilters(
     adminWorkflowStatus: 'all',
   );
 
-  AdminListFilters _userFilters = const AdminListFilters();
+  AdminConfigurationFilters _userFilters =
+  const AdminConfigurationFilters();
 
   bool _groupConfigurationsByStatus = false;
+
+  // Selected person for the configuration list.
+  // null = All People.
+  String? _selectedConfigurationUserID;
+
+  Map<String, String> get _configurationPeople {
+    final configurationUserIDs = _configurations
+        .map((item) => item.userID)
+        .where((id) => id.trim().isNotEmpty)
+        .toSet();
+
+    final people = <String, String>{};
+
+    // Prefer the full user record when it is available.
+    for (final user in _users) {
+      if (!configurationUserIDs.contains(user.userID)) {
+        continue;
+      }
+
+      final name = user.name.trim();
+
+      people[user.userID] = name.isNotEmpty
+          ? name
+          : user.username.trim().isNotEmpty
+          ? user.username.trim()
+          : user.userID;
+    }
+
+    // Fallback for configurations whose user is not present in _users.
+    for (final configuration in _configurations) {
+      if (configuration.userID.trim().isEmpty ||
+          people.containsKey(configuration.userID)) {
+        continue;
+      }
+
+      final createdBy = configuration.createdBy;
+
+      final firstName =
+          createdBy?['firstName']?.toString().trim() ?? '';
+      final lastName =
+          createdBy?['lastName']?.toString().trim() ?? '';
+      final username =
+          createdBy?['username']?.toString().trim() ?? '';
+
+      final fullName = '$firstName $lastName'.trim();
+
+      people[configuration.userID] = fullName.isNotEmpty
+          ? fullName
+          : username.isNotEmpty
+          ? username
+          : configuration.userID;
+    }
+
+    final entries = people.entries.toList()
+      ..sort(
+            (a, b) => a.value
+            .toLowerCase()
+            .compareTo(b.value.toLowerCase()),
+      );
+
+    return {
+      for (final entry in entries) entry.key: entry.value,
+    };
+  }
+
+  List<AdminConfiguration> get _visibleConfigurations {
+    final selectedUserID = _selectedConfigurationUserID;
+
+    if (selectedUserID == null || selectedUserID.isEmpty) {
+      return _configurations;
+    }
+
+    return _configurations
+        .where(
+          (item) => item.userID == selectedUserID,
+    )
+        .toList();
+  }
+
+  // =========================================================
+  // INIT
+  // =========================================================
 
   @override
   void initState() {
@@ -71,16 +186,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // =========================================================
 
   Future<void> _guardAndLoad() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs =
+    await SharedPreferences.getInstance();
 
-    final token = prefs.getString(
-      'sessionID',
-    );
+    final token =
+    prefs.getString('sessionID');
 
     final role = prefs
-        .getString(
-      'role',
-    )
+        .getString('role')
         ?.toLowerCase();
 
     if (token == null || token.isEmpty) {
@@ -109,13 +222,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     if (mounted) {
       setState(() {
         _loadingConfigurations = true;
-
         _configurationError = null;
       });
     }
 
     try {
-      final response = await AdminRepository.getConfigurations(
+      final response =
+      await AdminRepository.getConfigurations(
         filters: _configurationFilters,
       );
 
@@ -129,10 +242,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return;
       }
 
-      if (!response.success || response.data == null) {
+      if (!response.success ||
+          response.data == null) {
         setState(() {
           _configurationError =
-              response.message ?? 'Unable to load configurations.';
+              response.message ??
+                  'Unable to load configurations.';
 
           _loadingConfigurations = false;
         });
@@ -141,20 +256,25 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       }
 
       setState(() {
-        _summary = response.data!.summary;
+        _summary =
+            response.data!.summary;
 
-        _configurations = response.data!.data;
+        _configurations =
+            response.data!.data;
 
         _loadingConfigurations = false;
       });
     } catch (_) {
-      if (mounted) {
-        setState(() {
-          _configurationError = 'Unable to load configurations.';
-
-          _loadingConfigurations = false;
-        });
+      if (!mounted) {
+        return;
       }
+
+      setState(() {
+        _configurationError =
+        'Unable to load configurations.';
+
+        _loadingConfigurations = false;
+      });
     }
   }
 
@@ -166,13 +286,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     if (mounted) {
       setState(() {
         _loadingUsers = true;
-
         _userError = null;
       });
     }
 
     try {
-      final response = await AdminRepository.getUsers(
+      final response =
+      await AdminRepository.getUsers(
         filters: _userFilters,
       );
 
@@ -186,9 +306,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return;
       }
 
-      if (!response.success || response.data == null) {
+      if (!response.success ||
+          response.data == null) {
         setState(() {
-          _userError = response.message ?? 'Unable to load users.';
+          _userError =
+              response.message ??
+                  'Unable to load users.';
 
           _loadingUsers = false;
         });
@@ -202,13 +325,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         _loadingUsers = false;
       });
     } catch (_) {
-      if (mounted) {
-        setState(() {
-          _userError = 'Unable to load users.';
-
-          _loadingUsers = false;
-        });
+      if (!mounted) {
+        return;
       }
+
+      setState(() {
+        _userError =
+        'Unable to load users.';
+
+        _loadingUsers = false;
+      });
     }
   }
 
@@ -234,38 +360,39 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return false;
   }
 
+  // =========================================================
+  // REDIRECT TO LOGIN
+  // =========================================================
+
   Future<void> _redirectToLogin() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs =
+    await SharedPreferences.getInstance();
 
-    await prefs.remove(
-      'sessionID',
-    );
+    await prefs.remove('sessionID');
+    await prefs.remove('role');
+    await prefs.remove('username');
 
-    await prefs.remove(
-      'role',
-    );
-
-    await prefs.remove(
-      'username',
-    );
-
-    if (mounted) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/login',
-            (_) => false,
-      );
+    if (!mounted) {
+      return;
     }
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+          (_) => false,
+    );
   }
+
+  // =========================================================
+  // FORBIDDEN
+  // =========================================================
 
   Future<void> _redirectForbidden() async {
     if (!mounted) {
       return;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
           'Administrator access is required.',
@@ -280,59 +407,45 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 
-
-  List<String> _allowedAdminStatuses(String? currentStatus) => const [
-    'requested',
-    'pending',
-    'done',
-  ];
-
   // =========================================================
-  // CHANGE ADMIN STATUS
-  //
-  // IMPORTANT:
-  //
-  // User configuration status remains:
-  //
-  // submitted
-  //
-  // This changes:
-  //
-  // adminStatus
-  //
-  // requested
-  // pending
-  // done
+  // ADMIN WORKFLOW STATUS
   // =========================================================
 
   Future<void> _changeStatus(
       AdminConfiguration configuration,
       String? status,
       ) async {
-    final currentStatus = configuration.adminWorkflowStatus ?? 'requested';
+    final currentStatus =
+        configuration.adminWorkflowStatus ??
+            'requested';
+
+    const allowedStatuses = {
+      'requested',
+      'pending',
+      'done',
+    };
 
     if (status == null ||
         status == currentStatus ||
-        !_allowedAdminStatuses(
-          currentStatus,
-        ).contains(
-          status,
-        ) ||
+        !allowedStatuses.contains(status) ||
         _updatingConfigurations.contains(
           configuration.id,
         )) {
       return;
     }
 
-    setState(
-          () => _updatingConfigurations.add(
+    setState(() {
+      _updatingConfigurations.add(
         configuration.id,
-      ),
-    );
+      );
+    });
 
     try {
-      final response = await AdminRepository.updateAdminWorkflowStatus(
-        configurationID: configuration.id,
+      final response =
+      await AdminRepository
+          .updateAdminWorkflowStatus(
+        configurationID:
+        configuration.id,
         adminWorkflowStatus: status,
       );
 
@@ -350,7 +463,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           response.data == null ||
           response.data!.isEmpty) {
         _message(
-          response.message ?? 'Unable to update configuration status.',
+          response.message ??
+              'Unable to update configuration status.',
           error: true,
         );
 
@@ -362,7 +476,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       }
 
       setState(() {
-        configuration.adminWorkflowStatus = response.data!;
+        configuration.adminWorkflowStatus =
+        response.data!;
 
         _recalculateSummary();
       });
@@ -377,11 +492,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
     } finally {
       if (mounted) {
-        setState(
-              () => _updatingConfigurations.remove(
+        setState(() {
+          _updatingConfigurations.remove(
             configuration.id,
-          ),
-        );
+          );
+        });
       }
     }
   }
@@ -402,14 +517,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       return;
     }
 
-    setState(
-          () => _updatingUsers.add(
+    setState(() {
+      _updatingUsers.add(
         user.userID,
-      ),
-    );
+      );
+    });
 
     try {
-      final response = await AdminRepository.updateUserRole(
+      final response =
+      await AdminRepository.updateUserRole(
         userID: user.userID,
         role: role,
       );
@@ -428,7 +544,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           response.data == null ||
           response.data!.isEmpty) {
         _message(
-          response.message ?? 'Unable to update user role.',
+          response.message ??
+              'Unable to update user role.',
           error: true,
         );
 
@@ -453,17 +570,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
     } finally {
       if (mounted) {
-        setState(
-              () => _updatingUsers.remove(
+        setState(() {
+          _updatingUsers.remove(
             user.userID,
-          ),
-        );
+          );
+        });
       }
     }
   }
 
   // =========================================================
-  // RECALCULATE ADMIN WORKFLOW SUMMARY
+  // RECALCULATE SUMMARY
   // =========================================================
 
   void _recalculateSummary() {
@@ -471,29 +588,39 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       total: _configurations.length,
       requested: _configurations
           .where(
-            (item) => item.adminWorkflowStatus == 'requested',
+            (item) =>
+        (item.adminWorkflowStatus ??
+            'requested') ==
+            'requested',
       )
           .length,
       pending: _configurations
           .where(
-            (item) => item.adminWorkflowStatus == 'pending',
+            (item) =>
+        item.adminWorkflowStatus ==
+            'pending',
       )
           .length,
       done: _configurations
           .where(
-            (item) => item.adminWorkflowStatus == 'done',
+            (item) =>
+        item.adminWorkflowStatus ==
+            'done',
       )
           .length,
     );
   }
 
+  // =========================================================
+  // CONFIGURATION FILTER
+  // =========================================================
 
   void _setConfigurationFilters(
-      AdminListFilters filters,
+      AdminConfigurationFilters filters,
       ) {
-    setState(
-          () => _configurationFilters = filters,
-    );
+    setState(() {
+      _configurationFilters = filters;
+    });
 
     _loadConfigurations();
   }
@@ -501,19 +628,40 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   void _setGroupConfigurationsByStatus(
       bool value,
       ) {
-    setState(
-          () => _groupConfigurationsByStatus = value,
-    );
+    setState(() {
+      _groupConfigurationsByStatus =
+          value;
+    });
   }
 
+  // =========================================================
+  // USER FILTER
+  // =========================================================
+
   void _setUserFilters(
-      AdminListFilters filters,
+      AdminConfigurationFilters filters,
       ) {
-    setState(
-          () => _userFilters = filters,
-    );
+    setState(() {
+      _userFilters = filters;
+    });
 
     _loadUsers();
+  }
+
+  // =========================================================
+  // VIEW CONFIGURATION
+  // =========================================================
+
+  void _viewConfiguration(
+      AdminConfiguration configuration,
+      ) {
+    showDialog<void>(
+      context: context,
+      builder: (_) =>
+          ConfigurationDetailsDialog(
+            configuration: configuration,
+          ),
+    );
   }
 
   // =========================================================
@@ -523,22 +671,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _editConfiguration(
       AdminConfiguration configuration,
       ) async {
-    final changes = await showDialog<Map<String, dynamic>>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => _EditConfigurationDialog(
-        configuration: configuration,
-      ),
-    );
-
-    if (changes == null) {
-      return;
-    }
-
     try {
-      final response = await AdminRepository.updateConfiguration(
-        configurationID: configuration.id,
-        changes: changes,
+      final response =
+      await AdminRepository.getConfiguration(
+        configurationID:
+        configuration.id,
       );
 
       if (await _handleAuthStatus(
@@ -547,26 +684,392 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return;
       }
 
-      if (!response.success) {
+      if (!response.success ||
+          response.data == null) {
         _message(
-          response.message ?? 'Unable to update configuration.',
+          response.message ??
+              'Unable to load configuration.',
           error: true,
         );
 
         return;
       }
 
-      await _loadConfigurations();
+      final fullConfiguration =
+      response.data!;
 
-      _message(
-        'Configuration updated.',
+      final productDetail =
+      ProductCatalogResolver.findById(
+        fullConfiguration.productType,
+      );
+
+      if (productDetail == null) {
+        _message(
+          'Product form not found for '
+              '${fullConfiguration.productType}.',
+          error: true,
+        );
+
+        return;
+      }
+
+      final initialData =
+      Map<String, dynamic>.from(
+        fullConfiguration.configurationData,
+      );
+
+      initialData.remove('_id');
+
+      if (!mounted) {
+        return;
+      }
+
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) {
+          return Dialog(
+            clipBehavior:
+            Clip.antiAlias,
+            insetPadding:
+            const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 24,
+            ),
+            shape:
+            RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.circular(
+                16,
+              ),
+            ),
+            child: ConstrainedBox(
+              constraints:
+              const BoxConstraints(
+                maxWidth: 1100,
+                maxHeight: 850,
+              ),
+              child: Column(
+                children: [
+                  _buildConfigurationEditHeader(
+                    dialogContext,
+                    fullConfiguration:
+                    fullConfiguration,
+                    fallbackProductName:
+                    productDetail.title,
+                  ),
+
+                  Expanded(
+                    child:
+                    ProductConfigurationForm(
+                      product:
+                      productDetail,
+                      initialConfiguration:
+                      initialData,
+                      initialQuantity:
+                      fullConfiguration
+                          .numRequested,
+                      onUpdate: (
+                          updatedConfiguration,
+                          quantity,
+                          ) async {
+                        final updateResponse =
+                        await AdminRepository
+                            .updateConfiguration(
+                          configurationID:
+                          fullConfiguration
+                              .id,
+                          changes: {
+                            'configurationData':
+                            updatedConfiguration,
+                            'numRequested':
+                            quantity,
+                          },
+                        );
+
+                        if (!updateResponse
+                            .success) {
+                          return ApiResponse<
+                              bool>.failure(
+                            message:
+                            updateResponse
+                                .message ??
+                                'Unable to update configuration.',
+                            statusCode:
+                            updateResponse
+                                .statusCode,
+                          );
+                        }
+
+                        return ApiResponse<
+                            bool>.success(
+                          data: true,
+                          message:'Configuration updated successfully.',
+                          statusCode:
+                          updateResponse
+                              .statusCode,
+                        );
+                      },
+                      onUpdateSuccess:
+                          () async {
+                        Navigator.of(
+                          dialogContext,
+                        ).pop();
+
+                        await _loadConfigurations();
+
+                        if (!mounted) {
+                          return;
+                        }
+
+                        _message(
+                          'Configuration updated successfully.',
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       );
     } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
       _message(
-        'Unable to update configuration.',
+        'Unable to load configuration.',
         error: true,
       );
     }
+  }
+
+  // =========================================================
+  // CONFIGURATION EDIT HEADER
+  // =========================================================
+
+  Widget _buildConfigurationEditHeader(
+      BuildContext dialogContext, {
+        required AdminConfiguration
+        fullConfiguration,
+        required String fallbackProductName,
+      }) {
+    final productName =
+    fullConfiguration.productName
+        .trim()
+        .isNotEmpty
+        ? fullConfiguration.productName
+        : fallbackProductName;
+
+    return Container(
+      width: double.infinity,
+      padding:
+      const EdgeInsets.fromLTRB(
+        24,
+        18,
+        12,
+        18,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(dialogContext)
+            .colorScheme
+            .surfaceContainerHighest,
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(dialogContext)
+                .dividerColor,
+          ),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment:
+        CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Theme.of(
+                dialogContext,
+              )
+                  .colorScheme
+                  .primary
+                  .withOpacity(
+                0.10,
+              ),
+              borderRadius:
+              BorderRadius.circular(
+                12,
+              ),
+            ),
+            child: Icon(
+              Icons.tune_rounded,
+              color:
+              Theme.of(dialogContext)
+                  .colorScheme
+                  .primary,
+              size: 25,
+            ),
+          ),
+
+          const SizedBox(
+            width: 14,
+          ),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'PRODUCT CONFIGURATOR',
+                  style:
+                  Theme.of(dialogContext)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(
+                    fontWeight:
+                    FontWeight.w700,
+                    letterSpacing: 1.1,
+                    color: Theme.of(
+                      dialogContext,
+                    )
+                        .colorScheme
+                        .primary,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 3,
+                ),
+
+                Text(
+                  'Edit Configuration',
+                  maxLines: 1,
+                  overflow:
+                  TextOverflow.ellipsis,
+                  style:
+                  Theme.of(dialogContext)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(
+                    fontWeight:
+                    FontWeight.w700,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 4,
+                ),
+
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  crossAxisAlignment:
+                  WrapCrossAlignment
+                      .center,
+                  children: [
+                    Text(
+                      productName,
+                      style: Theme.of(
+                        dialogContext,
+                      )
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
+                        fontWeight:
+                        FontWeight.w600,
+                      ),
+                    ),
+
+                    Container(
+                      padding:
+                      const EdgeInsets
+                          .symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration:
+                      BoxDecoration(
+                        color: Theme.of(
+                          dialogContext,
+                        )
+                            .colorScheme
+                            .primary
+                            .withOpacity(
+                          0.08,
+                        ),
+                        borderRadius:
+                        BorderRadius
+                            .circular(
+                          20,
+                        ),
+                      ),
+                      child: Text(
+                        fullConfiguration
+                            .productType,
+                        style: Theme.of(
+                          dialogContext,
+                        )
+                            .textTheme
+                            .labelSmall
+                            ?.copyWith(
+                          color: Theme.of(
+                            dialogContext,
+                          )
+                              .colorScheme
+                              .primary,
+                          fontWeight:
+                          FontWeight
+                              .w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 4,
+                ),
+
+                Text(
+                  'Update the submitted product configuration',
+                  style:
+                  Theme.of(dialogContext)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(
+                    color:
+                    Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(
+            width: 12,
+          ),
+
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(
+                dialogContext,
+              ).pop();
+            },
+            icon: const Icon(
+              Icons.close_rounded,
+              size: 19,
+            ),
+            label:
+            const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   // =========================================================
@@ -576,24 +1079,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _deleteConfiguration(
       AdminConfiguration configuration,
       ) async {
-    final confirmed = await _confirmDelete(
-      title: 'Delete configuration?',
-      message: '“${configuration.name}” will be permanently deleted.',
+    final confirmed =
+    await _confirmDelete(
+      title:
+      'Delete configuration?',
+      message:
+      '“${configuration.name}” will be permanently deleted.',
     );
 
     if (!confirmed || !mounted) {
       return;
     }
 
-    setState(
-          () => _deletingConfigurations.add(
+    setState(() {
+      _deletingConfigurations.add(
         configuration.id,
-      ),
-    );
+      );
+    });
 
     try {
-      final response = await AdminRepository.deleteConfiguration(
-        configurationID: configuration.id,
+      final response =
+      await AdminRepository
+          .deleteConfiguration(
+        configurationID:
+        configuration.id,
       );
 
       if (await _handleAuthStatus(
@@ -608,7 +1117,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       if (!response.success) {
         _message(
-          response.message ?? 'Unable to delete configuration.',
+          response.message ??
+              'Unable to delete configuration.',
           error: true,
         );
 
@@ -621,7 +1131,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       setState(() {
         _configurations.removeWhere(
-              (item) => item.id == configuration.id,
+              (item) =>
+          item.id ==
+              configuration.id,
         );
 
         _recalculateSummary();
@@ -637,13 +1149,29 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
     } finally {
       if (mounted) {
-        setState(
-              () => _deletingConfigurations.remove(
+        setState(() {
+          _deletingConfigurations.remove(
             configuration.id,
-          ),
-        );
+          );
+        });
       }
     }
+  }
+
+  // =========================================================
+  // VIEW USER
+  // =========================================================
+
+  void _viewUser(
+      AdminUser user,
+      ) {
+    showDialog<void>(
+      context: context,
+      builder: (_) =>
+          UserDetailsDialog(
+            user: user,
+          ),
+    );
   }
 
   // =========================================================
@@ -653,16 +1181,21 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _editUser(
       AdminUser user,
       ) async {
-    final changes = await showDialog<Map<String, dynamic>>(
+    final changes =
+    await showDialog<
+        Map<String, dynamic>>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _EditUserDialog(
-        user: user,
-        onResetPassword: (password) => _resetUserPassword(
-          user,
-          password,
-        ),
-      ),
+      builder: (_) =>
+          EditUserDialog(
+            user: user,
+            onResetPassword:
+                (password) =>
+                _resetUserPassword(
+                  user,
+                  password,
+                ),
+          ),
     );
 
     if (changes == null) {
@@ -670,7 +1203,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
 
     try {
-      final response = await AdminRepository.updateUser(
+      final response =
+      await AdminRepository.updateUser(
         userID: user.userID,
         changes: changes,
       );
@@ -683,7 +1217,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       if (!response.success) {
         _message(
-          response.message ?? 'Unable to update user.',
+          response.message ??
+              'Unable to update user.',
           error: true,
         );
 
@@ -691,6 +1226,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       }
 
       await _loadUsers();
+
+      if (!mounted) {
+        return;
+      }
 
       _message(
         'User updated.',
@@ -712,7 +1251,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       String password,
       ) async {
     try {
-      final response = await AdminRepository.resetUserPassword(
+      final response =
+      await AdminRepository
+          .resetUserPassword(
         userID: user.userID,
         password: password,
       );
@@ -724,19 +1265,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       }
 
       if (!response.success) {
-        return response.message ?? 'Unable to reset password.';
+        return response.message ??
+            'Unable to reset password.';
       }
 
-      final prefs = await SharedPreferences.getInstance();
+      final prefs =
+      await SharedPreferences
+          .getInstance();
 
       final currentUsername = prefs
-          .getString(
-        'username',
-      )
+          .getString('username')
           ?.toLowerCase();
 
-      final isSelf = currentUsername != null &&
-          currentUsername == user.username.toLowerCase();
+      final isSelf =
+          currentUsername != null &&
+              currentUsername ==
+                  user.username
+                      .toLowerCase();
 
       if (isSelf) {
         await prefs.remove(
@@ -752,7 +1297,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         );
 
         if (mounted) {
-          Navigator.pushNamedAndRemoveUntil(
+          Navigator
+              .pushNamedAndRemoveUntil(
             context,
             '/login',
                 (_) => false,
@@ -766,17 +1312,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
-  void _viewUser(
-      AdminUser user,
-      ) {
-    showDialog<void>(
-      context: context,
-      builder: (_) => _UserDetails(
-        user: user,
-      ),
-    );
-  }
-
   // =========================================================
   // DELETE USER
   // =========================================================
@@ -784,23 +1319,26 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _deleteUser(
       AdminUser user,
       ) async {
-    final confirmed = await _confirmDelete(
+    final confirmed =
+    await _confirmDelete(
       title: 'Delete user?',
-      message: '“${user.name}” (${user.username}) will be permanently deleted.',
+      message:
+      '“${user.name}” (${user.username}) will be permanently deleted.',
     );
 
     if (!confirmed || !mounted) {
       return;
     }
 
-    setState(
-          () => _deletingUsers.add(
+    setState(() {
+      _deletingUsers.add(
         user.userID,
-      ),
-    );
+      );
+    });
 
     try {
-      final response = await AdminRepository.deleteUser(
+      final response =
+      await AdminRepository.deleteUser(
         userID: user.userID,
       );
 
@@ -816,7 +1354,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       if (!response.success) {
         _message(
-          response.message ?? 'Unable to delete user.',
+          response.message ??
+              'Unable to delete user.',
           error: true,
         );
 
@@ -827,11 +1366,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return;
       }
 
-      setState(
-            () => _users.removeWhere(
-              (item) => item.userID == user.userID,
-        ),
-      );
+      setState(() {
+        _users.removeWhere(
+              (item) =>
+          item.userID ==
+              user.userID,
+        );
+      });
 
       _message(
         'User deleted.',
@@ -843,14 +1384,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
     } finally {
       if (mounted) {
-        setState(
-              () => _deletingUsers.remove(
+        setState(() {
+          _deletingUsers.remove(
             user.userID,
-          ),
-        );
+          );
+        });
       }
     }
   }
+
+  // =========================================================
+  // CONFIRM DELETE
+  // =========================================================
 
   Future<bool> _confirmDelete({
     required String title,
@@ -858,50 +1403,68 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }) async {
     return await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        icon: const Icon(
-          Icons.warning_amber_rounded,
-          color: Colors.red,
-          size: 42,
-        ),
-        title: Text(
-          title,
-          textAlign: TextAlign.center,
-        ),
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(
-              context,
-              false,
-            ),
-            child: const Text(
-              'Cancel',
-            ),
+      builder: (
+          dialogContext,
+          ) {
+        return AlertDialog(
+          icon: const Icon(
+            Icons
+                .warning_amber_rounded,
+            color: Colors.red,
+            size: 42,
           ),
-          FilledButton.icon(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            onPressed: () => Navigator.pop(
-              context,
-              true,
-            ),
-            icon: const Icon(
-              Icons.delete_outline,
-            ),
-            label: const Text(
-              'Delete permanently',
-            ),
+          title: Text(
+            title,
+            textAlign:
+            TextAlign.center,
           ),
-        ],
-      ),
+          content: Text(
+            message,
+            textAlign:
+            TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(
+                  dialogContext,
+                  false,
+                );
+              },
+              child: const Text(
+                'Cancel',
+              ),
+            ),
+            FilledButton.icon(
+              style:
+              FilledButton
+                  .styleFrom(
+                backgroundColor:
+                Colors.red,
+              ),
+              onPressed: () {
+                Navigator.pop(
+                  dialogContext,
+                  true,
+                );
+              },
+              icon: const Icon(
+                Icons.delete_outline,
+              ),
+              label: const Text(
+                'Delete permanently',
+              ),
+            ),
+          ],
+        );
+      },
     ) ??
         false;
   }
+
+  // =========================================================
+  // MESSAGE
+  // =========================================================
 
   void _message(
       String message, {
@@ -911,40 +1474,38 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       return;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-        ),
-        backgroundColor: error ? Colors.red.shade700 : null,
+        content: Text(message),
+        backgroundColor: error
+            ? Colors.red.shade700
+            : null,
       ),
     );
   }
 
+  // =========================================================
+  // LOGOUT
+  // =========================================================
+
   Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs =
+    await SharedPreferences.getInstance();
 
-    await prefs.remove(
-      'sessionID',
-    );
+    await prefs.remove('sessionID');
+    await prefs.remove('role');
+    await prefs.remove('username');
 
-    await prefs.remove(
-      'role',
-    );
-
-    await prefs.remove(
-      'username',
-    );
-
-    if (mounted) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/login',
-            (_) => false,
-      );
+    if (!mounted) {
+      return;
     }
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+          (_) => false,
+    );
   }
 
   // =========================================================
@@ -960,24 +1521,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       child: Builder(
         builder: (context) {
           return Scaffold(
-            backgroundColor: background,
+            backgroundColor:
+            background,
             appBar: AppBar(
               toolbarHeight: 74,
               backgroundColor: navy,
-              foregroundColor: Colors.white,
+              foregroundColor:
+              Colors.white,
               title: Row(
                 children: [
                   SvgPicture.asset(
                     'assets/WhiteML_Logo-w-tag-vector.svg',
                     height: 48,
-                    colorFilter: const ColorFilter.mode(
+                    colorFilter:
+                    const ColorFilter
+                        .mode(
                       Colors.white,
                       BlendMode.srcIn,
                     ),
                   ),
+
                   const SizedBox(
                     width: 20,
                   ),
+
                   if (MediaQuery.sizeOf(
                     context,
                   ).width >=
@@ -985,9 +1552,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     const Text(
                       'Admin dashboard',
                       style: TextStyle(
-                        color: Colors.white,
+                        color:
+                        Colors.white,
                         fontSize: 22,
-                        fontWeight: FontWeight.w800,
+                        fontWeight:
+                        FontWeight
+                            .w800,
                       ),
                     ),
                 ],
@@ -996,9 +1566,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 IconButton(
                   tooltip: 'Refresh',
                   onPressed: () {
-                    final index = DefaultTabController.of(
-                      context,
-                    ).index;
+                    final index =
+                        DefaultTabController
+                            .of(context)
+                            .index;
 
                     if (index == 0) {
                       _loadConfigurations();
@@ -1010,16 +1581,21 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     Icons.refresh,
                   ),
                 ),
+
                 IconButton(
-                  tooltip: 'User dashboard',
-                  onPressed: () => Navigator.pushNamed(
-                    context,
-                    '/dashboard',
-                  ),
+                  tooltip:
+                  'User dashboard',
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/dashboard',
+                    );
+                  },
                   icon: const Icon(
                     Icons.person_outline,
                   ),
                 ),
+
                 IconButton(
                   tooltip: 'Logout',
                   onPressed: _logout,
@@ -1027,24 +1603,31 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     Icons.logout,
                   ),
                 ),
+
                 const SizedBox(
                   width: 8,
                 ),
               ],
-              bottom: const TabBar(
-                indicatorColor: Colors.white,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
+              bottom:
+              const TabBar(
+                indicatorColor:
+                Colors.white,
+                labelColor:
+                Colors.white,
+                unselectedLabelColor:
+                Colors.white70,
                 tabs: [
                   Tab(
                     icon: Icon(
                       Icons.tune,
                     ),
-                    text: 'Configurations',
+                    text:
+                    'Configurations',
                   ),
                   Tab(
                     icon: Icon(
-                      Icons.people_outline,
+                      Icons
+                          .people_outline,
                     ),
                     text: 'Users',
                   ),
@@ -1070,442 +1653,91 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget _configurationsTab() {
     if (_loadingConfigurations) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child:
+        CircularProgressIndicator(),
       );
     }
 
     if (_configurationError != null) {
       return _ErrorView(
-        message: _configurationError!,
-        onRetry: _loadConfigurations,
+        message:
+        _configurationError!,
+        onRetry:
+        _loadConfigurations,
       );
     }
 
-    final compact = _isCompactLayout();
+    final compact =
+    _isCompactLayout();
 
     return RefreshIndicator(
-      onRefresh: _loadConfigurations,
+      onRefresh:
+      _loadConfigurations,
       child: ListView(
+        physics:
+        const AlwaysScrollableScrollPhysics(),
         padding: _pagePadding(),
         children: [
-          _AdminListFilterBar(
-            filters: _configurationFilters,
-            onChanged: _setConfigurationFilters,
+          AdminFilterBar(
+            filters:
+            _configurationFilters,
+            onChanged:
+            _setConfigurationFilters,
             showStatusFilter: true,
-            groupByStatus: _groupConfigurationsByStatus,
-            onGroupByStatusChanged: _setGroupConfigurationsByStatus,
+            people:
+            _configurationPeople,
+            selectedUserID:
+            _selectedConfigurationUserID,
+            onPersonChanged: (userID) {
+              setState(() {
+                _selectedConfigurationUserID =
+                    userID;
+              });
+            },
+            groupByStatus:
+            _groupConfigurationsByStatus,
+            onGroupByStatusChanged:
+            _setGroupConfigurationsByStatus,
           ),
+
           const SizedBox(
             height: 18,
           ),
-          _summaryCards(),
+
+          AdminSummaryCards(
+            summary: _summary,
+          ),
+
           const SizedBox(
             height: 22,
           ),
-          _configurationList(
-            compact,
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _configurationList(
-      bool compact,
-      ) {
-    if (!_groupConfigurationsByStatus) {
-      return compact
-          ? _configurationCards()
-          : _configurationTable(
-        _configurations,
-      );
-    }
-
-    final sections = [
-      for (final status in statuses)
-        MapEntry(
-          status,
-          _configurations
-              .where((item) => (item.adminWorkflowStatus ?? 'requested') == status,)
-              .toList(),
-        ),
-    ]
-        .where(
-          (entry) => entry.value.isNotEmpty,
-    )
-        .toList();
-
-    if (sections.isEmpty) {
-      return _emptyCard(
-        'No configurations found.',
-      );
-    }
-
-    return Column(
-      children: [
-        for (final section in sections) ...[
-          _StatusSectionHeader(
-            status: section.key,
-            count: section.value.length,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          compact
-              ? _configurationCards(
-            items: section.value,
-          )
-              : _configurationTable(
-            section.value,
-          ),
-          const SizedBox(
-            height: 18,
-          ),
-        ],
-      ],
-    );
-  }
-
-  // =========================================================
-  // CONFIGURATION TABLE
-  // =========================================================
-
-  Widget _configurationTable(
-      List<AdminConfiguration> items,
-      ) =>
-      _tableContainer(
-        empty: items.isEmpty,
-        emptyText: 'No configurations found.',
-        table: DataTable(
-          columnSpacing: _columnSpacing(),
-          horizontalMargin: 12,
-          headingRowHeight: 44,
-          dataRowMinHeight: 66,
-          dataRowMaxHeight: 76,
-          dividerThickness: .65,
-          columns: const [
-            DataColumn(
-              label: Text(
-                'Configuration name',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Product',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Quantity',
-              ),
-              numeric: true,
-            ),
-            DataColumn(
-              label: Text(
-                'Configuration dates',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Completion date',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Admin status',
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Actions',
-              ),
-            ),
-          ],
-          rows: items
-              .map(
-            _configurationRow,
-          )
-              .toList(),
-        ),
-      );
-
-  DataRow _configurationRow(
-      AdminConfiguration item,
-      ) {
-    final adminStatus = item.adminWorkflowStatus ?? 'requested';
-    final allowedStatuses = _allowedAdminStatuses(adminStatus);
-    final imageCount = _configurationImageEntries(item).length;
-
-    return DataRow(
-      cells: [
-        // =====================================================
-        // CONFIGURATION NAME + IMAGE INDICATOR
-        // =====================================================
-        DataCell(
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _responsiveText(
-                item.name,
-                .15,
-                130,
-                240,
-              ),
-              if (imageCount > 0) ...[
-                const SizedBox(width: 6),
-                Tooltip(
-                  message:
-                  '$imageCount attached image${imageCount == 1 ? '' : 's'}',
-                  child: TextButton.icon(
-                    onPressed: () => _showConfigurationImages(item),
-                    icon: const Icon(
-                      Icons.photo_library_outlined,
-                      size: 18,
-                    ),
-                    label: Text('$imageCount'),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-
-        // =====================================================
-        // PRODUCT
-        // =====================================================
-        DataCell(
-          _responsiveText(
-            item.productName.trim().isNotEmpty
-                ? item.productName
-                : item.productType,
-            .12,
-            125,
-            190,
-          ),
-        ),
-
-        // =====================================================
-        // QUANTITY
-        // =====================================================
-        DataCell(
-          Text('${item.numRequested}'),
-        ),
-
-        // =====================================================
-        // CONFIGURATION DATES
-        // =====================================================
-        DataCell(
-          _configurationDatesCell(item),
-        ),
-
-        // =====================================================
-        // COMPLETION DATE
-        // =====================================================
-        DataCell(
-          _responsiveText(
-            _date(item.adminCompletedAt),
-            .12,
-            125,
-            190,
-          ),
-        ),
-
-        // =====================================================
-        // ADMIN STATUS
-        // =====================================================
-        DataCell(
-          _updatingConfigurations.contains(item.id)
-              ? const SizedBox.square(
-            dimension: 22,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          )
-              : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: allowedStatuses.contains(adminStatus)
-                      ? adminStatus
-                      : null,
-                  hint: Text(
-                    _titleCase(adminStatus),
-                  ),
-                  items: allowedStatuses
-                      .map(
-                        (value) => DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        _titleCase(value),
-                      ),
-                    ),
-                  )
-                      .toList(),
-                  onChanged: (value) => _changeStatus(
-                    item,
-                    value,
-                  ),
-                ),
-              ),
-              if (adminStatus == 'pending') ...[
-                const SizedBox(height: 4),
-                _PendingAgePill(
-                  configuration: item,
-                ),
-              ],
-            ],
-          ),
-        ),
-
-        // =====================================================
-        // ACTIONS - VIEW / EDIT / DELETE
-        // =====================================================
-        DataCell(
-          _deletingConfigurations.contains(item.id)
-              ? const SizedBox.square(
-            dimension: 22,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          )
-              : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                tooltip: 'View details',
-                onPressed: () => showDialog<void>(
-                  context: context,
-                  builder: (_) => _ConfigurationDetails(
-                    configuration: item,
-                  ),
-                ),
-                icon: const Icon(
-                  Icons.visibility_outlined,
-                ),
-              ),
-              IconButton(
-                tooltip: 'Edit configuration',
-                onPressed: () => _editConfiguration(item),
-                icon: const Icon(
-                  Icons.edit_outlined,
-                  color: Color(0xFF2563EB),
-                ),
-              ),
-              IconButton(
-                tooltip: 'Delete configuration',
-                onPressed: () => _deleteConfiguration(item),
-                icon: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _configurationDatesCell(AdminConfiguration item) {
-    Widget line(String label, DateTime? value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1),
-      child: Text(
-        '$label: ${_date(value)}',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 12),
-      ),
-    );
-
-    return SizedBox(
-      width: 190,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          line('Created', item.createdAt),
-          line(
-            'Updated',
-            _hasDistinctUpdate(item) ? item.updatedAt : null,
-          ),
-          line('Submitted', item.submittedAt),
-        ],
-      ),
-    );
-  }
-
-  List<MapEntry<String, Map<String, dynamic>>> _configurationImageEntries(
-      AdminConfiguration item,
-      )
-  {
-    final images = <MapEntry<String, Map<String, dynamic>>>[];
-
-    for (final entry in item.configurationData.entries) {
-      if (_isConfigurationImage(entry.key, entry.value)) {
-        images.add(
-          MapEntry(
-            entry.key,
-            Map<String, dynamic>.from(entry.value as Map),
-          ),
-        );
-      }
-    }
-
-    return images;
-  }
-
-  Future<void> _showConfigurationImages(AdminConfiguration item) async {
-    final images = _configurationImageEntries(item);
-
-    if (images.isEmpty || !mounted) {
-      return;
-    }
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'Attached images (${images.length})',
-        ),
-        content: SizedBox(
-          width: 520,
-          child: SingleChildScrollView(
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                for (final image in images)
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _ConfigurationImageThumbnail(
-                        configurationID: item.id,
-                        imageKey: image.key,
-                        imageData: image.value,
-                      ),
-                      const SizedBox(height: 4),
-                      SizedBox(
-                        width: 110,
-                        child: Text(
-                          _readableLabel(_imageParentKey(image.key)),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 11),
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Close'),
+          ConfigurationList(
+            items:
+            _visibleConfigurations,
+            users: _users,
+            compact: compact,
+            groupByStatus:
+            _groupConfigurationsByStatus,
+            updatingConfigurationIDs:
+            _updatingConfigurations,
+            deletingConfigurationIDs:
+            _deletingConfigurations,
+            imageCountFor:
+            ConfigurationImageGallery
+                .imageCount,
+            onStatusChanged:
+            _changeStatus,
+            onViewConfiguration:
+            _viewConfiguration,
+            onViewImages:
+            _showConfigurationImages,
+            onEditConfiguration:
+            _editConfiguration,
+            onDeleteConfiguration:
+            _deleteConfiguration,
+            onViewUser:
+            _viewUser,
           ),
         ],
       ),
@@ -1513,13 +1745,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   // =========================================================
-  // USER TAB
+  // USERS TAB
   // =========================================================
 
   Widget _usersTab() {
     if (_loadingUsers) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child:
+        CircularProgressIndicator(),
       );
     }
 
@@ -1530,4904 +1763,100 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
     }
 
-    final compact = _isCompactLayout();
+    final compact =
+    _isCompactLayout();
 
     return RefreshIndicator(
       onRefresh: _loadUsers,
       child: ListView(
+        physics:
+        const AlwaysScrollableScrollPhysics(),
         padding: _pagePadding(),
         children: [
-          _AdminListFilterBar(
+          AdminFilterBar(
             filters: _userFilters,
-            onChanged: _setUserFilters,
+            onChanged:
+            _setUserFilters,
           ),
+
           const SizedBox(
             height: 18,
           ),
-          compact ? _userCards() : _usersTable(),
-        ],
-      ),
+
+          if (compact)
+            UserCards(
+              users: _users,
+              roles: roles,
+              updatingUserIDs:
+              _updatingUsers,
+              deletingUserIDs:
+              _deletingUsers,
+              onRoleChanged:
+              _changeRole,
+              onView: _viewUser,
+              onEdit: _editUser,
+              onDelete:
+              _deleteUser,
+            )
+          else
+            UserTable(
+              users: _users,
+              roles: roles,
+              updatingUserIDs:
+              _updatingUsers,
+              deletingUserIDs:
+              _deletingUsers,
+              onRoleChanged:
+              _changeRole,
+              onView: _viewUser,
+              onEdit: _editUser,
+              onDelete:
+              _deleteUser,
+            ),
+        ],),
     );
   }
 
-  Widget _usersTable() => _tableContainer(
-    empty: _users.isEmpty,
-    emptyText: 'No users found.',
-    table: DataTable(
-      columnSpacing: _columnSpacing(),
-      horizontalMargin: 12,
-      headingRowHeight: 44,
-      dataRowMinHeight: 54,
-      dataRowMaxHeight: 58,
-      dividerThickness: .65,
-      columns: const [
-        DataColumn(
-          label: Text(
-            'Name',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Username',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Email',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Phone',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Company',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Country',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Created',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Updated',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Role',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Change role',
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Actions',
-          ),
-        ),
-      ],
-      rows: _users
-          .map(
-            (user) => DataRow(
-          cells: [
-            DataCell(
-              _responsiveText(
-                user.name,
-                .11,
-                100,
-                180,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                user.username,
-                .13,
-                125,
-                210,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                user.email,
-                .14,
-                135,
-                230,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                user.phone,
-                .09,
-                100,
-                150,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                user.company,
-                .12,
-                110,
-                200,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                user.country,
-                .08,
-                80,
-                130,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                _date(
-                  user.createdAt,
-                ),
-                .12,
-                125,
-                190,
-              ),
-            ),
-            DataCell(
-              _responsiveText(
-                _date(
-                  user.updatedAt,
-                ),
-                .12,
-                125,
-                190,
-              ),
-            ),
-            DataCell(
-              _RoleBadge(
-                user.role,
-              ),
-            ),
-            DataCell(
-              _userRoleControl(
-                user,
-              ),
-            ),
-            DataCell(
-              _userActions(
-                user,
-              ),
-            ),
-          ],
-        ),
-      )
-          .toList(),
-    ),
-  );
-
   // =========================================================
-  // CONFIGURATION CARDS
+  // CONFIGURATION IMAGES
   // =========================================================
 
-  Widget _configurationCards({
-    List<AdminConfiguration>? items,
-  }) {
-    final data = items ?? _configurations;
-
-    if (data.isEmpty) {
-      return _emptyCard(
-        'No configurations found.',
-      );
-    }
-
-    return Column(
-      children: [
-        for (final item in data)
-          _AdminListCard(
-            margin: const EdgeInsets.only(
-              bottom: 12,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _ConfigurationAgeStack(
-                      configuration: item,
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                      child: Text(
-                        item.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    _StatusBadge(
-                      item.adminWorkflowStatus ?? 'requested',
-                      compact: true,
-                    ),
-                  ],
-                ),
-                if (item.adminWorkflowStatus == 'pending') ...[
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _PendingAgePanel(
-                    configuration: item,
-                  ),
-                ],
-                const SizedBox(
-                  height: 12,
-                ),
-                _configurationInfoGrid(
-                  item,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                _configurationStatusActionRow(
-                  item,
-                ),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _configurationInfoGrid(
-      AdminConfiguration item,
-      ) =>
-      LayoutBuilder(
-        builder: (
-            context,
-            constraints,
-            ) {
-          const gap = 10.0;
-
-          final width = (constraints.maxWidth - gap) / 2;
-
-          final info = [
-            _InfoTileData(
-              Icons.inventory_2_outlined,
-              'Product',
-              item.productName.trim().isNotEmpty
-                  ? item.productName
-                  : (item.productType.trim().isNotEmpty
-                  ? item.productType
-                  : '—'),
-            ),
-            _InfoTileData(
-              Icons.numbers_outlined,
-              'Quantity',
-              '${item.numRequested}',
-            ),
-            _InfoTileData(
-              Icons.category_outlined,
-              'Product type',
-              item.productType.trim().isNotEmpty ? item.productType : '—',
-            ),
-            _InfoTileData(
-              Icons.settings_suggest_outlined,
-              'Configuration',
-              _productConfigurationPreview(
-                item,
-              ),
-            ),
-          ];
-
-          return Wrap(
-            spacing: gap,
-            runSpacing: gap,
-            children: [
-              for (final infoItem in info)
-                SizedBox(
-                  width: width,
-                  child: _InfoTile(
-                    item: infoItem,
-                  ),
-                ),
-            ],
-          );
-        },
-      );
-
-  String _productConfigurationPreview(
-      AdminConfiguration item,
+  void _showConfigurationImages(
+      AdminConfiguration configuration,
       ) {
-    final previews = <String>[];
-
-    for (final entry in item.configurationData.entries) {
-      if (entry.key == '_id') {
-        continue;
-      }
-
-      if (_isNested(
-        entry.value,
-      )) {
-        continue;
-      }
-
-      final value = entry.value?.toString().trim() ?? '';
-
-      if (value.isEmpty) {
-        continue;
-      }
-
-      previews.add(
-        '${_readableLabel(entry.key)}: $value',
-      );
-
-      if (previews.length == 2) {
-        break;
-      }
-    }
-
-    if (previews.isNotEmpty) {
-      return previews.join(
-        ', ',
-      );
-    }
-
-    if (item.configurationData.isNotEmpty) {
-      return '${item.configurationData.length} field(s)';
-    }
-
-    return 'No details';
+    ConfigurationImageGallery.show(
+      context,
+      configuration,
+    );
   }
 
   // =========================================================
-  // USER CARDS
+  // RESPONSIVE HELPERS
   // =========================================================
 
-  Widget _userCards() {
-    if (_users.isEmpty) {
-      return _emptyCard(
-        'No users found.',
-      );
-    }
-
-    return Column(
-      children: [
-        for (final user in _users)
-          _AdminListCard(
-            margin: const EdgeInsets.only(
-              bottom: 12,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        user.name,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    _RoleBadge(
-                      user.role,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                _InfoLine(
-                  icon: Icons.alternate_email,
-                  label: 'Username',
-                  value: user.username,
-                ),
-                _InfoLine(
-                  icon: Icons.email_outlined,
-                  label: 'Email',
-                  value: user.email,
-                ),
-                _InfoLine(
-                  icon: Icons.phone_outlined,
-                  label: 'Phone',
-                  value: user.phone,
-                ),
-                _InfoLine(
-                  icon: Icons.business_outlined,
-                  label: 'Company',
-                  value: user.company,
-                ),
-                _InfoLine(
-                  icon: Icons.add_circle_outline,
-                  label: 'Created',
-                  value: _date(
-                    user.createdAt,
-                  ),
-                ),
-                _InfoLine(
-                  icon: Icons.update,
-                  label: 'Updated',
-                  value: _date(
-                    user.updatedAt,
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                _userRoleControl(
-                  user,
-                ),
-                const Divider(
-                  height: 24,
-                ),
-                _userActions(
-                  user,
-                ),
-              ],
-            ),
-          ),
-      ],
+  EdgeInsets _pagePadding() {
+    return EdgeInsets.all(
+      MediaQuery.sizeOf(context).width <
+          700
+          ? 12
+          : 24,
     );
   }
 
-  Widget _configurationStatusActionRow(
-      AdminConfiguration item,
-      ) =>
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: _configurationStatusControl(
-              item,
-            ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          _ConfigurationCardActions(
-            isDeleting: _deletingConfigurations.contains(
-              item.id,
-            ),
-            onView: () => showDialog<void>(
-              context: context,
-              builder: (_) => _ConfigurationDetails(
-                configuration: item,
-              ),
-            ),
-            onEdit: () => _editConfiguration(
-              item,
-            ),
-            onDelete: () => _deleteConfiguration(
-              item,
-            ),
-          ),
-        ],
-      );
-
-  Widget _configurationStatusControl(
-      AdminConfiguration item,
-      ) {
-    final adminStatus = item.adminWorkflowStatus ?? 'requested';
-
-    final allowedStatuses = _allowedAdminStatuses(
-      adminStatus,
-    );
-
-    return _updatingConfigurations.contains(
-      item.id,
-    )
-        ? const SizedBox(
-      height: 48,
-      child: Center(
-        child: SizedBox.square(
-          dimension: 22,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-          ),
-        ),
-      ),
-    )
-        : DropdownButtonFormField<String>(
-      initialValue: allowedStatuses.contains(
-        adminStatus,
-      )
-          ? adminStatus
-          : null,
-      decoration: _fieldDecoration(
-        'Admin status',
-        Icons.pending_actions,
-      ),
-      items: allowedStatuses
-          .map(
-            (value) => DropdownMenuItem(
-          value: value,
-          child: Text(
-            _titleCase(
-              value,
-            ),
-          ),
-        ),
-      )
-          .toList(),
-      onChanged: (value) => _changeStatus(
-        item,
-        value,
-      ),
-    );
-  }
-
-
-
-  Widget _userRoleControl(
-      AdminUser user,
-      ) =>
-      _updatingUsers.contains(
-        user.userID,
-      )
-          ? const SizedBox.square(
-        dimension: 22,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-        ),
-      )
-          : DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: roles.contains(
-            user.role,
-          )
-              ? user.role
-              : null,
-          hint: Text(
-            user.role,
-          ),
-          items: roles
-              .map(
-                (value) => DropdownMenuItem(
-              value: value,
-              child: Text(
-                _titleCase(
-                  value,
-                ),
-              ),
-            ),
-          )
-              .toList(),
-          onChanged: (value) => _changeRole(
-            user,
-            value,
-          ),
-        ),
-      );
-
-  Widget _userActions(
-      AdminUser user,
-      ) =>
-      _deletingUsers.contains(
-        user.userID,
-      )
-          ? const SizedBox.square(
-        dimension: 22,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-        ),
-      )
-          : SizedBox(
-        width: 132,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              tooltip: 'View user',
-              onPressed: () => _viewUser(
-                user,
-              ),
-              icon: const Icon(
-                Icons.visibility_outlined,
-              ),
-            ),
-            IconButton(
-              tooltip: 'Edit user',
-              onPressed: () => _editUser(
-                user,
-              ),
-              icon: const Icon(
-                Icons.edit_outlined,
-                color: Color(
-                  0xFF2563EB,
-                ),
-              ),
-            ),
-            IconButton(
-              tooltip: 'Delete user',
-              onPressed: () => _deleteUser(
-                user,
-              ),
-              icon: const Icon(
-                Icons.delete_outline,
-                color: Colors.red,
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Widget _emptyCard(
-      String text,
-      ) =>
-      _AdminListCard(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 28,
-          ),
-          child: Center(
-            child: Text(
-              text,
-            ),
-          ),
-        ),
-      );
-
-  Widget _tableContainer({
-    required bool empty,
-    required String emptyText,
-    required DataTable table,
-  }) =>
-      Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(
-            14,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: empty
-            ? Padding(
-          padding: const EdgeInsets.all(
-            48,
-          ),
-          child: Center(
-            child: Text(
-              emptyText,
-            ),
-          ),
-        )
-            : LayoutBuilder(
-          builder: (
-              context,
-              constraints,
-              ) =>
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: constraints.maxWidth,
-                  ),
-                  child: table,
-                ),
-              ),
-        ),
-      );
-
-  Widget _summaryCards() => LayoutBuilder(
-    builder: (
-        context,
-        constraints,
-        ) {
-      final compact = constraints.maxWidth < 760;
-
-      final gap = compact ? 6.0 : 10.0;
-
-      final width = (constraints.maxWidth - gap * 3) / 4;
-
-      final showIcons = constraints.maxWidth >= 760;
-
-      return Row(
-        children: [
-          _SummaryCard(
-            'Total',
-            _summary.total,
-            Icons.inventory_2_outlined,
-            const Color(
-              0xFF579AF6,
-            ),
-            width: width,
-            showIcon: showIcons,
-          ),
-          SizedBox(
-            width: gap,
-          ),
-          _SummaryCard(
-            'Requested',
-            _summary.requested,
-            Icons.inbox_outlined,
-            Colors.blue,
-            width: width,
-            showIcon: showIcons,
-          ),
-          SizedBox(
-            width: gap,
-          ),
-          _SummaryCard(
-            'Pending',
-            _summary.pending,
-            Icons.pending_actions,
-            Colors.orange,
-            width: width,
-            showIcon: showIcons,
-          ),
-          SizedBox(
-            width: gap,
-          ),
-          _SummaryCard(
-            'Done',
-            _summary.done,
-            Icons.task_alt,
-            Colors.green,
-            width: width,
-            showIcon: showIcons,
-          ),
-        ],
-      );
-    },
-  );
-
-  EdgeInsets _pagePadding() => EdgeInsets.all(
-    MediaQuery.sizeOf(
+  bool _isCompactLayout() {
+    return MediaQuery.sizeOf(
       context,
     ).width <
-        700
-        ? 12
-        : 24,
-  );
-
-  double _columnSpacing() => MediaQuery.sizeOf(
-    context,
-  ).width >=
-      1200
-      ? 24
-      : 12;
-
-  bool _isCompactLayout() =>
-      MediaQuery.sizeOf(
-        context,
-      ).width <
-          760;
-
-  Widget _responsiveText(
-      String value,
-      double fraction,
-      double minimum,
-      double maximum,
-      ) {
-    final width = (MediaQuery.sizeOf(
-      context,
-    ).width *
-        fraction)
-        .clamp(
-      minimum,
-      maximum,
-    );
-
-    return SizedBox(
-      width: width,
-      child: Tooltip(
-        message: value,
-        child: Text(
-          value,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-    );
-  }
-
-  String _date(
-      DateTime? value,
-      ) =>
-      value == null
-          ? '—'
-          : DateFormat.yMMMd().add_jm().format(
-        value.toLocal(),
-      );
-
-  Widget _dateAgeCell(
-      DateTime? value,
-      double fraction,
-      double minimum,
-      double maximum,
-      ) {
-    final width = (MediaQuery.sizeOf(
-      context,
-    ).width *
-        fraction)
-        .clamp(
-      minimum,
-      maximum,
-    );
-
-    final date = _date(
-      value,
-    );
-
-    final age = _elapsedAge(
-      value,
-    )?.value;
-
-    return SizedBox(
-      width: width,
-      child: Tooltip(
-        message: age == null ? date : '$date · $age ago',
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              date,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            if (age != null) ...[
-              const SizedBox(
-                height: 2,
-              ),
-              Text(
-                '$age ago',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: Color(
-                    0xFF17223B,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
+        760;
   }
 }
 
-// =========================================================
-// ADMIN FILTER BAR
-// =========================================================
-
-class _AdminListFilterBar extends StatelessWidget {
-  const _AdminListFilterBar({
-    required this.filters,
-    required this.onChanged,
-    this.showStatusFilter = false,
-    this.groupByStatus = false,
-    this.onGroupByStatusChanged,
-  });
-
-  static const _dateFields = {
-    'createdAt': 'Created date',
-    'updatedAt': 'Updated date',
-  };
-
-  static const _dateFilters = {
-    'all': 'All dates',
-    'today': 'Today',
-    'lastDay': 'Yesterday',
-    'thisWeek': 'This week',
-    'custom': 'Custom range',
-  };
-
-  static const _statusFilters = {
-    'all': 'All statuses',
-    'requested': 'Requested',
-    'pending': 'Pending',
-    'done': 'Done',
-  };
-
-  final AdminListFilters filters;
-
-  final ValueChanged<AdminListFilters> onChanged;
-
-  final bool showStatusFilter;
-
-  final bool groupByStatus;
-
-  final ValueChanged<bool>? onGroupByStatusChanged;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final custom = filters.dateFilter == 'custom';
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(
-        12,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          10,
-        ),
-        border: Border.all(
-          color: const Color(
-            0xFFE2E8F0,
-          ),
-        ),
-      ),
-      child: LayoutBuilder(
-        builder: (
-            context,
-            constraints,
-            ) {
-          final compact = constraints.maxWidth < 720;
-
-          final halfWidth = (constraints.maxWidth - 8) / 2;
-
-          final controls = showStatusFilter ? 5 : 3;
-
-          final desktopGap = 12.0 * (controls - 1);
-
-          final remaining = constraints.maxWidth - desktopGap - 44;
-
-          final sortWidth = compact
-              ? halfWidth
-              : (remaining * .26).clamp(
-            200.0,
-            280.0,
-          );
-
-          final dateWidth = compact
-              ? halfWidth
-              : (remaining * .29).clamp(
-            220.0,
-            320.0,
-          );
-
-          final statusWidth = compact
-              ? halfWidth
-              : (remaining * .20).clamp(
-            170.0,
-            230.0,
-          );
-
-          final groupWidth = compact
-              ? (constraints.maxWidth - sortWidth - 44 - 16).clamp(
-            104.0,
-            180.0,
-          )
-              : (constraints.maxWidth -
-              desktopGap -
-              44 -
-              sortWidth -
-              dateWidth -
-              statusWidth)
-              .clamp(
-            190.0,
-            280.0,
-          );
-
-          final customDateWidth = compact
-              ? halfWidth
-              : (constraints.maxWidth - dateWidth - 24).clamp(
-            180.0,
-            220.0,
-          );
-
-          return Wrap(
-            spacing: compact ? 8 : 12,
-            runSpacing: compact ? 8 : 10,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              _dropdown(
-                width: sortWidth,
-                label: compact ? 'Sort' : 'Sort by',
-                icon: compact ? null : Icons.sort,
-                value: filters.sortBy,
-                options: _dateFields,
-                onChanged: (value) => onChanged(
-                  filters.copyWith(
-                    sortBy: value,
-                    dateField: value,
-                  ),
-                ),
-              ),
-              _SortDirectionButton(
-                compact: compact,
-                sortOrder: filters.sortOrder,
-                onPressed: () => onChanged(
-                  filters.copyWith(
-                    sortOrder: filters.sortOrder == 'asc' ? 'desc' : 'asc',
-                  ),
-                ),
-              ),
-              if (showStatusFilter && compact)
-                _GroupByStatusCheckbox(
-                  width: groupWidth,
-                  selected: groupByStatus,
-                  compact: compact,
-                  onChanged: onGroupByStatusChanged,
-                ),
-              _dropdown(
-                width: dateWidth,
-                label: compact ? 'Date' : 'Filter dates',
-                icon: compact ? null : Icons.filter_alt_outlined,
-                value: filters.dateFilter,
-                options: _dateFilters,
-                onChanged: (value) {
-                  if (value == 'custom') {
-                    final today = DateTime.now();
-
-                    onChanged(
-                      filters.copyWith(
-                        dateField: filters.sortBy,
-                        dateFilter: value,
-                        startDate: filters.startDate ?? today,
-                        endDate: filters.endDate ?? today,
-                      ),
-                    );
-
-                    return;
-                  }
-
-                  onChanged(
-                    filters.copyWith(
-                      dateField: filters.sortBy,
-                      dateFilter: value,
-                      clearDates: true,
-                    ),
-                  );
-                },
-              ),
-              if (showStatusFilter) ...[
-                _dropdown(
-                  width: statusWidth,
-                  label: 'Status',
-                  icon: compact ? null : Icons.flag_outlined,
-                  value: filters.status ?? 'all',
-                  options: _statusFilters,
-                  onChanged: (value) => onChanged(
-                    filters.copyWith(
-                      adminWorkflowStatus: value,
-                    ),
-                  ),
-                ),
-                if (!compact)
-                  _GroupByStatusCheckbox(
-                    width: groupWidth,
-                    selected: groupByStatus,
-                    compact: compact,
-                    onChanged: onGroupByStatusChanged,
-                  ),
-              ],
-              if (custom) ...[
-                _dateButton(
-                  context: context,
-                  width: customDateWidth,
-                  label: 'Start',
-                  icon: Icons.date_range_outlined,
-                  value: filters.startDate,
-                  onPicked: (date) => onChanged(
-                    filters.copyWith(
-                      startDate: date,
-                      endDate: filters.endDate != null &&
-                          filters.endDate!.isBefore(
-                            date,
-                          )
-                          ? date
-                          : filters.endDate,
-                    ),
-                  ),
-                ),
-                _dateButton(
-                  context: context,
-                  width: customDateWidth,
-                  label: 'End',
-                  icon: Icons.event_available_outlined,
-                  value: filters.endDate,
-                  firstDate: filters.startDate,
-                  onPicked: (date) => onChanged(
-                    filters.copyWith(
-                      endDate: date,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _dropdown({
-    required double width,
-    required String label,
-    required IconData? icon,
-    required String value,
-    required Map<String, String> options,
-    required ValueChanged<String> onChanged,
-  }) =>
-      SizedBox(
-        width: width,
-        child: DropdownButtonFormField<String>(
-          key: ValueKey(
-            '$label:$value',
-          ),
-          initialValue: value,
-          isDense: true,
-          decoration: _fieldDecoration(
-            label,
-            icon,
-          ).copyWith(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 10,
-            ),
-          ),
-          items: options.entries
-              .map(
-                (entry) => DropdownMenuItem(
-              value: entry.key,
-              child: Text(
-                entry.value,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          )
-              .toList(),
-          onChanged: (value) {
-            if (value != null) {
-              onChanged(
-                value,
-              );
-            }
-          },
-        ),
-      );
-
-  Widget _dateButton({
-    required BuildContext context,
-    required double width,
-    required String label,
-    required IconData icon,
-    required DateTime? value,
-    required ValueChanged<DateTime> onPicked,
-    DateTime? firstDate,
-  }) =>
-      SizedBox(
-        width: width,
-        child: OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                4,
-              ),
-            ),
-          ),
-          onPressed: () async {
-            final now = DateTime.now();
-
-            final selected = await showDatePicker(
-              context: context,
-              initialDate: value ?? firstDate ?? now,
-              firstDate: firstDate ??
-                  DateTime(
-                    2020,
-                  ),
-              lastDate: DateTime(
-                now.year + 5,
-              ),
-            );
-
-            if (selected != null) {
-              onPicked(
-                selected,
-              );
-            }
-          },
-          icon: Icon(
-            icon,
-            size: 20,
-          ),
-          label: Text(
-            value == null
-                ? label
-                : '$label ${DateFormat('yyyy-MM-dd').format(value)}',
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      );
-}
-
-// =========================================================
-// SMALL UI COMPONENTS
-// =========================================================
-
-class _SortDirectionButton extends StatelessWidget {
-  const _SortDirectionButton({
-    required this.compact,
-    required this.sortOrder,
-    required this.onPressed,
-  });
-
-  final bool compact;
-
-  final String sortOrder;
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final descending = sortOrder == 'desc';
-
-    return Tooltip(
-      message: descending ? 'Descending' : 'Ascending',
-      child: IconButton.filledTonal(
-        constraints: const BoxConstraints.tightFor(
-          width: 44,
-          height: 44,
-        ),
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
-        icon: Icon(
-          descending ? Icons.arrow_downward : Icons.arrow_upward,
-          size: compact ? 20 : 24,
-        ),
-      ),
-    );
-  }
-}
-
-class _GroupByStatusCheckbox extends StatelessWidget {
-  const _GroupByStatusCheckbox({
-    required this.width,
-    required this.selected,
-    required this.compact,
-    required this.onChanged,
-  });
-
-  final double width;
-
-  final bool selected;
-
-  final bool compact;
-
-  final ValueChanged<bool>? onChanged;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final content = compact
-        ? Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          selected ? Icons.check_box : Icons.check_box_outline_blank,
-          size: 18,
-          color: selected
-              ? const Color(
-            0xFF2563EB,
-          )
-              : null,
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        Flexible(
-          child: Text(
-            'Group',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: selected
-                  ? const Color(
-                0xFF2563EB,
-              )
-                  : null,
-            ),
-          ),
-        ),
-      ],
-    )
-        : Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Checkbox(
-          value: selected,
-          visualDensity: VisualDensity.compact,
-          onChanged: onChanged == null
-              ? null
-              : (value) => onChanged!(
-            value ?? false,
-          ),
-        ),
-        const Text(
-          'Group by status',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-
-    return Tooltip(
-      message: 'Group by status',
-      child: InkWell(
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
-        onTap: onChanged == null
-            ? null
-            : () => onChanged!(
-          !selected,
-        ),
-        child: Container(
-          width: width,
-          constraints: const BoxConstraints(
-            minHeight: 44,
-          ),
-          alignment: Alignment.center,
-          padding: compact
-              ? EdgeInsets.zero
-              : const EdgeInsets.only(
-            left: 8,
-            right: 12,
-          ),
-          decoration: BoxDecoration(
-            color: selected
-                ? const Color(
-              0xFFE8F1FF,
-            )
-                : const Color(
-              0xFFF8FAFC,
-            ),
-            borderRadius: BorderRadius.circular(
-              8,
-            ),
-            border: Border.all(
-              color: selected
-                  ? const Color(
-                0xFF2563EB,
-              )
-                  : const Color(
-                0xFFDCE4F0,
-              ),
-            ),
-          ),
-          child: content,
-        ),
-      ),
-    );
-  }
-}
-
-// =========================================================
-// CONFIGURATION AGE
-// =========================================================
-
-class _ConfigurationAgeStack extends StatelessWidget {
-  const _ConfigurationAgeStack({
-    required this.configuration,
-  });
-
-  final AdminConfiguration configuration;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final createdAge = _elapsedAge(
-      configuration.createdAt,
-    )?.value;
-
-    final updatedAge = _elapsedAge(
-      configuration.updatedAt,
-    )?.value;
-
-    if (createdAge == null) {
-      return const SizedBox.shrink();
-    }
-
-    return SizedBox(
-      width: 112,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _AgePill(
-            label: 'Created $createdAge ago',
-            color: const Color(
-              0xFF1D4ED8,
-            ),
-            background: const Color(
-              0xFFEFF6FF,
-            ),
-            border: const Color(
-              0xFFBFDBFE,
-            ),
-          ),
-          if (_hasDistinctUpdate(
-            configuration,
-          ) &&
-              updatedAge != null) ...[
-            const SizedBox(
-              height: 3,
-            ),
-            _AgePill(
-              label: 'Update $updatedAge ago',
-              color: const Color(
-                0xFF047857,
-              ),
-              background: const Color(
-                0xFFECFDF5,
-              ),
-              border: const Color(
-                0xFFA7F3D0,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _AgePill extends StatelessWidget {
-  const _AgePill({
-    required this.label,
-    required this.color,
-    required this.background,
-    required this.border,
-  });
-
-  final String label;
-
-  final Color color;
-
-  final Color background;
-
-  final Color border;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 6,
-          vertical: 3,
-        ),
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(
-            999,
-          ),
-          border: Border.all(
-            color: border,
-          ),
-        ),
-        child: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: color,
-            fontSize: 10,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      );
-}
-
-class _ConfigurationCardActions extends StatelessWidget {
-  const _ConfigurationCardActions({
-    required this.isDeleting,
-    required this.onView,
-    required this.onEdit,
-    required this.onDelete,
-  });
-
-  final bool isDeleting;
-
-  final VoidCallback onView;
-
-  final VoidCallback onEdit;
-
-  final VoidCallback onDelete;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _compactAction(
-            tooltip: 'View details',
-            icon: const Icon(
-              Icons.visibility_outlined,
-            ),
-            onPressed: onView,
-          ),
-          _compactAction(
-            tooltip: 'Edit configuration',
-            icon: const Icon(
-              Icons.edit_outlined,
-            ),
-            onPressed: onEdit,
-          ),
-          _compactAction(
-            tooltip: 'Delete configuration',
-            icon: isDeleting
-                ? const SizedBox.square(
-              dimension: 14,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            )
-                : const Icon(
-              Icons.delete_outline,
-              color: Colors.red,
-            ),
-            onPressed: isDeleting ? null : onDelete,
-          ),
-        ],
-      );
-
-  Widget _compactAction({
-    required String tooltip,
-    required Widget icon,
-    required VoidCallback? onPressed,
-  }) =>
-      SizedBox.square(
-        dimension: 30,
-        child: IconButton.filledTonal(
-          tooltip: tooltip,
-          onPressed: onPressed,
-          icon: icon,
-          iconSize: 16,
-          padding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          style: IconButton.styleFrom(
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-        ),
-      );
-}
-
-class _InfoTileData {
-  const _InfoTileData(
-      this.icon,
-      this.label,
-      this.value,
-      );
-
-  final IconData icon;
-
-  final String label;
-
-  final String value;
-}
-
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({
-    required this.item,
-  });
-
-  final _InfoTileData item;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        constraints: const BoxConstraints(
-          minHeight: 58,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: const Color(
-            0xFFF8FAFC,
-          ),
-          borderRadius: BorderRadius.circular(
-            8,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              item.icon,
-              size: 16,
-              color: const Color(
-                0xFF64748B,
-              ),
-            ),
-            const SizedBox(
-              width: 6,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Color(
-                        0xFF64748B,
-                      ),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    item.value,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-}
-
-class _StatusSectionHeader extends StatelessWidget {
-  const _StatusSectionHeader({
-    required this.status,
-    required this.count,
-  });
-
-  final String status;
-
-  final int count;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 10,
-        ),
-        decoration: BoxDecoration(
-          color: const Color(
-            0xFFF8FAFC,
-          ),
-          borderRadius: BorderRadius.circular(
-            8,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            _StatusBadge(
-              status,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              '$count configuration${count == 1 ? '' : 's'}',
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
-        ),
-      );
-}
-
-class _ConfigurationAgeBlocks extends StatelessWidget {
-  const _ConfigurationAgeBlocks({
-    required this.configuration,
-  });
-
-  final AdminConfiguration configuration;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    return LayoutBuilder(
-      builder: (
-          context,
-          constraints,
-          ) {
-        final compact = constraints.maxWidth < 460;
-
-        final hasUpdate = _hasDistinctUpdate(
-          configuration,
-        );
-
-        final width = compact || !hasUpdate
-            ? constraints.maxWidth
-            : (constraints.maxWidth - 10) / 2;
-
-        return Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: [
-            _AgeFocusBlock(
-              width: width,
-              label: 'Created ago',
-              icon: Icons.add_circle_outline,
-              value: _elapsedAge(
-                configuration.createdAt,
-              ),
-              color: const Color(
-                0xFF2563EB,
-              ),
-              background: const Color(
-                0xFFEFF6FF,
-              ),
-            ),
-            if (hasUpdate)
-              _AgeFocusBlock(
-                width: width,
-                label: 'Updated ago',
-                icon: Icons.update,
-                value: _elapsedAge(
-                  configuration.updatedAt,
-                ),
-                color: const Color(
-                  0xFF0F766E,
-                ),
-                background: const Color(
-                  0xFFECFDF5,
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _AgeFocusBlock extends StatelessWidget {
-  const _AgeFocusBlock({
-    required this.width,
-    required this.label,
-    required this.icon,
-    required this.value,
-    required this.color,
-    required this.background,
-  });
-
-  final double width;
-
-  final String label;
-
-  final IconData icon;
-
-  final _ElapsedAge? value;
-
-  final Color color;
-
-  final Color background;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    return Container(
-      width: width,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
-        border: Border.all(
-          color: color.withValues(
-            alpha: .28,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 24,
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Text(
-                  value?.value ?? '-',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// =========================================================
-// PENDING AGE
-// =========================================================
-
-class _PendingAgePanel extends StatelessWidget {
-  const _PendingAgePanel({
-    required this.configuration,
-  });
-
-  final AdminConfiguration configuration;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final age = _pendingAge(
-      configuration,
-    );
-
-    if (age == null) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(
-          0xFFFFF7ED,
-        ),
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
-        border: Border.all(
-          color: const Color(
-            0xFFF97316,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.priority_high_rounded,
-            color: Color(
-              0xFFC2410C,
-            ),
-            size: 28,
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            age.value,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w900,
-              color: Color(
-                0xFF9A3412,
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: Text(
-              'pending',
-              style: TextStyle(
-                color: Colors.orange.shade900,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PendingAgePill extends StatelessWidget {
-  const _PendingAgePill({
-    required this.configuration,
-  });
-
-  final AdminConfiguration configuration;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final age = _pendingAge(
-      configuration,
-    );
-
-    if (age == null) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 3,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(
-          0xFFFFEDD5,
-        ),
-        borderRadius: BorderRadius.circular(
-          999,
-        ),
-      ),
-      child: Text(
-        '${age.value} pending',
-        style: const TextStyle(
-          color: Color(
-            0xFF9A3412,
-          ),
-          fontSize: 11,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-    );
-  }
-}
-
-class _PendingAge {
-  const _PendingAge(
-      this.value,
-      );
-
-  final String value;
-}
-
-_PendingAge? _pendingAge(
-    AdminConfiguration configuration,
-    ) {
-  if (configuration.adminWorkflowStatus != 'pending') {
-    return null;
-  }
-
-  final start = configuration.adminStartedAt;
-
-  if (start == null) {
-    return null;
-  }
-
-  final duration = DateTime.now().difference(
-    start.toLocal(),
-  );
-
-  if (duration.inDays >= 1) {
-    return _PendingAge(
-      '${duration.inDays}d',
-    );
-  }
-
-  if (duration.inHours >= 1) {
-    return _PendingAge(
-      '${duration.inHours}h',
-    );
-  }
-
-  final minutes = duration.inMinutes.clamp(
-    0,
-    59,
-  );
-
-  return _PendingAge(
-    '${minutes}m',
-  );
-}
-
-// =========================================================
-// ELAPSED AGE
-// =========================================================
-
-class _ElapsedAge {
-  const _ElapsedAge(
-      this.value,
-      );
-
-  final String value;
-}
-
-_ElapsedAge? _elapsedAge(
-    DateTime? date,
-    ) {
-  if (date == null) {
-    return null;
-  }
-
-  final duration = DateTime.now().difference(
-    date.toLocal(),
-  );
-
-  if (duration.inDays >= 1) {
-    return _ElapsedAge(
-      '${duration.inDays}d',
-    );
-  }
-
-  if (duration.inHours >= 1) {
-    return _ElapsedAge(
-      '${duration.inHours}h',
-    );
-  }
-
-  final minutes = duration.inMinutes.clamp(
-    0,
-    59,
-  );
-
-  return _ElapsedAge(
-    '${minutes}m',
-  );
-}
-
-bool _hasDistinctUpdate(
-    AdminConfiguration configuration,
-    ) {
-  final created = configuration.createdAt;
-
-  final updated = configuration.updatedAt;
-
-  if (updated == null) {
-    return false;
-  }
-
-  if (created == null) {
-    return true;
-  }
-
-  return updated
-      .difference(
-    created,
-  )
-      .abs()
-      .inMinutes >=
-      1;
-}
-
-// =========================================================
-// CONFIGURATION DETAILS
-// =========================================================
-
-class _ConfigurationDetails extends StatelessWidget {
-  const _ConfigurationDetails({
-    required this.configuration,
-  });
-
-  final AdminConfiguration configuration;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      _AdminDetailsDialog(
-        icon: Icons.tune,
-        title: configuration.name,
-        subtitle: configuration.productName.trim().isNotEmpty
-            ? configuration.productName
-            : 'Configured product',
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ConfigurationAgeBlocks(
-              configuration: configuration,
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            _PlainSectionBox(
-              title: 'Configuration summary',
-              children: [
-                _plainInfoGrid([
-                  _PlainInfo(
-                    'User status',
-                    _titleCase(
-                      configuration.status,
-                    ),
-                  ),
-                  _PlainInfo(
-                    'Admin status',
-                    configuration.adminWorkflowStatus ?? 'requested',
-                  ),
-                  _PlainInfo(
-                    'Product name',
-                    configuration.productName,
-                  ),
-                  _PlainInfo(
-                    'Product type',
-                    configuration.productType,
-                  ),
-                  _PlainInfo(
-                    'Quantity',
-                    configuration.numRequested,
-                  ),
-                  _PlainInfo(
-                    'Submitted',
-                    _friendlyDate(
-                      configuration.submittedAt,
-                    ),
-                  ),
-                  _PlainInfo(
-                    'Admin requested',
-                    _friendlyDate(
-                      configuration.adminRequestedAt,
-                    ),
-                  ),
-                  _PlainInfo(
-                    'Admin started',
-                    _friendlyDate(
-                      configuration.adminStartedAt,
-                    ),
-                  ),
-                  _PlainInfo(
-                    'Admin completed',
-                    _friendlyDate(
-                      configuration.adminCompletedAt,
-                    ),
-                  ),
-                  _PlainInfo(
-                    'Created',
-                    _friendlyDate(
-                      configuration.createdAt,
-                    ),
-                  ),
-                  if (_hasDistinctUpdate(
-                    configuration,
-                  ))
-                    _PlainInfo(
-                      'Updated',
-                      _friendlyDate(
-                        configuration.updatedAt,
-                      ),
-                    ),
-                ]),
-              ],
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            if (configuration.configurationData.isEmpty)
-              const _EmptyProductEditor()
-            else
-              _PlainSectionBox(
-                title: 'Product configuration',
-                children: [
-                  _configurationDataView(
-                    configuration.configurationData,
-                  ),
-                ],
-              ),
-          ],
-        ),
-      );
-
-  Widget _configurationDataView(
-      Map<String, dynamic> data,
-      ) {
-    final imageEntries = <String, Map<String, dynamic>>{};
-
-    for (final entry in data.entries) {
-      if (_isConfigurationImage(
-        entry.key,
-        entry.value,
-      )) {
-        imageEntries[entry.key] = Map<String, dynamic>.from(
-          entry.value as Map,
-        );
-      }
-    }
-
-    final simpleEntries = data.entries.where(
-          (entry) =>
-      entry.key != '_id' &&
-          !_isNested(
-            entry.value,
-          ),
-    );
-
-    final nestedEntries = data.entries.where(
-          (entry) =>
-      _isNested(
-        entry.value,
-      ) &&
-          !_isConfigurationImage(
-            entry.key,
-            entry.value,
-          ),
-    );
-
-    final orphanImages = imageEntries.entries.where(
-          (entry) {
-        final parentKey = _imageParentKey(
-          entry.key,
-        );
-
-        return !data.containsKey(
-          parentKey,
-        );
-      },
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (simpleEntries.isNotEmpty)
-          LayoutBuilder(
-            builder: (
-                context,
-                constraints,
-                ) {
-              final width = _compactFieldWidth(
-                constraints.maxWidth,
-              );
-
-              return Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  for (final entry in simpleEntries)
-                    SizedBox(
-                      width: width,
-                      child: _configurationField(
-                        entry: entry,
-                        imageData: imageEntries[
-                        '${entry.key}Image'
-                        ],
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-
-        if (orphanImages.isNotEmpty) ...[
-          if (simpleEntries.isNotEmpty)
-            const SizedBox(
-              height: 12,
-            ),
-          LayoutBuilder(
-            builder: (
-                context,
-                constraints,
-                ) {
-              final width = _compactFieldWidth(
-                constraints.maxWidth,
-              );
-
-              return Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  for (final entry in orphanImages)
-                    SizedBox(
-                      width: width,
-                      child: _ConfigurationImageField(
-                        configurationID: configuration.id,
-                        imageKey: entry.key,
-                        label: _readableLabel(
-                          _imageParentKey(
-                            entry.key,
-                          ),
-                        ),
-                        imageData: entry.value,
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-        ],
-
-        if (nestedEntries.isNotEmpty) ...[
-          const SizedBox(
-            height: 14,
-          ),
-          _PlainSubsection(
-            title: 'Linked information',
-            child: Column(
-              children: [
-                for (final entry in nestedEntries)
-                  _plainLinkedInfo(
-                    entry.key,
-                    entry.value,
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _configurationField({
-    required MapEntry<String, dynamic> entry,
-    Map<String, dynamic>? imageData,
-  }) {
-    if (imageData == null) {
-      return _plainInfoRow(
-        _readableLabel(
-          entry.key,
-        ),
-        entry.value,
-      );
-    }
-
-    return _ConfigurationValueWithImage(
-      configurationID: configuration.id,
-      imageKey: '${entry.key}Image',
-      label: _readableLabel(
-        entry.key,
-      ),
-      value: entry.value,
-      imageData: imageData,
-    );
-  }
-}
-
-// =========================================================
-// CONFIGURATION IMAGE HELPERS
-// =========================================================
-
-bool _isConfigurationImage(
-    String key,
-    dynamic value,
-    ) {
-  if (!key.endsWith('Image') || value is! Map) {
-    return false;
-  }
-
-  final data = Map<String, dynamic>.from(
-    value,
-  );
-
-  final objectKey = data['objectKey']
-      ?.toString()
-      .trim();
-
-  return objectKey != null &&
-      objectKey.isNotEmpty;
-}
-
-String _imageParentKey(
-    String imageKey,
-    ) {
-  if (!imageKey.endsWith('Image')) {
-    return imageKey;
-  }
-
-  return imageKey.substring(
-    0,
-    imageKey.length - 'Image'.length,
-  );
-}
-
-class _ConfigurationValueWithImage extends StatelessWidget {
-  const _ConfigurationValueWithImage({
-    required this.configurationID,
-    required this.imageKey,
-    required this.label,
-    required this.value,
-    required this.imageData,
-  });
-
-  final String configurationID;
-
-  final String imageKey;
-
-  final String label;
-
-  final dynamic value;
-
-  final Map<String, dynamic> imageData;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
-        ),
-        decoration: BoxDecoration(
-          color: const Color(
-            0xFFF8FAFC,
-          ),
-          borderRadius: BorderRadius.circular(
-            8,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: Color(
-                  0xFF64748B,
-                ),
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: SelectableText(
-                    value?.toString().isEmpty ?? true
-                        ? '—'
-                        : value.toString(),
-                    maxLines: 4,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                _ConfigurationImageThumbnail(
-                  configurationID: configurationID,
-                  imageKey: imageKey,
-                  imageData: imageData,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-}
-
-class _ConfigurationImageField extends StatelessWidget {
-  const _ConfigurationImageField({
-    required this.configurationID,
-    required this.imageKey,
-    required this.label,
-    required this.imageData,
-  });
-
-  final String configurationID;
-
-  final String imageKey;
-
-  final String label;
-
-  final Map<String, dynamic> imageData;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
-        ),
-        decoration: BoxDecoration(
-          color: const Color(
-            0xFFF8FAFC,
-          ),
-          borderRadius: BorderRadius.circular(
-            8,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: Color(
-                  0xFF64748B,
-                ),
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            _ConfigurationImageThumbnail(
-              configurationID: configurationID,
-              imageKey: imageKey,
-              imageData: imageData,
-            ),
-          ],
-        ),
-      );
-}
-
-class _ConfigurationImageThumbnail extends StatefulWidget {
-  const _ConfigurationImageThumbnail({
-    required this.configurationID,
-    required this.imageKey,
-    required this.imageData,
-  });
-
-  final String configurationID;
-
-  final String imageKey;
-
-  final Map<String, dynamic> imageData;
-
-  @override
-  State<_ConfigurationImageThumbnail> createState() =>
-      _ConfigurationImageThumbnailState();
-}
-
-class _ConfigurationImageThumbnailState
-    extends State<_ConfigurationImageThumbnail> {
-  String? _url;
-
-  String? _error;
-
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadImage();
-  }
-
-  Future<void> _loadImage() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final response =
-      await AdminRepository.getConfigurationImageUrl(
-        configurationID: widget.configurationID,
-        imageKey: widget.imageKey,
-      );
-
-      if (!mounted) {
-        return;
-      }
-
-      final url = response.data?['url']
-          ?.toString()
-          .trim();
-
-      if (!response.success ||
-          url == null ||
-          url.isEmpty) {
-        setState(() {
-          _loading = false;
-          _error =
-              response.message ??
-                  'Image unavailable';
-        });
-
-        return;
-      }
-
-      setState(() {
-        _url = url;
-        _loading = false;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _loading = false;
-        _error = 'Image unavailable';
-      });
-    }
-  }
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    if (_loading) {
-      return Container(
-        width: 64,
-        height: 64,
-        alignment: Alignment.center,
-        decoration: _thumbnailDecoration(),
-        child: const SizedBox.square(
-          dimension: 20,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-          ),
-        ),
-      );
-    }
-
-    if (_error != null ||
-        _url == null) {
-      return Tooltip(
-        message: _error ?? 'Image unavailable',
-        child: InkWell(
-          onTap: _loadImage,
-          borderRadius: BorderRadius.circular(
-            8,
-          ),
-          child: Container(
-            width: 64,
-            height: 64,
-            alignment: Alignment.center,
-            decoration: _thumbnailDecoration(),
-            child: const Icon(
-              Icons.broken_image_outlined,
-              color: Color(
-                0xFF94A3B8,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Tooltip(
-      message: 'Click to enlarge',
-      child: InkWell(
-        onTap: _showPreview,
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(
-            8,
-          ),
-          child: Container(
-            width: 64,
-            height: 64,
-            decoration: _thumbnailDecoration(),
-            child: Image.network(
-              _url!,
-              fit: BoxFit.cover,
-              errorBuilder: (
-                  context,
-                  error,
-                  stackTrace,
-                  ) =>
-              const Center(
-                child: Icon(
-                  Icons.broken_image_outlined,
-                  color: Color(
-                    0xFF94A3B8,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  BoxDecoration _thumbnailDecoration() =>
-      BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
-        border: Border.all(
-          color: const Color(
-            0xFFE2E8F0,
-          ),
-        ),
-      );
-
-  Future<void> _showPreview() async {
-    final url = _url;
-
-    if (url == null ||
-        url.isEmpty ||
-        !mounted) {
-      return;
-    }
-
-    final originalName =
-    widget.imageData['originalName']
-        ?.toString()
-        .trim();
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) =>
-          Dialog(
-            insetPadding: const EdgeInsets.all(
-              24,
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 1000,
-                maxHeight: 800,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      16,
-                      10,
-                      8,
-                      10,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            originalName == null ||
-                                originalName.isEmpty
-                                ? 'Configuration image'
-                                : originalName,
-                            maxLines: 1,
-                            overflow:
-                            TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight:
-                              FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          tooltip: 'Close',
-                          onPressed: () =>
-                              Navigator.pop(
-                                dialogContext,
-                              ),
-                          icon: const Icon(
-                            Icons.close,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  Flexible(
-                    child: InteractiveViewer(
-                      minScale: 0.5,
-                      maxScale: 5,
-                      child: Image.network(
-                        url,
-                        fit: BoxFit.contain,
-                        loadingBuilder: (
-                            context,
-                            child,
-                            progress,
-                            ) {
-                          if (progress == null) {
-                            return child;
-                          }
-
-                          return const Center(
-                            child:
-                            CircularProgressIndicator(),
-                          );
-                        },
-                        errorBuilder: (
-                            context,
-                            error,
-                            stackTrace,
-                            ) =>
-                        const Padding(
-                          padding:
-                          EdgeInsets.all(
-                            40,
-                          ),
-                          child: Column(
-                            mainAxisSize:
-                            MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons
-                                    .broken_image_outlined,
-                                size: 48,
-                                color: Color(
-                                  0xFF94A3B8,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Unable to load image.',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-    );
-  }
-}
-// =========================================================
-// EDIT CONFIGURATION
-// =========================================================
-
-class _EditConfigurationDialog extends StatefulWidget {
-  const _EditConfigurationDialog({
-    required this.configuration,
-  });
-
-  final AdminConfiguration configuration;
-
-  @override
-  State<_EditConfigurationDialog> createState() =>
-      _EditConfigurationDialogState();
-}
-
-class _EditConfigurationDialogState extends State<_EditConfigurationDialog> {
-  late final TextEditingController _name;
-
-  late final TextEditingController _quantity;
-
-  late final Map<String, dynamic> _configurationData;
-
-  final Map<String, TextEditingController> _controllers = {};
-
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _name = TextEditingController(
-      text: widget.configuration.name,
-    );
-
-    _quantity = TextEditingController(
-      text: '${widget.configuration.numRequested}',
-    );
-
-    _configurationData = Map<String, dynamic>.from(
-      widget.configuration.configurationData,
-    );
-
-    for (final entry in _configurationData.entries) {
-      if (entry.key == '_id' ||
-          _isNested(
-            entry.value,
-          )) {
-        continue;
-      }
-
-      _controllers[entry.key] = TextEditingController(
-        text: entry.value?.toString() ?? '',
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _name.dispose();
-
-    _quantity.dispose();
-
-    for (final controller in _controllers.values) {
-      controller.dispose();
-    }
-
-    super.dispose();
-  }
-
-  void _save() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    for (final entry in _configurationData.entries.toList()) {
-      final controller = _controllers[entry.key];
-
-      if (controller != null) {
-        _configurationData[entry.key] = _restoreFieldType(
-          controller.text,
-          entry.value,
-        );
-      }
-    }
-
-    Navigator.pop(
-      context,
-      {
-        'configurationName': _name.text.trim(),
-        'numRequested': int.parse(
-          _quantity.text,
-        ),
-        'configurationData': _configurationData,
-      },
-    );
-  }
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      _AdminEditDialog(
-        icon: Icons.tune,
-        title: 'Edit configuration',
-        subtitle:
-        'Update the name, quantity, or configured product information.',
-        onSave: _save,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ConfigurationAgeBlocks(
-                configuration: widget.configuration,
-              ),
-              const SizedBox(
-                height: 18,
-              ),
-              TextFormField(
-                controller: _name,
-                decoration: const InputDecoration(
-                  labelText: 'Configuration name',
-                  prefixIcon: Icon(
-                    Icons.label_outline,
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Configuration name is required.'
-                    : null,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: _quantity,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Quantity requested',
-                  prefixIcon: Icon(
-                    Icons.numbers_outlined,
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  final parsed = int.tryParse(
-                    value ?? '',
-                  );
-
-                  if (parsed == null || parsed < 1) {
-                    return 'Enter a quantity of 1 or more.';
-                  }
-
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const _EditorSectionTitle(
-                icon: Icons.settings_outlined,
-                title: 'Product configuration',
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              if (_configurationData.isEmpty)
-                const _EmptyProductEditor()
-              else
-                _configurationFields(),
-            ],
-          ),
-        ),
-      );
-
-  Widget _configurationFields() {
-    final editableEntries = _configurationData.entries.where(
-          (entry) =>
-      entry.key != '_id' &&
-          !_isNested(
-            entry.value,
-          ),
-    );
-
-    final nestedEntries = _configurationData.entries.where(
-          (entry) => _isNested(
-        entry.value,
-      ),
-    );
-
-    return LayoutBuilder(
-      builder: (
-          context,
-          constraints,
-          ) {
-        final width = _compactFieldWidth(
-          constraints.maxWidth,
-        );
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              spacing: 14,
-              runSpacing: 14,
-              children: [
-                for (final entry in editableEntries)
-                  SizedBox(
-                    width: width,
-                    child: TextFormField(
-                      controller: _controllers[entry.key],
-                      keyboardType: entry.value is num
-                          ? const TextInputType.numberWithOptions(
-                        decimal: true,
-                      )
-                          : TextInputType.text,
-                      maxLines: entry.key.toLowerCase().contains(
-                        'note',
-                      )
-                          ? 3
-                          : 1,
-                      decoration: _fieldDecoration(
-                        _readableLabel(
-                          entry.key,
-                        ),
-                        _fieldIcon(
-                          entry.key,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            if (nestedEntries.isNotEmpty) ...[
-              const SizedBox(
-                height: 22,
-              ),
-              const _EditorSectionTitle(
-                icon: Icons.account_tree_outlined,
-                title: 'Linked information',
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              for (final entry in nestedEntries)
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(
-                    bottom: 8,
-                  ),
-                  padding: const EdgeInsets.all(
-                    12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(
-                      0xFFF8FAFC,
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      10,
-                    ),
-                    border: Border.all(
-                      color: const Color(
-                        0xFFE2E8F0,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _readableLabel(
-                          entry.key,
-                        ),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        _nestedSummary(
-                          entry.value,
-                        ),
-                        style: const TextStyle(
-                          color: Color(
-                            0xFF64748B,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ],
-        );
-      },
-    );
-  }
-}
-
-// =========================================================
-// COMMON HELPERS
-// =========================================================
-
-bool _isNested(
-    dynamic value,
-    ) =>
-    value is Map || value is List;
-
-dynamic _restoreFieldType(
-    String value,
-    dynamic original,
-    ) {
-  if (original is int) {
-    return int.tryParse(
-      value,
-    ) ??
-        original;
-  }
-
-  if (original is double) {
-    return double.tryParse(
-      value,
-    ) ??
-        original;
-  }
-
-  if (original is bool) {
-    return value.trim().toLowerCase() == 'true';
-  }
-
-  return value;
-}
-
-InputDecoration _fieldDecoration(
-    String label,
-    IconData? icon,
-    ) =>
-    InputDecoration(
-      labelText: label,
-      prefixIcon: icon == null
-          ? null
-          : Icon(
-        icon,
-        size: 20,
-      ),
-      border: const OutlineInputBorder(),
-      enabledBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Color(
-            0xFFD7E0EC,
-          ),
-        ),
-      ),
-      filled: true,
-      fillColor: Colors.white,
-    );
-
-String _readableLabel(
-    String key,
-    ) {
-  const overrides = {
-    'cc5ChainSize': 'CC5 chain size',
-    'appEnviroment': 'Application environment',
-    'numRequested': 'Quantity requested',
-  };
-
-  if (overrides.containsKey(
-    key,
-  )) {
-    return overrides[key]!;
-  }
-
-  final spaced = key
-      .replaceAllMapped(
-    RegExp(
-      r'([a-z0-9])([A-Z])',
-    ),
-        (match) => '${match[1]} ${match[2]}',
-  )
-      .replaceAll(
-    '_',
-    ' ',
-  )
-      .trim();
-
-  return spaced.isEmpty
-      ? key
-      : '${spaced[0].toUpperCase()}${spaced.substring(1)}';
-}
-
-IconData _fieldIcon(
-    String key,
-    ) {
-  final lower = key.toLowerCase();
-
-  if (lower.contains(
-    'name',
-  )) {
-    return Icons.label_outline;
-  }
-
-  if (lower.contains(
-    'length',
-  ) ||
-      lower.contains(
-        'measurement',
-      )) {
-    return Icons.straighten;
-  }
-
-  if (lower.contains(
-    'speed',
-  )) {
-    return Icons.speed;
-  }
-
-  if (lower.contains(
-    'temp',
-  ) ||
-      lower.contains(
-        'environment',
-      )) {
-    return Icons.thermostat_outlined;
-  }
-
-  if (lower.contains(
-    'voltage',
-  )) {
-    return Icons.bolt_outlined;
-  }
-
-  if (lower.contains(
-    'note',
-  )) {
-    return Icons.notes_outlined;
-  }
-
-  if (lower.contains(
-    'direction',
-  )) {
-    return Icons.swap_horiz;
-  }
-
-  if (lower.contains(
-    'status',
-  )) {
-    return Icons.tune;
-  }
-
-  return Icons.edit_outlined;
-}
-
-String _friendlyDate(
-    dynamic raw,
-    ) {
-  if (raw == null) {
-    return '—';
-  }
-
-  final date = raw is DateTime
-      ? raw
-      : DateTime.tryParse(
-    raw.toString(),
-  );
-
-  return date == null
-      ? '—'
-      : DateFormat.yMMMd().add_jm().format(
-    date.toLocal(),
-  );
-}
-
-String _nestedSummary(
-    dynamic value,
-    ) {
-  if (value is Map) {
-    return value.entries
-        .map(
-          (entry) => '${_readableLabel(entry.key.toString())}: ${entry.value}',
-    )
-        .join(
-      ' · ',
-    );
-  }
-
-  if (value is List) {
-    return '${value.length} linked item(s)';
-  }
-
-  return value?.toString() ?? '—';
-}
-
-Widget _detailField(
-    String label,
-    dynamic value,
-    IconData icon,
-    double width,
-    ) =>
-    SizedBox(
-      width: width,
-      child: InputDecorator(
-        decoration: _fieldDecoration(
-          label,
-          icon,
-        ),
-        child: SelectableText(
-          value?.toString().isEmpty ?? true ? '—' : value.toString(),
-          maxLines: 3,
-        ),
-      ),
-    );
-
-class _PlainInfo {
-  const _PlainInfo(
-      this.label,
-      this.value,
-      );
-
-  final String label;
-
-  final dynamic value;
-}
-
-class _PlainSectionBox extends StatelessWidget {
-  const _PlainSectionBox({
-    required this.title,
-    required this.children,
-  });
-
-  final String title;
-
-  final List<Widget> children;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(
-          16,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(
-            12,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFDCE4F0,
-            ),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(
-              height: 14,
-            ),
-            ...children,
-          ],
-        ),
-      );
-}
-
-class _PlainSubsection extends StatelessWidget {
-  const _PlainSubsection({
-    required this.title,
-    required this.child,
-  });
-
-  final String title;
-
-  final Widget child;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(
-          12,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(
-            10,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            child,
-          ],
-        ),
-      );
-}
-
-Widget _plainInfoGrid(
-    List<_PlainInfo> items,
-    ) =>
-    LayoutBuilder(
-      builder: (
-          context,
-          constraints,
-          ) {
-        final width = _compactFieldWidth(
-          constraints.maxWidth,
-        );
-
-        return Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            for (final item in items)
-              SizedBox(
-                width: width,
-                child: _plainInfoRow(
-                  item.label,
-                  item.value,
-                ),
-              ),
-          ],
-        );
-      },
-    );
-
-Widget _plainInfoRow(
-    String label,
-    dynamic value,
-    ) =>
-    Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 10,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(
-          0xFFF8FAFC,
-        ),
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
-        border: Border.all(
-          color: const Color(
-            0xFFE2E8F0,
-          ),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Color(
-                0xFF64748B,
-              ),
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          SelectableText(
-            value?.toString().isEmpty ?? true ? '—' : value.toString(),
-            maxLines: 4,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-
-Widget _plainLinkedInfo(
-    String label,
-    dynamic value,
-    ) =>
-    Padding(
-      padding: const EdgeInsets.only(
-        bottom: 8,
-      ),
-      child: _plainInfoRow(
-        _readableLabel(
-          label,
-        ),
-        _nestedSummary(
-          value,
-        ),
-      ),
-    );
-
-double _compactFieldWidth(
-    double maxWidth,
-    ) {
-  if (maxWidth < 520) {
-    return maxWidth;
-  }
-
-  return ((maxWidth - 24) / 3).clamp(
-    190.0,
-    240.0,
-  );
-}
-
-class _EditorSectionTitle extends StatelessWidget {
-  const _EditorSectionTitle({
-    required this.icon,
-    required this.title,
-  });
-
-  final IconData icon;
-
-  final String title;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Row(
-        children: [
-          Icon(
-            icon,
-            size: 20,
-            color: const Color(
-              0xFF2563EB,
-            ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
-      );
-}
-
-class _EmptyProductEditor extends StatelessWidget {
-  const _EmptyProductEditor();
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(
-          28,
-        ),
-        decoration: BoxDecoration(
-          color: const Color(
-            0xFFF8FAFC,
-          ),
-          borderRadius: BorderRadius.circular(
-            12,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: const Column(
-          children: [
-            Icon(
-              Icons.inventory_2_outlined,
-              color: Colors.grey,
-              size: 34,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              'No product configuration information is available.',
-            ),
-          ],
-        ),
-      );
-}
-
-// =========================================================
-// EDIT USER
-// =========================================================
-
-class _EditUserDialog extends StatefulWidget {
-  const _EditUserDialog({
-    required this.user,
-    required this.onResetPassword,
-  });
-
-  final AdminUser user;
-
-  final Future<String?> Function(
-      String password,
-      ) onResetPassword;
-
-  @override
-  State<_EditUserDialog> createState() => _EditUserDialogState();
-}
-
-class _EditUserDialogState extends State<_EditUserDialog> {
-  final _formKey = GlobalKey<FormState>();
-
-  final _passwordFormKey = GlobalKey<FormState>();
-
-  late final Map<String, TextEditingController> _fields;
-
-  final _password = TextEditingController();
-
-  final _confirmPassword = TextEditingController();
-
-  bool _passwordHidden = true;
-
-  bool _confirmPasswordHidden = true;
-
-  bool _resettingPassword = false;
-
-  String? _passwordMessage;
-
-  bool _passwordError = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _fields = {
-      'firstName': TextEditingController(
-        text: widget.user.firstName,
-      ),
-      'lastName': TextEditingController(
-        text: widget.user.lastName,
-      ),
-      'username': TextEditingController(
-        text: widget.user.username,
-      ),
-      'email': TextEditingController(
-        text: widget.user.email,
-      ),
-      'phoneNumber': TextEditingController(
-        text: widget.user.phone,
-      ),
-      'companyName': TextEditingController(
-        text: widget.user.company,
-      ),
-      'country': TextEditingController(
-        text: widget.user.country,
-      ),
-    };
-  }
-
-  @override
-  void dispose() {
-    for (final controller in _fields.values) {
-      controller.dispose();
-    }
-
-    _password.dispose();
-
-    _confirmPassword.dispose();
-
-    super.dispose();
-  }
-
-  void _save() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    Navigator.pop(
-      context,
-      _fields.map(
-            (
-            key,
-            value,
-            ) =>
-            MapEntry(
-              key,
-              value.text.trim(),
-            ),
-      ),
-    );
-  }
-
-  Future<void> _resetPassword() async {
-    if (!_passwordFormKey.currentState!.validate()) {
-      return;
-    }
-
-    setState(() {
-      _resettingPassword = true;
-
-      _passwordMessage = null;
-
-      _passwordError = false;
-    });
-
-    final error = await widget.onResetPassword(
-      _password.text,
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    if (error != null) {
-      setState(() {
-        _resettingPassword = false;
-
-        _passwordError = true;
-
-        _passwordMessage = error;
-      });
-
-      return;
-    }
-
-    setState(() {
-      _resettingPassword = false;
-
-      _password.clear();
-
-      _confirmPassword.clear();
-
-      _passwordMessage =
-      'Password reset successfully. Existing sessions were signed out.';
-
-      _passwordError = false;
-    });
-  }
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      _AdminEditDialog(
-        icon: Icons.manage_accounts_outlined,
-        title: 'Edit user',
-        subtitle: 'Manage profile information and account security.',
-        onSave: _save,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const _EditorSectionTitle(
-                icon: Icons.badge_outlined,
-                title: 'User information',
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              const Text(
-                'Update this user’s personal, contact, and company details.',
-                style: TextStyle(
-                  color: Color(
-                    0xFF64748B,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              LayoutBuilder(
-                builder: (
-                    context,
-                    constraints,
-                    ) {
-                  final fieldWidth = _compactFieldWidth(
-                    constraints.maxWidth,
-                  );
-
-                  return Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      _userField(
-                        'firstName',
-                        'First name',
-                        Icons.person_outline,
-                        fieldWidth,
-                        required: true,
-                      ),
-                      _userField(
-                        'lastName',
-                        'Last name',
-                        Icons.person_outline,
-                        fieldWidth,
-                        required: true,
-                      ),
-                      _userField(
-                        'username',
-                        'Username',
-                        Icons.alternate_email,
-                        fieldWidth,
-                        required: true,
-                      ),
-                      _userField(
-                        'email',
-                        'Email',
-                        Icons.email_outlined,
-                        fieldWidth,
-                        required: true,
-                      ),
-                      _userField(
-                        'phoneNumber',
-                        'Phone',
-                        Icons.phone_outlined,
-                        fieldWidth,
-                      ),
-                      _userField(
-                        'companyName',
-                        'Company',
-                        Icons.business_outlined,
-                        fieldWidth,
-                      ),
-                      _userField(
-                        'country',
-                        'Country',
-                        Icons.public,
-                        fieldWidth,
-                      ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 28,
-              ),
-              const Divider(),
-              const SizedBox(
-                height: 18,
-              ),
-              _passwordSection(),
-            ],
-          ),
-        ),
-      );
-
-  Widget _passwordSection() => Form(
-    key: _passwordFormKey,
-    child: Container(
-      padding: const EdgeInsets.all(
-        18,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(
-          0xFFFFFBEB,
-        ),
-        borderRadius: BorderRadius.circular(
-          14,
-        ),
-        border: Border.all(
-          color: const Color(
-            0xFFFDE68A,
-          ),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _EditorSectionTitle(
-            icon: Icons.password_outlined,
-            title: 'Reset password',
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          const Text(
-            'No old password or security PIN is required. All existing sessions for this user will be signed out.',
-            style: TextStyle(
-              color: Color(
-                0xFF78716C,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          TextFormField(
-            controller: _password,
-            obscureText: _passwordHidden,
-            decoration: InputDecoration(
-              labelText: 'New password',
-              prefixIcon: const Icon(
-                Icons.lock_outline,
-              ),
-              border: const OutlineInputBorder(),
-              filled: true,
-              fillColor: Colors.white,
-              suffixIcon: IconButton(
-                onPressed: () => setState(
-                      () => _passwordHidden = !_passwordHidden,
-                ),
-                icon: Icon(
-                  _passwordHidden
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                ),
-              ),
-            ),
-            validator: (value) => value == null || value.length < 8
-                ? 'Password must contain at least 8 characters.'
-                : null,
-          ),
-          const SizedBox(
-            height: 14,
-          ),
-          TextFormField(
-            controller: _confirmPassword,
-            obscureText: _confirmPasswordHidden,
-            decoration: InputDecoration(
-              labelText: 'Confirm new password',
-              prefixIcon: const Icon(
-                Icons.lock_reset_outlined,
-              ),
-              border: const OutlineInputBorder(),
-              filled: true,
-              fillColor: Colors.white,
-              suffixIcon: IconButton(
-                onPressed: () => setState(
-                      () => _confirmPasswordHidden = !_confirmPasswordHidden,
-                ),
-                icon: Icon(
-                  _confirmPasswordHidden
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                ),
-              ),
-            ),
-            validator: (value) =>
-            value != _password.text ? 'Passwords do not match.' : null,
-          ),
-          if (_passwordMessage != null) ...[
-            const SizedBox(
-              height: 12,
-            ),
-            Row(
-              children: [
-                Icon(
-                  _passwordError ? Icons.error_outline : Icons.check_circle,
-                  size: 20,
-                  color: _passwordError ? Colors.red : Colors.green,
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: Text(
-                    _passwordMessage!,
-                    style: TextStyle(
-                      color: _passwordError
-                          ? Colors.red.shade700
-                          : Colors.green.shade700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-          const SizedBox(
-            height: 16,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: FilledButton.icon(
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(
-                  0xFFB45309,
-                ),
-              ),
-              onPressed: _resettingPassword ? null : _resetPassword,
-              icon: _resettingPassword
-                  ? const SizedBox.square(
-                dimension: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              )
-                  : const Icon(
-                Icons.lock_reset,
-              ),
-              label: Text(
-                _resettingPassword
-                    ? 'Resetting password…'
-                    : 'Update password',
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  Widget _userField(
-      String key,
-      String label,
-      IconData icon,
-      double width, {
-        bool required = false,
-      }) =>
-      SizedBox(
-        width: width,
-        child: TextFormField(
-          controller: _fields[key],
-          decoration: InputDecoration(
-            labelText: label,
-            prefixIcon: Icon(
-              icon,
-            ),
-            border: const OutlineInputBorder(),
-          ),
-          validator: required
-              ? (value) => value == null || value.trim().isEmpty
-              ? '$label is required.'
-              : null
-              : null,
-        ),
-      );
-}
-
-// =========================================================
-// USER DETAILS
-// =========================================================
-
-class _UserDetails extends StatelessWidget {
-  const _UserDetails({
-    required this.user,
-  });
-
-  final AdminUser user;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      _AdminDetailsDialog(
-        icon: Icons.manage_accounts_outlined,
-        title: user.name,
-        subtitle: 'User information and account role.',
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _EditorSectionTitle(
-              icon: Icons.badge_outlined,
-              title: 'User information',
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            LayoutBuilder(
-              builder: (
-                  context,
-                  constraints,
-                  ) {
-                final width = _compactFieldWidth(
-                  constraints.maxWidth,
-                );
-
-                return Wrap(
-                  spacing: 14,
-                  runSpacing: 14,
-                  children: [
-                    _detailField(
-                      'First name',
-                      user.firstName,
-                      Icons.person_outline,
-                      width,
-                    ),
-                    _detailField(
-                      'Last name',
-                      user.lastName,
-                      Icons.person_outline,
-                      width,
-                    ),
-                    _detailField(
-                      'Username',
-                      user.username,
-                      Icons.alternate_email,
-                      width,
-                    ),
-                    _detailField(
-                      'Email',
-                      user.email,
-                      Icons.email_outlined,
-                      width,
-                    ),
-                    _detailField(
-                      'Phone',
-                      user.phone,
-                      Icons.phone_outlined,
-                      width,
-                    ),
-                    _detailField(
-                      'Company',
-                      user.company,
-                      Icons.business_outlined,
-                      width,
-                    ),
-                    _detailField(
-                      'Country',
-                      user.country,
-                      Icons.public,
-                      width,
-                    ),
-                    _detailField(
-                      'Created',
-                      _friendlyDate(
-                        user.createdAt,
-                      ),
-                      Icons.add_circle_outline,
-                      width,
-                    ),
-                    _detailField(
-                      'Updated',
-                      _friendlyDate(
-                        user.updatedAt,
-                      ),
-                      Icons.update,
-                      width,
-                    ),
-                    _detailField(
-                      'Role',
-                      _titleCase(
-                        user.role,
-                      ),
-                      Icons.admin_panel_settings_outlined,
-                      width,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-      );
-}
-
-// =========================================================
-// DIALOGS
-// =========================================================
-
-class _AdminDetailsDialog extends StatelessWidget {
-  const _AdminDetailsDialog({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.child,
-  });
-
-  final IconData icon;
-
-  final String title;
-
-  final String subtitle;
-
-  final Widget child;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final screen = MediaQuery.sizeOf(
-      context,
-    );
-
-    final compact = screen.width < 560;
-
-    return Dialog(
-      insetPadding: EdgeInsets.all(
-        compact ? 8 : 16,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          20,
-        ),
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 780,
-          maxHeight: screen.height - (compact ? 24 : 48),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                compact ? 16 : 24,
-                compact ? 16 : 20,
-                8,
-                compact ? 14 : 18,
-              ),
-              decoration: const BoxDecoration(
-                color: Color(
-                  0xFFF1F5FF,
-                ),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(
-                    20,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  if (!compact) ...[
-                    CircleAvatar(
-                      backgroundColor: const Color(
-                        0xFF2563EB,
-                      ),
-                      foregroundColor: Colors.white,
-                      child: Icon(
-                        icon,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 14,
-                    ),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: compact ? 18 : 21,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          subtitle,
-                          style: const TextStyle(
-                            color: Color(
-                              0xFF64748B,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(
-                      context,
-                    ),
-                    icon: const Icon(
-                      Icons.close,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(
-                  compact ? 14 : 24,
-                ),
-                child: child,
-              ),
-            ),
-            const Divider(
-              height: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.all(
-                compact ? 12 : 16,
-              ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: FilledButton.icon(
-                  onPressed: () => Navigator.pop(
-                    context,
-                  ),
-                  icon: const Icon(
-                    Icons.check,
-                  ),
-                  label: const Text(
-                    'Done',
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AdminEditDialog extends StatelessWidget {
-  const _AdminEditDialog({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onSave,
-    required this.child,
-  });
-
-  final IconData icon;
-
-  final String title;
-
-  final String subtitle;
-
-  final VoidCallback onSave;
-
-  final Widget child;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final screen = MediaQuery.sizeOf(
-      context,
-    );
-
-    final compact = screen.width < 560;
-
-    return Dialog(
-      insetPadding: EdgeInsets.all(
-        compact ? 8 : 16,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          20,
-        ),
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 780,
-          maxHeight: screen.height - (compact ? 24 : 48),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                compact ? 16 : 24,
-                compact ? 16 : 20,
-                8,
-                compact ? 14 : 18,
-              ),
-              decoration: const BoxDecoration(
-                color: Color(
-                  0xFFF1F5FF,
-                ),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(
-                    20,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  if (!compact) ...[
-                    CircleAvatar(
-                      backgroundColor: const Color(
-                        0xFF2563EB,
-                      ),
-                      foregroundColor: Colors.white,
-                      child: Icon(
-                        icon,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 14,
-                    ),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: compact ? 18 : 21,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          subtitle,
-                          style: const TextStyle(
-                            color: Color(
-                              0xFF64748B,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(
-                      context,
-                    ),
-                    icon: const Icon(
-                      Icons.close,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(
-                  compact ? 14 : 24,
-                ),
-                child: child,
-              ),
-            ),
-            const Divider(
-              height: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.all(
-                compact ? 12 : 16,
-              ),
-              child: Wrap(
-                alignment: WrapAlignment.end,
-                spacing: 10,
-                runSpacing: 8,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(
-                      context,
-                    ),
-                    child: const Text(
-                      'Cancel',
-                    ),
-                  ),
-                  FilledButton.icon(
-                    onPressed: onSave,
-                    icon: const Icon(
-                      Icons.save_outlined,
-                    ),
-                    label: const Text(
-                      'Save changes',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// =========================================================
-// COMMON CARDS / BADGES
-// =========================================================
-
-class _AdminListCard extends StatelessWidget {
-  const _AdminListCard({
-    required this.child,
-    this.margin = EdgeInsets.zero,
-  });
-
-  final Widget child;
-
-  final EdgeInsetsGeometry margin;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: double.infinity,
-        margin: margin,
-        padding: const EdgeInsets.all(
-          16,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(
-            14,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: child,
-      );
-}
-
-class _InfoLine extends StatelessWidget {
-  const _InfoLine({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-
-  final String label;
-
-  final String value;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Padding(
-        padding: const EdgeInsets.only(
-          bottom: 8,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: const Color(
-                0xFF64748B,
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            SizedBox(
-              width: 78,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Color(
-                    0xFF64748B,
-                  ),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: Text(
-                value.isEmpty ? '—' : value,
-                overflow: TextOverflow.visible,
-              ),
-            ),
-          ],
-        ),
-      );
-}
-
-class _SummaryCard extends StatelessWidget {
-  const _SummaryCard(
-      this.label,
-      this.total,
-      this.icon,
-      this.color, {
-        required this.width,
-        required this.showIcon,
-      });
-
-  final String label;
-
-  final int total;
-
-  final IconData icon;
-
-  final Color color;
-
-  final double width;
-
-  final bool showIcon;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        width: width,
-        padding: EdgeInsets.symmetric(
-          horizontal: showIcon ? 18 : 6,
-          vertical: showIcon ? 18 : 10,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(
-            showIcon ? 14 : 8,
-          ),
-          border: Border.all(
-            color: const Color(
-              0xFFE2E8F0,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            if (showIcon) ...[
-              CircleAvatar(
-                backgroundColor: color.withValues(
-                  alpha: .12,
-                ),
-                child: Icon(
-                  icon,
-                  color: color,
-                ),
-              ),
-              const SizedBox(
-                width: 14,
-              ),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$total',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: showIcon ? TextAlign.start : TextAlign.center,
-                    style: TextStyle(
-                      fontSize: showIcon ? 25 : 19,
-                      fontWeight: FontWeight.w900,
-                      color: color,
-                    ),
-                  ),
-                  Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: showIcon ? TextAlign.start : TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: showIcon ? 12 : 10,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge(
-      this.status, {
-        this.compact = false,
-      });
-
-  final String status;
-
-  final bool compact;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final color = switch (status) {
-      'done' => Colors.green,
-      'pending' => Colors.orange,
-      _ => Colors.blue,
-    };
-
-    return _Badge(
-      label: _titleCase(
-        status,
-      ),
-      color: color,
-      compact: compact,
-    );
-  }
-}
-
-class _RoleBadge extends StatelessWidget {
-  const _RoleBadge(
-      this.role,
-      );
-
-  final String role;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      _Badge(
-        label: _titleCase(
-          role,
-        ),
-        color: role == 'admin' ? Colors.deepPurple : Colors.blueGrey,
-      );
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({
-    required this.label,
-    required this.color,
-    this.compact = false,
-  });
-
-  final String label;
-
-  final MaterialColor color;
-
-  final bool compact;
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) =>
-      Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: compact ? 7 : 10,
-          vertical: compact ? 3 : 5,
-        ),
-        decoration: BoxDecoration(
-          color: color.withValues(
-            alpha: .12,
-          ),
-          borderRadius: BorderRadius.circular(
-            30,
-          ),
-        ),
-        child: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: color.shade700,
-            fontSize: compact ? 11 : null,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
-}
-
-class _ErrorView extends StatelessWidget {
+// ===========================================================
+// ERROR VIEW
+// ===========================================================
+
+class _ErrorView
+    extends StatelessWidget {
   const _ErrorView({
     required this.message,
     required this.onRetry,
@@ -6440,43 +1869,51 @@ class _ErrorView extends StatelessWidget {
   @override
   Widget build(
       BuildContext context,
-      ) =>
-      Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 48,
-              color: Colors.red,
+      ) {
+    return Center(
+      child: Column(
+        mainAxisSize:
+        MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            size: 48,
+            color: Colors.red,
+          ),
+
+          const SizedBox(
+            height: 12,
+          ),
+
+          Padding(
+            padding:
+            const EdgeInsets
+                .symmetric(
+              horizontal: 24,
             ),
-            const SizedBox(
-              height: 12,
-            ),
-            Text(
+            child: Text(
               message,
+              textAlign:
+              TextAlign.center,
             ),
-            const SizedBox(
-              height: 16,
+          ),
+
+          const SizedBox(
+            height: 16,
+          ),
+
+          FilledButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(
+              Icons.refresh,
             ),
-            FilledButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(
-                Icons.refresh,
-              ),
-              label: const Text(
-                'Try again',
-              ),
+            label:
+            const Text(
+              'Try again',
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }
-
-
-String _titleCase(
-    String value,
-    ) =>
-    value.isEmpty
-        ? value
-        : '${value[0].toUpperCase()}${value.substring(1).toLowerCase()}';

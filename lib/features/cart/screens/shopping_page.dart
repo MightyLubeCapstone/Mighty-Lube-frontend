@@ -9,6 +9,9 @@ import 'package:mighty_lube/features/application/screens/application_catalog_pag
 import 'package:mighty_lube/features/cart/repositories/draft_repository.dart';
 import 'package:mighty_lube/features/configurations/repositories/configuration_repository.dart';
 
+import 'package:mighty_lube/core/widget/product_configuration_form.dart';
+import 'package:mighty_lube/features/products/service/product_catalog_resolver.dart';
+
 import '../repositories/cart_repositories.dart';
 
 class ShoppingPage extends StatefulWidget {
@@ -71,7 +74,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   // GET CART CONFIGURATIONS
   // =========================================================
 
-  void getOrders() async {
+  Future<void> getOrders() async {
     setState(() {
       cartLoading = true;
     });
@@ -704,6 +707,315 @@ class _ShoppingPageState extends State<ShoppingPage> {
     return numberOfFields;
   }
 
+
+
+  // =========================================================
+// EDIT CONFIGURATION USING ACTUAL PRODUCT FORM
+// =========================================================
+
+  Future<void> _editConfiguration(dynamic configurationID, int fallbackQuantity,) async {
+    setState(() {
+      orderLoading = true;
+    });
+
+    try {
+      // -------------------------------------------------------
+      // GET EXISTING CART CONFIGURATION
+      // -------------------------------------------------------
+
+      final response = await CartRepository.getOrder(
+        configurationID: configurationID,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (!response.success || response.data == null) {
+        setState(() {
+          orderLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.message ?? 'Unable to load configuration.',),),
+        );
+
+        return;
+      }
+
+      // -------------------------------------------------------
+      // NORMALIZE RESPONSE
+      // -------------------------------------------------------
+
+      final rawConfiguration = response.data;
+
+      if (rawConfiguration is! Map) {
+        setState(() {
+          orderLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Invalid configuration response.',
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      final configuration =
+      Map<String, dynamic>.from(
+        rawConfiguration,
+      );
+
+      // -------------------------------------------------------
+      // GET PRODUCT TYPE
+      // -------------------------------------------------------
+
+      final productType = configuration['productType']?.toString().trim() ?? '';
+
+      if (productType.isEmpty) {
+        setState(() {
+          orderLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Product type is missing.',
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      // -------------------------------------------------------
+      // FIND ACTUAL PRODUCT
+      // -------------------------------------------------------
+
+      final product =
+      ProductCatalogResolver.findById(
+        productType,
+      );
+
+      if (product == null) {
+        setState(() {
+          orderLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Product definition not found for $productType.',
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      // -------------------------------------------------------
+      // EXISTING FORM DATA
+      // -------------------------------------------------------
+
+      final rawConfigurationData =
+      configuration['configurationData'];
+
+      if (rawConfigurationData is! Map) {
+        setState(() {
+          orderLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Configuration data is missing.',
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      final configurationData =
+      Map<String, dynamic>.from(
+        rawConfigurationData,
+      );
+
+      configurationData.remove('_id');
+
+      // -------------------------------------------------------
+      // EXISTING QUANTITY
+      // -------------------------------------------------------
+
+      final quantity =
+          int.tryParse(
+            configuration['numRequested']
+                ?.toString() ??
+                '',
+          ) ??
+              fallbackQuantity;
+
+      setState(() {
+        orderLoading = false;
+      });
+
+      if (!mounted) {
+        return;
+      }
+
+      // -------------------------------------------------------
+      // OPEN ACTUAL PRODUCT FORM
+      // -------------------------------------------------------
+
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: Colors.white,
+        builder: (sheetContext) {
+          return FractionallySizedBox(
+            heightFactor: 0.95,
+            child: Column(
+              children: [
+                // -------------------------------------------------
+                // HEADER
+                // -------------------------------------------------
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    16,
+                    8,
+                    8,
+                    8,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Edit Configuration',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight:
+                                FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              product.title,
+                              maxLines: 1,
+                              overflow:
+                              TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.of(
+                            sheetContext,
+                          ).pop();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Divider(
+                  height: 1,
+                ),
+
+                // -------------------------------------------------
+                // SAME PRODUCT FORM USED DURING CREATE
+                // -------------------------------------------------
+
+                Expanded(
+                  child: ProductConfigurationForm(
+                    product: product,
+
+                    initialConfiguration:
+                    configurationData,
+
+                    initialQuantity:
+                    quantity < 1
+                        ? 1
+                        : quantity,
+
+                    // ---------------------------------------------
+                    // UPDATE SAME CART CONFIGURATION
+                    // ---------------------------------------------
+
+                    onUpdate: (
+                        updatedConfiguration,
+                        updatedQuantity,
+                        ) {
+                      return CartRepository.updateOrder(
+                        configurationID:
+                        configurationID,
+                        newData:
+                        updatedConfiguration,
+                        numRequested:
+                        updatedQuantity,
+                      );
+                    },
+
+                    // ---------------------------------------------
+                    // AFTER SUCCESS
+                    // ---------------------------------------------
+
+                    onUpdateSuccess: () async {
+                      Navigator.of(
+                        sheetContext,
+                      ).pop();
+
+                      await getOrders();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        orderLoading = false;
+      });
+
+      if (kDebugMode) {
+        print(
+          'Error opening edit configuration: $error',
+        );
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Unable to open configuration.',
+          ),
+        ),
+      );
+    }
+  }
+
+
   // =========================================================
   // SHOW CONFIGURATION
   // =========================================================
@@ -1149,10 +1461,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                     orderLoading = true;
                                   },
                                 );
-
                                 _showCurrentConfiguration(
                                   configurationID,
-                                  false,
+                                  true,
                                   quantity,
                                 );
                               },
@@ -1256,9 +1567,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                                   },
                                                 );
 
-                                                _showCurrentConfiguration(
+                                                _editConfiguration(
                                                   configurationID,
-                                                  true,
                                                   quantity,
                                                 );
                                               },
