@@ -22,9 +22,16 @@ class ConfigurationList extends StatelessWidget {
     required this.onViewUser,
   });
 
-  static const List<String> statuses = [
-    'requested',
+  // =========================================================
+  // GROUP ORDER
+  //
+  // 1. Pending
+  // 2. Requested
+  // 3. Done
+  // =========================================================
+  static const List<String> _statuses = [
     'pending',
+    'requested',
     'done',
   ];
 
@@ -76,14 +83,13 @@ class ConfigurationList extends StatelessWidget {
     }
 
     final sections = [
-      for (final status in statuses)
+      for (final status in _statuses)
         MapEntry(
           status,
           items
               .where(
                 (item) =>
-            (item.adminWorkflowStatus ??
-                'requested') ==
+            (item.adminWorkflowStatus ?? 'requested') ==
                 status,
           )
               .toList(),
@@ -178,8 +184,7 @@ class ConfigurationList extends StatelessWidget {
 // STATUS SECTION HEADER
 // ===========================================================
 
-class _StatusSectionHeader
-    extends StatelessWidget {
+class _StatusSectionHeader extends StatelessWidget {
   const _StatusSectionHeader({
     required this.status,
     required this.count,
@@ -193,19 +198,15 @@ class _StatusSectionHeader
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding:
-      const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 14,
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color:
-        const Color(0xFFF8FAFC),
-        borderRadius:
-        BorderRadius.circular(8),
+        color: _sectionBackgroundColor(status),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color:
-          const Color(0xFFE2E8F0),
+          color: _sectionBorderColor(status),
         ),
       ),
       child: Row(
@@ -222,13 +223,44 @@ class _StatusSectionHeader
             '$count configuration'
                 '${count == 1 ? '' : 's'}',
             style: const TextStyle(
-              fontWeight:
-              FontWeight.w800,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],
       ),
     );
+  }
+
+  Color _sectionBackgroundColor(String status) {
+    switch (status.trim().toLowerCase()) {
+      case 'pending':
+        return const Color(0xFFFEF2F2);
+
+      case 'requested':
+        return const Color(0xFFFFFBEB);
+
+      case 'done':
+        return const Color(0xFFF0FDF4);
+
+      default:
+        return const Color(0xFFF8FAFC);
+    }
+  }
+
+  Color _sectionBorderColor(String status) {
+    switch (status.trim().toLowerCase()) {
+      case 'pending':
+        return const Color(0xFFFECACA);
+
+      case 'requested':
+        return const Color(0xFFFDE68A);
+
+      case 'done':
+        return const Color(0xFFBBF7D0);
+
+      default:
+        return const Color(0xFFE2E8F0);
+    }
   }
 }
 
@@ -236,8 +268,7 @@ class _StatusSectionHeader
 // STATUS BADGE
 // ===========================================================
 
-class _StatusBadge
-    extends StatelessWidget {
+class _StatusBadge extends StatelessWidget {
   const _StatusBadge(
       this.status,
       );
@@ -249,46 +280,46 @@ class _StatusBadge
     final normalized =
     status.trim().toLowerCase();
 
-    final MaterialColor color;
+    Color textColor;
+    Color backgroundColor;
 
     switch (normalized) {
-      case 'done':
-        color = Colors.green;
-        break;
-
       case 'pending':
-        color = Colors.orange;
+        textColor = const Color(0xFFDC2626);
+        backgroundColor = const Color(0xFFFEE2E2);
         break;
 
       case 'requested':
-        color = Colors.blue;
+        textColor = const Color(0xFFD97706);
+        backgroundColor = const Color(0xFFFEF3C7);
+        break;
+
+      case 'done':
+        textColor = const Color(0xFF15803D);
+        backgroundColor = const Color(0xFFDCFCE7);
         break;
 
       default:
-        color = Colors.blueGrey;
+        textColor = const Color(0xFF475569);
+        backgroundColor = const Color(0xFFF1F5F9);
     }
 
     return Container(
-      padding:
-      const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 10,
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color:
-        color.withOpacity(.12),
-        borderRadius:
-        BorderRadius.circular(30),
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
         _titleCase(status),
         maxLines: 1,
-        overflow:
-        TextOverflow.ellipsis,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: color.shade700,
-          fontWeight:
-          FontWeight.w700,
+          color: textColor,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -299,8 +330,7 @@ class _StatusBadge
 // EMPTY CARD
 // ===========================================================
 
-class _EmptyConfigurationCard
-    extends StatelessWidget {
+class _EmptyConfigurationCard extends StatelessWidget {
   const _EmptyConfigurationCard({
     required this.text,
   });
@@ -311,20 +341,16 @@ class _EmptyConfigurationCard
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding:
-      const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-        BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color:
-          const Color(0xFFE2E8F0),
+          color: const Color(0xFFE2E8F0),
         ),
       ),
       child: Padding(
-        padding:
-        const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: 28,
         ),
         child: Center(

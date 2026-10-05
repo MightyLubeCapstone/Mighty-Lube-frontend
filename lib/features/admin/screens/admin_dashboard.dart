@@ -416,8 +416,7 @@ class _AdminDashboardPageState
       String? status,
       ) async {
     final currentStatus =
-        configuration.adminWorkflowStatus ??
-            'requested';
+        configuration.adminWorkflowStatus ?? 'requested';
 
     const allowedStatuses = {
       'requested',
@@ -428,30 +427,22 @@ class _AdminDashboardPageState
     if (status == null ||
         status == currentStatus ||
         !allowedStatuses.contains(status) ||
-        _updatingConfigurations.contains(
-          configuration.id,
-        )) {
+        _updatingConfigurations.contains(configuration.id)) {
       return;
     }
 
     setState(() {
-      _updatingConfigurations.add(
-        configuration.id,
-      );
+      _updatingConfigurations.add(configuration.id);
     });
 
     try {
       final response =
-      await AdminRepository
-          .updateAdminWorkflowStatus(
-        configurationID:
-        configuration.id,
+      await AdminRepository.updateAdminWorkflowStatus(
+        configurationID: configuration.id,
         adminWorkflowStatus: status,
       );
 
-      if (await _handleAuthStatus(
-        response.statusCode,
-      )) {
+      if (await _handleAuthStatus(response.statusCode)) {
         return;
       }
 
@@ -467,25 +458,52 @@ class _AdminDashboardPageState
               'Unable to update configuration status.',
           error: true,
         );
-
-        if (response.statusCode == 404) {
-          await _loadConfigurations();
-        }
-
         return;
       }
 
-      setState(() {
-        configuration.adminWorkflowStatus =
-        response.data!;
-
-        _recalculateSummary();
-      });
-
-      _message(
-        'Configuration status updated.',
+      final freshResponse =
+      await AdminRepository.getConfiguration(
+        configurationID: configuration.id,
       );
-    } catch (_) {
+
+      if (await _handleAuthStatus(freshResponse.statusCode)) {
+        return;
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      if (!freshResponse.success || freshResponse.data == null) {
+        _message(
+          freshResponse.message ??
+              'Status updated, but unable to refresh configuration details.',
+          error: true,
+        );
+        return;
+      }
+
+      final freshConfiguration = freshResponse.data!;
+      final configurationIndex = _configurations.indexWhere(
+            (item) => item.id == configuration.id,
+      );
+
+      if (configurationIndex != -1) {
+        setState(() {
+          _configurations[configurationIndex] = freshConfiguration;
+          _recalculateSummary();
+        });
+      }
+
+      _message('Configuration status updated.');
+    } catch (error, stackTrace) {
+      debugPrint('STATUS UPDATE ERROR: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!mounted) {
+        return;
+      }
+
       _message(
         'Unable to update configuration status.',
         error: true,
@@ -493,9 +511,7 @@ class _AdminDashboardPageState
     } finally {
       if (mounted) {
         setState(() {
-          _updatingConfigurations.remove(
-            configuration.id,
-          );
+          _updatingConfigurations.remove(configuration.id);
         });
       }
     }
@@ -652,16 +668,94 @@ class _AdminDashboardPageState
   // VIEW CONFIGURATION
   // =========================================================
 
-  void _viewConfiguration(
+  Future<void> _viewConfiguration(
       AdminConfiguration configuration,
-      ) {
-    showDialog<void>(
-      context: context,
-      builder: (_) =>
-          ConfigurationDetailsDialog(
-            configuration: configuration,
-          ),
-    );
+      ) async {
+    try {
+      debugPrint('==============================================');
+      debugPrint('VIEW CONFIGURATION DEBUG');
+      debugPrint('Requested ID: ${configuration.id}');
+      debugPrint('List activity count: ${configuration.activityHistory.length}');
+      debugPrint('List activity history: ${configuration.activityHistory}');
+
+      final response = await AdminRepository.getConfiguration(
+        configurationID: configuration.id,
+      );
+
+      debugPrint('GET success: ${response.success}');
+      debugPrint('GET statusCode: ${response.statusCode}');
+      debugPrint('GET message: ${response.message}');
+
+      if (await _handleAuthStatus(response.statusCode)) {
+        return;
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      if (!response.success || response.data == null) {
+        debugPrint('GET configuration returned no usable data.');
+        debugPrint('==============================================');
+
+        _message(
+          response.message ?? 'Unable to load configuration details.',
+          error: true,
+        );
+        return;
+      }
+
+      final freshConfiguration = response.data!;
+
+      debugPrint('Fresh ID: ${freshConfiguration.id}');
+      debugPrint('Fresh status: ${freshConfiguration.adminWorkflowStatus}');
+      debugPrint(
+        'Fresh adminStatusChangedAt: ${freshConfiguration.adminStatusChangedAt}',
+      );
+      debugPrint(
+        'Fresh activity count: ${freshConfiguration.activityHistory.length}',
+      );
+      debugPrint(
+        'Fresh activity history: ${freshConfiguration.activityHistory}',
+      );
+      debugPrint(
+        'Fresh configurationData: ${freshConfiguration.configurationData}',
+      );
+      debugPrint('==============================================');
+
+      final configurationIndex = _configurations.indexWhere(
+            (item) => item.id == freshConfiguration.id,
+      );
+
+      if (configurationIndex != -1) {
+        setState(() {
+          _configurations[configurationIndex] = freshConfiguration;
+        });
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      await showDialog<void>(
+        context: context,
+        builder: (_) => ConfigurationDetailsDialog(
+          configuration: freshConfiguration,
+        ),
+      );
+    } catch (error, stackTrace) {
+      debugPrint('VIEW CONFIGURATION ERROR: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!mounted) {
+        return;
+      }
+
+      _message(
+        'Unable to load configuration details.',
+        error: true,
+      );
+    }
   }
 
   // =========================================================

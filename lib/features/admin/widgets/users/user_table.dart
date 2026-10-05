@@ -23,22 +23,10 @@ class UserTable extends StatelessWidget {
 
   final List<String> roles;
 
-  final void Function(
-      AdminUser user,
-      String? role,
-      ) onRoleChanged;
-
-  final void Function(
-      AdminUser user,
-      ) onView;
-
-  final void Function(
-      AdminUser user,
-      ) onEdit;
-
-  final void Function(
-      AdminUser user,
-      ) onDelete;
+  final void Function(AdminUser user, String? role, ) onRoleChanged;
+  final void Function(AdminUser user, ) onView;
+  final void Function(AdminUser user, ) onEdit;
+  final void Function(AdminUser user, ) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -46,45 +34,22 @@ class UserTable extends StatelessWidget {
       empty: users.isEmpty,
       emptyText: 'No users found.',
       table: DataTable(
-        columnSpacing: _columnSpacing(
-          context,
-        ),
+        columnSpacing: _columnSpacing(context,),
         horizontalMargin: 12,
         headingRowHeight: 44,
         dataRowMinHeight: 54,
         dataRowMaxHeight: 58,
         dividerThickness: .65,
         columns: const [
-          DataColumn(
-            label: Text('Name'),
-          ),
-          DataColumn(
-            label: Text('Username'),
-          ),
-          DataColumn(
-            label: Text('Email'),
-          ),
-          DataColumn(
-            label: Text('Company'),
-          ),
-          DataColumn(
-            label: Text('Created'),
-          ),
-          DataColumn(
-            label: Text('Role'),
-          ),
-          DataColumn(
-            label: Text('Actions'),
-          ),
+          DataColumn(label: Text('Name'),),
+          DataColumn(label: Text('Username'),),
+          DataColumn(label: Text('Email'),),
+          DataColumn(label: Text('Company'),),
+          DataColumn(label: Text('Created'),),
+          DataColumn(label: Text('Role'),),
+          DataColumn(label: Text('Actions'),),
         ],
-        rows: users
-            .map(
-              (user) => _userRow(
-            context,
-            user,
-          ),
-        )
-            .toList(),
+        rows: users.map((user) => _userRow(context, user,),).toList(),
       ),
     );
   }
@@ -93,10 +58,7 @@ class UserTable extends StatelessWidget {
 // USER ROW
 // =========================================================
 
-  DataRow _userRow(
-      BuildContext context,
-      AdminUser user,
-      ) {
+  DataRow _userRow(BuildContext context, AdminUser user,) {
     return DataRow(
       cells: [
         DataCell(

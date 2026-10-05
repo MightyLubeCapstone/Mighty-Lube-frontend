@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../../models/admin_models.dart';
@@ -27,90 +28,19 @@ class UserDetailsDialog extends StatelessWidget {
             icon: Icons.badge_outlined,
             title: 'User information',
           ),
-          const SizedBox(height: 16),
-          LayoutBuilder(
-            builder: (
-                context,
-                constraints,
-                ) {
-              final width = _compactFieldWidth(
-                constraints.maxWidth,
-              );
-
-              return Wrap(
-                spacing: 14,
-                runSpacing: 14,
-                children: [
-                  _detailField(
-                    'First name',
-                    user.firstName,
-                    Icons.person_outline,
-                    width,
-                  ),
-                  _detailField(
-                    'Last name',
-                    user.lastName,
-                    Icons.person_outline,
-                    width,
-                  ),
-                  _detailField(
-                    'Username',
-                    user.username,
-                    Icons.alternate_email,
-                    width,
-                  ),
-                  _detailField(
-                    'Email',
-                    user.email,
-                    Icons.email_outlined,
-                    width,
-                  ),
-                  _detailField(
-                    'Phone',
-                    user.phone,
-                    Icons.phone_outlined,
-                    width,
-                  ),
-                  _detailField(
-                    'Company',
-                    user.company,
-                    Icons.business_outlined,
-                    width,
-                  ),
-                  _detailField(
-                    'Country',
-                    user.country,
-                    Icons.public,
-                    width,
-                  ),
-                  _detailField(
-                    'Created',
-                    _friendlyDate(
-                      user.createdAt,
-                    ),
-                    Icons.add_circle_outline,
-                    width,
-                  ),
-                  _detailField(
-                    'Updated',
-                    _friendlyDate(
-                      user.updatedAt,
-                    ),
-                    Icons.update,
-                    width,
-                  ),
-                  _detailField(
-                    'Role',
-                    _titleCase(
-                      user.role,
-                    ),
-                    Icons.admin_panel_settings_outlined,
-                    width,
-                  ),
-                ],
-              );
-            },
-          ),
+          const SizedBox(height: 12),
+          _plainInfoGrid([
+            _PlainInfo('First name', user.firstName),
+            _PlainInfo('Last name', user.lastName),
+            _PlainInfo('Username', user.username),
+            _PlainInfo('Email', user.email),
+            _PlainInfo('Phone', user.phone),
+            _PlainInfo('Company', user.company),
+            _PlainInfo('Country', user.country),
+            _PlainInfo('Role', _titleCase(user.role)),
+            _PlainInfo('Created', _friendlyDate(user.createdAt)),
+            _PlainInfo('Updated', _friendlyDate(user.updatedAt)),
+          ]),
         ],
       ),
     );
@@ -402,9 +332,9 @@ class _EditUserDialogState
     );
   }
 
-  // =========================================================
-  // PASSWORD RESET
-  // =========================================================
+// =========================================================
+// PASSWORD RESET
+// =========================================================
 
   Widget _passwordSection() {
     return Form(
@@ -635,9 +565,9 @@ class _EditUserDialogState
     );
   }
 
-  // =========================================================
-  // USER FIELD
-  // =========================================================
+// =========================================================
+// USER FIELD
+// =========================================================
 
   Widget _userField(
       String key,
@@ -1113,6 +1043,126 @@ Widget _detailField(
             ? '—'
             : value.toString(),
         maxLines: 3,
+      ),
+    ),
+  );
+}
+
+
+// ===========================================================
+// COMPACT USER INFORMATION GRID
+// ===========================================================
+
+class _PlainInfo {
+  const _PlainInfo(
+      this.label,
+      this.value,
+      );
+
+  final String label;
+  final dynamic value;
+}
+
+Widget _plainInfoGrid(
+    List<_PlainInfo> items,
+    ) {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      final isMobile = constraints.maxWidth < 380;
+      final columnCount = isMobile ? 1 : 2;
+      final rowCount = (items.length / columnCount).ceil();
+
+      return Container(
+        width: double.infinity,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color(0xFFE2E8F0),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var row = 0; row < rowCount; row++)
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (var column = 0; column < columnCount; column++)
+                      if ((row * columnCount) + column < items.length)
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                right: !isMobile && column == 0
+                                    ? const BorderSide(
+                                  color: Color(0xFFE2E8F0),
+                                )
+                                    : BorderSide.none,
+                                bottom: row < rowCount - 1
+                                    ? const BorderSide(
+                                  color: Color(0xFFE2E8F0),
+                                )
+                                    : BorderSide.none,
+                              ),
+                            ),
+                            child: _plainInfoRow(
+                              items[(row * columnCount) + column].label,
+                              items[(row * columnCount) + column].value,
+                            ),
+                          ),
+                        )
+                      else
+                        const Expanded(
+                          child: SizedBox.shrink(),
+                        ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+Widget _plainInfoRow(
+    String label,
+    dynamic value,
+    ) {
+  final rawValue = value?.toString().trim() ?? '';
+  final displayValue = rawValue.isEmpty ? '—' : rawValue;
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: 10,
+      vertical: 8,
+    ),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '$label: ',
+              style: const TextStyle(
+                color: Color(0xFF475569),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            TextSpan(
+              text: displayValue,
+              style: const TextStyle(
+                color: Color(0xFF0F172A),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

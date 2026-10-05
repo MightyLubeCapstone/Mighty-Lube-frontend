@@ -61,9 +61,7 @@ class AdminConfigurationSummary {
   final int done;
 
 
-  factory AdminConfigurationSummary.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory AdminConfigurationSummary.fromJson(Map<String, dynamic> json,) {
     return AdminConfigurationSummary(
       total:
       _asInt(
@@ -326,10 +324,11 @@ class AdminConfiguration {
     required this.adminRequestedAt,
     required this.adminStartedAt,
     required this.adminCompletedAt,
+    required this.adminStatusChangedAt,
+    required this.activityHistory,
     required this.createdAt,
     required this.updatedAt,
   });
-
 
   final String configurationID;
 
@@ -340,7 +339,6 @@ class AdminConfiguration {
   final String productType;
 
   final String productName;
-
 
   // =========================================================
   // CONFIGURATION LIFECYCLE STATUS
@@ -363,7 +361,6 @@ class AdminConfiguration {
   // =========================================================
 
   String configurationStatus;
-
 
   // =========================================================
   // ADMIN WORKFLOW STATUS
@@ -388,7 +385,6 @@ class AdminConfiguration {
 
   String? adminWorkflowStatus;
 
-
   final bool isComplete;
 
   final int numRequested;
@@ -407,9 +403,19 @@ class AdminConfiguration {
 
   final DateTime? completedAt;
 
-
   // =========================================================
-  // ADMIN WORKFLOW TIMESTAMPS
+  // LEGACY / HISTORICAL ADMIN WORKFLOW TIMESTAMPS
+  //
+  // These are kept because existing records and existing UI
+  // may still contain/use them.
+  //
+  // IMPORTANT:
+  //
+  // Live current-status timer should use:
+  //
+  // adminStatusChangedAt
+  //
+  // instead of choosing between these fields.
   // =========================================================
 
   final DateTime? adminRequestedAt;
@@ -418,11 +424,47 @@ class AdminConfiguration {
 
   final DateTime? adminCompletedAt;
 
+  // =========================================================
+  // CURRENT ADMIN STATUS START TIME
+  //
+  // This represents when the configuration entered its
+  // CURRENT admin workflow status.
+  //
+  // Example:
+  //
+  // Requested -> Pending
+  // adminStatusChangedAt = time Pending started
+  //
+  // Pending -> Requested
+  // adminStatusChangedAt = time latest Requested started
+  //
+  // Requested -> Pending again
+  // adminStatusChangedAt = time latest Pending started
+  //
+  // This is the authoritative timestamp for the live timer.
+  // =========================================================
+
+  final DateTime? adminStatusChangedAt;
+
+  // =========================================================
+  // COMPLETE CONFIGURATION ACTIVITY HISTORY
+  //
+  // Backend examples:
+  //
+  // configuration_created
+  // configuration_updated
+  // configuration_submitted
+  // admin_status_changed
+  //
+  // Kept as List<Map<String, dynamic>> so frontend remains
+  // compatible while the audit-history UI is being built.
+  // =========================================================
+
+  final List<Map<String, dynamic>> activityHistory;
 
   final DateTime? createdAt;
 
   final DateTime? updatedAt;
-
 
   factory AdminConfiguration.fromJson(
       Map<String, dynamic> json,
@@ -527,6 +569,16 @@ class AdminConfiguration {
         json['adminCompletedAt'],
       ),
 
+      adminStatusChangedAt:
+      _asDateTime(
+        json['adminStatusChangedAt'],
+      ),
+
+      activityHistory:
+      _parseActivityHistory(
+        json['activityHistory'],
+      ),
+
       createdAt:
       _asDateTime(
         json['createdAt'],
@@ -539,7 +591,6 @@ class AdminConfiguration {
     );
   }
 
-
   // =========================================================
   // BASIC UI HELPERS
   // =========================================================
@@ -548,11 +599,9 @@ class AdminConfiguration {
     return configurationID;
   }
 
-
   String get name {
     return configurationName;
   }
-
 
   // =========================================================
   // CONFIGURATION STATUS HELPERS
@@ -562,26 +611,21 @@ class AdminConfiguration {
     return configurationStatus == 'draft';
   }
 
-
   bool get isCart {
     return configurationStatus == 'cart';
   }
-
 
   bool get isSubmitted {
     return configurationStatus == 'submitted';
   }
 
-
   bool get isCompleted {
     return configurationStatus == 'completed';
   }
 
-
   bool get isArchived {
     return configurationStatus == 'archived';
   }
-
 
   // =========================================================
   // ADMIN WORKFLOW STATUS HELPERS
@@ -591,21 +635,63 @@ class AdminConfiguration {
     return adminWorkflowStatus == 'requested';
   }
 
-
   bool get isPending {
     return adminWorkflowStatus == 'pending';
   }
-
 
   bool get isDone {
     return adminWorkflowStatus == 'done';
   }
 
-
   bool get hasAdminWorkflow {
     return adminWorkflowStatus != null;
   }
 
+  // =========================================================
+  // ACTIVITY HISTORY HELPERS
+  // =========================================================
+
+  bool get hasActivityHistory {
+    return activityHistory.isNotEmpty;
+  }
+
+  List<Map<String, dynamic>> get newestActivityFirst {
+    final items =
+    List<Map<String, dynamic>>.from(
+      activityHistory,
+    );
+
+    items.sort(
+          (a, b) {
+        final aDate =
+        _asDateTime(
+          a['changedAt'],
+        );
+
+        final bDate =
+        _asDateTime(
+          b['changedAt'],
+        );
+
+        if (aDate == null &&
+            bDate == null) {
+          return 0;
+        }
+
+        if (aDate == null) {
+          return 1;
+        }
+
+        if (bDate == null) {
+          return -1;
+        }
+
+        return bDate.compareTo(aDate);
+      },
+    );
+
+    return items;
+  }
 
   // =========================================================
   // BACKWARD COMPATIBILITY
@@ -625,7 +711,6 @@ class AdminConfiguration {
     return configurationStatus;
   }
 
-
   set status(
       String value,
       ) {
@@ -633,11 +718,9 @@ class AdminConfiguration {
         value;
   }
 
-
   String? get adminStatus {
     return adminWorkflowStatus;
   }
-
 
   set adminStatus(
       String? value,
@@ -646,7 +729,6 @@ class AdminConfiguration {
         value;
   }
 }
-
 
 // =========================================================
 // ADMIN USER
@@ -844,6 +926,21 @@ DateTime? _asDateTime(
   );
 }
 
+
+List<Map<String, dynamic>> _parseActivityHistory(
+    dynamic value,
+    ) {
+  if (value is! List) {
+    return <Map<String, dynamic>>[];
+  }
+
+  return value
+      .whereType<Map>()
+      .map(
+        (item) => Map<String, dynamic>.from(item),
+  )
+      .toList();
+}
 
 String _dateOnly(
     DateTime value,
