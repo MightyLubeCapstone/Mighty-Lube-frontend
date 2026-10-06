@@ -130,20 +130,93 @@ class UserRepository {
 
   // =========================================================
   // LOGIN
+  //
+  // rememberAccount = true
+  // -> backend creates normal session + 30-day remember token
+  // -> account is added/refreshed in the remembered account list
+  //
+  // rememberAccount = false
+  // -> normal session only
   // =========================================================
 
   static Future<ApiResponse<bool>> login({
     required String username,
     required String password,
+    bool rememberAccount = false,
   }) async {
     return UserApiService.login(
       username: username,
       password: password,
+      rememberAccount: rememberAccount,
+    );
+  }
+
+  // =========================================================
+  // REMEMBERED ACCOUNTS
+  //
+  // Maximum 5 remembered accounts are stored locally.
+  // Order is oldest -> newest.
+  //
+  // If a 6th account is remembered:
+  // -> oldest account is removed
+  // -> its remember token is revoked
+  //
+  // If an existing account is remembered again:
+  // -> no duplicate is created
+  // -> it becomes the newest remembered account
+  // =========================================================
+
+  static Future<List<Map<String, dynamic>>> getRememberedAccounts() async {
+    return UserApiService.getRememberedAccounts();
+  }
+
+  static Future<bool> hasRememberedAccount() async {
+    return UserApiService.hasRememberedAccount();
+  }
+
+  // Kept for compatibility with existing code.
+  // Returns the newest remembered username.
+  static Future<String?> getRememberedUsername() async {
+    return UserApiService.getRememberedUsername();
+  }
+
+  // =========================================================
+  // CONTINUE WITH REMEMBERED ACCOUNT
+  //
+  // Uses the selected account's 30-day remember token.
+  // Backend generates a NEW normal 12-hour session.
+  // No password is required.
+  // =========================================================
+
+  static Future<ApiResponse<bool>> continueWithRememberedAccount({
+    String? username,
+  }) async {
+    return UserApiService.continueWithRememberedAccount(
+      username: username,
+    );
+  }
+
+  // =========================================================
+  // FORGET REMEMBERED ACCOUNT
+  //
+  // Revokes only the selected account's remember token
+  // and removes only that account from local storage.
+  // Other remembered accounts remain unchanged.
+  // =========================================================
+
+  static Future<ApiResponse<bool>> forgetRememberedAccount({
+    String? username,
+  }) async {
+    return UserApiService.forgetRememberedAccount(
+      username: username,
     );
   }
 
   // =========================================================
   // LOGOUT
+  //
+  // Removes the current normal session only.
+  // All remembered accounts remain available for "Continue as".
   // =========================================================
 
   static Future<ApiResponse<bool>> logout() async {

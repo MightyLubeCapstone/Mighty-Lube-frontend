@@ -68,12 +68,17 @@ class ApiResponseHandler {
   // =========================================================
   // HANDLE ERROR RESPONSE
   //
-  // Supports legacy backend response formats:
+  // Supports both legacy and current backend formats:
   //
   // message
   // error
   // details
   // errors
+  // code
+  // errorCode
+  // fieldErrors
+  // missingFields
+  // data
   // =========================================================
 
   static ApiResponse<T> handleError<T>({
@@ -81,15 +86,27 @@ class ApiResponseHandler {
     required dynamic responseBody,
   }) {
     final dynamic decodedBody = _decodeBody(responseBody);
+
     String message = _defaultMessage(statusCode);
     dynamic data;
 
-    if (decodedBody is Map<String, dynamic>) {
+    Map<String, String> fieldErrors = <String, String>{};
+    List<String> missingFields = <String>[];
+    String? errorCode;
+
+    if (decodedBody is Map) {
+      final Map<String, dynamic> body =
+      Map<String, dynamic>.from(decodedBody);
+
+      // =====================================================
+      // MAIN ERROR MESSAGE
+      // =====================================================
+
       final dynamic errorMessage =
-          decodedBody['message'] ??
-              decodedBody['error'] ??
-              decodedBody['details'] ??
-              decodedBody['errors'];
+          body['message'] ??
+              body['error'] ??
+              body['details'] ??
+              body['errors'];
 
       final String? parsedMessage = _stringifyErrorMessage(
         errorMessage,
@@ -99,10 +116,73 @@ class ApiResponseHandler {
         message = parsedMessage;
       }
 
-      if (decodedBody.containsKey('data')) {
-        data = decodedBody['data'];
+      // =====================================================
+      // MACHINE-READABLE ERROR CODE
+      //
+      // Supports both:
+      // {
+      //   "code": "USERNAME_ALREADY_EXISTS"
+      // }
+      //
+      // and:
+      // {
+      //   "errorCode": "USERNAME_ALREADY_EXISTS"
+      // }
+      // =====================================================
+
+      final dynamic rawErrorCode =
+          body['code'] ??
+              body['errorCode'];
+
+      if (rawErrorCode != null &&
+          rawErrorCode.toString().trim().isNotEmpty) {
+        errorCode = rawErrorCode.toString().trim();
       }
-    } else if (decodedBody is String && decodedBody.trim().isNotEmpty) {
+
+      // =====================================================
+      // FIELD ERRORS
+      //
+      // Expected:
+      //
+      // {
+      //   "fieldErrors": {
+      //     "username": "This username is already taken",
+      //     "email": "Email already exists",
+      //     "phoneNumber": "Enter a valid phone number"
+      //   }
+      // }
+      // =====================================================
+
+      fieldErrors = _parseFieldErrors(
+        body['fieldErrors'],
+      );
+
+      // =====================================================
+      // MISSING REQUIRED FIELDS
+      //
+      // Expected:
+      //
+      // {
+      //   "missingFields": [
+      //     "phoneNumber",
+      //     "country"
+      //   ]
+      // }
+      // =====================================================
+
+      missingFields = _parseMissingFields(
+        body['missingFields'],
+      );
+
+      // =====================================================
+      // DATA
+      // =====================================================
+
+      if (body.containsKey('data')) {
+        data = body['data'];
+      }
+    } else if (decodedBody is String &&
+        decodedBody.trim().isNotEmpty) {
       message = decodedBody.trim();
     }
 
@@ -110,7 +190,73 @@ class ApiResponseHandler {
       message: message,
       statusCode: statusCode,
       data: data,
+      fieldErrors: fieldErrors,
+      missingFields: missingFields,
+      errorCode: errorCode,
     );
+  }
+
+  // =========================================================
+  // PARSE FIELD ERRORS
+  // =========================================================
+
+  static Map<String, String> _parseFieldErrors(
+      dynamic value,
+      ) {
+    if (value is! Map) {
+      return <String, String>{};
+    }
+
+    final result = <String, String>{};
+
+    value.forEach(
+          (
+          dynamic key,
+          dynamic errorValue,
+          ) {
+        final String fieldName = key.toString().trim();
+
+        if (fieldName.isEmpty || errorValue == null) {
+          return;
+        }
+
+        final String? errorMessage = _stringifyErrorMessage(
+          errorValue,
+        );
+
+        if (errorMessage != null &&
+            errorMessage.trim().isNotEmpty) {
+          result[fieldName] = errorMessage.trim();
+        }
+      },
+    );
+
+    return result;
+  }
+
+  // =========================================================
+  // PARSE MISSING FIELDS
+  // =========================================================
+
+  static List<String> _parseMissingFields(
+      dynamic value,
+      ) {
+    if (value is! List) {
+      return <String>[];
+    }
+
+    return value
+        .where(
+          (item) => item != null,
+    )
+        .map(
+          (item) => item.toString().trim(),
+    )
+        .where(
+          (item) => item.isNotEmpty,
+    )
+        .toSet()
+        .toList();
   }
 
   // =========================================================
@@ -137,7 +283,9 @@ class ApiResponseHandler {
   // COMMON RESPONSE BODY DECODER
   // =========================================================
 
-  static dynamic _decodeBody(dynamic body) {
+  static dynamic _decodeBody(
+      dynamic body,
+      ) {
     if (body == null) {
       return null;
     }
@@ -152,7 +300,9 @@ class ApiResponseHandler {
       }
 
       try {
-        return jsonDecode(body);
+        return jsonDecode(
+          body,
+        );
       } catch (_) {
         return body;
       }
@@ -167,17 +317,30 @@ class ApiResponseHandler {
   // Keeps compatibility with old UserAPI._extractErrorMessage()
   // =========================================================
 
-  static String? _stringifyErrorMessage(dynamic message) {
-    if (message is String && message.trim().isNotEmpty) {
-      return message;
+  static String? _stringifyErrorMessage(
+      dynamic message,
+      ) {
+    if (message is String &&
+        message.trim().isNotEmpty) {
+      return message.trim();
     }
 
-    if (message is List && message.isNotEmpty) {
-      return message.map((item) => item.toString(),).join('\n');
+    if (message is List &&
+        message.isNotEmpty) {
+      return message
+          .map(
+            (item) => item.toString(),
+      )
+          .join('\n');
     }
 
-    if (message is Map && message.isNotEmpty) {
-      return message.entries.map((entry) => '${entry.key}: ${entry.value}',).join('\n');
+    if (message is Map &&
+        message.isNotEmpty) {
+      return message.entries
+          .map(
+            (entry) => '${entry.key}: ${entry.value}',
+      )
+          .join('\n');
     }
 
     if (message != null) {
@@ -191,7 +354,9 @@ class ApiResponseHandler {
   // COMMON STATUS MESSAGE
   // =========================================================
 
-  static String _defaultMessage(int statusCode) {
+  static String _defaultMessage(
+      int statusCode,
+      ) {
     switch (statusCode) {
       case 400:
         return 'Bad request';

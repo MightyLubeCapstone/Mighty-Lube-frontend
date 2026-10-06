@@ -5,19 +5,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mighty_lube/features/auth/repositories/user_repository.dart';
-import 'package:password_strength_checker/password_strength_checker.dart';
 
 import '../../../core/widget/header_logo.dart';
-
-class PWDRequirements {
-  final String name;
-  final bool Function(String) check;
-
-  PWDRequirements(
-      this.name,
-      this.check,
-      );
-}
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({
@@ -30,79 +19,45 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController companyController = TextEditingController();
-
   final TextEditingController firstNameController = TextEditingController();
-
   final TextEditingController lastNameController = TextEditingController();
-
   final TextEditingController phoneController = TextEditingController();
-
   final TextEditingController emailController = TextEditingController();
-
   final TextEditingController usernameController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
-
   final TextEditingController confirmPasswordController =
   TextEditingController();
-
   final TextEditingController securityPinController = TextEditingController();
 
   List<String> _countries = [];
 
   String? countrytype;
 
+  String? _errorCompany;
+  String? _errorFirstName;
+  String? _errorLastName;
+  String? _errorPhone;
   String? _errorPassword;
-
   String? _errorConfirmPassword;
-
   String? _errorUser;
-
   String? _errorEmail;
-
   String? _errorSecurityPin;
-
   String? _errorCountry;
 
   Timer? _delay;
 
-  List<PWDRequirements> requirements = [
-    PWDRequirements(
-      'Password must be at least 8 characters',
-          (input) => input.length >= 8,
-    ),
-    PWDRequirements(
-      'Password must contain at least one uppercase letter',
-          (input) => RegExp(r'[A-Z]').hasMatch(input),
-    ),
-    PWDRequirements(
-      'Password must contain at least one lowercase letter',
-          (input) => RegExp(r'[a-z]').hasMatch(input),
-    ),
-    PWDRequirements(
-      'Password must contain at least one number',
-          (input) => RegExp(r'[0-9]').hasMatch(input),
-    ),
-    PWDRequirements(
-      'Password must contain at least one special character',
-          (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input),
-    ),
-  ];
-
-  List<PWDRequirements> _remains = [];
-
-  final passNotifier = ValueNotifier<PasswordStrength?>(
-    null,
-  );
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-
     _loadCountries();
   }
 
-  // Load countries dynamically from a JSON file
+  // =========================================================
+  // LOAD COUNTRIES
+  // =========================================================
+
   Future<void> _loadCountries() async {
     final String response = await rootBundle.loadString(
       'assets/countries.json',
@@ -112,12 +67,36 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       response,
     );
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       _countries = data.cast<String>();
     });
   }
 
+  // =========================================================
+  // VALIDATE ALL INPUTS
+  // =========================================================
+
   Future<bool> _validateInputs() async {
+    _validateCompany(
+      companyController.text,
+    );
+
+    _validateFirstName(
+      firstNameController.text,
+    );
+
+    _validateLastName(
+      lastNameController.text,
+    );
+
+    _validatePhone(
+      phoneController.text,
+    );
+
     _validateEmail(
       emailController.text,
     );
@@ -141,96 +120,211 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       usernameController.text,
     );
 
-    if ((_errorPassword?.isNotEmpty ?? false) ||
+    return !_hasValidationErrors;
+  }
+
+  bool get _hasValidationErrors {
+    return (_errorCompany?.isNotEmpty ?? false) ||
+        (_errorFirstName?.isNotEmpty ?? false) ||
+        (_errorLastName?.isNotEmpty ?? false) ||
+        (_errorPhone?.isNotEmpty ?? false) ||
+        (_errorPassword?.isNotEmpty ?? false) ||
         (_errorConfirmPassword?.isNotEmpty ?? false) ||
         (_errorUser?.isNotEmpty ?? false) ||
         (_errorEmail?.isNotEmpty ?? false) ||
         (_errorSecurityPin?.isNotEmpty ?? false) ||
-        (_errorCountry?.isNotEmpty ?? false)) {
-      setState(() {});
-
-      return false;
-    }
-
-    return true;
+        (_errorCountry?.isNotEmpty ?? false);
   }
 
-  void _validatePassword(
-      String password,
+  // =========================================================
+  // COMPANY
+  // =========================================================
+
+  void _validateCompany(
+      String value,
       ) {
     setState(() {
-      _errorPassword = null;
+      final company = value.trim();
 
-      _remains = requirements.where((req) => !req.check(password)).toList();
-
-      if (RegExp(r'.{8,}').hasMatch(password) == false) {
-        _errorPassword = 'Password must be at least 8 characters';
-      } else if (RegExp(r'[A-Z]').hasMatch(password) == false) {
-        _errorPassword = 'Password must contain at least one uppercase letter';
-      } else if (RegExp(r'[a-z]').hasMatch(password) == false) {
-        _errorPassword = 'Password must contain at least one lowercase letter';
-      } else if (RegExp(r'[0-9]').hasMatch(password) == false) {
-        _errorPassword = 'Password must contain at least one number';
-      } else if (RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(password) ==
-          false) {
-        _errorPassword = 'Password must contain at least one special character';
-      }
-    });
-  }
-
-  void _validateConfirmPassword(
-      String password,
-      String confirmPassword,
-      ) {
-    setState(() {
-      _errorConfirmPassword = null;
-
-      if (password != confirmPassword) {
-        _errorConfirmPassword = 'Passwords do not match';
+      if (company.isEmpty) {
+        _errorCompany = 'Company name is required';
+      } else if (company.length > 150) {
+        _errorCompany = 'Company name must be at most 150 characters';
       } else {
-        _errorConfirmPassword = null;
+        _errorCompany = null;
       }
     });
   }
+
+  // =========================================================
+  // FIRST NAME
+  // =========================================================
+
+  void _validateFirstName(
+      String value,
+      ) {
+    setState(() {
+      final firstName = value.trim();
+
+      if (firstName.isEmpty) {
+        _errorFirstName = 'First name is required';
+      } else if (firstName.length > 100) {
+        _errorFirstName = 'First name must be at most 100 characters';
+      } else {
+        _errorFirstName = null;
+      }
+    });
+  }
+
+  // =========================================================
+  // LAST NAME
+  // =========================================================
+
+  void _validateLastName(
+      String value,
+      ) {
+    setState(() {
+      final lastName = value.trim();
+
+      if (lastName.isEmpty) {
+        _errorLastName = 'Last name is required';
+      } else if (lastName.length > 100) {
+        _errorLastName = 'Last name must be at most 100 characters';
+      } else {
+        _errorLastName = null;
+      }
+    });
+  }
+
+  // =========================================================
+  // PHONE
+  // =========================================================
+
+  void _validatePhone(
+      String value,
+      ) {
+    setState(() {
+      final rawPhone = value.trim();
+
+      if (rawPhone.isEmpty) {
+        _errorPhone = 'Phone number is required';
+        return;
+      }
+
+      final bool hasLeadingPlus = rawPhone.startsWith('+');
+
+      final String digits = rawPhone.replaceAll(
+        RegExp(r'\D'),
+        '',
+      );
+
+      final String normalizedPhone =
+      hasLeadingPlus ? '+$digits' : digits;
+
+      if (!RegExp(r'^\+?\d{7,15}$').hasMatch(normalizedPhone)) {
+        _errorPhone = 'Enter a valid phone number';
+      } else {
+        _errorPhone = null;
+      }
+    });
+  }
+
+  // =========================================================
+  // EMAIL
+  // =========================================================
+
+  void _validateEmail(
+      String email,
+      ) {
+    setState(() {
+      final normalizedEmail = email.trim();
+
+      if (normalizedEmail.isEmpty) {
+        _errorEmail = 'Email is required';
+      } else if (!RegExp(
+        r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+      ).hasMatch(normalizedEmail)) {
+        _errorEmail = 'Enter a valid email address';
+      } else {
+        _errorEmail = null;
+      }
+    });
+  }
+
+  // =========================================================
+  // USERNAME
+  //
+  // RULE:
+  // 3 - 50 characters
+  // =========================================================
 
   Future<void> _validateUser(
       String username,
       ) async {
-    _errorUser = null;
+    final normalizedUsername = username.trim().toLowerCase();
+
+    if (normalizedUsername.isEmpty) {
+      if (mounted) {
+        setState(() {
+          _errorUser = 'Username is required';
+        });
+      }
+      return;
+    }
+
+    if (normalizedUsername.length < 3) {
+      if (mounted) {
+        setState(() {
+          _errorUser = 'Username must be at least 3 characters';
+        });
+      }
+      return;
+    }
+
+    if (normalizedUsername.length > 50) {
+      if (mounted) {
+        setState(() {
+          _errorUser = 'Username must be at most 50 characters';
+        });
+      }
+      return;
+    }
 
     try {
-      if (username.isEmpty) {
-        _errorUser = 'Username cannot be empty';
-      } else if (username.length < 6) {
-        _errorUser = 'Username must be at least 6 characters';
-      } else if (username.length > 24) {
-        _errorUser = 'Username must be at most 24 characters';
-      } else {
-        final userCheck = await UserRepository.checkUser(
-          username: username,
-        );
+      final userCheck = await UserRepository.checkUser(
+        username: normalizedUsername,
+      );
 
-        if (!userCheck.success ||
-            userCheck.data == null ||
-            userCheck.data != 'Username available!') {
-          _errorUser = userCheck.message ?? userCheck.data ?? 'Username unavailable';
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        if (!userCheck.success) {
+          _errorUser =
+              userCheck.fieldErrors['username'] ??
+                  userCheck.message ??
+                  userCheck.data ??
+                  'Username unavailable';
         } else {
           _errorUser = null;
         }
-      }
+      });
     } catch (_) {
-      _errorUser = 'Error checking username';
-    }
+      if (!mounted) {
+        return;
+      }
 
-    setState(() {});
+      setState(() {
+        _errorUser = 'Unable to check username';
+      });
+    }
   }
 
   void _validateUserDelayed(
       String username,
       ) {
-    if (_delay?.isActive ?? false) {
-      _delay!.cancel();
-    }
+    _delay?.cancel();
 
     _delay = Timer(
       const Duration(
@@ -244,33 +338,78 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  void _validateEmail(
-      String email,
+  // =========================================================
+  // PASSWORD
+  //
+  // RULES:
+  // 1. 6 - 50 characters
+  // 2. Password is case-sensitive
+  //
+  // NO mandatory:
+  // - uppercase
+  // - lowercase
+  // - number
+  // - special character
+  // =========================================================
+
+  void _validatePassword(
+      String password,
       ) {
     setState(() {
-      if (email.isEmpty) {
-        _errorEmail = 'Email is Required';
-      } else if (!RegExp(r'[^@]+@[^@]+\.[^@]+$').hasMatch(email)) {
-        _errorEmail = 'Email must include an @ and a domain(.com, .org, etc)';
+      if (password.isEmpty) {
+        _errorPassword = 'Password is required';
+      } else if (password.length < 6) {
+        _errorPassword = 'Password must be at least 6 characters';
+      } else if (password.length > 50) {
+        _errorPassword = 'Password must be at most 50 characters';
       } else {
-        _errorEmail = null;
+        _errorPassword = null;
       }
-
-      return;
     });
   }
+
+  // =========================================================
+  // CONFIRM PASSWORD
+  // =========================================================
+
+  void _validateConfirmPassword(
+      String password,
+      String confirmPassword,
+      ) {
+    setState(() {
+      if (confirmPassword.isEmpty) {
+        _errorConfirmPassword = 'Confirm password is required';
+      } else if (password != confirmPassword) {
+        _errorConfirmPassword = 'Passwords do not match';
+      } else {
+        _errorConfirmPassword = null;
+      }
+    });
+  }
+
+  // =========================================================
+  // SECURITY PIN
+  // =========================================================
 
   void _validateSecurityPin(
       String securityPin,
       ) {
     setState(() {
-      if (securityPin.trim().isEmpty) {
+      final pin = securityPin.trim();
+
+      if (pin.isEmpty) {
         _errorSecurityPin = 'Security PIN is required';
+      } else if (!RegExp(r'^\d{6}$').hasMatch(pin)) {
+        _errorSecurityPin = 'Security PIN must be exactly 6 digits';
       } else {
         _errorSecurityPin = null;
       }
     });
   }
+
+  // =========================================================
+  // COUNTRY
+  // =========================================================
 
   void _validateCountry() {
     setState(() {
@@ -282,20 +421,41 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
+  // =========================================================
+  // CREATE ACCOUNT
+  // =========================================================
+
   Future<void> createAccount(
       BuildContext context,
       ) async {
+    if (_isSubmitting) {
+      return;
+    }
+
     if (!await _validateInputs()) {
       return;
     }
 
-    final companyName = companyController.text;
-    final firstName = firstNameController.text;
-    final lastName = lastNameController.text;
-    final phoneNumber = phoneController.text;
-    final email = emailController.text;
-    final username = usernameController.text;
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    final companyName = companyController.text.trim();
+    final firstName = firstNameController.text.trim();
+    final lastName = lastNameController.text.trim();
+    final phoneNumber = phoneController.text.trim();
+    final email = emailController.text.trim().toLowerCase();
+    final username = usernameController.text.trim().toLowerCase();
+
+    // IMPORTANT:
+    // Password is NOT lowercased or uppercased.
+    // This keeps the password case-sensitive.
     final password = passwordController.text;
+
     final securityPin = securityPinController.text.trim();
     final country = countrytype!.trim();
 
@@ -321,7 +481,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           context,
           '/dashboard',
         );
-      } else {
+        return;
+      }
+
+      final bool hasFieldErrors = _applyBackendErrors(
+        result.fieldErrors,
+        result.missingFields,
+      );
+
+      if (!hasFieldErrors) {
         _showAccountCreationError(
           context,
           result.message ?? 'Unable to create account.',
@@ -336,8 +504,146 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         context,
         'Unable to create account.',
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
+
+  // =========================================================
+  // BACKEND FIELD ERRORS
+  // =========================================================
+
+  bool _applyBackendErrors(
+      Map<String, String> fieldErrors,
+      List<String> missingFields,
+      ) {
+    bool hasFieldError = false;
+
+    setState(() {
+      for (final entry in fieldErrors.entries) {
+        final field = entry.key.trim().toLowerCase();
+        final message = entry.value.trim();
+
+        if (message.isEmpty) {
+          continue;
+        }
+
+        switch (field) {
+          case 'companyname':
+          case 'company':
+            _errorCompany = message;
+            hasFieldError = true;
+            break;
+
+          case 'firstname':
+            _errorFirstName = message;
+            hasFieldError = true;
+            break;
+
+          case 'lastname':
+            _errorLastName = message;
+            hasFieldError = true;
+            break;
+
+          case 'phonenumber':
+          case 'phone':
+            _errorPhone = message;
+            hasFieldError = true;
+            break;
+
+          case 'email':
+          case 'emailaddress':
+            _errorEmail = message;
+            hasFieldError = true;
+            break;
+
+          case 'username':
+            _errorUser = message;
+            hasFieldError = true;
+            break;
+
+          case 'password':
+            _errorPassword = message;
+            hasFieldError = true;
+            break;
+
+          case 'securitypin':
+            _errorSecurityPin = message;
+            hasFieldError = true;
+            break;
+
+          case 'country':
+            _errorCountry = message;
+            hasFieldError = true;
+            break;
+        }
+      }
+
+      for (final rawField in missingFields) {
+        final field = rawField.trim().toLowerCase();
+
+        switch (field) {
+          case 'companyname':
+          case 'company':
+            _errorCompany ??= 'Company name is required';
+            hasFieldError = true;
+            break;
+
+          case 'firstname':
+            _errorFirstName ??= 'First name is required';
+            hasFieldError = true;
+            break;
+
+          case 'lastname':
+            _errorLastName ??= 'Last name is required';
+            hasFieldError = true;
+            break;
+
+          case 'phonenumber':
+          case 'phone':
+            _errorPhone ??= 'Phone number is required';
+            hasFieldError = true;
+            break;
+
+          case 'email':
+          case 'emailaddress':
+            _errorEmail ??= 'Email is required';
+            hasFieldError = true;
+            break;
+
+          case 'username':
+            _errorUser ??= 'Username is required';
+            hasFieldError = true;
+            break;
+
+          case 'password':
+            _errorPassword ??= 'Password is required';
+            hasFieldError = true;
+            break;
+
+          case 'securitypin':
+            _errorSecurityPin ??= 'Security PIN is required';
+            hasFieldError = true;
+            break;
+
+          case 'country':
+            _errorCountry ??= 'Country is required';
+            hasFieldError = true;
+            break;
+        }
+      }
+    });
+
+    return hasFieldError;
+  }
+
+  // =========================================================
+  // ERROR DIALOG
+  // =========================================================
 
   void _showAccountCreationError(
       BuildContext context,
@@ -364,6 +670,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
+  // =========================================================
+  // DISPOSE
+  // =========================================================
+
   @override
   void dispose() {
     _delay?.cancel();
@@ -377,10 +687,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     securityPinController.dispose();
-    passNotifier.dispose();
 
     super.dispose();
   }
+
+  // =========================================================
+  // BUILD
+  // =========================================================
 
   @override
   Widget build(
@@ -435,7 +748,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       child: Text(
                         'Register Page',
                         style: TextStyle(
-                          fontSize: 26, // Increased font size for the title
+                          fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -444,15 +757,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     const SizedBox(
                       height: 20,
                     ),
+
+                    // COMPANY
                     buildTextField(
                       'Company Name:*',
                       'Company Name',
                       companyController,
                       borderColor: Colors.grey,
+                      errorText: _errorCompany,
+                      onChanged: _validateCompany,
                     ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // NAME
                     const Text(
                       'Name:*',
                     ),
@@ -460,6 +780,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       height: 8,
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: buildTextField(
@@ -467,6 +788,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             'First Name',
                             firstNameController,
                             borderColor: Colors.grey,
+                            errorText: _errorFirstName,
+                            onChanged: _validateFirstName,
                           ),
                         ),
                         const SizedBox(
@@ -478,173 +801,179 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             'Last Name',
                             lastNameController,
                             borderColor: Colors.grey,
+                            errorText: _errorLastName,
+                            onChanged: _validateLastName,
                           ),
                         ),
                       ],
                     ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // PHONE
                     buildTextField(
-                      'Phone Number:',
+                      'Phone Number:*',
                       'Phone Number',
                       phoneController,
                       borderColor: Colors.grey,
+                      keyboardType: TextInputType.phone,
+                      errorText: _errorPhone,
+                      onChanged: _validatePhone,
                     ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // EMAIL
                     buildTextField(
                       'Email Address:*',
                       'Email Address',
                       emailController,
                       borderColor: Colors.grey,
-                      onChanged: (value) {
-                        _validateEmail(
-                          value,
-                        );
-                      },
-                      errorText: _errorEmail != null ? '' : null,
+                      keyboardType: TextInputType.emailAddress,
+                      errorText: _errorEmail,
+                      onChanged: _validateEmail,
                     ),
-                    if (_errorEmail != null)
-                      Text(
-                        _errorEmail!,
-                        style: const TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // USERNAME
                     buildTextField(
                       'Username:*',
                       'Username',
                       usernameController,
                       borderColor: Colors.grey,
+                      errorText: _errorUser,
                       onChanged: (value) {
                         _validateUserDelayed(
                           value,
                         );
                       },
-                      errorText: _errorUser != null ? '' : null,
                     ),
-                    if (_errorUser != null)
-                      Text(
-                        _errorUser!,
-                        style: const TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // PASSWORD
                     buildTextField(
                       'Password:*',
                       'Password',
                       passwordController,
                       obscureText: true,
                       borderColor: Colors.grey,
+                      errorText: _errorPassword,
                       onChanged: (value) {
                         _validatePassword(
                           value,
                         );
 
-                        passNotifier.value = PasswordStrength.calculate(
-                          text: value,
-                        );
+                        if (confirmPasswordController.text.isNotEmpty) {
+                          _validateConfirmPassword(
+                            value,
+                            confirmPasswordController.text,
+                          );
+                        }
                       },
-                      errorText: _errorPassword != null ? '' : null,
                     ),
+
+                    const SizedBox(
+                      height: 8,
+                    ),
+
+                    // PASSWORD REQUIREMENTS
+                    const Text(
+                      'Password requirements:',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 4,
+                    ),
+
+                    const Text(
+                      '• Password must be 6 to 50 characters.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 2,
+                    ),
+
+                    const Text(
+                      '• Password is case-sensitive.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // CONFIRM PASSWORD
                     buildTextField(
-                      'Confirm Password:* ',
+                      'Confirm Password:*',
                       'Confirm Password',
                       confirmPasswordController,
                       obscureText: true,
                       borderColor: Colors.grey,
+                      errorText: _errorConfirmPassword,
                       onChanged: (value) {
                         _validateConfirmPassword(
                           passwordController.text,
                           value,
                         );
                       },
-                      errorText: _errorConfirmPassword != null ? '' : null,
                     ),
-                    if (_errorConfirmPassword != null)
-                      Text(
-                        _errorConfirmPassword!,
-                        style: const TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
+
                     const SizedBox(
                       height: 15,
                     ),
+
+                    // SECURITY PIN
                     buildTextField(
                       'Security PIN:*',
-                      'Security PIN',
+                      '6-digit Security PIN',
                       securityPinController,
                       borderColor: Colors.grey,
-                      onChanged: (value) {
-                        _validateSecurityPin(
-                          value,
-                        );
-                      },
-                      errorText: _errorSecurityPin != null ? '' : null,
-                    ),
-                    if (_errorSecurityPin != null)
-                      Text(
-                        _errorSecurityPin!,
-                        style: const TextStyle(
-                          color: Colors.red,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(
+                          6,
                         ),
-                      ),
+                      ],
+                      errorText: _errorSecurityPin,
+                      onChanged: _validateSecurityPin,
+                    ),
+
                     const SizedBox(
                       height: 15,
                     ),
-                    if (_remains.isNotEmpty)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          const Text(
-                            'Password must meet the following requirements:',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          for (var req in _remains)
-                            Text(
-                              '- ${req.name}',
-                              style: const TextStyle(
-                                color: Colors.red,
-                              ),
-                            ),
-                        ],
-                      ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    PasswordStrengthChecker(
-                      strength: passNotifier,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
+
+                    // COUNTRY
                     const Text(
-                      'Country:',
+                      'Country:*',
                     ),
                     const SizedBox(
                       height: 8,
                     ),
+
                     DropdownSearch<String>(
-                      items: _countries, // List of countries
+                      items: _countries,
                       selectedItem: countrytype,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
@@ -654,17 +983,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             ),
                           ),
                           filled: true,
-                          fillColor:
-                          Colors.grey[200], // Softer background color
+                          fillColor: Colors.grey[200],
                           hintText: 'Select Country',
                           hintStyle: const TextStyle(
                             fontSize: 16,
-                            color: Colors.grey, // Subtle hint text
+                            color: Colors.grey,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 15,
                             vertical: 20,
                           ),
+                          errorText: _errorCountry,
                         ),
                       ),
                       popupProps: PopupProps.dialog(
@@ -680,16 +1009,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         ),
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
-                            labelText:
-                            'Search Country', // Label for the search box
+                            labelText: 'Search Country',
                             labelStyle: const TextStyle(
                               fontSize: 16,
-                              color: Colors.grey, // Text color for the label
+                              color: Colors.grey,
                             ),
-                            hintText: 'Type to search...', // Placeholder text
+                            hintText: 'Type to search...',
                             hintStyle: const TextStyle(
-                              color: Colors
-                                  .grey, // Lighter color for the placeholder
+                              color: Colors.grey,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
@@ -703,10 +1030,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           ),
                           style: const TextStyle(
                             fontSize: 16,
-                            color: Colors.black, // Text color for user input
+                            color: Colors.black,
                           ),
                         ),
-                        itemBuilder: (context, item, isSelected) {
+                        itemBuilder: (
+                            context,
+                            item,
+                            isSelected,
+                            ) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -718,7 +1049,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                 fontSize: 16,
                                 color: isSelected
                                     ? Colors.blue
-                                    : Colors.black, // Highlight selected item
+                                    : Colors.black,
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
@@ -727,7 +1058,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           );
                         },
                       ),
-                      dropdownBuilder: (context, selectedItem) {
+                      dropdownBuilder: (
+                          context,
+                          selectedItem,
+                          ) {
                         return Text(
                           selectedItem ?? 'Select Country',
                           style: const TextStyle(
@@ -736,7 +1070,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           ),
                         );
                       },
-                      filterFn: (item, filter) {
+                      filterFn: (
+                          item,
+                          filter,
+                          ) {
                         return item.toLowerCase().startsWith(
                           filter.toLowerCase(),
                         );
@@ -744,43 +1081,39 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       onChanged: (value) {
                         setState(() {
                           countrytype = value;
-
                           _errorCountry = null;
                         });
                       },
                     ),
-                    if (_errorCountry != null) ...[
-                      const SizedBox(
-                        height: 6,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          _errorCountry!,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
+
                     const SizedBox(
                       height: 30,
                     ),
+
+                    // REGISTER
                     buildGradientButton(
-                      'Register',
-                          () {
+                      _isSubmitting
+                          ? 'Creating Account...'
+                          : 'Register',
+                      _isSubmitting
+                          ? null
+                          : () {
                         createAccount(
                           context,
                         );
                       },
                     ),
+
                     const SizedBox(
                       height: 10,
                     ),
+
+                    // CANCEL
                     buildGrayButton(
                       'Cancel',
-                          () {
+                      _isSubmitting
+                          ? null
+                          : () {
                         Navigator.pop(
                           context,
                         );
@@ -796,7 +1129,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  // Helper method to create text fields with consistent styling
+  // =========================================================
+  // TEXT FIELD
+  // =========================================================
+
   Widget buildTextField(
       String label,
       String hint,
@@ -805,25 +1141,38 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         String? errorText,
         required Color borderColor,
         void Function(String)? onChanged,
+        TextInputType? keyboardType,
+        List<TextInputFormatter>? inputFormatters,
       }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label.isNotEmpty)
+        if (label.isNotEmpty) ...[
           Text(
             label,
           ),
-        const SizedBox(
-          height: 8,
-        ),
+          const SizedBox(
+            height: 8,
+          ),
+        ],
         TextField(
           controller: controller,
           obscureText: obscureText,
+          keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           onChanged: onChanged,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(
                 12,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(
+                12,
+              ),
+              borderSide: BorderSide(
+                color: borderColor,
               ),
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -840,10 +1189,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  // Helper method to create the gradient "Register" button
+  // =========================================================
+  // REGISTER BUTTON
+  // =========================================================
+
   Widget buildGradientButton(
       String text,
-      VoidCallback onPressed,
+      VoidCallback? onPressed,
       ) {
     return Container(
       width: double.infinity,
@@ -865,7 +1217,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         child: Text(
           text,
           style: const TextStyle(
-            fontSize: 18, // Increased font size for better visibility
+            fontSize: 18,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -874,10 +1226,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  // Helper method to create the gray "Cancel" button
+  // =========================================================
+  // CANCEL BUTTON
+  // =========================================================
+
   Widget buildGrayButton(
       String text,
-      VoidCallback onPressed,
+      VoidCallback? onPressed,
       ) {
     return Container(
       width: double.infinity,
@@ -892,7 +1247,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         child: Text(
           text,
           style: const TextStyle(
-            fontSize: 18, // Increased font size for better visibility
+            fontSize: 18,
             color: Colors.black54,
             fontWeight: FontWeight.bold,
           ),
