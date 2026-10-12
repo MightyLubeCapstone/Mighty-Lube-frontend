@@ -5,7 +5,7 @@ publish_to: 'none'
   #Major application changes in this release.
   #Version updated from 2.0.1+9 to 3.0.1+12.
 
-version: 3.0.1+12
+version: 3.0.2+13
 environment:
   sdk: ^3.5.2
 
@@ -23,6 +23,7 @@ dependencies:
   url_launcher: ^6.1.14
   photo_view: ^0.15.0
   image_picker: ^1.1.2
+  package_info_plus: ^8.3.1
 
 dev_dependencies:
   flutter_test:

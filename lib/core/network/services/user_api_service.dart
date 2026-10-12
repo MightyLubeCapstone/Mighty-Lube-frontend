@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,9 +10,9 @@ import '../api_response.dart';
 class UserApiService {
   UserApiService._();
 
-  // =========================================================
-  // SESSION STORAGE KEYS
-  // =========================================================
+// =========================================================
+// SESSION STORAGE KEYS
+// =========================================================
 
   static const String _sessionIDKey = 'sessionID';
   static const String _roleKey = 'role';
@@ -21,9 +22,9 @@ class UserApiService {
   static const String _legacyRememberTokenKey = 'rememberToken';
   static const String _legacyRememberTokenExpiresAtKey = 'rememberTokenExpiresAt';
 
-  // =========================================================
-  // CHECK SESSION
-  // =========================================================
+// =========================================================
+// CHECK SESSION
+// =========================================================
 
   static Future<ApiResponse<bool>> checkSession() async {
     final prefs = await SharedPreferences.getInstance();
@@ -60,11 +61,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // CREATE ACCOUNT
-  //
-  // POST /api/users
-  // =========================================================
+// =========================================================
+// CREATE ACCOUNT
+//
+// POST /api/users
+// =========================================================
 
   static Future<ApiResponse<bool>> makeAccount({
     required String username,
@@ -74,9 +75,10 @@ class UserApiService {
     required String email,
     required String phoneNumber,
     required String companyName,
-    required String securityPin,
     required String country,
-  }) async {
+    String? verificationToken,
+  }) async
+  {
     final normalizedUsername = username.trim().toLowerCase();
     final normalizedEmail = email.trim().toLowerCase();
 
@@ -91,8 +93,9 @@ class UserApiService {
         'emailAddress': normalizedEmail,
         'phoneNumber': phoneNumber.trim(),
         'companyName': companyName.trim(),
-        'securityPin': securityPin.trim(),
         'country': country.trim(),
+        if (verificationToken != null && verificationToken.trim().isNotEmpty)
+          'verificationToken': verificationToken.trim(),
       },
       parser: _mapParser,
     );
@@ -105,32 +108,40 @@ class UserApiService {
       );
     }
 
-    final sessionID = response.data?['sessionID']?.toString();
+// Do not persist a session during registration.
+// Email verification is optional; the user logs in separately.
 
-    if (sessionID != null && sessionID.trim().isNotEmpty) {
-      final prefs = await SharedPreferences.getInstance();
+    return ApiResponse<bool>.success(
+      data: true,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
 
-      await prefs.setString(
-        _sessionIDKey,
-        sessionID.trim(),
+// =========================================================
+// EMAIL VERIFICATION - REGISTRATION AND SETTINGS
+// =========================================================
+
+// Purpose: registration, verify-email, or change-email.
+  static Future<ApiResponse<bool>> requestEmailVerificationOtp({
+    required String email,
+    required String purpose,
+  }) async {
+    final response = await ApiClient.post<dynamic>(
+      url: '${ApiEndpoints.apiBaseUrl}/email/verification/request-otp',
+      requiresAuth: purpose != 'registration',
+      body: {
+        'email': email.trim().toLowerCase(),
+        'purpose': purpose,
+      },
+    );
+
+    if (!response.success) {
+      return _failureFrom<bool>(
+        response,
+        fallbackMessage: 'Unable to send email verification code.',
+        data: false,
       );
-
-      await prefs.setString(
-        _usernameKey,
-        normalizedUsername,
-      );
-
-      final role = response.data?['role']
-          ?.toString()
-          .trim()
-          .toLowerCase();
-
-      if (role != null && role.isNotEmpty) {
-        await prefs.setString(
-          _roleKey,
-          role,
-        );
-      }
     }
 
     return ApiResponse<bool>.success(
@@ -140,11 +151,51 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // UPDATE ACCOUNT
-  //
-  // PUT /api/users
-  // =========================================================
+// For registration, the returned token must be sent with makeAccount().
+// For settings, the backend updates the verified email directly.
+  static Future<ApiResponse<String?>> verifyEmailVerificationOtp({
+    required String email,
+    required String otp,
+    required String purpose,
+  }) async {
+    final response = await ApiClient.post<Map<String, dynamic>>(
+      url: '${ApiEndpoints.apiBaseUrl}/email/verification/verify-otp',
+      requiresAuth: purpose != 'registration',
+      body: {
+        'email': email.trim().toLowerCase(),
+        'otp': otp.trim(),
+        'purpose': purpose,
+      },
+      parser: _mapParser,
+    );
+
+    if (!response.success) {
+      return _failureFrom<String?>(
+        response,
+        fallbackMessage: 'Unable to verify email code.',
+      );
+    }
+
+    final token = response.data?['verificationToken']?.toString();
+    if (purpose == 'registration' && (token == null || token.isEmpty)) {
+      return ApiResponse<String?>.failure(
+        message: 'Verification proof missing from server response.',
+        statusCode: response.statusCode,
+      );
+    }
+
+    return ApiResponse<String?>.success(
+      data: token,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
+
+// =========================================================
+// UPDATE ACCOUNT
+//
+// PUT /api/users
+// =========================================================
 
   static Future<ApiResponse<bool>> updateAccount({
     required String firstName,
@@ -192,11 +243,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // REMOVE ACCOUNT
-  //
-  // DELETE /api/users
-  // =========================================================
+// =========================================================
+// REMOVE ACCOUNT
+//
+// DELETE /api/users
+// =========================================================
 
   static Future<ApiResponse<bool>> removeAccount({
     required String password,
@@ -226,11 +277,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // FORGOT PASSWORD
-  //
-  // POST /api/email/forgot
-  // =========================================================
+// =========================================================
+// FORGOT PASSWORD
+//
+// POST /api/email/forgot
+// =========================================================
 
   static Future<ApiResponse<bool>> forgotPassword({
     required String email,
@@ -258,11 +309,44 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // VALIDATE PASSCODE
-  //
-  // GET /api/email/forgot
-  // =========================================================
+
+// =========================================================
+// FORGOT USERNAME
+//
+// POST /api/email/forgot-username
+// =========================================================
+
+  static Future<ApiResponse<bool>> requestForgotUsername({
+    required String email,
+  }) async {
+    final response = await ApiClient.post<dynamic>(
+      url: '${ApiEndpoints.apiBaseUrl}/email/forgot-username',
+      requiresAuth: false,
+      body: {
+        'email': email.trim().toLowerCase(),
+      },
+    );
+
+    if (!response.success) {
+      return _failureFrom<bool>(
+        response,
+        fallbackMessage: 'Unable to send username. Please try again.',
+        data: false,
+      );
+    }
+
+    return ApiResponse<bool>.success(
+      data: true,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
+
+// =========================================================
+// VALIDATE PASSCODE
+//
+// GET /api/email/forgot
+// =========================================================
 
   static Future<ApiResponse<bool>> validateCode({
     required String email,
@@ -292,11 +376,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // VALIDATE SECURITY PIN
-  //
-  // POST /api/email/forgot/verify-pin
-  // =========================================================
+// =========================================================
+// VALIDATE SECURITY PIN
+//
+// POST /api/email/forgot/verify-pin
+// =========================================================
 
   static Future<ApiResponse<bool>> validateSecurityPin({
     required String email,
@@ -326,11 +410,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // RESET PASSWORD
-  //
-  // PUT /api/email/forgot
-  // =========================================================
+// =========================================================
+// RESET PASSWORD
+//
+// PUT /api/email/forgot
+// =========================================================
 
   static Future<ApiResponse<bool>> resetPassword({
     required String email,
@@ -360,11 +444,102 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // LOGIN
-  //
-  // POST /api/sessions
-  // =========================================================
+// =========================================================
+// EMAIL OTP PASSWORD RECOVERY (NEW)
+// =========================================================
+
+// POST /api/email/forgot/request-otp
+  static Future<ApiResponse<bool>> requestPasswordResetOtp({
+    required String email,
+  }) async {
+    final response = await ApiClient.post<dynamic>(
+      url: '${ApiEndpoints.apiBaseUrl}/email/forgot/request-otp',
+      requiresAuth: false,
+      body: {
+        'email': email.trim().toLowerCase(),
+      },
+    );
+
+    if (!response.success) {
+      return _failureFrom<bool>(
+        response,
+        fallbackMessage: 'Unable to request password reset code.',
+        data: false,
+      );
+    }
+
+    return ApiResponse<bool>.success(
+      data: true,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
+
+// POST /api/email/forgot/verify-otp
+  static Future<ApiResponse<bool>> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await ApiClient.post<dynamic>(
+      url: '${ApiEndpoints.apiBaseUrl}/email/forgot/verify-otp',
+      requiresAuth: false,
+      body: {
+        'email': email.trim().toLowerCase(),
+        'otp': otp.trim(),
+      },
+    );
+
+    if (!response.success) {
+      return _failureFrom<bool>(
+        response,
+        fallbackMessage: 'Unable to verify password reset code.',
+        data: false,
+      );
+    }
+
+    return ApiResponse<bool>.success(
+      data: true,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
+
+// POST /api/email/forgot/reset-password
+  static Future<ApiResponse<bool>> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String password,
+  }) async {
+    final response = await ApiClient.post<dynamic>(
+      url: '${ApiEndpoints.apiBaseUrl}/email/forgot/reset-password',
+      requiresAuth: false,
+      body: {
+        'email': email.trim().toLowerCase(),
+        'otp': otp.trim(),
+        'password': password,
+      },
+    );
+
+    if (!response.success) {
+      return _failureFrom<bool>(
+        response,
+        fallbackMessage: 'Unable to reset password.',
+        data: false,
+      );
+    }
+
+    return ApiResponse<bool>.success(
+      data: true,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
+
+// =========================================================
+// LOGIN
+//
+// POST /api/sessions
+// =========================================================
 
   static Future<ApiResponse<bool>> login({
     required String username,
@@ -445,9 +620,9 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // REMEMBERED ACCOUNTS
-  // =========================================================
+// =========================================================
+// REMEMBERED ACCOUNTS
+// =========================================================
 
   static Future<List<Map<String, dynamic>>> getRememberedAccounts() async {
     final prefs = await SharedPreferences.getInstance();
@@ -548,11 +723,11 @@ class UserApiService {
     return ApiResponse<bool>.success(data: true, message: response.message ?? 'Remembered account removed.', statusCode: response.statusCode);
   }
 
-  // =========================================================
-  // LOGOUT
-  //
-  // DELETE /api/sessions
-  // =========================================================
+// =========================================================
+// LOGOUT
+//
+// DELETE /api/sessions
+// =========================================================
 
   static Future<ApiResponse<bool>> logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -590,11 +765,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // CHECK USERNAME
-  //
-  // GET /api/users/username
-  // =========================================================
+// =========================================================
+// CHECK USERNAME
+//
+// GET /api/users/username
+// =========================================================
 
   static Future<ApiResponse<String>> checkUser({
     required String username,
@@ -637,11 +812,11 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // GET USER INFO
-  //
-  // GET /api/users/userinfo
-  // =========================================================
+// =========================================================
+// GET USER INFO
+//
+// GET /api/users/userinfo
+// =========================================================
 
   static Future<ApiResponse<Map<String, dynamic>>> getUserInfo() async {
     return ApiClient.get<Map<String, dynamic>>(
@@ -651,9 +826,9 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // CHECK CURRENT USER ADMIN
-  // =========================================================
+// =========================================================
+// CHECK CURRENT USER ADMIN
+// =========================================================
 
   static Future<bool> isCurrentUserAdmin() async {
     final prefs = await SharedPreferences.getInstance();
@@ -694,13 +869,13 @@ class UserApiService {
     return role == 'admin' || role == 'administrator';
   }
 
-  // =========================================================
-  // COPY NETWORK FAILURE
-  //
-  // Keeps structured backend validation information while
-  // converting ApiResponse<dynamic> / ApiResponse<Map> into
-  // the response type expected by this service.
-  // =========================================================
+// =========================================================
+// COPY NETWORK FAILURE
+//
+// Keeps structured backend validation information while
+// converting ApiResponse<dynamic> / ApiResponse<Map> into
+// the response type expected by this service.
+// =========================================================
 
   static ApiResponse<T> _failureFrom<T>(
       ApiResponse<dynamic> response, {
@@ -717,9 +892,9 @@ class UserApiService {
     );
   }
 
-  // =========================================================
-  // LOCAL SESSION / REMEMBERED ACCOUNT STORAGE
-  // =========================================================
+// =========================================================
+// LOCAL SESSION / REMEMBERED ACCOUNT STORAGE
+// =========================================================
 
   static Future<void> _clearLocalSession() async {
     final prefs = await SharedPreferences.getInstance();
@@ -804,9 +979,9 @@ class UserApiService {
     await prefs.remove(_legacyRememberTokenExpiresAtKey);
   }
 
-  // =========================================================
-  // MAP PARSER
-  // =========================================================
+// =========================================================
+// MAP PARSER
+// =========================================================
 
   static Map<String, dynamic> _mapParser(dynamic data) {
     if (data is Map<String, dynamic>) {

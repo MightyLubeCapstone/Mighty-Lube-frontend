@@ -5,25 +5,19 @@ import 'package:mighty_lube/features/auth/screen/login_page.dart';
 
 import '../../../core/widget/header_logo.dart';
 
-class PWDRequirements {
-  final String name;
-  final bool Function(String) check;
-
-  PWDRequirements(
-      this.name,
-      this.check,
-      );
-}
-
 class ChangePass extends StatefulWidget {
   final String email;
 
   final String securityPin;
 
+  // OTP used by the new email-based password recovery flow.
+  final String otp;
+
   const ChangePass({
     super.key,
     required this.email,
     this.securityPin = '',
+    this.otp = '',
   });
 
   @override
@@ -41,55 +35,19 @@ class _ChangePassState extends State<ChangePass> {
 
   bool loading = false;
 
-  List<PWDRequirements> requirements = [
-    PWDRequirements(
-      'Password must be at least 8 characters',
-          (input) => input.length >= 8,
-    ),
-    PWDRequirements(
-      'Password must contain at least one uppercase letter',
-          (input) => RegExp(r'[A-Z]').hasMatch(input),
-    ),
-    PWDRequirements(
-      'Password must contain at least one lowercase letter',
-          (input) => RegExp(r'[a-z]').hasMatch(input),
-    ),
-    PWDRequirements(
-      'Password must contain at least one number',
-          (input) => RegExp(r'[0-9]').hasMatch(input),
-    ),
-    PWDRequirements(
-      'Password must contain at least one special character',
-          (input) => RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(input),
-    ),
-  ];
-
-  List<PWDRequirements> _remains = [];
-
-  bool _validatePassword(
-      String password,
-      ) {
+  // Match CreateAccountPage password rules: 6–50 characters, case-sensitive.
+  bool _validatePassword(String password) {
     setState(() {
-      _remains = requirements.where((req) => !req.check(password)).toList();
-
       if (password.isEmpty) {
-        _errorPassword = 'Password is required!';
-      } else if (RegExp(r'.{8,}').hasMatch(password) == false) {
-        _errorPassword = 'Password must be at least 8 characters';
-      } else if (RegExp(r'[A-Z]').hasMatch(password) == false) {
-        _errorPassword = 'Password must contain at least one uppercase letter';
-      } else if (RegExp(r'[a-z]').hasMatch(password) == false) {
-        _errorPassword = 'Password must contain at least one lowercase letter';
-      } else if (RegExp(r'[0-9]').hasMatch(password) == false) {
-        _errorPassword = 'Password must contain at least one number';
-      } else if (RegExp(r'[!@#$%^&*(),.?":{}|<>-]').hasMatch(password) ==
-          false) {
-        _errorPassword = 'Password must contain at least one special character';
+        _errorPassword = 'Password is required';
+      } else if (password.length < 6) {
+        _errorPassword = 'Password must be at least 6 characters';
+      } else if (password.length > 50) {
+        _errorPassword = 'Password must be at most 50 characters';
       } else {
         _errorPassword = null;
       }
     });
-
     return _errorPassword == null;
   }
 
@@ -128,7 +86,15 @@ class _ChangePassState extends State<ChangePass> {
         loading = true;
       });
 
-      final result = await UserRepository.resetPassword(
+      // Keep the legacy reset path available for existing callers.
+      // The new OTP flow supplies a verified OTP from EnterOTP.
+      final result = widget.otp.trim().isNotEmpty
+          ? await UserRepository.resetPasswordWithOtp(
+        email: widget.email,
+        otp: widget.otp.trim(),
+        password: password,
+      )
+          : await UserRepository.resetPassword(
         email: widget.email,
         password: password,
       );
@@ -191,9 +157,7 @@ class _ChangePassState extends State<ChangePass> {
   }
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context,) {
     double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
@@ -326,30 +290,24 @@ class _ChangePassState extends State<ChangePass> {
                           errorText: _errorConfirmPassword,
                         ),
                       ),
-                      if (_remains.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            const Text(
-                              'Password must meet the following requirements:',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            for (var req in _remains)
-                              Text(
-                                '- ${req.name}',
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                ),
-                              ),
-                          ],
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Password requirements:',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        '• Password must be 6 to 50 characters.',
+                        style: TextStyle(fontSize: 12, color: Colors.black54),
+                      ),
+                      const SizedBox(height: 2),
+                      const Text(
+                        '• Password is case-sensitive.',
+                        style: TextStyle(fontSize: 12, color: Colors.black54),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),

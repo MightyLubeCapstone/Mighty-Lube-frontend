@@ -1,5 +1,7 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:mighty_lube/features/application/screens/application_catalog_page.dart';
 import 'package:mighty_lube/features/auth/repositories/user_repository.dart';
@@ -9,6 +11,7 @@ import 'package:mighty_lube/features/configurations/repositories/configuration_r
 import '../../admin/screens/admin_dashboard.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../core/widget/custom_drawer.dart';
+import '../../app_version/manager/app_version_manager.dart';
 import '../../cart/repositories/cart_repositories.dart';
 import '../../cart/screens/shopping_page.dart';
 import '../../profile/screens/profile.dart';
@@ -27,6 +30,9 @@ class _DashboardPageState extends State<DashboardPage> {
   static const Color _background = Color(0xFFF4F7FB);
   static const Color _border = Color(0xFFE5EAF1);
 
+  String _frontendVersion = '...';
+  String _backendVersion = 'Unavailable';
+
   bool loading = true;
   bool isAdmin = false;
 
@@ -39,20 +45,61 @@ class _DashboardPageState extends State<DashboardPage> {
 
   List<dynamic> configurations = [];
 
-  // =========================================================
-  // INIT
-  // =========================================================
+// =========================================================
+// INIT
+// =========================================================
 
   @override
   void initState() {
     super.initState();
 
     _loadDashboard();
+    _loadVersionInformation();
   }
 
-  // =========================================================
-  // LOAD DASHBOARD
-  // =========================================================
+// =========================================================
+// =========================================================
+// VERSION INFORMATION (NON-BLOCKING)
+// =========================================================
+  Future<void> _loadVersionInformation() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() => _frontendVersion = packageInfo.version);
+      }
+      final result = await const AppVersionManager().checkForUpdates();
+      if (!mounted) return;
+      setState(() {
+        _frontendVersion = result.frontendVersion;
+        _backendVersion = result.backendVersion;
+      });
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('Dashboard version display unavailable: $error');
+      }
+    }
+  }
+
+  Widget _buildVersionFooter() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(
+          'Frontend v$_frontendVersion  •  Backend v$_backendVersion',
+          textAlign: TextAlign.center,
+          softWrap: true,
+          style: TextStyle(
+            color: Colors.grey.shade500,
+            fontSize: 10,
+            height: 1.4,
+          ),
+        ),
+      ),
+    );
+  }
+
+// LOAD DASHBOARD
+// =========================================================
 
   Future<void> _loadDashboard() async {
     if (mounted) {
@@ -83,9 +130,9 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
-  // =========================================================
-  // LOAD USER INFO
-  // =========================================================
+// =========================================================
+// LOAD USER INFO
+// =========================================================
 
   Future<void> _loadUserInfo() async {
     try {
@@ -119,9 +166,9 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  // =========================================================
-  // LOAD ADMIN STATUS
-  // =========================================================
+// =========================================================
+// LOAD ADMIN STATUS
+// =========================================================
 
   Future<void> _loadAdminStatus() async {
     try {
@@ -150,9 +197,9 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  // =========================================================
-  // LOAD CART
-  // =========================================================
+// =========================================================
+// LOAD CART
+// =========================================================
 
   Future<void> _loadOrders() async {
     try {
@@ -189,9 +236,9 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  // =========================================================
-  // LOAD SUBMITTED CONFIGURATIONS
-  // =========================================================
+// =========================================================
+// LOAD SUBMITTED CONFIGURATIONS
+// =========================================================
 
   Future<void> _loadConfigurations() async {
     if (mounted) {
@@ -204,9 +251,9 @@ class _DashboardPageState extends State<DashboardPage> {
       final response =
       await ConfigurationRepository.getConfigurations();
 
-      // =======================================================
-      // DEBUG CONFIGURATION RESPONSE
-      // =======================================================
+// =======================================================
+// DEBUG CONFIGURATION RESPONSE
+// =======================================================
 
       if (kDebugMode) {
         print('==========================================');
@@ -282,9 +329,9 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  // =========================================================
-  // LOGOUT
-  // =========================================================
+// =========================================================
+// LOGOUT
+// =========================================================
 
   Future<void> logoutUser() async {
     final bool? confirmLogout =
@@ -380,9 +427,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // NAVIGATION
-  // =========================================================
+// =========================================================
+// NAVIGATION
+// =========================================================
 
   void _openNewConfiguration() {
     Navigator.push(
@@ -414,9 +461,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // CONFIGURATION EXPAND / COLLAPSE
-  // =========================================================
+// =========================================================
+// CONFIGURATION EXPAND / COLLAPSE
+// =========================================================
 
   void _toggleConfigurations() {
     setState(() {
@@ -425,9 +472,9 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
-  // =========================================================
-  // SHOW SUBMITTED CONFIGURATION INFO
-  // =========================================================
+// =========================================================
+// SHOW SUBMITTED CONFIGURATION INFO
+// =========================================================
 
   void _showConfigurationInfo(
       Map<String, dynamic> configuration,
@@ -759,9 +806,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // BUILD
-  // =========================================================
+// =========================================================
+// BUILD
+// =========================================================
 
   @override
   Widget build(BuildContext context) {
@@ -860,6 +907,9 @@ class _DashboardPageState extends State<DashboardPage> {
                         isMobile,
                       ),
 
+                      const SizedBox(height: 12),
+                      _buildVersionFooter(),
+
                       const SizedBox(
                         height: 24,
                       ),
@@ -874,9 +924,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // WELCOME
-  // =========================================================
+// =========================================================
+// WELCOME
+// =========================================================
 
   Widget _buildWelcomeSection(
       bool isMobile,
@@ -987,9 +1037,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // ADMIN CARD
-  // =========================================================
+// =========================================================
+// ADMIN CARD
+// =========================================================
 
   Widget _buildAdminCard(
       bool isMobile,
@@ -1140,9 +1190,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // NEW CONFIGURATION
-  // =========================================================
+// =========================================================
+// NEW CONFIGURATION
+// =========================================================
 
   Widget _buildPrimaryAction(
       bool isMobile,
@@ -1175,9 +1225,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // SECTION TITLE
-  // =========================================================
+// =========================================================
+// SECTION TITLE
+// =========================================================
 
   Widget _buildSectionTitle(
       String title,
@@ -1209,9 +1259,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // MY CONFIGURATIONS - EXPANDABLE
-  // =========================================================
+// =========================================================
+// MY CONFIGURATIONS - EXPANDABLE
+// =========================================================
 
   Widget _buildConfigurationsCard(
       bool isMobile,
@@ -1770,9 +1820,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // PROFILE CARD
-  // =========================================================
+// =========================================================
+// PROFILE CARD
+// =========================================================
 
   Widget _buildProfileCard() {
     return Material(
@@ -1871,9 +1921,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // =========================================================
-  // CART SECTION
-  // =========================================================
+// =========================================================
+// CART SECTION
+// =========================================================
 
   Widget _buildAccountSection(
       bool isMobile,

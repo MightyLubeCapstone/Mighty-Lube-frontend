@@ -1,310 +1,301 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:mighty_lube/features/auth/repositories/user_repository.dart';
-import 'package:mighty_lube/features/auth/screen/change_pass.dart';
 
-import '../../../core/widget/header_logo.dart';
+import '../../../core/network/api_response.dart';
+import '../../../core/network/services/user_api_service.dart';
 
-class EnterSecurityPin extends StatefulWidget {
-  final String email;
+class UserRepository {
+  UserRepository._();
 
-  const EnterSecurityPin({
-    super.key,
-    required this.email,
-  });
+  // =========================================================
+  // CHECK SESSION
+  // =========================================================
 
-  @override
-  State<EnterSecurityPin> createState() => _EnterSecurityPinState();
-}
-
-class _EnterSecurityPinState extends State<EnterSecurityPin> {
-  final TextEditingController securityPinController = TextEditingController();
-
-  String? _errorSecurityPin;
-
-  bool loading = false;
-
-  bool _validateSecurityPin(
-      String securityPin,
-      ) {
-    setState(() {
-      if (securityPin.trim().isEmpty) {
-        _errorSecurityPin = 'Security PIN is required!';
-      } else {
-        _errorSecurityPin = null;
-      }
-    });
-
-    return _errorSecurityPin == null;
+  static Future<ApiResponse<bool>> checkSession() async {
+    return UserApiService.checkSession();
   }
 
-  Future<bool> validateSecurityPin(
-      String securityPin,
-      ) async {
-    try {
-      if (!_validateSecurityPin(
-        securityPin,
-      )) {
-        return false;
-      }
+  // =========================================================
+  // CREATE ACCOUNT
+  // =========================================================
 
-      setState(() {
-        loading = true;
-      });
-
-      final response = await UserRepository.validateSecurityPin(
-        email: widget.email,
-        securityPin: securityPin,
-      );
-
-      if (!mounted) {
-        return false;
-      }
-
-      setState(() {
-        loading = false;
-      });
-
-      final status = response.success && response.data == true;
-
-      if (!status) {
-        setState(() {
-          _errorSecurityPin = response.message ?? 'Invalid security PIN!';
-        });
-      }
-
-      return status;
-    } catch (error) {
-      if (kDebugMode) {
-        print(
-          error,
-        );
-      }
-
-      if (mounted) {
-        setState(() {
-          loading = false;
-        });
-      }
-
-      return false;
-    }
-  }
-
-  @override
-  void dispose() {
-    securityPinController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(
-      BuildContext context,
-      ) {
-    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
-      body: Column(
-        children: [
-          const HeaderLogo(
-            pressable: false,
-          ),
-          loading == true
-              ? const Expanded(
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-              : Expanded(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(
-                  20,
-                ),
-                margin: EdgeInsets.fromLTRB(
-                  20,
-                  0,
-                  20,
-                  keyboardHeight > 0 ? 0 : 100,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: 0.1,
-                      ),
-                      spreadRadius: 5,
-                      blurRadius: 15,
-                      offset: const Offset(
-                        0,
-                        10,
-                      ),
-                    ),
-                  ],
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Center(
-                        child: Text(
-                          'Security PIN',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Text(
-                        'Enter your security PIN to reset your password.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                        'Security PIN:',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      TextField(
-                        controller: securityPinController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              12,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          hintText: 'Enter your security PIN:',
-                          errorText: _errorSecurityPin,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(
-                                right: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  12,
-                                ),
-                                color: Colors.grey[500],
-                              ),
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.pop(
-                                    context,
-                                  );
-                                },
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(
-                                left: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  12,
-                                ),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Colors.blueAccent,
-                                    Colors.lightBlueAccent,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: TextButton(
-                                onPressed: () async {
-                                  final securityPin =
-                                  securityPinController.text.trim();
-
-                                  final success =
-                                  await validateSecurityPin(
-                                    securityPin,
-                                  );
-
-                                  if (!mounted) {
-                                    return;
-                                  }
-
-                                  if (success) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ChangePass(
-                                          email: widget.email,
-                                          securityPin: securityPin,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: const Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+  static Future<ApiResponse<bool>> makeAccount({
+    required String username,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String phoneNumber,
+    required String companyName,
+    required String country,
+    String? verificationToken,
+  }) async {
+    return UserApiService.makeAccount(
+      username: username,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      companyName: companyName,
+      country: country,
+      verificationToken: verificationToken,
     );
+  }
+
+  // =========================================================
+  // EMAIL VERIFICATION
+  // =========================================================
+
+  // POST /api/email/verification/request-otp
+  //
+  // purpose:
+  // registration - Verify email during registration
+  // verify-email - Verify existing account email
+  // change-email - Verify a new email before changing it
+
+  static Future<ApiResponse<bool>> requestEmailVerificationOtp({
+    required String email,
+    required String purpose,
+  }) async {
+    return UserApiService.requestEmailVerificationOtp(
+      email: email,
+      purpose: purpose,
+    );
+  }
+
+  // POST /api/email/verification/verify-otp
+  //
+  // Registration returns a verification token.
+  // Settings verification updates the account on the backend.
+
+  static Future<ApiResponse<String?>> verifyEmailVerificationOtp({
+    required String email,
+    required String otp,
+    required String purpose,
+  }) async {
+    return UserApiService.verifyEmailVerificationOtp(
+      email: email,
+      otp: otp,
+      purpose: purpose,
+    );
+  }
+
+  // =========================================================
+  // UPDATE ACCOUNT
+  // =========================================================
+
+  static Future<ApiResponse<bool>> updateAccount({
+    required String firstName,
+    required String lastName,
+    required String username,
+    required String companyName,
+    required String phoneNumber,
+    required String email,
+  }) async {
+    return UserApiService.updateAccount(
+      firstName: firstName,
+      lastName: lastName,
+      username: username,
+      companyName: companyName,
+      phoneNumber: phoneNumber,
+      email: email,
+    );
+  }
+
+  // =========================================================
+  // REMOVE ACCOUNT
+  // =========================================================
+
+  static Future<ApiResponse<bool>> removeAccount({
+    required String password,
+  }) async {
+    return UserApiService.removeAccount(
+      password: password,
+    );
+  }
+
+  // =========================================================
+  // FORGOT PASSWORD (LEGACY)
+  // =========================================================
+
+  static Future<ApiResponse<bool>> forgotPassword({
+    required String email,
+  }) async {
+    return UserApiService.forgotPassword(
+      email: email,
+    );
+  }
+
+  // =========================================================
+  // VALIDATE CODE (LEGACY)
+  // =========================================================
+
+  static Future<ApiResponse<bool>> validateCode({
+    required String email,
+    required String passcode,
+  }) async {
+    return UserApiService.validateCode(
+      email: email,
+      passcode: passcode,
+    );
+  }
+
+  // =========================================================
+  // RESET PASSWORD (LEGACY)
+  // =========================================================
+
+  static Future<ApiResponse<bool>> resetPassword({
+    required String email,
+    required String password,
+  }) async {
+    return UserApiService.resetPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  // =========================================================
+  // EMAIL OTP PASSWORD RECOVERY
+  // =========================================================
+
+  // POST /api/email/forgot/request-otp
+
+  static Future<ApiResponse<bool>> requestPasswordResetOtp({
+    required String email,
+  }) async {
+    return UserApiService.requestPasswordResetOtp(
+      email: email,
+    );
+  }
+
+  // POST /api/email/forgot/verify-otp
+
+  static Future<ApiResponse<bool>> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    return UserApiService.verifyPasswordResetOtp(
+      email: email,
+      otp: otp,
+    );
+  }
+
+  // POST /api/email/forgot/reset-password
+
+  static Future<ApiResponse<bool>> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String password,
+  }) async {
+    return UserApiService.resetPasswordWithOtp(
+      email: email,
+      otp: otp,
+      password: password,
+    );
+  }
+
+  // =========================================================
+  // FORGOT USERNAME
+  // =========================================================
+
+  // POST /api/email/forgot-username
+
+  static Future<ApiResponse<bool>> requestForgotUsername({
+    required String email,
+  }) async {
+    return UserApiService.requestForgotUsername(
+      email: email.trim().toLowerCase(),
+    );
+  }
+
+  // =========================================================
+  // LOGIN
+  // =========================================================
+
+  static Future<ApiResponse<bool>> login({
+    required String username,
+    required String password,
+    bool rememberAccount = false,
+  }) async {
+    return UserApiService.login(
+      username: username,
+      password: password,
+      rememberAccount: rememberAccount,
+    );
+  }
+
+  // =========================================================
+  // REMEMBERED ACCOUNTS
+  // =========================================================
+
+  static Future<List<Map<String, dynamic>>> getRememberedAccounts() async {
+    return UserApiService.getRememberedAccounts();
+  }
+
+  static Future<bool> hasRememberedAccount() async {
+    return UserApiService.hasRememberedAccount();
+  }
+
+  static Future<String?> getRememberedUsername() async {
+    return UserApiService.getRememberedUsername();
+  }
+
+  // =========================================================
+  // CONTINUE WITH REMEMBERED ACCOUNT
+  // =========================================================
+
+  static Future<ApiResponse<bool>> continueWithRememberedAccount({
+    String? username,
+  }) async {
+    return UserApiService.continueWithRememberedAccount(
+      username: username,
+    );
+  }
+
+  // =========================================================
+  // FORGET REMEMBERED ACCOUNT
+  // =========================================================
+
+  static Future<ApiResponse<bool>> forgetRememberedAccount({
+    String? username,
+  }) async {
+    return UserApiService.forgetRememberedAccount(
+      username: username,
+    );
+  }
+
+  // =========================================================
+  // LOGOUT
+  // =========================================================
+
+  static Future<ApiResponse<bool>> logout() async {
+    return UserApiService.logout();
+  }
+
+  // =========================================================
+  // CHECK USERNAME
+  // =========================================================
+
+  static Future<ApiResponse<String>> checkUser({
+    required String username,
+  }) async {
+    return UserApiService.checkUser(
+      username: username,
+    );
+  }
+
+  // =========================================================
+  // GET USER INFO
+  // =========================================================
+
+  static Future<ApiResponse<Map<String, dynamic>>> getUserInfo() async {
+    return UserApiService.getUserInfo();
+  }
+
+  // =========================================================
+  // CHECK ADMIN
+  // =========================================================
+
+  static Future<bool> isCurrentUserAdmin() async {
+    return UserApiService.isCurrentUserAdmin();
   }
 }

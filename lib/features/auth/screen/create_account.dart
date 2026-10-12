@@ -1,17 +1,17 @@
+
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mighty_lube/features/auth/repositories/user_repository.dart';
-
+import '../../../Utils/utils.dart';
 import '../../../core/widget/header_logo.dart';
 
 class CreateAccountPage extends StatefulWidget {
-  const CreateAccountPage({
-    super.key,
-  });
+  const CreateAccountPage({super.key,});
 
   @override
   State<CreateAccountPage> createState() => _CreateAccountPageState();
@@ -25,14 +25,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-  TextEditingController();
-  final TextEditingController securityPinController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   List<String> _countries = [];
 
   String? countrytype;
-
   String? _errorCompany;
   String? _errorFirstName;
   String? _errorLastName;
@@ -41,44 +39,159 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String? _errorConfirmPassword;
   String? _errorUser;
   String? _errorEmail;
-  String? _errorSecurityPin;
   String? _errorCountry;
 
   Timer? _delay;
+  Timer? _otpCooldownTimer;
+  String? _verificationToken;
+  String? _verifiedEmail;
+  String? _otpRequestedEmail;
+  String? _otpMessage;
+  bool _otpSent = false;
+  bool _otpBusy = false;
+  int _resendSeconds = 0;
 
   bool _isSubmitting = false;
+  String _fsVersion = '...';
 
   @override
   void initState() {
     super.initState();
     _loadCountries();
+    _loadFsVersion();
   }
 
-  // =========================================================
-  // LOAD COUNTRIES
-  // =========================================================
+  String get _currentEmail => emailController.text.trim().toLowerCase();
 
-  Future<void> _loadCountries() async {
-    final String response = await rootBundle.loadString(
-      'assets/countries.json',
-    );
+  void _onEmailChanged(String value) {
+    final current = value.trim().toLowerCase();
+    if (_verifiedEmail != current || _otpRequestedEmail != current) {
+      _otpCooldownTimer?.cancel();
+      setState(() {
+        _verificationToken = null;
+        _verifiedEmail = null;
+        _otpRequestedEmail = null;
+        _otpSent = false;
+        _otpMessage = null;
+        _resendSeconds = 0;
+        _otpController.clear();
+      });
+    }
+    _validateEmail(value);
+  }
 
-    final List<dynamic> data = json.decode(
-      response,
-    );
+  void _startOtpCooldown() {
+    _otpCooldownTimer?.cancel();
+    setState(() => _resendSeconds = 60);
+    _otpCooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        if (_resendSeconds > 0) _resendSeconds--;
+        if (_resendSeconds == 0) timer.cancel();
+      });
+    });
+  }
 
-    if (!mounted) {
+  Future<void> _requestEmailOtp() async {
+    if (_otpBusy || _isSubmitting || _resendSeconds > 0) return;
+    _validateEmail(emailController.text);
+    if (_errorEmail != null) return;
+    final email = _currentEmail;
+    setState(() {
+      _otpBusy = true;
+      _otpMessage = null;
+    });
+    try {
+      final result = await UserRepository.requestEmailVerificationOtp(
+        email: email,
+        purpose: 'registration',
+      );
+      if (!mounted || email != _currentEmail) return;
+      setState(() {
+        _otpSent = result.success;
+        _otpRequestedEmail = result.success ? email : null;
+        _otpMessage = result.success ? 'Verification code sent. It expires in 5 minutes.' : (result.message ?? 'Unable to send verification code.');
+      });
+      if (result.success) _startOtpCooldown();
+    } catch (_) {
+      if (mounted && email == _currentEmail) {
+        setState(() => _otpMessage = 'Unable to send verification code.');
+      }
+    } finally {
+      if (mounted) setState(() => _otpBusy = false);
+    }
+  }
+
+  Future<void> _confirmEmailOtp() async {
+    if (_otpBusy || _isSubmitting || !_otpSent || _otpRequestedEmail != _currentEmail) return;
+    final otp = _otpController.text.trim();
+
+    if (!RegExp(r'^\d{6}$').hasMatch(otp)) {
+      setState(() => _otpMessage = 'Enter the 6-digit verification code.');
       return;
     }
+    final email = _currentEmail;
+    setState(() {
+      _otpBusy = true;
+      _otpMessage = null;
+    });
+    try {
+      final result = await UserRepository.verifyEmailVerificationOtp(
+        email: email,
+        otp: otp,
+        purpose: 'registration',
+      );
+      if (!mounted || email != _currentEmail) return;
+      if (result.success && result.data != null && result.data!.isNotEmpty) {
+        setState(() {
+          _verificationToken = result.data;
+          _verifiedEmail = email;
+          _otpSent = false;
+          _otpMessage = 'Email verified successfully.';
+        });
+        _otpCooldownTimer?.cancel();
+      } else {
+        setState(() => _otpMessage = result.message ?? 'Invalid or expired verification code.');
+      }
+    } catch (_) {
+      if (mounted && email == _currentEmail) {
+        setState(() => _otpMessage = 'Unable to verify code. Try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _otpBusy = false);
+    }
+  }
 
+  Future<void> _loadFsVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() => _fsVersion = info.version.trim().isEmpty ? 'Unavailable' : info.version.trim());
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _fsVersion = 'Unavailable');
+    }
+  }
+
+// =========================================================
+// LOAD COUNTRIES
+// =========================================================
+
+  Future<void> _loadCountries() async {
+    final String response = await rootBundle.loadString('assets/countries.json',);
+    final List<dynamic> data = json.decode(response,);
+    if (!mounted) {return;}
     setState(() {
       _countries = data.cast<String>();
     });
   }
 
-  // =========================================================
-  // VALIDATE ALL INPUTS
-  // =========================================================
+// =========================================================
+// VALIDATE ALL INPUTS
+// =========================================================
 
   Future<bool> _validateInputs() async {
     _validateCompany(
@@ -110,10 +223,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       confirmPasswordController.text,
     );
 
-    _validateSecurityPin(
-      securityPinController.text,
-    );
-
     _validateCountry();
 
     await _validateUser(
@@ -132,20 +241,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         (_errorConfirmPassword?.isNotEmpty ?? false) ||
         (_errorUser?.isNotEmpty ?? false) ||
         (_errorEmail?.isNotEmpty ?? false) ||
-        (_errorSecurityPin?.isNotEmpty ?? false) ||
         (_errorCountry?.isNotEmpty ?? false);
   }
 
-  // =========================================================
-  // COMPANY
-  // =========================================================
+// =========================================================
+// COMPANY
+// =========================================================
 
-  void _validateCompany(
-      String value,
-      ) {
+  void _validateCompany(String value,) {
     setState(() {
       final company = value.trim();
-
       if (company.isEmpty) {
         _errorCompany = 'Company name is required';
       } else if (company.length > 150) {
@@ -156,16 +261,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // FIRST NAME
-  // =========================================================
+// =========================================================
+// FIRST NAME
+// =========================================================
 
-  void _validateFirstName(
-      String value,
-      ) {
+  void _validateFirstName(String value,) {
     setState(() {
       final firstName = value.trim();
-
       if (firstName.isEmpty) {
         _errorFirstName = 'First name is required';
       } else if (firstName.length > 100) {
@@ -176,16 +278,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // LAST NAME
-  // =========================================================
+// =========================================================
+// LAST NAME
+// =========================================================
 
-  void _validateLastName(
-      String value,
-      ) {
+  void _validateLastName(String value,) {
     setState(() {
       final lastName = value.trim();
-
       if (lastName.isEmpty) {
         _errorLastName = 'Last name is required';
       } else if (lastName.length > 100) {
@@ -196,31 +295,24 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // PHONE
-  // =========================================================
+// =========================================================
+// PHONE
+// =========================================================
 
-  void _validatePhone(
-      String value,
-      ) {
+  void _validatePhone(String value,) {
     setState(() {
       final rawPhone = value.trim();
-
       if (rawPhone.isEmpty) {
         _errorPhone = 'Phone number is required';
         return;
       }
-
       final bool hasLeadingPlus = rawPhone.startsWith('+');
-
       final String digits = rawPhone.replaceAll(
         RegExp(r'\D'),
         '',
       );
-
       final String normalizedPhone =
       hasLeadingPlus ? '+$digits' : digits;
-
       if (!RegExp(r'^\+?\d{7,15}$').hasMatch(normalizedPhone)) {
         _errorPhone = 'Enter a valid phone number';
       } else {
@@ -229,20 +321,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // EMAIL
-  // =========================================================
+// =========================================================
+// EMAIL
+// =========================================================
 
-  void _validateEmail(
-      String email,
-      ) {
+  void _validateEmail(String email,) {
     setState(() {
       final normalizedEmail = email.trim();
-
       if (normalizedEmail.isEmpty) {
         _errorEmail = 'Email is required';
-      } else if (!RegExp(
-        r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+      } else if (
+      !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
       ).hasMatch(normalizedEmail)) {
         _errorEmail = 'Enter a valid email address';
       } else {
@@ -251,18 +340,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // USERNAME
-  //
-  // RULE:
-  // 3 - 50 characters
-  // =========================================================
+// =========================================================
+// USERNAME
+//
+// RULE:
+// 6 - 24 characters
+// =========================================================
 
-  Future<void> _validateUser(
-      String username,
-      ) async {
+  Future<void> _validateUser(String username,) async {
     final normalizedUsername = username.trim().toLowerCase();
-
     if (normalizedUsername.isEmpty) {
       if (mounted) {
         setState(() {
@@ -272,19 +358,19 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       return;
     }
 
-    if (normalizedUsername.length < 3) {
+    if (normalizedUsername.length < 6) {
       if (mounted) {
         setState(() {
-          _errorUser = 'Username must be at least 3 characters';
+          _errorUser = 'Username must be at least 6 characters';
         });
       }
       return;
     }
 
-    if (normalizedUsername.length > 50) {
+    if (normalizedUsername.length > 24) {
       if (mounted) {
         setState(() {
-          _errorUser = 'Username must be at most 50 characters';
+          _errorUser = 'Username must be at most 24 characters';
         });
       }
       return;
@@ -321,45 +407,40 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     }
   }
 
-  void _validateUserDelayed(
-      String username,
-      ) {
+
+  void _validateUserDelayed(String username) {
     _delay?.cancel();
 
     _delay = Timer(
-      const Duration(
-        milliseconds: 500,
-      ),
+      const Duration(milliseconds: 500),
           () {
-        _validateUser(
-          username,
-        );
+        if (!mounted) return;
+        _validateUser(username);
       },
     );
   }
 
-  // =========================================================
-  // PASSWORD
-  //
-  // RULES:
-  // 1. 6 - 50 characters
-  // 2. Password is case-sensitive
-  //
-  // NO mandatory:
-  // - uppercase
-  // - lowercase
-  // - number
-  // - special character
-  // =========================================================
 
-  void _validatePassword(
-      String password,
-      ) {
+// =========================================================
+// PASSWORD
+//
+// RULES:
+// 1. 8 - 50 characters
+// 2. Password is case-sensitive
+//
+// NO mandatory:
+// - uppercase
+// - lowercase
+// - number
+// - special character
+// =========================================================
+
+  void _validatePassword(String password,) {
     setState(() {
       if (password.isEmpty) {
         _errorPassword = 'Password is required';
-      } else if (password.length < 6) {
-        _errorPassword = 'Password must be at least 6 characters';
+      } else if (password.length < 8) {
+        _errorPassword = 'Password must be at least 8 characters';
       } else if (password.length > 50) {
         _errorPassword = 'Password must be at most 50 characters';
       } else {
@@ -368,14 +449,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // CONFIRM PASSWORD
-  // =========================================================
+// =========================================================
+// CONFIRM PASSWORD
+// =========================================================
 
-  void _validateConfirmPassword(
-      String password,
-      String confirmPassword,
-      ) {
+  void _validateConfirmPassword(String password, String confirmPassword,) {
     setState(() {
       if (confirmPassword.isEmpty) {
         _errorConfirmPassword = 'Confirm password is required';
@@ -387,29 +465,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // SECURITY PIN
-  // =========================================================
-
-  void _validateSecurityPin(
-      String securityPin,
-      ) {
-    setState(() {
-      final pin = securityPin.trim();
-
-      if (pin.isEmpty) {
-        _errorSecurityPin = 'Security PIN is required';
-      } else if (!RegExp(r'^\d{6}$').hasMatch(pin)) {
-        _errorSecurityPin = 'Security PIN must be exactly 6 digits';
-      } else {
-        _errorSecurityPin = null;
-      }
-    });
-  }
-
-  // =========================================================
-  // COUNTRY
-  // =========================================================
+// =========================================================
+// COUNTRY
+// =========================================================
 
   void _validateCountry() {
     setState(() {
@@ -421,13 +479,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  // =========================================================
-  // CREATE ACCOUNT
-  // =========================================================
+// =========================================================
+// CREATE ACCOUNT
+// =========================================================
 
-  Future<void> createAccount(
-      BuildContext context,
-      ) async {
+  Future<void> createAccount(BuildContext context,) async {
     if (_isSubmitting) {
       return;
     }
@@ -451,12 +507,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final email = emailController.text.trim().toLowerCase();
     final username = usernameController.text.trim().toLowerCase();
 
-    // IMPORTANT:
-    // Password is NOT lowercased or uppercased.
-    // This keeps the password case-sensitive.
+// IMPORTANT:
+// Password is NOT lowercased or uppercased.
+// This keeps the password case-sensitive.
     final password = passwordController.text;
 
-    final securityPin = securityPinController.text.trim();
     final country = countrytype!.trim();
 
     try {
@@ -468,8 +523,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         email: email,
         phoneNumber: phoneNumber,
         companyName: companyName,
-        securityPin: securityPin,
         country: country,
+        verificationToken: _verifiedEmail == email ? _verificationToken : null,
       );
 
       if (!mounted) {
@@ -477,10 +532,23 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       }
 
       if (result.success && result.data == true) {
-        Navigator.pushReplacementNamed(
-          context,
-          '/dashboard',
+        await showDialog<void>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Account Created'),
+            content: const Text(
+                'Your account has been created successfully. You can now log in. Email verification is optional.'
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
         );
+        if (!mounted) return;
+        Navigator.of(context).pop();
         return;
       }
 
@@ -513,14 +581,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     }
   }
 
-  // =========================================================
-  // BACKEND FIELD ERRORS
-  // =========================================================
+// =========================================================
+// BACKEND FIELD ERRORS
+// =========================================================
 
-  bool _applyBackendErrors(
-      Map<String, String> fieldErrors,
-      List<String> missingFields,
-      ) {
+  bool _applyBackendErrors(Map<String, String> fieldErrors, List<String> missingFields,) {
     bool hasFieldError = false;
 
     setState(() {
@@ -568,11 +633,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
           case 'password':
             _errorPassword = message;
-            hasFieldError = true;
-            break;
-
-          case 'securitypin':
-            _errorSecurityPin = message;
             hasFieldError = true;
             break;
 
@@ -625,11 +685,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             hasFieldError = true;
             break;
 
-          case 'securitypin':
-            _errorSecurityPin ??= 'Security PIN is required';
-            hasFieldError = true;
-            break;
-
           case 'country':
             _errorCountry ??= 'Country is required';
             hasFieldError = true;
@@ -641,42 +696,37 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     return hasFieldError;
   }
 
-  // =========================================================
-  // ERROR DIALOG
-  // =========================================================
+// =========================================================
+// ERROR DIALOG
+// =========================================================
 
-  void _showAccountCreationError(
-      BuildContext context,
-      String message,
-      ) {
+  void _showAccountCreationError(BuildContext context, String message,) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
-          'Account creation failed',
-        ),
-        content: Text(
-          message,
-        ),
+        title: const Text('Account creation failed',),
+        content: Text(message,),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              'Ok',
-            ),
+            child: const Text('Ok',),
           ),
         ],
       ),
     );
   }
 
-  // =========================================================
-  // DISPOSE
-  // =========================================================
+// =========================================================
+// DISPOSE
+// =========================================================
+
 
   @override
   void dispose() {
     _delay?.cancel();
+    _otpCooldownTimer?.cancel();
+
+    _otpController.dispose();
 
     companyController.dispose();
     firstNameController.dispose();
@@ -686,58 +736,39 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     usernameController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-    securityPinController.dispose();
 
     super.dispose();
   }
 
-  // =========================================================
-  // BUILD
-  // =========================================================
+
+// =========================================================
+// BUILD
+// =========================================================
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context,) {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const HeaderLogo(
-            pressable: false,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          const HeaderLogo(pressable: false,),
+          const SizedBox(height: 10,),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20,),
               child: Container(
-                padding: const EdgeInsets.all(
-                  20,
-                ),
-                margin: const EdgeInsets.only(
-                  top: 10,
-                ),
+                padding: const EdgeInsets.all(20,),
+                margin: const EdgeInsets.only(top: 10,),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ),
+                  borderRadius: BorderRadius.circular(20,),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: 0.1,
-                      ),
+                      color: Colors.black.withValues(alpha: 0.1,),
                       spreadRadius: 5,
                       blurRadius: 15,
-                      offset: const Offset(
-                        0,
-                        10,
-                      ),
+                      offset: const Offset(0, 10,),
                     ),
                   ],
                 ),
@@ -745,8 +776,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Center(
-                      child: Text(
-                        'Register Page',
+                      child: Text('Create Account',
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
@@ -754,9 +784,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 10,),
 
                     // COMPANY
                     buildTextField(
@@ -768,17 +796,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       onChanged: _validateCompany,
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
                     // NAME
-                    const Text(
-                      'Name:*',
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
+                    const Text('Name:*',),
+                    const SizedBox(height: 5,),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -792,9 +814,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             onChanged: _validateFirstName,
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
+                        const SizedBox(width: 10,),
                         Expanded(
                           child: buildTextField(
                             '',
@@ -808,9 +828,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       ],
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
                     // PHONE
                     buildTextField(
@@ -823,25 +841,98 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       onChanged: _validatePhone,
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
                     // EMAIL
-                    buildTextField(
-                      'Email Address:*',
-                      'Email Address',
-                      emailController,
-                      borderColor: Colors.grey,
-                      keyboardType: TextInputType.emailAddress,
-                      errorText: _errorEmail,
-                      onChanged: _validateEmail,
+                    const Text('Email Address *',),
+                    const SizedBox(height: 5,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: buildTextField(
+                           '',
+                            'Email Address',
+                            emailController,
+                            borderColor: Colors.grey,
+                            keyboardType: TextInputType.emailAddress,
+                            errorText: _errorEmail,
+                            onChanged: _onEmailChanged,
+                          ),
+                        ),
+                        const SizedBox(width: 5,),
+
+                        OutlinedButton.icon(
+                          onPressed: (_otpBusy || _isSubmitting || _resendSeconds > 0) ? null : _requestEmailOtp,
+                          icon: const Icon(Icons.mark_email_unread_outlined),
+                          label: Text(_otpBusy ? 'wait...' : _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : _otpSent ? 'Resend OTP' : 'Verify',
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.grey[100],
+                            foregroundColor: Colors.black87,
+                            disabledForegroundColor: Colors.grey,
+                            // side: BorderSide(color: borderColor),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2,),
+                            minimumSize: const Size(0, 48),
+                          ),
+                        ),
+
+                        // OutlinedButton.icon(
+                        //   onPressed: (_otpBusy || _isSubmitting || _resendSeconds > 0) ? null : _requestEmailOtp,
+                        //   icon: const Icon(Icons.mark_email_unread_outlined),
+                        //   label: Text(_otpBusy ? 'Please wait...' : _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : _otpSent ? 'Resend OTP' : 'Verify'),
+                        // ),
+                      ],
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    const SizedBox(height: 8),
+                    if (_verifiedEmail == _currentEmail && _verificationToken != null)
+                      const Row(
+                        children: [
+                          Icon(Icons.verified, color: Colors.green, size: 20),
+                          SizedBox(width: 8),
+                          Text('Email Verified', style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600)),
+                        ],
+                      )
+                    else ...[
+                      if (_otpSent && _otpRequestedEmail == _currentEmail) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _otpController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 6,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                decoration: const InputDecoration(
+                                  labelText: '6-digit OTP',
+                                  counterText: '',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: _otpBusy ? null : _confirmEmailOtp,
+                              child: const Text('Confirm'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                    if (_otpMessage != null) ...[
+                      const SizedBox(height: 6),
+                      Text(_otpMessage!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: _verifiedEmail == _currentEmail
+                                ? Colors.green : Colors.red,
+                          )),
+                    ],
 
+                    SizedBox(height: Utils.heightBetweenItem,),
                     // USERNAME
                     buildTextField(
                       'Username:*',
@@ -856,9 +947,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       },
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
                     // PASSWORD
                     buildTextField(
@@ -882,11 +971,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       },
                     ),
 
-                    const SizedBox(
-                      height: 8,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
-                    // PASSWORD REQUIREMENTS
+
+// PASSWORD REQUIREMENTS
                     const Text(
                       'Password requirements:',
                       style: TextStyle(
@@ -895,12 +983,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       ),
                     ),
 
-                    const SizedBox(
-                      height: 4,
-                    ),
+                    const SizedBox(height: 4,),
 
-                    const Text(
-                      '• Password must be 6 to 50 characters.',
+                    const Text('• Password must be 8 to 50 characters.',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black54,
@@ -911,17 +996,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       height: 2,
                     ),
 
-                    const Text(
-                      '• Password is case-sensitive.',
+                    const Text('• Password is case-sensitive.',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black54,
                       ),
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
                     // CONFIRM PASSWORD
                     buildTextField(
@@ -939,38 +1021,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       },
                     ),
 
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: Utils.heightBetweenItem,),
 
-                    // SECURITY PIN
-                    buildTextField(
-                      'Security PIN:*',
-                      '6-digit Security PIN',
-                      securityPinController,
-                      borderColor: Colors.grey,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(
-                          6,
-                        ),
-                      ],
-                      errorText: _errorSecurityPin,
-                      onChanged: _validateSecurityPin,
-                    ),
-
-                    const SizedBox(
-                      height: 15,
-                    ),
 
                     // COUNTRY
-                    const Text(
-                      'Country:*',
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
+                    const Text('Country:*',),
+                    const SizedBox(height: 5,),
 
                     DropdownSearch<String>(
                       items: _countries,
@@ -1090,7 +1146,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       height: 30,
                     ),
 
-                    // REGISTER
+// REGISTER
                     buildGradientButton(
                       _isSubmitting
                           ? 'Creating Account...'
@@ -1108,7 +1164,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       height: 10,
                     ),
 
-                    // CANCEL
+// CANCEL
                     buildGrayButton(
                       'Cancel',
                       _isSubmitting
@@ -1124,36 +1180,44 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               ),
             ),
           ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+              child: Text('Version $_fsVersion',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF30343B),),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  // =========================================================
-  // TEXT FIELD
-  // =========================================================
+// =========================================================
+// TEXT FIELD
+// =========================================================
 
   Widget buildTextField(
       String label,
       String hint,
-      TextEditingController controller, {
+      TextEditingController controller,
+      {
         bool obscureText = false,
         String? errorText,
         required Color borderColor,
         void Function(String)? onChanged,
         TextInputType? keyboardType,
         List<TextInputFormatter>? inputFormatters,
-      }) {
+      })
+  {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label.isNotEmpty) ...[
-          Text(
-            label,
-          ),
-          const SizedBox(
-            height: 8,
-          ),
+          Text(label,),
+          const SizedBox(height: 8,),
         ],
         TextField(
           controller: controller,
@@ -1163,22 +1227,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           onChanged: onChanged,
           decoration: InputDecoration(
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                12,
-              ),
+              borderRadius: BorderRadius.circular(12,),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                12,
-              ),
-              borderSide: BorderSide(
-                color: borderColor,
-              ),
+              borderRadius: BorderRadius.circular(12,),
+              borderSide: BorderSide(color: borderColor,),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 20,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2,),
             filled: true,
             fillColor: Colors.grey[100],
             hintText: hint,
@@ -1189,24 +1244,19 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  // =========================================================
-  // REGISTER BUTTON
-  // =========================================================
+// =========================================================
+// REGISTER BUTTON
+// =========================================================
 
-  Widget buildGradientButton(
-      String text,
-      VoidCallback? onPressed,
-      ) {
+  Widget buildGradientButton(String text, VoidCallback? onPressed,) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          12,
-        ),
+        borderRadius: BorderRadius.circular(12,),
         gradient: const LinearGradient(
           colors: [
             Colors.blueAccent,
-            Colors.lightBlueAccent,
+            Color(0xFF2563EB),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -1214,8 +1264,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       ),
       child: TextButton(
         onPressed: onPressed,
-        child: Text(
-          text,
+        child: Text(text,
           style: const TextStyle(
             fontSize: 18,
             color: Colors.white,
@@ -1226,29 +1275,23 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  // =========================================================
-  // CANCEL BUTTON
-  // =========================================================
+// =========================================================
+// CANCEL BUTTON
+// =========================================================
 
-  Widget buildGrayButton(
-      String text,
-      VoidCallback? onPressed,
-      ) {
+  Widget buildGrayButton(String text, VoidCallback? onPressed,) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          12,
-        ),
-        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(12,),
+        color: const Color(0xFFE5E7EB),
       ),
       child: TextButton(
         onPressed: onPressed,
-        child: Text(
-          text,
+        child: Text(text,
           style: const TextStyle(
             fontSize: 18,
-            color: Colors.black54,
+            color: const Color(0xFF374151),
             fontWeight: FontWeight.bold,
           ),
         ),

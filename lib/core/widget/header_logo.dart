@@ -16,15 +16,13 @@ class HeaderLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: pressable ? () {
-        Navigator.of(context).pushReplacementNamed('/dashboard');
-      } : null,
+      onPressed: pressable ? () {Navigator.of(context).pushReplacementNamed('/dashboard');} : null,
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: SvgPicture.asset('assets/WhiteML_Logo-w-tag-vector.svg',
+      child: SvgPicture.asset('assets/ML_Logo-w-tag-vector.svg',
         width: width,
         height: height,
         fit: BoxFit.contain,

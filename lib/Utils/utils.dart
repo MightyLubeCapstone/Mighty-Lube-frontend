@@ -3,4 +3,7 @@ class Utils {
   // this this varible will decide do i need to add or not
   // false means no need to show  or true means yes need to show
   static const bool addNewFiledByWebsite = true;
+
+  /// space between two item in colume like text box
+  static double get  heightBetweenItem => 10;
 }

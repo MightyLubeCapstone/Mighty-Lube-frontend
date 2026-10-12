@@ -13,8 +13,8 @@ class UserRepository {
   }
 
   // =========================================================
-  // CREATE ACCOUNT
-  // =========================================================
+// CREATE ACCOUNT
+// =========================================================
 
   static Future<ApiResponse<bool>> makeAccount({
     required String username,
@@ -24,8 +24,8 @@ class UserRepository {
     required String email,
     required String phoneNumber,
     required String companyName,
-    required String securityPin,
     required String country,
+    String? verificationToken,
   }) async {
     return UserApiService.makeAccount(
       username: username,
@@ -35,8 +35,8 @@ class UserRepository {
       email: email,
       phoneNumber: phoneNumber,
       companyName: companyName,
-      securityPin: securityPin,
       country: country,
+      verificationToken: verificationToken,
     );
   }
 
@@ -74,8 +74,36 @@ class UserRepository {
     );
   }
 
+
+
   // =========================================================
-  // FORGOT PASSWORD
+// EMAIL VERIFICATION
+// =========================================================
+
+  static Future<ApiResponse<bool>> requestEmailVerificationOtp({
+    required String email,
+    required String purpose,
+  }) async {
+    return UserApiService.requestEmailVerificationOtp(
+      email: email,
+      purpose: purpose,
+    );
+  }
+
+  static Future<ApiResponse<String?>> verifyEmailVerificationOtp({
+    required String email,
+    required String otp,
+    required String purpose,
+  }) async {
+    return UserApiService.verifyEmailVerificationOtp(
+      email: email,
+      otp: otp,
+      purpose: purpose,
+    );
+  }
+
+  // =========================================================
+  // FORGOT PASSWORD (LEGACY)
   // =========================================================
 
   static Future<ApiResponse<bool>> forgotPassword({
@@ -87,7 +115,7 @@ class UserRepository {
   }
 
   // =========================================================
-  // VALIDATE CODE
+  // VALIDATE CODE (LEGACY)
   // =========================================================
 
   static Future<ApiResponse<bool>> validateCode({
@@ -101,7 +129,7 @@ class UserRepository {
   }
 
   // =========================================================
-  // VALIDATE SECURITY PIN
+  // VALIDATE SECURITY PIN (LEGACY)
   // =========================================================
 
   static Future<ApiResponse<bool>> validateSecurityPin({
@@ -115,7 +143,7 @@ class UserRepository {
   }
 
   // =========================================================
-  // RESET PASSWORD
+  // RESET PASSWORD (LEGACY)
   // =========================================================
 
   static Future<ApiResponse<bool>> resetPassword({
@@ -129,14 +157,61 @@ class UserRepository {
   }
 
   // =========================================================
+  // EMAIL OTP PASSWORD RECOVERY
+  // =========================================================
+
+  // POST /api/email/forgot/request-otp
+  static Future<ApiResponse<bool>> requestPasswordResetOtp({
+    required String email,
+  }) async {
+    return UserApiService.requestPasswordResetOtp(
+      email: email,
+    );
+  }
+
+  // POST /api/email/forgot/verify-otp
+  static Future<ApiResponse<bool>> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    return UserApiService.verifyPasswordResetOtp(
+      email: email,
+      otp: otp,
+    );
+  }
+
+  // POST /api/email/forgot/reset-password
+  static Future<ApiResponse<bool>> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String password,
+  }) async {
+    return UserApiService.resetPasswordWithOtp(
+      email: email,
+      otp: otp,
+      password: password,
+    );
+  }
+
+  // =========================================================
+  // FORGOT USERNAME (NEW)
+  //
+  // Sends the existing username to the registered email.
+  // No OTP or username reset is required.
+  //
+  // POST /api/email/forgot-username
+  // =========================================================
+
+  static Future<ApiResponse<bool>> requestForgotUsername({
+    required String email,
+  }) async {
+    return UserApiService.requestForgotUsername(
+      email: email.trim().toLowerCase(),
+    );
+  }
+
+  // =========================================================
   // LOGIN
-  //
-  // rememberAccount = true
-  // -> backend creates normal session + 30-day remember token
-  // -> account is added/refreshed in the remembered account list
-  //
-  // rememberAccount = false
-  // -> normal session only
   // =========================================================
 
   static Future<ApiResponse<bool>> login({
@@ -153,17 +228,6 @@ class UserRepository {
 
   // =========================================================
   // REMEMBERED ACCOUNTS
-  //
-  // Maximum 5 remembered accounts are stored locally.
-  // Order is oldest -> newest.
-  //
-  // If a 6th account is remembered:
-  // -> oldest account is removed
-  // -> its remember token is revoked
-  //
-  // If an existing account is remembered again:
-  // -> no duplicate is created
-  // -> it becomes the newest remembered account
   // =========================================================
 
   static Future<List<Map<String, dynamic>>> getRememberedAccounts() async {
@@ -182,10 +246,6 @@ class UserRepository {
 
   // =========================================================
   // CONTINUE WITH REMEMBERED ACCOUNT
-  //
-  // Uses the selected account's 30-day remember token.
-  // Backend generates a NEW normal 12-hour session.
-  // No password is required.
   // =========================================================
 
   static Future<ApiResponse<bool>> continueWithRememberedAccount({
@@ -198,10 +258,6 @@ class UserRepository {
 
   // =========================================================
   // FORGET REMEMBERED ACCOUNT
-  //
-  // Revokes only the selected account's remember token
-  // and removes only that account from local storage.
-  // Other remembered accounts remain unchanged.
   // =========================================================
 
   static Future<ApiResponse<bool>> forgetRememberedAccount({
@@ -214,9 +270,6 @@ class UserRepository {
 
   // =========================================================
   // LOGOUT
-  //
-  // Removes the current normal session only.
-  // All remembered accounts remain available for "Continue as".
   // =========================================================
 
   static Future<ApiResponse<bool>> logout() async {
