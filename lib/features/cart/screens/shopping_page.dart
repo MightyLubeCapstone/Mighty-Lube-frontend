@@ -7,6 +7,7 @@ import 'package:mighty_lube/core/widget/helper_widgets.dart';
 
 import 'package:mighty_lube/features/application/screens/application_catalog_page.dart';
 import 'package:mighty_lube/features/cart/repositories/draft_repository.dart';
+import 'package:mighty_lube/features/configurations/models/submitted_rfq.dart';
 import 'package:mighty_lube/features/configurations/repositories/configuration_repository.dart';
 
 import 'package:mighty_lube/core/widget/product_configuration_form.dart';
@@ -357,41 +358,24 @@ class _ShoppingPageState extends State<ShoppingPage> {
       return false;
     }
 
-    final bool? confirmFinalize = await showDialog<bool>(
+    // =========================================================
+    // STANDALONE OR NEW PROJECT
+    //
+    // null  -> user cancelled
+    // ''    -> standalone RFQs
+    // 'abc' -> create project "abc"
+    // =========================================================
+
+    final String? projectChoice = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            "Confirm Finalize?",
-          ),
-          content: const Text(
-            "Are you sure you want to finalize and submit these configurations?",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text(
-                "Finalize",
-                style: TextStyle(
-                  color: Color(0xFF579AF6),
-                ),
-              ),
-            ),
-          ],
+        return _FinalizeDialog(
+          itemCount: configurationIDs.length,
         );
       },
     );
 
-    if (confirmFinalize != true) {
+    if (projectChoice == null) {
       return false;
     }
 
@@ -405,6 +389,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
     final response = await ConfigurationRepository.finalize(
       configurationIDs: configurationIDs,
+      projectName: projectChoice.isEmpty ? null : projectChoice,
     );
 
     if (!mounted) {
@@ -415,27 +400,14 @@ class _ShoppingPageState extends State<ShoppingPage> {
       cartLoading = false;
     });
 
-    final bool status = response.success && response.data == true;
-
-    if (status) {
+    if (response.success) {
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              'Success',
-            ),
-            content: const Text(
-              'Successfully sent configuration to the team!',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
+          return _FinalizeSuccessDialog(
+            result: response.data ?? const FinalizeResult(),
+            requestedProjectName:
+            projectChoice.isEmpty ? null : projectChoice,
           );
         },
       );
@@ -1733,6 +1705,231 @@ class _ShoppingPageState extends State<ShoppingPage> {
                   ),
               ],
             ),
+    );
+  }
+}
+
+// ===========================================================
+// FINALIZE DIALOG
+//
+// ○ Standalone
+// ○ Create new project -> Project Name (required)
+// ===========================================================
+
+class _FinalizeDialog extends StatefulWidget {
+  const _FinalizeDialog({
+    required this.itemCount,
+  });
+
+  final int itemCount;
+
+  @override
+  State<_FinalizeDialog> createState() => _FinalizeDialogState();
+}
+
+class _FinalizeDialogState extends State<_FinalizeDialog> {
+  bool _createProject = false;
+
+  String? _nameError;
+
+  final TextEditingController _projectNameController =
+  TextEditingController();
+
+  @override
+  void dispose() {
+    _projectNameController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (!_createProject) {
+      Navigator.of(context).pop('');
+      return;
+    }
+
+    final name = _projectNameController.text.trim();
+
+    if (name.isEmpty) {
+      setState(() {
+        _nameError = 'Project name is required.';
+      });
+      return;
+    }
+
+    Navigator.of(context).pop(name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final count = widget.itemCount;
+
+    return AlertDialog(
+      title: const Text(
+        "Confirm Finalize?",
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "You are submitting $count configuration${count == 1 ? '' : 's'}. "
+                  "Each one gets its own RFQ number.",
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            RadioGroup<bool>(
+              groupValue: _createProject,
+              onChanged: (value) {
+                setState(() {
+                  _createProject = value ?? false;
+                  _nameError = null;
+                });
+              },
+              child: const Column(
+                children: [
+                  RadioListTile<bool>(
+                    value: false,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text("Standalone"),
+                    subtitle: Text("Submit without a project."),
+                  ),
+                  RadioListTile<bool>(
+                    value: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text("Create new project"),
+                    subtitle: Text("Group these RFQs under a project name."),
+                  ),
+                ],
+              ),
+            ),
+            if (_createProject)
+              TextField(
+                controller: _projectNameController,
+                autofocus: true,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _submit(),
+                onChanged: (_) {
+                  if (_nameError != null) {
+                    setState(() {
+                      _nameError = null;
+                    });
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: "Project Name",
+                  hintText: "e.g. Ford Plant Line 2",
+                  errorText: _nameError,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text(
+            "Cancel",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: _submit,
+          child: const Text(
+            "Finalize",
+            style: TextStyle(
+              color: Color(0xFF579AF6),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ===========================================================
+// FINALIZE SUCCESS DIALOG
+//
+// Project: P-10001 – Ford Plant Line 2
+// RFQ-10002 – CC5 Chain Lubricator
+//
+// Falls back to the plain message while the backend does
+// not send RFQ numbers yet.
+// ===========================================================
+
+class _FinalizeSuccessDialog extends StatelessWidget {
+  const _FinalizeSuccessDialog({
+    required this.result,
+    required this.requestedProjectName,
+  });
+
+  final FinalizeResult result;
+
+  final String? requestedProjectName;
+
+  @override
+  Widget build(BuildContext context) {
+    final projectName = result.projectName ?? requestedProjectName;
+    final projectNumber = result.projectNumberLabel;
+
+    final projectLine = projectName == null
+        ? null
+        : [projectNumber, projectName].whereType<String>().join(' – ');
+
+    return AlertDialog(
+      title: const Text(
+        'Success',
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Your request has been sent to the team.',
+            ),
+            if (projectLine != null) ...[
+              const SizedBox(
+                height: 12,
+              ),
+              Text(
+                'Project: $projectLine',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF7C3AED),
+                ),
+              ),
+            ],
+            if (result.hasRfqNumbers) ...[
+              const SizedBox(
+                height: 8,
+              ),
+              for (final rfq in result.rfqs)
+                if (rfq.rfqLabel != null)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 4,
+                    ),
+                    child: Text(
+                      '${rfq.rfqLabel} – ${rfq.productName}',
+                    ),
+                  ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('OK'),
+        ),
+      ],
     );
   }
 }

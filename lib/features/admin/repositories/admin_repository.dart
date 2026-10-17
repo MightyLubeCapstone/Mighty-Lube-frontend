@@ -86,7 +86,7 @@ class AdminRepository {
   // adminWorkflowStatus = pending
   // =========================================================
 
-  static Future<ApiResponse<String>> updateAdminWorkflowStatus({
+  static Future<ApiResponse<AdminStatusUpdate>> updateAdminWorkflowStatus({
     required String configurationID,
     required String adminWorkflowStatus,
   }) {
@@ -117,7 +117,7 @@ class AdminRepository {
   // been migrated.
   // =========================================================
 
-  static Future<ApiResponse<String>> updateConfigurationStatus({
+  static Future<ApiResponse<AdminStatusUpdate>> updateConfigurationStatus({
     required String configurationID,
     required String status,
   }) {

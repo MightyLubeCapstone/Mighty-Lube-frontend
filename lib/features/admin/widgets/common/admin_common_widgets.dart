@@ -375,6 +375,7 @@ class AdminStatusBadge extends StatelessWidget {
       'done' => Colors.green,
       'pending' => Colors.orange,
       'requested' => Colors.blue,
+      'awaiting_response' => Colors.indigo,
       'admin' => Colors.deepPurple,
       _ => Colors.blueGrey,
     };
@@ -535,7 +536,7 @@ String adminTitleCase(
   }
 
   return value
-      .split(' ')
+      .split(RegExp(r'[ _]'))
       .where(
         (part) => part.isNotEmpty,
   )

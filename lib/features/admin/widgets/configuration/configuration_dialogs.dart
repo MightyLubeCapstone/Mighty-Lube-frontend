@@ -2,25 +2,43 @@ import 'package:flutter/material.dart';
 
 import '../../models/admin_models.dart';
 import '../../repositories/admin_repository.dart';
+import '../../services/rfq_pdf_service.dart';
+import '../common/admin_status_style.dart';
 
 class ConfigurationDetailsDialog extends StatelessWidget {
   const ConfigurationDetailsDialog({
     super.key,
     required this.configuration,
+    this.users = const [],
   });
 
   final AdminConfiguration configuration;
+
+  // Used for customer details in the PDF.
+  final List<AdminUser> users;
 
   @override
   Widget build(BuildContext context) {
     final adminStatus = configuration.adminWorkflowStatus ?? 'requested';
 
+    final rfq = configuration.rfqLabel;
+
+    final productName = configuration.productName.trim().isNotEmpty
+        ? configuration.productName
+        : 'Configured product';
+
     return _AdminDetailsDialog(
       icon: Icons.assignment_outlined,
-      title: 'Configuration Details',
-      subtitle: configuration.productName.trim().isNotEmpty
-          ? configuration.productName
-          : 'Configured product',
+      title: rfq == null
+          ? 'Configuration Details'
+          : '$rfq • $productName',
+      subtitle: rfq == null
+          ? productName
+          : 'Configuration Details',
+      headerActions: RfqPdfActions(
+        configurations: [configuration],
+        users: users,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,10 +51,20 @@ class ConfigurationDetailsDialog extends StatelessWidget {
             title: 'Overview',
             children: [
               _plainInfoGrid([
+                _PlainInfo('RFQ #', rfq ?? '—'),
+                _PlainInfo(
+                  'Project',
+                  configuration.isInProject
+                      ? [
+                    configuration.projectNumberLabel,
+                    configuration.projectName,
+                  ].whereType<String>().join(' – ')
+                      : 'Standalone',
+                ),
                 _PlainInfo('Configuration', configuration.name),
                 _PlainInfo('Quantity', configuration.numRequested),
                 _PlainInfo('User status', _titleCase(configuration.status)),
-                _PlainInfo('Admin status', _titleCase(adminStatus)),
+                _PlainInfo('Admin status', AdminWorkflowStatus.label(adminStatus)),
                 _PlainInfo('Submitted', _friendlyDate(configuration.submittedAt)),
                 _PlainInfo('Current status since', _friendlyDate(configuration.adminStatusChangedAt)),
                 _PlainInfo('Created', _friendlyDate(configuration.createdAt)),
@@ -125,7 +153,7 @@ class _ConfigurationHero extends StatelessWidget {
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
               const SizedBox(width: 7),
-              Text(adminStatus.toUpperCase(), style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: .5)),
+              Text(AdminWorkflowStatus.label(adminStatus).toUpperCase(), style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: .5)),
             ]),
           );
           if (compact) return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [info, const SizedBox(height: 14), badge]);
@@ -334,9 +362,9 @@ class _ActivityChangeRow extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFE2E8F0))),
       child: Wrap(spacing: 7, runSpacing: 5, crossAxisAlignment: WrapCrossAlignment.center, children: [
         Text(_readableLabel(change['field']?.toString() ?? ''), style: const TextStyle(color: Color(0xFF334155), fontSize: 12, fontWeight: FontWeight.w800)),
-        Text(_activityValue(change['from']), style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
+        Text(_activityChangeValue(change, 'from'), style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
         const Icon(Icons.arrow_forward, size: 14, color: Color(0xFF94A3B8)),
-        Text(_activityValue(change['to']), style: const TextStyle(color: Color(0xFF0F172A), fontSize: 12, fontWeight: FontWeight.w700)),
+        Text(_activityChangeValue(change, 'to'), style: const TextStyle(color: Color(0xFF0F172A), fontSize: 12, fontWeight: FontWeight.w700)),
       ]),
     );
   }
@@ -1105,12 +1133,21 @@ class _AdminDetailsDialog
     required this.title,
     required this.subtitle,
     required this.child,
+    this.headerActions,
+    this.headerColor = const Color(0xFFF1F5FF),
+    this.iconColor = const Color(0xFF2563EB),
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final Widget child;
+
+  // Shown under the title (e.g. Export PDF / Print).
+  final Widget? headerActions;
+
+  final Color headerColor;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -1147,11 +1184,10 @@ class _AdminDetailsDialog
                 compact ? 14 : 18,
               ),
               decoration:
-              const BoxDecoration(
-                color:
-                Color(0xFFF1F5FF),
+              BoxDecoration(
+                color: headerColor,
                 borderRadius:
-                BorderRadius.vertical(
+                const BorderRadius.vertical(
                   top:
                   Radius.circular(
                     20,
@@ -1162,10 +1198,7 @@ class _AdminDetailsDialog
                 children: [
                   if (!compact) ...[
                     CircleAvatar(
-                      backgroundColor:
-                      const Color(
-                        0xFF2563EB,
-                      ),
+                      backgroundColor: iconColor,
                       foregroundColor:
                       Colors.white,
                       child: Icon(icon),
@@ -1211,6 +1244,12 @@ class _AdminDetailsDialog
                             ),
                           ),
                         ),
+                        if (headerActions != null) ...[
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          headerActions!,
+                        ],
                       ],
                     ),
                   ),
@@ -1922,19 +1961,26 @@ Color _activityColor(String action) {
 }
 
 Color _adminStatusColor(String status) {
-  switch (status.toLowerCase()) {
-    case 'pending': return const Color(0xFFDC2626);
-    case 'done': return const Color(0xFF16A34A);
-    default: return const Color(0xFFD97706);
-  }
+  return AdminStatusStyle.text(status.toLowerCase());
 }
 
 Color _adminStatusBackground(String status) {
-  switch (status.toLowerCase()) {
-    case 'pending': return const Color(0xFFFEF2F2);
-    case 'done': return const Color(0xFFF0FDF4);
-    default: return const Color(0xFFFFFBEB);
+  return AdminStatusStyle.row(status.toLowerCase());
+}
+
+// Admin status changes show "Awaiting Response" instead of
+// the raw "awaiting_response" value.
+String _activityChangeValue(
+    Map<String, dynamic> change,
+    String side,
+    ) {
+  final value = change[side];
+
+  if (change['field'] == 'adminStatus' && value is String) {
+    return AdminWorkflowStatus.label(value.trim().toLowerCase());
   }
+
+  return _activityValue(value);
 }
 
 String _activityValue(dynamic value) {
@@ -1971,4 +2017,261 @@ bool _hasDistinctUpdate(
       .abs()
       .inMinutes >=
       1;
+}
+
+// ===========================================================
+// PDF / PRINT ACTIONS
+// ===========================================================
+
+class RfqPdfActions extends StatefulWidget {
+  const RfqPdfActions({
+    super.key,
+    required this.configurations,
+    this.project,
+    this.users = const [],
+  });
+
+  final List<AdminConfiguration> configurations;
+
+  final AdminProjectGroup? project;
+
+  final List<AdminUser> users;
+
+  @override
+  State<RfqPdfActions> createState() => _RfqPdfActionsState();
+}
+
+class _RfqPdfActionsState extends State<RfqPdfActions> {
+  // 'export' / 'print' while busy.
+  String? _busyAction;
+
+  Future<void> _run(
+      String action,
+      ) async {
+    if (_busyAction != null) {
+      return;
+    }
+
+    setState(() {
+      _busyAction = action;
+    });
+
+    try {
+      if (action == 'export') {
+        await RfqPdfService.export(
+          configurations: widget.configurations,
+          project: widget.project,
+          users: widget.users,
+        );
+      } else {
+        await RfqPdfService.printDocument(
+          configurations: widget.configurations,
+          project: widget.project,
+          users: widget.users,
+        );
+      }
+    } catch (error, stackTrace) {
+      debugPrint('PDF ERROR: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              action == 'export'
+                  ? 'Unable to export PDF.'
+                  : 'Unable to print.',
+            ),
+            backgroundColor: Colors.red.shade700,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busyAction = null;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget icon(String action, IconData data) {
+      if (_busyAction == action) {
+        return const SizedBox.square(
+          dimension: 16,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        );
+      }
+
+      return Icon(data, size: 18);
+    }
+
+    final busy = _busyAction != null;
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        OutlinedButton.icon(
+          onPressed: busy ? null : () => _run('export'),
+          icon: icon('export', Icons.picture_as_pdf_outlined),
+          label: const Text('Export PDF'),
+        ),
+        OutlinedButton.icon(
+          onPressed: busy ? null : () => _run('print'),
+          icon: icon('print', Icons.print_outlined),
+          label: const Text('Print'),
+        ),
+      ],
+    );
+  }
+}
+
+// ===========================================================
+// PROJECT DETAILS DIALOG
+//
+// Project info + every RFQ in it, with PDF/print for the
+// whole project.
+// ===========================================================
+
+class ProjectDetailsDialog extends StatelessWidget {
+  const ProjectDetailsDialog({
+    super.key,
+    required this.project,
+    this.users = const [],
+  });
+
+  final AdminProjectGroup project;
+
+  final List<AdminUser> users;
+
+  @override
+  Widget build(BuildContext context) {
+    final count = project.items.length;
+
+    return _AdminDetailsDialog(
+      icon: Icons.folder_outlined,
+      iconColor: AdminStatusStyle.projectColor,
+      headerColor: AdminStatusStyle.projectBackground,
+      title: project.title,
+      subtitle: 'Project • $count RFQ${count == 1 ? '' : 's'}',
+      headerActions: RfqPdfActions(
+        configurations: project.items,
+        project: project,
+        users: users,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _PlainSectionBox(
+            title: 'Overview',
+            children: [
+              _plainInfoGrid([
+                _PlainInfo('Project #', project.projectNumberLabel ?? '—'),
+                _PlainInfo('Project name', project.projectName),
+                _PlainInfo(
+                  'Customer',
+                  adminConfigurationUserName(project.items.first, users),
+                ),
+                _PlainInfo('Submitted', _friendlyDate(project.submittedAt)),
+                _PlainInfo('RFQs', count),
+                _PlainInfo('Total quantity', project.totalQuantity),
+              ]),
+              const SizedBox(height: 12),
+              AdminProjectStatusSummary(
+                group: project,
+                alignment: WrapAlignment.start,
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          _PlainSectionBox(
+            title: 'RFQs',
+            children: [
+              for (final item in project.items)
+                _ProjectRfqTile(
+                  configuration: item,
+                  users: users,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProjectRfqTile extends StatelessWidget {
+  const _ProjectRfqTile({
+    required this.configuration,
+    required this.users,
+  });
+
+  final AdminConfiguration configuration;
+
+  final List<AdminUser> users;
+
+  @override
+  Widget build(BuildContext context) {
+    final status =
+        configuration.adminWorkflowStatus ?? AdminWorkflowStatus.requested;
+
+    final color = AdminStatusStyle.text(status);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: AdminStatusStyle.row(status),
+        borderRadius: BorderRadius.circular(8),
+        border: const Border(
+          left: BorderSide(
+            color: AdminStatusStyle.projectColor,
+            width: 4,
+          ),
+        ),
+      ),
+      child: ListTile(
+        dense: true,
+        title: Text(
+          '${configuration.rfqLabel ?? 'RFQ —'} • ${configuration.productLabel}',
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        subtitle: Text(
+          'Qty ${configuration.numRequested} • '
+              'Submitted ${_friendlyDate(configuration.submittedAt)}',
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              AdminWorkflowStatus.label(status),
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            IconButton(
+              tooltip: 'View RFQ',
+              icon: const Icon(Icons.visibility_outlined),
+              onPressed: () {
+                showDialog<void>(
+                  context: context,
+                  builder: (_) => ConfigurationDetailsDialog(
+                    configuration: configuration,
+                    users: users,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

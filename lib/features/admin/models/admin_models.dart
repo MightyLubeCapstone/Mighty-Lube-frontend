@@ -1,3 +1,64 @@
+import '../../../core/utils/rfq_format.dart';
+
+// =========================================================
+// ADMIN WORKFLOW STATUS VALUES
+//
+// Order shown in dropdowns:
+//
+// Requested -> Pending -> Awaiting Response -> Done
+//
+// awaiting_response:
+// Admin needs more details from the user. Backend emails
+// the RFQ creator every time this status is set.
+// =========================================================
+
+class AdminWorkflowStatus {
+  AdminWorkflowStatus._();
+
+  static const String requested = 'requested';
+
+  static const String pending = 'pending';
+
+  static const String awaitingResponse = 'awaiting_response';
+
+  static const String done = 'done';
+
+  static const List<String> values = [
+    requested,
+    pending,
+    awaitingResponse,
+    done,
+  ];
+
+  static String label(
+      String? status,
+      ) {
+    switch (status) {
+      case requested:
+        return 'Requested';
+
+      case pending:
+        return 'Pending';
+
+      case awaitingResponse:
+        return 'Awaiting Response';
+
+      case done:
+        return 'Done';
+
+      default:
+        return status ?? '—';
+    }
+  }
+
+  // Every status except Done shows the live timer.
+  static bool hasLiveTimer(
+      String status,
+      ) {
+    return status != done;
+  }
+}
+
 class AdminConfigurationSummary {
   const AdminConfigurationSummary({
     this.total = 0,
@@ -12,6 +73,7 @@ class AdminConfigurationSummary {
     // Admin workflow summary fields.
     this.requested = 0,
     this.pending = 0,
+    this.awaitingResponse = 0,
     this.done = 0,
   });
 
@@ -58,6 +120,8 @@ class AdminConfigurationSummary {
 
   final int pending;
 
+  final int awaitingResponse;
+
   final int done;
 
 
@@ -101,6 +165,12 @@ class AdminConfigurationSummary {
       pending:
       _asInt(
         json['pending'],
+      ),
+
+      awaitingResponse:
+      _asInt(
+        json['awaitingResponse'] ??
+            json['awaiting_response'],
       ),
 
       done:
@@ -328,6 +398,10 @@ class AdminConfiguration {
     required this.activityHistory,
     required this.createdAt,
     required this.updatedAt,
+    this.rfqNumber,
+    this.projectID,
+    this.projectNumber,
+    this.projectName,
   });
 
   final String configurationID;
@@ -466,6 +540,28 @@ class AdminConfiguration {
 
   final DateTime? updatedAt;
 
+  // =========================================================
+  // RFQ + PROJECT
+  //
+  // rfqNumber:
+  // Unique 5-digit number given when the configuration is
+  // finalized. Shown as RFQ-10001.
+  //
+  // projectID / projectNumber / projectName:
+  // Set only when the user grouped the RFQ into a project
+  // at Finalize. Shown as P-10001.
+  //
+  // All are null until the backend sends them.
+  // =========================================================
+
+  final String? rfqNumber;
+
+  final String? projectID;
+
+  final String? projectNumber;
+
+  final String? projectName;
+
   factory AdminConfiguration.fromJson(
       Map<String, dynamic> json,
       ) {
@@ -588,6 +684,30 @@ class AdminConfiguration {
       _asDateTime(
         json['updatedAt'],
       ),
+
+      rfqNumber:
+      _asOptionalString(
+        json['rfqNumber'],
+      ),
+
+      projectID:
+      _asOptionalString(
+        json['projectID'] ??
+            _projectField(json, 'projectID'),
+      ),
+
+      projectNumber:
+      _asOptionalString(
+        json['projectNumber'] ??
+            _projectField(json, 'projectNumber'),
+      ),
+
+      projectName:
+      _asOptionalString(
+        json['projectName'] ??
+            _projectField(json, 'projectName') ??
+            _projectField(json, 'name'),
+      ),
     );
   }
 
@@ -601,6 +721,59 @@ class AdminConfiguration {
 
   String get name {
     return configurationName;
+  }
+
+  String get productLabel {
+    if (productName.trim().isNotEmpty) {
+      return productName;
+    }
+
+    return productType;
+  }
+
+  // =========================================================
+  // RFQ + PROJECT HELPERS
+  // =========================================================
+
+  // RFQ-10001, or null when not assigned yet.
+  String? get rfqLabel {
+    return formatRfqNumber(
+      rfqNumber,
+    );
+  }
+
+  // P-10001, or null when not assigned yet.
+  String? get projectNumberLabel {
+    return formatProjectNumber(
+      projectNumber,
+    );
+  }
+
+  bool get isInProject {
+    return projectGroupKey != null;
+  }
+
+  // Key used to keep RFQs of the same project together.
+  String? get projectGroupKey {
+    final id = projectID?.trim() ?? '';
+
+    if (id.isNotEmpty) {
+      return id;
+    }
+
+    final number = projectNumber?.trim() ?? '';
+
+    if (number.isNotEmpty) {
+      return 'number:$number';
+    }
+
+    final name = projectName?.trim() ?? '';
+
+    if (name.isNotEmpty) {
+      return 'name:$userID:${name.toLowerCase()}';
+    }
+
+    return null;
   }
 
   // =========================================================
@@ -637,6 +810,11 @@ class AdminConfiguration {
 
   bool get isPending {
     return adminWorkflowStatus == 'pending';
+  }
+
+  bool get isAwaitingResponse {
+    return adminWorkflowStatus ==
+        AdminWorkflowStatus.awaitingResponse;
   }
 
   bool get isDone {
@@ -729,6 +907,173 @@ class AdminConfiguration {
         value;
   }
 }
+
+// =========================================================
+// ADMIN STATUS UPDATE RESULT
+//
+// emailSent:
+// true/false only for Awaiting Response (backend emails the
+// RFQ creator). null for every other status.
+// =========================================================
+
+class AdminStatusUpdate {
+  const AdminStatusUpdate({
+    required this.status,
+    this.emailSent,
+  });
+
+  final String status;
+
+  final bool? emailSent;
+}
+
+
+// =========================================================
+// ADMIN PROJECT GROUP
+//
+// A named project holding one or more RFQs submitted
+// together. There is no project-level status: admin still
+// changes status on each RFQ.
+// =========================================================
+
+class AdminProjectGroup {
+  AdminProjectGroup({
+    required this.key,
+    required this.items,
+  });
+
+  final String key;
+
+  final List<AdminConfiguration> items;
+
+  AdminConfiguration get _first {
+    return items.first;
+  }
+
+  String? get projectNumberLabel {
+    return _first.projectNumberLabel;
+  }
+
+  String get projectName {
+    final name = _first.projectName?.trim() ?? '';
+
+    return name.isEmpty
+        ? 'Unnamed project'
+        : name;
+  }
+
+  // P-10001 • Ford Plant Line 2
+  String get title {
+    final number = projectNumberLabel;
+
+    return number == null
+        ? projectName
+        : '$number • $projectName';
+  }
+
+  String get userID {
+    return _first.userID;
+  }
+
+  Map<String, dynamic>? get createdBy {
+    return _first.createdBy;
+  }
+
+  int get totalQuantity {
+    return items.fold(
+      0,
+          (total, item) => total + item.numRequested,
+    );
+  }
+
+  DateTime? get submittedAt {
+    DateTime? earliest;
+
+    for (final item in items) {
+      final date = item.submittedAt;
+
+      if (date == null) {
+        continue;
+      }
+
+      if (earliest == null ||
+          date.isBefore(earliest)) {
+        earliest = date;
+      }
+    }
+
+    return earliest;
+  }
+
+  // requested/pending/awaiting_response/done -> count,
+  // in workflow order, zero counts left out.
+  Map<String, int> get statusCounts {
+    final counts = <String, int>{};
+
+    for (final status in AdminWorkflowStatus.values) {
+      final count = items
+          .where(
+            (item) =>
+        (item.adminWorkflowStatus ??
+            AdminWorkflowStatus.requested) ==
+            status,
+      )
+          .length;
+
+      if (count > 0) {
+        counts[status] = count;
+      }
+    }
+
+    return counts;
+  }
+}
+
+
+// =========================================================
+// GROUP CONFIGURATIONS BY PROJECT
+//
+// Returns a mixed list in the original order:
+//
+// AdminConfiguration -> standalone RFQ
+// AdminProjectGroup  -> project, placed where its first RFQ
+//                       appeared in the list
+// =========================================================
+
+List<Object> groupConfigurationsByProject(
+    List<AdminConfiguration> configurations,
+    ) {
+  final entries = <Object>[];
+
+  final groups = <String, AdminProjectGroup>{};
+
+  for (final configuration in configurations) {
+    final key = configuration.projectGroupKey;
+
+    if (key == null) {
+      entries.add(configuration);
+      continue;
+    }
+
+    final existing = groups[key];
+
+    if (existing != null) {
+      existing.items.add(configuration);
+      continue;
+    }
+
+    final group = AdminProjectGroup(
+      key: key,
+      items: [configuration],
+    );
+
+    groups[key] = group;
+    entries.add(group);
+  }
+
+  return entries;
+}
+
 
 // =========================================================
 // ADMIN USER
@@ -927,6 +1272,38 @@ DateTime? _asDateTime(
 }
 
 
+String? _asOptionalString(
+    dynamic value,
+    ) {
+  final text =
+      value?.toString().trim() ?? '';
+
+  if (text.isEmpty ||
+      text == 'null') {
+    return null;
+  }
+
+  return text;
+}
+
+
+// Backend may send project details nested:
+//
+// "project": { "projectID": ..., "projectNumber": ..., "name": ... }
+dynamic _projectField(
+    Map<String, dynamic> json,
+    String key,
+    ) {
+  final project = json['project'];
+
+  if (project is Map) {
+    return project[key];
+  }
+
+  return null;
+}
+
+
 List<Map<String, dynamic>> _parseActivityHistory(
     dynamic value,
     ) {
@@ -1021,18 +1398,17 @@ String? _normalizedAdminWorkflowStatus(
       .trim()
       .toLowerCase();
 
-  const allowedAdminWorkflowStatuses = {
-    'requested',
-    'pending',
-    'done',
-  };
+  // Accept "awaiting response" / "awaitingResponse" too.
+  final normalized = status
+      ?.replaceAll(' ', '_')
+      .replaceAll('awaitingresponse', 'awaiting_response');
 
   if (
-  status != null &&
-      allowedAdminWorkflowStatuses.contains(
-        status,
+  normalized != null &&
+      AdminWorkflowStatus.values.contains(
+        normalized,
       )) {
-    return status;
+    return normalized;
   }
 
   return null;

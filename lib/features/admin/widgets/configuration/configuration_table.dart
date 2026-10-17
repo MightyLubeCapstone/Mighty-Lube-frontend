@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../models/admin_models.dart';
+import '../common/admin_status_style.dart';
 
 class ConfigurationTable extends StatefulWidget {
   const ConfigurationTable({
@@ -18,6 +19,7 @@ class ConfigurationTable extends StatefulWidget {
     required this.onEditConfiguration,
     required this.onDeleteConfiguration,
     required this.onViewUser,
+    required this.onViewProject,
   });
 
   final List<AdminConfiguration> items;
@@ -53,19 +55,23 @@ class ConfigurationTable extends StatefulWidget {
       AdminUser user,
       ) onViewUser;
 
+  final void Function(
+      AdminProjectGroup project,
+      ) onViewProject;
+
   @override
   State<ConfigurationTable> createState() =>
       _ConfigurationTableState();
 }
 
 class _ConfigurationTableState extends State<ConfigurationTable> {
-  static const List<String> _statuses = [
-    'requested',
-    'pending',
-    'done',
-  ];
+  static const List<String> _statuses =
+      AdminWorkflowStatus.values;
 
   Timer? _liveTimer;
+
+  // Project groups the admin has opened.
+  final Set<String> _expandedProjects = {};
 
   // =========================================================
   // SCROLL CONTROLLERS
@@ -218,6 +224,17 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
         columns: const [
           DataColumn(
             label: SizedBox(
+              width: 130,
+              child: Center(
+                child: Text(
+                  'RFQ #',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          DataColumn(
+            label: SizedBox(
               width: 150,
               child: Center(
                 child: Text(
@@ -295,14 +312,348 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
           ),
         ],
 
-        rows: widget.items
-            .map(
-              (item) => _configurationRow(
+        rows: _tableRows(context),
+      ),
+    );
+  }
+
+  // =========================================================
+  // ROWS
+  //
+  // Standalone RFQ -> one normal row.
+  // Project        -> purple header row, and its RFQ rows
+  //                   underneath when expanded.
+  // =========================================================
+
+  List<DataRow> _tableRows(
+      BuildContext context,
+      ) {
+    final rows = <DataRow>[];
+
+    for (final entry
+    in groupConfigurationsByProject(widget.items)) {
+      if (entry is AdminConfiguration) {
+        rows.add(
+          _configurationRow(
             context,
-            item,
+            entry,
           ),
-        )
-            .toList(),
+        );
+
+        continue;
+      }
+
+      final group = entry as AdminProjectGroup;
+
+      final expanded =
+      _expandedProjects.contains(group.key);
+
+      rows.add(
+        _projectHeaderRow(
+          group,
+          expanded,
+        ),
+      );
+
+      if (expanded) {
+        for (final item in group.items) {
+          rows.add(
+            _configurationRow(
+              context,
+              item,
+              inProject: true,
+            ),
+          );
+        }
+      }
+    }
+
+    return rows;
+  }
+
+  void _toggleProject(
+      AdminProjectGroup group,
+      ) {
+    setState(() {
+      if (!_expandedProjects.remove(group.key)) {
+        _expandedProjects.add(group.key);
+      }
+    });
+  }
+
+  // =========================================================
+  // PROJECT HEADER ROW
+  // =========================================================
+
+  DataRow _projectHeaderRow(
+      AdminProjectGroup group,
+      bool expanded,
+      ) {
+    final count = group.items.length;
+
+    DataCell toggleCell(
+        Widget child,
+        ) {
+      return DataCell(
+        child,
+        onTap: () => _toggleProject(group),
+      );
+    }
+
+    return DataRow(
+      color: WidgetStateProperty.resolveWith<Color?>(
+            (states) {
+          if (states.contains(WidgetState.hovered)) {
+            return AdminStatusStyle.projectHover;
+          }
+
+          return AdminStatusStyle.projectBackground;
+        },
+      ),
+      cells: [
+        // =====================================================
+        // PROJECT NUMBER
+        // =====================================================
+        toggleCell(
+          _purpleEdge(
+            width: 130,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  expanded
+                      ? Icons.keyboard_arrow_down
+                      : Icons.keyboard_arrow_right,
+                  color: AdminStatusStyle.projectColor,
+                  size: 20,
+                ),
+                const Icon(
+                  Icons.folder_outlined,
+                  color: AdminStatusStyle.projectColor,
+                  size: 18,
+                ),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    group.projectNumberLabel ?? 'Project',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AdminStatusStyle.projectColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // =====================================================
+        // PROJECT NAME
+        // =====================================================
+        toggleCell(
+          SizedBox(
+            width: 150,
+            child: Center(
+              child: Tooltip(
+                message: group.projectName,
+                child: Text(
+                  group.projectName,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AdminStatusStyle.projectColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // =====================================================
+        // RFQ COUNT
+        // =====================================================
+        toggleCell(
+          SizedBox(
+            width: 280,
+            child: Center(
+              child: Text(
+                '$count RFQ${count == 1 ? '' : 's'}'
+                    ' • ${expanded ? 'click to collapse' : 'click to expand'}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF5B21B6),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // =====================================================
+        // TOTAL QTY
+        // =====================================================
+        toggleCell(
+          SizedBox(
+            width: 42,
+            child: Center(
+              child: Text(
+                '${group.totalQuantity}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // =====================================================
+        // SUBMITTED
+        // =====================================================
+        toggleCell(
+          SizedBox(
+            width: 320,
+            child: Center(
+              child: Text(
+                'Submitted: ${_date(group.submittedAt)}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // =====================================================
+        // STATUS SUMMARY
+        // =====================================================
+        toggleCell(
+          SizedBox(
+            width: 190,
+            child: Center(
+              child: AdminProjectStatusSummary(
+                group: group,
+              ),
+            ),
+          ),
+        ),
+
+        // =====================================================
+        // USER
+        // =====================================================
+        DataCell(
+          _configurationUserCell(group.items.first),
+        ),
+
+        // =====================================================
+        // ACTIONS
+        // =====================================================
+        DataCell(
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: 'View project',
+                  onPressed: () =>
+                      widget.onViewProject(group),
+                  icon: const Icon(
+                    Icons.visibility_outlined,
+                    color: AdminStatusStyle.projectColor,
+                  ),
+                ),
+                IconButton(
+                  tooltip: expanded
+                      ? 'Collapse project'
+                      : 'Expand project',
+                  onPressed: () => _toggleProject(group),
+                  icon: Icon(
+                    expanded
+                        ? Icons.unfold_less
+                        : Icons.unfold_more,
+                    color: AdminStatusStyle.projectColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Purple bar on the left edge marks project rows.
+  Widget _purpleEdge({
+    required double width,
+    required Widget child,
+  }) {
+    return SizedBox(
+      width: width,
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AdminStatusStyle.projectColor,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Center(
+              child: child,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // =========================================================
+  // RFQ CELL
+  // =========================================================
+
+  Widget _rfqCell(
+      AdminConfiguration item,
+      bool inProject,
+      ) {
+    final rfq = Text(
+      item.rfqLabel ?? '—',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w800,
+        color: Color(0xFF0F172A),
+      ),
+    );
+
+    if (inProject) {
+      return _purpleEdge(
+        width: 130,
+        child: rfq,
+      );
+    }
+
+    return SizedBox(
+      width: 130,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          rfq,
+          const SizedBox(height: 4),
+          const AdminStandaloneTag(),
+        ],
       ),
     );
   }
@@ -313,8 +664,9 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
 
   DataRow _configurationRow(
       BuildContext context,
-      AdminConfiguration item,
-      ) {
+      AdminConfiguration item, {
+        bool inProject = false,
+      }) {
     final adminStatus =
     _effectiveStatus(item);
 
@@ -332,6 +684,16 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
         },
       ),
       cells: [
+        // =====================================================
+        // RFQ NUMBER
+        // =====================================================
+        DataCell(
+          _rfqCell(
+            item,
+            inProject,
+          ),
+        ),
+
         // =====================================================
         // CONFIGURATION
         // =====================================================
@@ -457,7 +819,7 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
                         return PopupMenuItem<String>(
                           value: value,
                           child: Text(
-                            _titleCase(value),
+                            AdminWorkflowStatus.label(value),
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -482,12 +844,16 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            _titleCase(adminStatus),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
+                          Flexible(
+                            child: Text(
+                              AdminWorkflowStatus.label(adminStatus),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 3),
@@ -588,14 +954,25 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
   // STATUS CHANGE
   // =========================================================
 
-  void _handleStatusChanged(
+  Future<void> _handleStatusChanged(
       AdminConfiguration item,
       String newStatus,
-      ) {
+      ) async {
     final currentStatus =
     _effectiveStatus(item);
 
     if (currentStatus == newStatus) {
+      return;
+    }
+
+    final confirmed =
+    await confirmAdminStatusChange(
+      context,
+      configuration: item,
+      newStatus: newStatus,
+    );
+
+    if (!confirmed || !mounted) {
       return;
     }
 
@@ -604,8 +981,9 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
     setState(() {
       _localStatuses[item.id] = newStatus;
 
-      if (newStatus == 'requested' ||
-          newStatus == 'pending') {
+      // Timer restarts from 0 on every status change,
+      // and stops at Done.
+      if (AdminWorkflowStatus.hasLiveTimer(newStatus)) {
         _localStatusStartedAt[item.id] = now;
       } else {
         _localStatusStartedAt.remove(item.id);
@@ -681,35 +1059,15 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
   // =========================================================
 
   Color _rowColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'requested':
-        return const Color(0xFFFFFBEB);
-
-      case 'pending':
-        return const Color(0xFFFEF2F2);
-
-      case 'done':
-        return const Color(0xFFF0FDF4);
-
-      default:
-        return Colors.white;
-    }
+    return AdminStatusStyle.row(
+      status.toLowerCase(),
+    );
   }
 
   Color _rowHoverColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'requested':
-        return const Color(0xFFFEF3C7);
-
-      case 'pending':
-        return const Color(0xFFFEE2E2);
-
-      case 'done':
-        return const Color(0xFFDCFCE7);
-
-      default:
-        return const Color(0xFFF8FAFC);
-    }
+    return AdminStatusStyle.hover(
+      status.toLowerCase(),
+    );
   }
 
   // =========================================================
@@ -968,25 +1326,15 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
       return const SizedBox.shrink();
     }
 
-    Color color;
-    Color backgroundColor;
-
-    switch (status) {
-      case 'requested':
-        color = const Color(0xFFD97706);
-        backgroundColor =
-        const Color(0xFFFFF7ED);
-        break;
-
-      case 'pending':
-        color = const Color(0xFFDC2626);
-        backgroundColor =
-        const Color(0xFFFEF2F2);
-        break;
-
-      default:
-        return const SizedBox.shrink();
+    if (!AdminWorkflowStatus.values.contains(status)) {
+      return const SizedBox.shrink();
     }
+
+    final color =
+    AdminStatusStyle.text(status);
+
+    final backgroundColor =
+    AdminStatusStyle.row(status);
 
     var duration =
     DateTime.now().difference(
@@ -1210,24 +1558,6 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
         1200
         ? 24
         : 12;
-  }
-
-  String _titleCase(String value) {
-    if (value.trim().isEmpty) {
-      return value;
-    }
-
-    return value
-        .split(' ')
-        .where(
-          (part) => part.isNotEmpty,
-    )
-        .map(
-          (part) =>
-      '${part[0].toUpperCase()}'
-          '${part.substring(1).toLowerCase()}',
-    )
-        .join(' ');
   }
 
   String _date(DateTime? value) {

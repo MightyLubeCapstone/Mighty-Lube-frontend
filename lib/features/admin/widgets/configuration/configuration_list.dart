@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/admin_models.dart';
+import '../common/admin_status_style.dart';
 import 'configuration_cards.dart';
 import 'configuration_table.dart';
 
@@ -20,6 +21,7 @@ class ConfigurationList extends StatelessWidget {
     required this.onEditConfiguration,
     required this.onDeleteConfiguration,
     required this.onViewUser,
+    required this.onViewProject,
   });
 
   // =========================================================
@@ -27,12 +29,14 @@ class ConfigurationList extends StatelessWidget {
   //
   // 1. Pending
   // 2. Requested
-  // 3. Done
+  // 3. Awaiting Response
+  // 4. Done
   // =========================================================
   static const List<String> _statuses = [
-    'pending',
-    'requested',
-    'done',
+    AdminWorkflowStatus.pending,
+    AdminWorkflowStatus.requested,
+    AdminWorkflowStatus.awaitingResponse,
+    AdminWorkflowStatus.done,
   ];
 
   final List<AdminConfiguration> items;
@@ -75,6 +79,10 @@ class ConfigurationList extends StatelessWidget {
   final void Function(
       AdminUser user,
       ) onViewUser;
+
+  final void Function(
+      AdminProjectGroup project,
+      ) onViewProject;
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +160,8 @@ class ConfigurationList extends StatelessWidget {
         onEditConfiguration,
         onDelete:
         onDeleteConfiguration,
+        onViewProject:
+        onViewProject,
       );
     }
 
@@ -176,6 +186,8 @@ class ConfigurationList extends StatelessWidget {
       onDeleteConfiguration,
       onViewUser:
       onViewUser,
+      onViewProject:
+      onViewProject,
     );
   }
 }
@@ -232,35 +244,15 @@ class _StatusSectionHeader extends StatelessWidget {
   }
 
   Color _sectionBackgroundColor(String status) {
-    switch (status.trim().toLowerCase()) {
-      case 'pending':
-        return const Color(0xFFFEF2F2);
-
-      case 'requested':
-        return const Color(0xFFFFFBEB);
-
-      case 'done':
-        return const Color(0xFFF0FDF4);
-
-      default:
-        return const Color(0xFFF8FAFC);
-    }
+    return AdminStatusStyle.row(
+      status.trim().toLowerCase(),
+    );
   }
 
   Color _sectionBorderColor(String status) {
-    switch (status.trim().toLowerCase()) {
-      case 'pending':
-        return const Color(0xFFFECACA);
-
-      case 'requested':
-        return const Color(0xFFFDE68A);
-
-      case 'done':
-        return const Color(0xFFBBF7D0);
-
-      default:
-        return const Color(0xFFE2E8F0);
-    }
+    return AdminStatusStyle.border(
+      status.trim().toLowerCase(),
+    );
   }
 }
 
@@ -280,29 +272,11 @@ class _StatusBadge extends StatelessWidget {
     final normalized =
     status.trim().toLowerCase();
 
-    Color textColor;
-    Color backgroundColor;
+    final textColor =
+    AdminStatusStyle.text(normalized);
 
-    switch (normalized) {
-      case 'pending':
-        textColor = const Color(0xFFDC2626);
-        backgroundColor = const Color(0xFFFEE2E2);
-        break;
-
-      case 'requested':
-        textColor = const Color(0xFFD97706);
-        backgroundColor = const Color(0xFFFEF3C7);
-        break;
-
-      case 'done':
-        textColor = const Color(0xFF15803D);
-        backgroundColor = const Color(0xFFDCFCE7);
-        break;
-
-      default:
-        textColor = const Color(0xFF475569);
-        backgroundColor = const Color(0xFFF1F5F9);
-    }
+    final backgroundColor =
+    AdminStatusStyle.hover(normalized);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -314,7 +288,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
-        _titleCase(status),
+        AdminWorkflowStatus.label(normalized),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
@@ -359,19 +333,4 @@ class _EmptyConfigurationCard extends StatelessWidget {
       ),
     );
   }
-}
-
-// ===========================================================
-// HELPERS
-// ===========================================================
-
-String _titleCase(
-    String value,
-    ) {
-  if (value.isEmpty) {
-    return value;
-  }
-
-  return '${value[0].toUpperCase()}'
-      '${value.substring(1).toLowerCase()}';
 }

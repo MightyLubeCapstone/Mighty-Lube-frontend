@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/network/api_response.dart';
+import '../../../core/utils/rfq_format.dart';
 import '../../../core/widget/product_configuration_form.dart';
 import '../../products/service/product_catalog_resolver.dart';
 
@@ -96,6 +97,31 @@ class _AdminDashboardPageState
   // null = All People.
   String? _selectedConfigurationUserID;
 
+  // all / standalone / projects
+  String _rfqType = 'all';
+
+  // Selected project group key. null = All Projects.
+  String? _selectedProjectKey;
+
+  // Matches RFQ #, P # and project name.
+  String _searchText = '';
+
+  // project group key -> "P-10001 • Project name"
+  Map<String, String> get _configurationProjects {
+    final groups = groupConfigurationsByProject(
+      _configurations,
+    ).whereType<AdminProjectGroup>().toList()
+      ..sort(
+            (a, b) => a.title
+            .toLowerCase()
+            .compareTo(b.title.toLowerCase()),
+      );
+
+    return {
+      for (final group in groups) group.key: group.title,
+    };
+  }
+
   Map<String, String> get _configurationPeople {
     final configurationUserIDs = _configurations
         .map((item) => item.userID)
@@ -159,15 +185,53 @@ class _AdminDashboardPageState
   List<AdminConfiguration> get _visibleConfigurations {
     final selectedUserID = _selectedConfigurationUserID;
 
-    if (selectedUserID == null || selectedUserID.isEmpty) {
-      return _configurations;
-    }
+    // Ignore a selected project that no longer exists
+    // (e.g. after a reload or delete).
+    final selectedProjectKey =
+    _configurationProjects.containsKey(_selectedProjectKey)
+        ? _selectedProjectKey
+        : null;
 
-    return _configurations
-        .where(
-          (item) => item.userID == selectedUserID,
-    )
-        .toList();
+    final query = normalizeReferenceSearch(
+      _searchText.trim(),
+    );
+
+    return _configurations.where((item) {
+      if (selectedUserID != null &&
+          selectedUserID.isNotEmpty &&
+          item.userID != selectedUserID) {
+        return false;
+      }
+
+      if (_rfqType == 'standalone' && item.isInProject) {
+        return false;
+      }
+
+      if (_rfqType == 'projects' && !item.isInProject) {
+        return false;
+      }
+
+      if (selectedProjectKey != null &&
+          item.projectGroupKey != selectedProjectKey) {
+        return false;
+      }
+
+      if (query.isEmpty) {
+        return true;
+      }
+
+      final searchable = [
+        item.rfqLabel,
+        item.projectNumberLabel,
+        item.projectName,
+      ];
+
+      return searchable.any(
+            (value) =>
+        value != null &&
+            normalizeReferenceSearch(value).contains(query),
+      );
+    }).toList();
   }
 
   // =========================================================
@@ -418,15 +482,9 @@ class _AdminDashboardPageState
     final currentStatus =
         configuration.adminWorkflowStatus ?? 'requested';
 
-    const allowedStatuses = {
-      'requested',
-      'pending',
-      'done',
-    };
-
     if (status == null ||
         status == currentStatus ||
-        !allowedStatuses.contains(status) ||
+        !AdminWorkflowStatus.values.contains(status) ||
         _updatingConfigurations.contains(configuration.id)) {
       return;
     }
@@ -452,7 +510,7 @@ class _AdminDashboardPageState
 
       if (!response.success ||
           response.data == null ||
-          response.data!.isEmpty) {
+          response.data!.status.isEmpty) {
         _message(
           response.message ??
               'Unable to update configuration status.',
@@ -495,7 +553,20 @@ class _AdminDashboardPageState
         });
       }
 
-      _message('Configuration status updated.');
+      final emailSent = response.data!.emailSent;
+
+      if (emailSent == false) {
+        _message(
+          'Status updated, but the email to the user could not be sent.',
+          error: true,
+        );
+      } else {
+        _message(
+          emailSent == true
+              ? 'Status set to Awaiting Response. The user has been emailed.'
+              : 'Configuration status updated.',
+        );
+      }
     } catch (error, stackTrace) {
       debugPrint('STATUS UPDATE ERROR: $error');
       debugPrintStack(stackTrace: stackTrace);
@@ -615,6 +686,13 @@ class _AdminDashboardPageState
             (item) =>
         item.adminWorkflowStatus ==
             'pending',
+      )
+          .length,
+      awaitingResponse: _configurations
+          .where(
+            (item) =>
+        item.adminWorkflowStatus ==
+            AdminWorkflowStatus.awaitingResponse,
       )
           .length,
       done: _configurations
@@ -741,6 +819,7 @@ class _AdminDashboardPageState
         context: context,
         builder: (_) => ConfigurationDetailsDialog(
           configuration: freshConfiguration,
+          users: _users,
         ),
       );
     } catch (error, stackTrace) {
@@ -753,6 +832,64 @@ class _AdminDashboardPageState
 
       _message(
         'Unable to load configuration details.',
+        error: true,
+      );
+    }
+  }
+
+  // =========================================================
+  // VIEW PROJECT
+  //
+  // Reloads every RFQ in the project so the dialog and the
+  // PDF show full, current details.
+  // =========================================================
+
+  Future<void> _viewProject(
+      AdminProjectGroup project,
+      ) async {
+    try {
+      final responses = await Future.wait(
+        project.items.map(
+              (item) => AdminRepository.getConfiguration(
+            configurationID: item.id,
+          ),
+        ),
+      );
+
+      for (final response in responses) {
+        if (await _handleAuthStatus(response.statusCode)) {
+          return;
+        }
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      // Fall back to the list copy if one reload fails.
+      final freshItems = <AdminConfiguration>[
+        for (var i = 0; i < project.items.length; i++)
+          responses[i].success && responses[i].data != null
+              ? responses[i].data!
+              : project.items[i],
+      ];
+
+      await showDialog<void>(
+        context: context,
+        builder: (_) => ProjectDetailsDialog(
+          project: AdminProjectGroup(
+            key: project.key,
+            items: freshItems,
+          ),
+          users: _users,
+        ),
+      );
+    } catch (error, stackTrace) {
+      debugPrint('VIEW PROJECT ERROR: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      _message(
+        'Unable to load project details.',
         error: true,
       );
     }
@@ -1792,6 +1929,25 @@ class _AdminDashboardPageState
             _groupConfigurationsByStatus,
             onGroupByStatusChanged:
             _setGroupConfigurationsByStatus,
+            rfqType: _rfqType,
+            onRfqTypeChanged: (value) {
+              setState(() {
+                _rfqType = value;
+              });
+            },
+            projects: _configurationProjects,
+            selectedProjectKey: _selectedProjectKey,
+            onProjectChanged: (key) {
+              setState(() {
+                _selectedProjectKey = key;
+              });
+            },
+            searchText: _searchText,
+            onSearchChanged: (value) {
+              setState(() {
+                _searchText = value;
+              });
+            },
           ),
 
           const SizedBox(
@@ -1832,6 +1988,8 @@ class _AdminDashboardPageState
             _deleteConfiguration,
             onViewUser:
             _viewUser,
+            onViewProject:
+            _viewProject,
           ),
         ],
       ),

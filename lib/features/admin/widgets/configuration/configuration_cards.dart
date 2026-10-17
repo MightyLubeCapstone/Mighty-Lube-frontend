@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/admin_models.dart';
+import '../common/admin_status_style.dart';
 
 class ConfigurationCards extends StatelessWidget {
   const ConfigurationCards({
@@ -11,6 +12,7 @@ class ConfigurationCards extends StatelessWidget {
     required this.onView,
     required this.onEdit,
     required this.onDelete,
+    required this.onViewProject,
   });
 
   final List<AdminConfiguration> items;
@@ -35,11 +37,12 @@ class ConfigurationCards extends StatelessWidget {
       AdminConfiguration configuration,
       ) onDelete;
 
-  static const List<String> _statuses = [
-    'requested',
-    'pending',
-    'done',
-  ];
+  final void Function(
+      AdminProjectGroup project,
+      ) onViewProject;
+
+  static const List<String> _statuses =
+      AdminWorkflowStatus.values;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +63,22 @@ class ConfigurationCards extends StatelessWidget {
 
     return Column(
       children: [
-        for (final item in items)
-          _configurationCard(item),
+        for (final entry
+        in groupConfigurationsByProject(items))
+          if (entry is AdminProjectGroup)
+            _ProjectCard(
+              group: entry,
+              onViewProject: onViewProject,
+              itemBuilder: (item) =>
+                  _configurationCard(
+                    item,
+                    inProject: true,
+                  ),
+            )
+          else
+            _configurationCard(
+              entry as AdminConfiguration,
+            ),
       ],
     );
   }
@@ -70,15 +87,47 @@ class ConfigurationCards extends StatelessWidget {
   // CONFIGURATION CARD
   // =========================================================
 
-  Widget _configurationCard(AdminConfiguration item,) {
+  Widget _configurationCard(
+      AdminConfiguration item, {
+        bool inProject = false,
+      }) {
+    final adminStatus =
+        item.adminWorkflowStatus ??
+            AdminWorkflowStatus.requested;
+
     return _AdminListCard(
       margin: const EdgeInsets.only(
         bottom: 12,
       ),
+      background: AdminStatusStyle.row(adminStatus),
+      leftEdgeColor: inProject
+          ? AdminStatusStyle.projectColor
+          : null,
       child: Column(
         crossAxisAlignment:
         CrossAxisAlignment.start,
         children: [
+          // RFQ number on top of each card.
+          Row(
+            children: [
+              Text(
+                item.rfqLabel ?? 'RFQ —',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(width: 8),
+              if (!inProject)
+                const AdminStandaloneTag(),
+            ],
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
           Row(
             crossAxisAlignment:
             CrossAxisAlignment.center,
@@ -107,19 +156,22 @@ class ConfigurationCards extends StatelessWidget {
                 width: 8,
               ),
               _StatusBadge(
-                item.adminWorkflowStatus ??
-                    'requested',
+                adminStatus,
               ),
             ],
           ),
 
-          if (item.adminWorkflowStatus ==
-              'pending') ...[
+          // Cards show the timer for Pending and
+          // Awaiting Response only.
+          if (adminStatus == AdminWorkflowStatus.pending ||
+              adminStatus ==
+                  AdminWorkflowStatus.awaitingResponse) ...[
             const SizedBox(
               height: 12,
             ),
             _PendingAgePanel(
               configuration: item,
+              status: adminStatus,
             ),
           ],
 
@@ -285,11 +337,61 @@ class ConfigurationCards extends StatelessWidget {
       );
     }
 
-    return DropdownButtonFormField<String>(
-      initialValue: _statuses.contains(adminStatus) ? adminStatus : null,
-      decoration: _fieldDecoration('Admin status', Icons.pending_actions,),
-      items: _statuses.map((value) => DropdownMenuItem<String>(value: value, child: Text(_titleCase(value),),),).toList(),
-      onChanged: (value) => onStatusChanged(item, value,),
+    // Popup menu (not a dropdown field) so the shown value
+    // only changes once the admin confirms and the server
+    // accepts it.
+    return Builder(
+      builder: (context) {
+        return PopupMenuButton<String>(
+          initialValue:
+          _statuses.contains(adminStatus) ? adminStatus : null,
+          onSelected: (value) async {
+            if (value == adminStatus) {
+              return;
+            }
+
+            final confirmed =
+            await confirmAdminStatusChange(
+              context,
+              configuration: item,
+              newStatus: value,
+            );
+
+            if (confirmed) {
+              onStatusChanged(item, value);
+            }
+          },
+          itemBuilder: (context) => [
+            for (final value in _statuses)
+              PopupMenuItem<String>(
+                value: value,
+                child: Text(
+                  AdminWorkflowStatus.label(value),
+                ),
+              ),
+          ],
+          child: InputDecorator(
+            decoration: _fieldDecoration(
+              'Admin status',
+              Icons.pending_actions,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    AdminWorkflowStatus.label(adminStatus),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_drop_down,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -334,24 +436,6 @@ class ConfigurationCards extends StatelessWidget {
 
     return '${spaced[0].toUpperCase()}'
         '${spaced.substring(1)}';
-  }
-
-  String _titleCase(String value) {
-    if (value.trim().isEmpty) {
-      return value;
-    }
-
-    return value
-        .split(' ')
-        .where(
-          (part) => part.isNotEmpty,
-    )
-        .map(
-          (part) =>
-      '${part[0].toUpperCase()}'
-          '${part.substring(1).toLowerCase()}',
-    )
-        .join(' ');
   }
 
   InputDecoration _fieldDecoration(
@@ -499,18 +583,24 @@ class _PendingAgePanel
     extends StatelessWidget {
   const _PendingAgePanel({
     required this.configuration,
+    required this.status,
   });
 
   final AdminConfiguration configuration;
 
+  final String status;
+
   @override
   Widget build(BuildContext context) {
     final age =
-    _pendingAge(configuration);
+    _statusAge(configuration);
 
     if (age == null) {
       return const SizedBox.shrink();
     }
+
+    final color =
+    AdminStatusStyle.text(status);
 
     return Container(
       width: double.infinity,
@@ -520,21 +610,18 @@ class _PendingAgePanel
         vertical: 12,
       ),
       decoration: BoxDecoration(
-        color:
-        const Color(0xFFFFF7ED),
+        color: Colors.white,
         borderRadius:
         BorderRadius.circular(8),
         border: Border.all(
-          color:
-          const Color(0xFFF97316),
+          color: color,
         ),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.priority_high_rounded,
-            color:
-            Color(0xFFC2410C),
+          Icon(
+            Icons.timer_outlined,
+            color: color,
             size: 28,
           ),
           const SizedBox(
@@ -542,12 +629,11 @@ class _PendingAgePanel
           ),
           Text(
             age,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28,
               fontWeight:
               FontWeight.w900,
-              color:
-              Color(0xFF9A3412),
+              color: color,
             ),
           ),
           const SizedBox(
@@ -555,10 +641,10 @@ class _PendingAgePanel
           ),
           Expanded(
             child: Text(
-              'pending',
+              AdminWorkflowStatus.label(status)
+                  .toLowerCase(),
               style: TextStyle(
-                color:
-                Colors.orange.shade900,
+                color: color,
                 fontWeight:
                 FontWeight.w800,
               ),
@@ -566,6 +652,128 @@ class _PendingAgePanel
           ),
         ],
       ),
+    );
+  }
+}
+
+// ===========================================================
+// PROJECT CARD
+//
+// Purple header that opens to show the project's RFQ cards.
+// ===========================================================
+
+class _ProjectCard extends StatefulWidget {
+  const _ProjectCard({
+    required this.group,
+    required this.onViewProject,
+    required this.itemBuilder,
+  });
+
+  final AdminProjectGroup group;
+
+  final void Function(
+      AdminProjectGroup project,
+      ) onViewProject;
+
+  final Widget Function(
+      AdminConfiguration item,
+      ) itemBuilder;
+
+  @override
+  State<_ProjectCard> createState() =>
+      _ProjectCardState();
+}
+
+class _ProjectCardState extends State<_ProjectCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final group = widget.group;
+    final count = group.items.length;
+
+    return Column(
+      children: [
+        _AdminListCard(
+          margin: const EdgeInsets.only(
+            bottom: 12,
+          ),
+          background: AdminStatusStyle.projectBackground,
+          leftEdgeColor: AdminStatusStyle.projectColor,
+          child: InkWell(
+            onTap: () => setState(() {
+              _expanded = !_expanded;
+            }),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      _expanded
+                          ? Icons.keyboard_arrow_down
+                          : Icons.keyboard_arrow_right,
+                      color: AdminStatusStyle.projectColor,
+                    ),
+                    const Icon(
+                      Icons.folder_outlined,
+                      color: AdminStatusStyle.projectColor,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        group.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AdminStatusStyle.projectColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'View project',
+                      onPressed: () =>
+                          widget.onViewProject(group),
+                      icon: const Icon(
+                        Icons.visibility_outlined,
+                        color: AdminStatusStyle.projectColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '$count RFQ${count == 1 ? '' : 's'} • '
+                      '${adminConfigurationUserName(group.items.first)}',
+                  style: const TextStyle(
+                    color: Color(0xFF5B21B6),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                AdminProjectStatusSummary(
+                  group: group,
+                  alignment: WrapAlignment.start,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (_expanded)
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 12,
+            ),
+            child: Column(
+              children: [
+                for (final item in group.items)
+                  widget.itemBuilder(item),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
@@ -768,12 +976,8 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MaterialColor color =
-    switch (status) {
-      'done' => Colors.green,
-      'pending' => Colors.orange,
-      _ => Colors.blue,
-    };
+    final color =
+    AdminStatusStyle.text(status);
 
     return Container(
       padding:
@@ -787,36 +991,16 @@ class _StatusBadge extends StatelessWidget {
         BorderRadius.circular(30),
       ),
       child: Text(
-        _titleCaseValue(status),
+        AdminWorkflowStatus.label(status),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: color.shade700,
+          color: color,
           fontSize: 11,
           fontWeight: FontWeight.w700,
         ),
       ),
     );
-  }
-
-  String _titleCaseValue(
-      String value,
-      ) {
-    if (value.trim().isEmpty) {
-      return value;
-    }
-
-    return value
-        .split(' ')
-        .where(
-          (part) => part.isNotEmpty,
-    )
-        .map(
-          (part) =>
-      '${part[0].toUpperCase()}'
-          '${part.substring(1).toLowerCase()}',
-    )
-        .join(' ');
   }
 }
 
@@ -829,20 +1013,27 @@ class _AdminListCard
   const _AdminListCard({
     required this.child,
     this.margin = EdgeInsets.zero,
+    this.background = Colors.white,
+    this.leftEdgeColor,
   });
 
   final Widget child;
   final EdgeInsetsGeometry margin;
+  final Color background;
+
+  // Purple edge marks RFQs that belong to a project.
+  final Color? leftEdgeColor;
 
   @override
   Widget build(BuildContext context) {
+    final edge = leftEdgeColor;
+
     return Container(
       width: double.infinity,
       margin: margin,
-      padding:
-      const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: background,
         borderRadius:
         BorderRadius.circular(14),
         border: Border.all(
@@ -850,7 +1041,25 @@ class _AdminListCard
           const Color(0xFFE2E8F0),
         ),
       ),
-      child: child,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+          edge == null ? 16 : 12,
+          16,
+          16,
+          16,
+        ),
+        decoration: edge == null
+            ? null
+            : BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: edge,
+              width: 4,
+            ),
+          ),
+        ),
+        child: child,
+      ),
     );
   }
 }
@@ -859,16 +1068,16 @@ class _AdminListCard
 // TIME HELPERS
 // ===========================================================
 
-String? _pendingAge(
+// Time in the current status. Restarts on every status
+// change (adminStatusChangedAt), same as the table timer.
+String? _statusAge(
     AdminConfiguration configuration,
     ) {
-  if (configuration.adminWorkflowStatus !=
-      'pending') {
-    return null;
-  }
-
   final start =
-      configuration.adminStartedAt;
+      configuration.adminStatusChangedAt ??
+          (configuration.isPending
+              ? configuration.adminStartedAt
+              : configuration.adminRequestedAt);
 
   if (start == null) {
     return null;

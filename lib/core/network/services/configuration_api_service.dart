@@ -1,3 +1,4 @@
+import '../../../features/configurations/models/submitted_rfq.dart';
 import '../api_client.dart';
 import '../api_endpoints.dart';
 import '../api_response.dart';
@@ -48,31 +49,49 @@ class ConfigurationApiService {
   //
   // STEP 2:
   // POST /api/email/send-email
+  //
+  // projectName:
+  // null       -> standalone RFQs
+  // "Ford ..." -> backend creates a new project (name must be
+  //               unique per user, otherwise 409) and groups
+  //               these RFQs under it.
+  //
+  // Backend returns each RFQ with its rfqNumber, plus the
+  // project (projectNumber, projectName) when one was created.
   // =========================================================
 
-  static Future<ApiResponse<bool>> finalize({
+  static Future<ApiResponse<FinalizeResult>> finalize({
     required List<String> configurationIDs,
+    String? projectName,
   }) async {
+    final trimmedProjectName = projectName?.trim() ?? '';
+
     final response = await ApiClient.put<dynamic>(
       url: ApiEndpoints.configurations,
       requiresAuth: true,
       body: {
         'configurationIDs': configurationIDs,
+        if (trimmedProjectName.isNotEmpty)
+          'projectName': trimmedProjectName,
       },
     );
 
     if (!response.success) {
-      return ApiResponse<bool>.failure(
+      return ApiResponse<FinalizeResult>.failure(
         message:
-        response.message ??
+        response.statusCode == 409
+            ? (response.message ?? 'Project name already exists.')
+            : response.message ??
             'Unable to finalize configuration.',
         statusCode: response.statusCode,
-        data: false,
+        errorCode: response.errorCode,
       );
     }
 
-    return ApiResponse<bool>.success(
-      data: true,
+    return ApiResponse<FinalizeResult>.success(
+      data: FinalizeResult.fromResponse(
+        response.data,
+      ),
       message:
       response.message ??
           'Configuration submitted successfully.',

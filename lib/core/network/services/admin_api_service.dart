@@ -170,6 +170,7 @@ class AdminApiService {
   //
   // requested
   // pending
+  // awaiting_response (backend emails the RFQ creator)
   // done
   //
   // This API updates adminStatus only.
@@ -183,7 +184,7 @@ class AdminApiService {
   // adminStatus
   // =========================================================
 
-  static Future<ApiResponse<String>> updateAdminWorkflowStatus({
+  static Future<ApiResponse<AdminStatusUpdate>> updateAdminWorkflowStatus({
     required String configurationID,
     required String adminWorkflowStatus,
   }) {
@@ -192,6 +193,7 @@ class AdminApiService {
     const allowedAdminWorkflowStatuses = {
       'requested',
       'pending',
+      'awaiting_response',
       'done',
     };
 
@@ -199,14 +201,14 @@ class AdminApiService {
       normalized,
     )) {
       return Future.value(
-        ApiResponse<String>.failure(
+        ApiResponse<AdminStatusUpdate>.failure(
           message: 'Invalid admin workflow status.',
           statusCode: 400,
         ),
       );
     }
 
-    return ApiClient.patch<String>(
+    return ApiClient.patch<AdminStatusUpdate>(
       url:
       '${ApiEndpoints.apiBaseUrl}/admin/configurations/${Uri.encodeComponent(configurationID)}/status',
       body: {
@@ -215,6 +217,10 @@ class AdminApiService {
       parser: (data) {
         if (data is Map) {
           final map = Map<String, dynamic>.from(data);
+
+          final emailSent = map['emailSent'] is bool
+              ? map['emailSent'] as bool
+              : null;
 
           final configuration = map['configuration'];
 
@@ -228,12 +234,17 @@ class AdminApiService {
                 allowedAdminWorkflowStatuses.contains(
                   returnedAdminWorkflowStatus,
                 )) {
-              return returnedAdminWorkflowStatus;
+              return AdminStatusUpdate(
+                status: returnedAdminWorkflowStatus,
+                emailSent: emailSent,
+              );
             }
           }
         }
 
-        return '';
+        return const AdminStatusUpdate(
+          status: '',
+        );
       },
     );
   }
@@ -258,7 +269,7 @@ class AdminApiService {
   // Remove this method after all callers are migrated.
   // =========================================================
 
-  static Future<ApiResponse<String>> updateConfigurationStatus({
+  static Future<ApiResponse<AdminStatusUpdate>> updateConfigurationStatus({
     required String configurationID,
     required String status,
   }) {

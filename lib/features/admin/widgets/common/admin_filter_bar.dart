@@ -13,6 +13,13 @@ class AdminFilterBar extends StatelessWidget {
     this.people = const {},
     this.selectedUserID,
     this.onPersonChanged,
+    this.rfqType = 'all',
+    this.onRfqTypeChanged,
+    this.projects = const {},
+    this.selectedProjectKey,
+    this.onProjectChanged,
+    this.searchText = '',
+    this.onSearchChanged,
   });
 
   static const Map<String, String> _dateFields = {
@@ -32,7 +39,14 @@ class AdminFilterBar extends StatelessWidget {
     'all': 'All statuses',
     'requested': 'Requested',
     'pending': 'Pending',
+    'awaiting_response': 'Awaiting Response',
     'done': 'Done',
+  };
+
+  static const Map<String, String> _rfqTypes = {
+    'all': 'All RFQs',
+    'standalone': 'Standalone only',
+    'projects': 'Projects only',
   };
 
   final AdminConfigurationFilters filters;
@@ -52,6 +66,28 @@ class AdminFilterBar extends StatelessWidget {
   final String? selectedUserID;
 
   final ValueChanged<String?>? onPersonChanged;
+
+  // =========================================================
+  // RFQ / PROJECT FILTERS (configurations tab only)
+  // =========================================================
+
+  /// all / standalone / projects
+  final String rfqType;
+
+  final ValueChanged<String>? onRfqTypeChanged;
+
+  /// project group key -> "P-10001 • Project name"
+  final Map<String, String> projects;
+
+  /// null means All Projects
+  final String? selectedProjectKey;
+
+  final ValueChanged<String?>? onProjectChanged;
+
+  /// Matches RFQ #, P # and project name.
+  final String searchText;
+
+  final ValueChanged<String>? onSearchChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +192,7 @@ class AdminFilterBar extends StatelessWidget {
             220.0,
           );
 
-          return Wrap(
+          final filterRow = Wrap(
             spacing: compact ? 8 : 12,
             runSpacing: compact ? 8 : 10,
             crossAxisAlignment:
@@ -397,6 +433,106 @@ class AdminFilterBar extends StatelessWidget {
                   },
                 ),
               ],
+            ],
+          );
+
+          if (!showStatusFilter) {
+            return filterRow;
+          }
+
+          // =================================================
+          // RFQ TYPE + PROJECT + SEARCH
+          // =================================================
+
+          final typeWidth = compact
+              ? halfWidth
+              : 200.0;
+
+          final projectWidth = compact
+              ? halfWidth
+              : 280.0;
+
+          final searchWidth = compact
+              ? constraints.maxWidth
+              : (constraints.maxWidth -
+              typeWidth -
+              projectWidth -
+              24)
+              .clamp(
+            220.0,
+            420.0,
+          );
+
+          return Column(
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+            children: [
+              filterRow,
+
+              SizedBox(
+                height: compact ? 8 : 10,
+              ),
+
+              Wrap(
+                spacing: compact ? 8 : 12,
+                runSpacing: compact ? 8 : 10,
+                crossAxisAlignment:
+                WrapCrossAlignment.center,
+                children: [
+                  _dropdown(
+                    width: typeWidth,
+                    label: 'Type',
+                    icon: compact
+                        ? null
+                        : Icons.category_outlined,
+                    value: rfqType,
+                    options: _rfqTypes,
+                    onChanged: (value) {
+                      onRfqTypeChanged?.call(value);
+                    },
+                  ),
+
+                  _dropdown(
+                    width: projectWidth,
+                    label: 'Project',
+                    icon: compact
+                        ? null
+                        : Icons.folder_outlined,
+                    value:
+                    selectedProjectKey ??
+                        'all',
+                    options: {
+                      'all': 'All Projects',
+                      ...projects,
+                    },
+                    onChanged: (value) {
+                      onProjectChanged?.call(
+                        value == 'all'
+                            ? null
+                            : value,
+                      );
+                    },
+                  ),
+
+                  SizedBox(
+                    width: searchWidth,
+                    child: TextFormField(
+                      initialValue: searchText,
+                      onChanged: onSearchChanged,
+                      decoration: _fieldDecoration(
+                        'Search RFQ #, P # or project name',
+                        Icons.search,
+                      ).copyWith(
+                        contentPadding:
+                        const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           );
         },

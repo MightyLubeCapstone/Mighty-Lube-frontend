@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/admin_models.dart';
+import 'admin_status_style.dart';
 
 class AdminSummaryCards extends StatelessWidget {
   const AdminSummaryCards({
@@ -23,65 +24,63 @@ class AdminSummaryCards extends StatelessWidget {
         final gap =
         compact ? 6.0 : 10.0;
 
+        final cards = <(String, int, IconData, Color)>[
+          (
+          'Total',
+          summary.total,
+          Icons.inventory_2_outlined,
+          const Color(0xFF579AF6),
+          ),
+          (
+          'Requested',
+          summary.requested,
+          Icons.inbox_outlined,
+          AdminStatusStyle.text(AdminWorkflowStatus.requested),
+          ),
+          (
+          'Pending',
+          summary.pending,
+          Icons.pending_actions,
+          AdminStatusStyle.text(AdminWorkflowStatus.pending),
+          ),
+          (
+          compact ? 'Awaiting' : 'Awaiting Response',
+          summary.awaitingResponse,
+          Icons.mark_email_unread_outlined,
+          AdminStatusStyle.text(AdminWorkflowStatus.awaitingResponse),
+          ),
+          (
+          'Done',
+          summary.done,
+          Icons.task_alt,
+          AdminStatusStyle.text(AdminWorkflowStatus.done),
+          ),
+        ];
+
         final width =
             (constraints.maxWidth -
-                gap * 3) /
-                4;
+                gap * (cards.length - 1)) /
+                cards.length;
 
         final showIcons =
-            constraints.maxWidth >= 760;
+            constraints.maxWidth >= 900;
 
         return Row(
           children: [
-            _SummaryCard(
-              'Total',
-              summary.total,
-              Icons.inventory_2_outlined,
-              const Color(
-                0xFF579AF6,
+            for (var i = 0; i < cards.length; i++) ...[
+              if (i > 0)
+                SizedBox(
+                  width: gap,
+                ),
+              _SummaryCard(
+                cards[i].$1,
+                cards[i].$2,
+                cards[i].$3,
+                cards[i].$4,
+                width: width,
+                showIcon: showIcons,
               ),
-              width: width,
-              showIcon: showIcons,
-            ),
-
-            SizedBox(
-              width: gap,
-            ),
-
-            _SummaryCard(
-              'Requested',
-              summary.requested,
-              Icons.inbox_outlined,
-              Colors.blue,
-              width: width,
-              showIcon: showIcons,
-            ),
-
-            SizedBox(
-              width: gap,
-            ),
-
-            _SummaryCard(
-              'Pending',
-              summary.pending,
-              Icons.pending_actions,
-              Colors.orange,
-              width: width,
-              showIcon: showIcons,
-            ),
-
-            SizedBox(
-              width: gap,
-            ),
-
-            _SummaryCard(
-              'Done',
-              summary.done,
-              Icons.task_alt,
-              Colors.green,
-              width: width,
-              showIcon: showIcons,
-            ),
+            ],
           ],
         );
       },
