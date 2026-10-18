@@ -438,6 +438,27 @@ class AdminApiService {
   }
 
   // =========================================================
+  // GET ACTIVITY LOGS
+  // =========================================================
+
+  static Future<ApiResponse<ActivityLogListResponse>> getActivityLogs({
+    ActivityLogFilters filters = const ActivityLogFilters(),
+  }) {
+    final uri = Uri.parse(
+      ApiEndpoints.adminActivityLogs,
+    ).replace(
+      queryParameters: filters.toQueryParameters(),
+    );
+
+    return ApiClient.get<ActivityLogListResponse>(
+      url: uri.toString(),
+      parser: (data) => ActivityLogListResponse.fromJson(
+        _mapParser(data),
+      ),
+    );
+  }
+
+  // =========================================================
   // COMMON MAP PARSER
   // =========================================================
 

@@ -192,4 +192,85 @@ class AdminRepository {
       userID: userID,
     );
   }
+
+  // =========================================================
+  // ACTIVITY LOGS
+  //
+  // Set useMockActivityLogs = true to test the drawer
+  // with dummy data when the backend is not running.
+  // =========================================================
+
+  static const bool useMockActivityLogs = false;
+
+  static Future<ApiResponse<ActivityLogListResponse>> getActivityLogs({
+    ActivityLogFilters filters = const ActivityLogFilters(),
+  }) {
+    if (useMockActivityLogs) {
+      return _mockActivityLogs(filters);
+    }
+
+    return AdminApiService.getActivityLogs(
+      filters: filters,
+    );
+  }
+
+  static Future<ApiResponse<ActivityLogListResponse>> _mockActivityLogs(
+      ActivityLogFilters filters,
+      ) async {
+    await Future<void>.delayed(
+      const Duration(milliseconds: 400),
+    );
+
+    const samples = [
+      ['AUTH', 'LOGIN', 'Logged in', null],
+      ['CONFIGURATION', 'CONFIG_STATUS_CHANGED', 'Changed status Pending → Approved', 'RFQ-0012'],
+      ['USER', 'USER_ROLE_CHANGED', 'Changed role User → Admin', 'john@example.com'],
+      ['RFQ', 'RFQ_PDF_EXPORTED', 'Exported RFQ PDF', 'RFQ-0009'],
+      ['CONFIGURATION', 'CONFIG_CREATED', 'Created configuration', 'RFQ-0015'],
+      ['AUTH', 'PASSWORD_RESET', 'Reset password via email OTP', null],
+    ];
+
+    final now = DateTime.now();
+
+    final all = List.generate(95, (i) {
+      final sample = samples[i % samples.length];
+
+      return ActivityLog(
+        id: 'mock-$i',
+        createdAt: now.subtract(Duration(minutes: i * 47)),
+        entityType: sample[0]!,
+        action: sample[1]!,
+        message: sample[2]!,
+        entityLabel: sample[3],
+        actorName: i.isEven ? 'Admin User' : 'Rahul Sharma',
+        actorRole: i.isEven ? 'Admin' : 'User',
+        metadata: sample[1] == 'CONFIG_STATUS_CHANGED'
+            ? const {'before': 'Pending', 'after': 'Approved'}
+            : const <String, dynamic>{},
+        ipAddress: '192.168.1.${i % 255}',
+      );
+    }).where((log) {
+      final search = filters.search.trim().toLowerCase();
+
+      return (filters.entityType == null ||
+          log.entityType == filters.entityType) &&
+          (filters.from == null ||
+              !log.createdAt!.isBefore(filters.from!)) &&
+          (search.isEmpty ||
+              '${log.message} ${log.actorDisplay} ${log.entityLabel ?? ''}'
+                  .toLowerCase()
+                  .contains(search));
+    }).toList();
+
+    final start = (filters.page - 1) * filters.limit;
+
+    return ApiResponse.success(
+      data: ActivityLogListResponse(
+        data: all.skip(start).take(filters.limit).toList(),
+        page: filters.page,
+        limit: filters.limit,
+        total: all.length,
+      ),
+    );
+  }
 }

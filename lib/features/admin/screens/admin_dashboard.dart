@@ -17,6 +17,8 @@ import '../widgets/configuration/configuration_dialogs.dart';
 import '../widgets/configuration/configuration_image_gallery.dart';
 import '../widgets/configuration/configuration_list.dart';
 
+import '../widgets/logs/activity_logs_drawer.dart';
+
 import '../widgets/users/user_cards.dart';
 import '../widgets/users/user_dialogs.dart';
 import '../widgets/users/user_table.dart';
@@ -1754,6 +1756,8 @@ class _AdminDashboardPageState
           return Scaffold(
             backgroundColor:
             background,
+            endDrawer:
+            const ActivityLogsDrawer(),
             appBar: AppBar(
               toolbarHeight: 74,
               backgroundColor: navy,
@@ -1794,6 +1798,23 @@ class _AdminDashboardPageState
                 ],
               ),
               actions: [
+                Builder(
+                  builder: (context) {
+                    return IconButton(
+                      tooltip:
+                      'Activity Logs',
+                      onPressed: () {
+                        Scaffold.of(
+                          context,
+                        ).openEndDrawer();
+                      },
+                      icon: const Icon(
+                        Icons.history,
+                      ),
+                    );
+                  },
+                ),
+
                 IconButton(
                   tooltip: 'Refresh',
                   onPressed: () {

@@ -1208,6 +1208,262 @@ class AdminUser {
 
 
 // =========================================================
+// ACTIVITY LOG ENTITY TYPES
+//
+// Used by the Activity Logs drawer filter.
+// Backend sends entityType in upper case.
+// =========================================================
+
+class ActivityLogEntityType {
+  ActivityLogEntityType._();
+
+  static const String auth = 'AUTH';
+
+  static const String configuration = 'CONFIGURATION';
+
+  static const String user = 'USER';
+
+  static const String rfq = 'RFQ';
+
+  static const List<String> values = [
+    auth,
+    configuration,
+    user,
+    rfq,
+  ];
+
+  static String label(
+      String? type,
+      ) {
+    switch (type) {
+      case auth:
+        return 'Auth';
+
+      case configuration:
+        return 'Configuration';
+
+      case user:
+        return 'User';
+
+      case rfq:
+        return 'RFQ';
+
+      default:
+        return 'All';
+    }
+  }
+}
+
+
+// =========================================================
+// ACTIVITY LOG
+//
+// GET /api/admin/activity-logs
+//
+// One business action performed on the server.
+// =========================================================
+
+class ActivityLog {
+  const ActivityLog({
+    required this.id,
+    required this.createdAt,
+    required this.action,
+    required this.entityType,
+    required this.message,
+    this.actorID,
+    this.actorName,
+    this.actorEmail,
+    this.actorRole,
+    this.entityID,
+    this.entityLabel,
+    this.metadata = const <String, dynamic>{},
+    this.ipAddress,
+    this.userAgent,
+  });
+
+  final String id;
+  final DateTime? createdAt;
+
+  // e.g. CONFIG_STATUS_CHANGED, USER_ROLE_CHANGED
+  final String action;
+
+  final String entityType;
+  final String message;
+
+  final String? actorID;
+  final String? actorName;
+  final String? actorEmail;
+  final String? actorRole;
+
+  final String? entityID;
+
+  // e.g. "RFQ-0012"
+  final String? entityLabel;
+
+  // Before / after values and any extra details.
+  final Map<String, dynamic> metadata;
+
+  final String? ipAddress;
+  final String? userAgent;
+
+  String get actorDisplay {
+    final name =
+        actorName ??
+            actorEmail ??
+            'System';
+
+    if (actorRole == null) {
+      return name;
+    }
+
+    return '$name ($actorRole)';
+  }
+
+  factory ActivityLog.fromJson(
+      Map<String, dynamic> json,
+      ) {
+    final actor = json['actor'];
+
+    final actorMap = actor is Map
+        ? Map<String, dynamic>.from(actor)
+        : <String, dynamic>{};
+
+    final rawMetadata = json['metadata'];
+
+    return ActivityLog(
+      id: json['id']?.toString() ?? '',
+      createdAt: _asDateTime(
+        json['createdAt'] ?? json['created_at'],
+      ),
+      action: json['action']?.toString() ?? '',
+      entityType: (json['entityType'] ?? json['entity_type'])
+          ?.toString()
+          .toUpperCase() ??
+          '',
+      message: json['message']?.toString() ?? '',
+      actorID: _asOptionalString(
+        json['actorID'] ?? actorMap['id'],
+      ),
+      actorName: _asOptionalString(
+        json['actorName'] ?? actorMap['name'],
+      ),
+      actorEmail: _asOptionalString(
+        json['actorEmail'] ?? actorMap['email'],
+      ),
+      actorRole: _asOptionalString(
+        json['actorRole'] ?? actorMap['role'],
+      ),
+      entityID: _asOptionalString(
+        json['entityID'] ?? json['entity_id'],
+      ),
+      entityLabel: _asOptionalString(
+        json['entityLabel'] ?? json['entity_label'],
+      ),
+      metadata: rawMetadata is Map
+          ? Map<String, dynamic>.from(rawMetadata)
+          : const <String, dynamic>{},
+      ipAddress: _asOptionalString(
+        json['ipAddress'] ?? json['ip_address'],
+      ),
+      userAgent: _asOptionalString(
+        json['userAgent'] ?? json['user_agent'],
+      ),
+    );
+  }
+}
+
+
+// =========================================================
+// ACTIVITY LOG LIST RESPONSE
+// =========================================================
+
+class ActivityLogListResponse {
+  const ActivityLogListResponse({
+    required this.data,
+    this.page = 1,
+    this.limit = 30,
+    this.total = 0,
+  });
+
+  final List<ActivityLog> data;
+  final int page;
+  final int limit;
+  final int total;
+
+  bool get hasMore => page * limit < total;
+
+  factory ActivityLogListResponse.fromJson(
+      Map<String, dynamic> json,
+      ) {
+    final rawData = json['data'];
+
+    return ActivityLogListResponse(
+      data: rawData is List
+          ? rawData
+          .whereType<Map>()
+          .map(
+            (item) => ActivityLog.fromJson(
+          Map<String, dynamic>.from(item),
+        ),
+      )
+          .toList()
+          : <ActivityLog>[],
+      page: _asInt(json['page']) == 0 ? 1 : _asInt(json['page']),
+      limit: _asInt(json['limit']) == 0 ? 30 : _asInt(json['limit']),
+      total: _asInt(json['total']),
+    );
+  }
+}
+
+
+// =========================================================
+// ACTIVITY LOG FILTERS
+// =========================================================
+
+class ActivityLogFilters {
+  const ActivityLogFilters({
+    this.page = 1,
+    this.limit = 30,
+    this.entityType,
+    this.from,
+    this.to,
+    this.search = '',
+  });
+
+  final int page;
+  final int limit;
+  final String? entityType;
+  final DateTime? from;
+  final DateTime? to;
+  final String search;
+
+  ActivityLogFilters copyWith({
+    int? page,
+  }) {
+    return ActivityLogFilters(
+      page: page ?? this.page,
+      limit: limit,
+      entityType: entityType,
+      from: from,
+      to: to,
+      search: search,
+    );
+  }
+
+  Map<String, String> toQueryParameters() {
+    return {
+      'page': page.toString(),
+      'limit': limit.toString(),
+      if (entityType != null) 'entityType': entityType!,
+      if (from != null) 'from': from!.toUtc().toIso8601String(),
+      if (to != null) 'to': to!.toUtc().toIso8601String(),
+      if (search.trim().isNotEmpty) 'search': search.trim(),
+    };
+  }
+}
+
+
+// =========================================================
 // HELPERS
 // =========================================================
 

@@ -937,6 +937,20 @@ static String adminConfigurationImageUrl(String configurationID,) {
 return '$apiBaseUrl/admin/configurations/$configurationID/image-url';
 }
 
+// ============================================================
+// ADMIN - ACTIVITY LOGS
+//
+// GET /api/admin/activity-logs
+//     ?page=1&limit=30&entityType=&from=&to=&search=
+//
+// Response:
+// { "data": [...], "page": 1, "limit": 30, "total": 120 }
+// ============================================================
+
+static String get adminActivityLogs {
+return '$apiBaseUrl/admin/activity-logs';
+}
+
 
 
 // =========================================================
