@@ -10,6 +10,11 @@ import '../../../core/utils/rfq_format.dart';
 // awaiting_response:
 // Admin needs more details from the user. Backend emails
 // the RFQ creator every time this status is set.
+//
+// Adding a status: add it to `values` and `label` here and
+// give it colors in AdminStatusStyle. "Group by status" and
+// the Status filter are built from `values` automatically.
+// Add it to `groupOrder` too to choose where its group goes.
 // =========================================================
 
 class AdminWorkflowStatus {
@@ -28,6 +33,21 @@ class AdminWorkflowStatus {
     pending,
     awaitingResponse,
     done,
+  ];
+
+  // Order of the "Group by status" sections.
+  static const List<String> groupOrder = [
+    pending,
+    awaitingResponse,
+    requested,
+    done,
+  ];
+
+  // groupOrder first, then any status in `values` that is not
+  // listed there yet, so a new status still gets a group.
+  static List<String> get groupedValues => [
+    ...groupOrder.where(values.contains),
+    ...values.where((status) => !groupOrder.contains(status)),
   ];
 
   static String label(

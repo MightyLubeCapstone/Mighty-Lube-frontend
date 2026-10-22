@@ -20,10 +20,14 @@ class ConfigurationTable extends StatefulWidget {
     required this.onDeleteConfiguration,
     required this.onViewUser,
     required this.onViewProject,
+    this.expandProjectsByDefault = false,
   });
 
   final List<AdminConfiguration> items;
   final List<AdminUser> users;
+
+  // true: projects start open (Group by status).
+  final bool expandProjectsByDefault;
 
   final Set<String> updatingConfigurationIDs;
   final Set<String> deletingConfigurationIDs;
@@ -70,8 +74,16 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
 
   Timer? _liveTimer;
 
-  // Project groups the admin has opened.
-  final Set<String> _expandedProjects = {};
+  // Projects the admin clicked: opened when projects start
+  // closed, closed when they start open.
+  final Set<String> _toggledProjects = {};
+
+  bool _isProjectExpanded(
+      String key,
+      ) {
+    return widget.expandProjectsByDefault !=
+        _toggledProjects.contains(key);
+  }
 
   // =========================================================
   // SCROLL CONTROLLERS
@@ -127,6 +139,12 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
       covariant ConfigurationTable oldWidget,
       ) {
     super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.expandProjectsByDefault !=
+        widget.expandProjectsByDefault) {
+      _toggledProjects.clear();
+    }
+
     _syncLocalStateWithServer();
   }
 
@@ -346,7 +364,7 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
       final group = entry as AdminProjectGroup;
 
       final expanded =
-      _expandedProjects.contains(group.key);
+      _isProjectExpanded(group.key);
 
       rows.add(
         _projectHeaderRow(
@@ -375,8 +393,8 @@ class _ConfigurationTableState extends State<ConfigurationTable> {
       AdminProjectGroup group,
       ) {
     setState(() {
-      if (!_expandedProjects.remove(group.key)) {
-        _expandedProjects.add(group.key);
+      if (!_toggledProjects.remove(group.key)) {
+        _toggledProjects.add(group.key);
       }
     });
   }

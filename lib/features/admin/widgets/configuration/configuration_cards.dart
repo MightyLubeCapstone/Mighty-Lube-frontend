@@ -13,9 +13,13 @@ class ConfigurationCards extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onViewProject,
+    this.expandProjects = false,
   });
 
   final List<AdminConfiguration> items;
+
+  // true: project cards start open (Group by status).
+  final bool expandProjects;
 
   final Set<String> updatingConfigurationIDs;
   final Set<String> deletingConfigurationIDs;
@@ -68,6 +72,7 @@ class ConfigurationCards extends StatelessWidget {
           if (entry is AdminProjectGroup)
             _ProjectCard(
               group: entry,
+              initiallyExpanded: expandProjects,
               onViewProject: onViewProject,
               itemBuilder: (item) =>
                   _configurationCard(
@@ -667,9 +672,12 @@ class _ProjectCard extends StatefulWidget {
     required this.group,
     required this.onViewProject,
     required this.itemBuilder,
+    this.initiallyExpanded = false,
   });
 
   final AdminProjectGroup group;
+
+  final bool initiallyExpanded;
 
   final void Function(
       AdminProjectGroup project,
@@ -685,7 +693,19 @@ class _ProjectCard extends StatefulWidget {
 }
 
 class _ProjectCardState extends State<_ProjectCard> {
-  bool _expanded = false;
+  late bool _expanded = widget.initiallyExpanded;
+
+  @override
+  void didUpdateWidget(
+      covariant _ProjectCard oldWidget,
+      ) {
+    super.didUpdateWidget(oldWidget);
+
+    // Group by status switched on/off.
+    if (oldWidget.initiallyExpanded != widget.initiallyExpanded) {
+      _expanded = widget.initiallyExpanded;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

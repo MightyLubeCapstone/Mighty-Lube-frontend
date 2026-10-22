@@ -728,6 +728,18 @@ class _AdminDashboardPageState
       _groupConfigurationsByStatus =
           value;
     });
+
+    // Status tabs replace the Status filter, so load every
+    // status or the other tabs would be empty.
+    if (value &&
+        (_configurationFilters.adminWorkflowStatus ?? 'all') !=
+            'all') {
+      _setConfigurationFilters(
+        _configurationFilters.copyWith(
+          adminWorkflowStatus: 'all',
+        ),
+      );
+    }
   }
 
   // =========================================================
