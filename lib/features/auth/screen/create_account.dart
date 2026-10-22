@@ -63,6 +63,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   String get _currentEmail => emailController.text.trim().toLowerCase();
 
+  bool get _isEmailVerified => _verifiedEmail == _currentEmail && _verificationToken != null;
+
   void _onEmailChanged(String value) {
     final current = value.trim().toLowerCase();
     if (_verifiedEmail != current || _otpRequestedEmail != current) {
@@ -146,13 +148,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       );
       if (!mounted || email != _currentEmail) return;
       if (result.success && result.data != null && result.data!.isNotEmpty) {
+        _otpCooldownTimer?.cancel();
         setState(() {
           _verificationToken = result.data;
           _verifiedEmail = email;
           _otpSent = false;
+          _resendSeconds = 0;
           _otpMessage = 'Email verified successfully.';
         });
-        _otpCooldownTimer?.cancel();
       } else {
         setState(() => _otpMessage = result.message ?? 'Invalid or expired verification code.');
       }
@@ -863,9 +866,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         const SizedBox(width: 5,),
 
                         OutlinedButton.icon(
-                          onPressed: (_otpBusy || _isSubmitting || _resendSeconds > 0) ? null : _requestEmailOtp,
-                          icon: const Icon(Icons.mark_email_unread_outlined),
-                          label: Text(_otpBusy ? 'wait...' : _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : _otpSent ? 'Resend OTP' : 'Verify',
+                          onPressed: (_otpBusy || _isSubmitting || _resendSeconds > 0 || _isEmailVerified) ? null : _requestEmailOtp,
+                          icon: Icon(_isEmailVerified ? Icons.verified : Icons.mark_email_unread_outlined),
+                          label: Text(_isEmailVerified ? 'Verified' : _otpBusy ? 'wait...' : _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : _otpSent ? 'Resend OTP' : 'Verify',
                           ),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.grey[100],
