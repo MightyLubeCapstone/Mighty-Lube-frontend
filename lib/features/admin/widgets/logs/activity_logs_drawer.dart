@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/admin_models.dart';
 import '../../repositories/admin_repository.dart';
@@ -715,7 +717,7 @@ class _ActivityLogTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (expanded) _buildDetails(),
+                if (expanded) _buildDetails(context),
               ],
             ),
           ),
@@ -724,22 +726,12 @@ class _ActivityLogTile extends StatelessWidget {
     );
   }
 
-  Widget _buildDetails() {
-    final rows = <MapEntry<String, String>>[
-      MapEntry('Action', log.action),
-      MapEntry(
-        'Time',
-        log.createdAt == null
-            ? '—'
-            : DateFormat('d MMM yyyy, h:mm:ss a')
-            .format(log.createdAt!.toLocal()),
-      ),
-      if (log.actorEmail != null) MapEntry('Email', log.actorEmail!),
-      if (log.entityID != null) MapEntry('Item ID', log.entityID!),
-      for (final entry in log.metadata.entries)
-        MapEntry(_titleCase(entry.key), entry.value?.toString() ?? '—'),
-      if (log.ipAddress != null) MapEntry('IP', log.ipAddress!),
-    ];
+  // Item ID and IP are kept on the server but not shown here.
+  Widget _buildDetails(
+      BuildContext context,
+      ) {
+    final name = log.actorName;
+    final email = log.actorEmail;
 
     return Container(
       width: double.infinity,
@@ -751,38 +743,154 @@ class _ActivityLogTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          for (final row in rows)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          _detailRow('Action', log.action),
+          _detailRow(
+            'Time',
+            log.createdAt == null
+                ? '—'
+                : DateFormat('d MMM yyyy, h:mm:ss a')
+                .format(log.createdAt!.toLocal()),
+          ),
+          if (name != null && name != email)
+            _detailRow('User', name),
+          if (email != null)
+            _detailRow(
+              'Email',
+              email,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: 90,
-                    child: Text(
-                      row.key,
-                      style: const TextStyle(
-                        color: Color(0xFF64748B),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  _emailAction(
+                    tooltip: 'Copy email',
+                    icon: Icons.copy,
+                    onPressed: () => _copyEmail(context, email),
                   ),
-                  Expanded(
-                    child: SelectableText(
-                      row.value,
-                      style: const TextStyle(
-                        color: Color(0xFF0F172A),
-                        fontSize: 12,
-                      ),
-                    ),
+                  _emailAction(
+                    tooltip: 'Send email',
+                    icon: Icons.mail_outline,
+                    onPressed: () => _openEmail(context, email),
                   ),
                 ],
               ),
             ),
+          for (final entry in log.metadata.entries)
+            _detailRow(
+              _metadataLabel(entry.key),
+              entry.value?.toString() ?? '—',
+            ),
         ],
       ),
     );
+  }
+
+  Widget _detailRow(
+      String label,
+      String value, {
+        Widget? trailing,
+      }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Color(0xFF64748B),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            child: SelectableText(
+              value,
+              style: const TextStyle(
+                color: Color(0xFF0F172A),
+                fontSize: 12,
+              ),
+            ),
+          ),
+          if (trailing != null) trailing,
+        ],
+      ),
+    );
+  }
+
+  Widget _emailAction({
+    required String tooltip,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      icon: Icon(icon),
+      iconSize: 16,
+      color: const Color(0xFF475569),
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(
+        minWidth: 28,
+        minHeight: 20,
+      ),
+    );
+  }
+
+  static Future<void> _openEmail(
+      BuildContext context,
+      String email,
+      ) async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    bool opened;
+
+    try {
+      opened = await launchUrl(
+        Uri(scheme: 'mailto', path: email),
+      );
+    } catch (_) {
+      opened = false;
+    }
+
+    if (!opened) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('No email app found. Use Copy instead.'),
+        ),
+      );
+    }
+  }
+
+  static Future<void> _copyEmail(
+      BuildContext context,
+      String email,
+      ) async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    await Clipboard.setData(
+      ClipboardData(text: email),
+    );
+
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text('Email copied'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  // Status/role changes send before/after; "Now" reads better.
+  static String _metadataLabel(
+      String key,
+      ) {
+    if (key == 'after') {
+      return 'Now';
+    }
+
+    return _titleCase(key);
   }
 
   static String _titleCase(
