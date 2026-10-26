@@ -1,5 +1,6 @@
 import '../../../core/network/api_response.dart';
 import '../../../core/network/services/configuration_api_service.dart';
+import '../models/customer_details.dart';
 import '../models/submitted_rfq.dart';
 
 class ConfigurationRepository {
@@ -24,11 +25,13 @@ class ConfigurationRepository {
     required List<String> configurationIDs,
     String? projectID,
     String? projectName,
+    CustomerDetails? customerDetails,
   }) async {
     return ConfigurationApiService.finalize(
       configurationIDs: configurationIDs,
       projectID: projectID,
       projectName: projectName,
+      customerDetails: customerDetails,
     );
   }
 

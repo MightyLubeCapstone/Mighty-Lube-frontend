@@ -1,3 +1,4 @@
+import '../../../features/configurations/models/customer_details.dart';
 import '../../../features/configurations/models/submitted_rfq.dart';
 import '../api_client.dart';
 import '../api_endpoints.dart';
@@ -95,6 +96,11 @@ class ConfigurationApiService {
   //
   // Send only one of the two.
   //
+  // customerDetails:
+  // required for standalone RFQs, a new project, and an
+  // existing project that has none yet (backend saves it to
+  // the project). Ignored for a project that has details.
+  //
   // Backend returns each RFQ with its rfqNumber, plus the
   // project (projectNumber, projectName) when one was created.
   // =========================================================
@@ -103,6 +109,7 @@ class ConfigurationApiService {
     required List<String> configurationIDs,
     String? projectID,
     String? projectName,
+    CustomerDetails? customerDetails,
   }) async {
     final trimmedProjectID = projectID?.trim() ?? '';
     final trimmedProjectName = projectName?.trim() ?? '';
@@ -116,6 +123,8 @@ class ConfigurationApiService {
           'projectID': trimmedProjectID
         else if (trimmedProjectName.isNotEmpty)
           'projectName': trimmedProjectName,
+        if (customerDetails != null)
+          'customerDetails': customerDetails.toJson(),
       },
     );
 

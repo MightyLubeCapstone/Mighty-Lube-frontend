@@ -7,9 +7,11 @@ import 'package:mighty_lube/core/widget/helper_widgets.dart';
 
 import 'package:mighty_lube/features/application/screens/application_catalog_page.dart';
 import 'package:mighty_lube/features/cart/repositories/draft_repository.dart';
+import 'package:mighty_lube/features/configurations/models/customer_details.dart';
 import 'package:mighty_lube/features/configurations/models/submitted_rfq.dart';
 import 'package:mighty_lube/features/configurations/repositories/configuration_repository.dart';
 
+import 'package:mighty_lube/core/widget/customer_details_form.dart';
 import 'package:mighty_lube/core/widget/product_configuration_form.dart';
 import 'package:mighty_lube/features/products/service/product_catalog_resolver.dart';
 
@@ -389,6 +391,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       configurationIDs: configurationIDs,
       projectID: projectChoice.projectID,
       projectName: projectChoice.newProjectName,
+      customerDetails: projectChoice.customerDetails,
     );
 
     if (!mounted) {
@@ -1715,6 +1718,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
 // Standalone       -> projectID null, newProjectName null
 // New project      -> newProjectName "Ford Plant Line 2"
 // Existing project -> projectID "uuid"
+//
+// customerDetails: the filled form. null when an existing
+// project already has details (backend uses those).
 // ===========================================================
 
 class _FinalizeChoice {
@@ -1722,11 +1728,14 @@ class _FinalizeChoice {
     this.projectID,
     this.newProjectName,
     this.existingProjectName,
+    this.customerDetails,
   });
 
   final String? projectID;
 
   final String? newProjectName;
+
+  final CustomerDetails? customerDetails;
 
   // Only for the success popup fallback.
   final String? existingProjectName;
@@ -1745,9 +1754,13 @@ enum _ProjectMode {
 // ===========================================================
 // FINALIZE DIALOG
 //
-// ○ Standalone
+// ○ Standalone              -> customer details form
 // ○ Create new project      -> Project Name (required)
+//                              + customer details form
 // ○ Add to existing project -> pick one of the user's projects
+//                              -> read-only details, or the
+//                                 form when the project has
+//                                 none yet (old projects)
 // ===========================================================
 
 class _FinalizeDialog extends StatefulWidget {
@@ -1778,6 +1791,10 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
   List<UserProject> _projects = const [];
 
   UserProject? _selectedProject;
+
+  final _detailsFormKey = GlobalKey<CustomerDetailsFormState>();
+
+  bool _detailsInvalid = false;
 
   @override
   void initState() {
@@ -1816,47 +1833,167 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
     });
   }
 
-  void _submit() {
+  // Form shown for standalone, new project, and an existing
+  // project without details. Otherwise the saved details
+  // are shown read-only.
+  bool get _showDetailsForm {
     switch (_mode) {
       case _ProjectMode.standalone:
-        Navigator.of(context).pop(const _FinalizeChoice());
+      case _ProjectMode.newProject:
+        return true;
+
+      case _ProjectMode.existingProject:
+        final project = _selectedProject;
+
+        return project != null && project.customerDetails == null;
+    }
+  }
+
+  void _submit() {
+    String? name;
+
+    if (_mode == _ProjectMode.newProject) {
+      name = _projectNameController.text.trim();
+
+      if (name.isEmpty) {
+        setState(() {
+          _nameError = 'Project name is required.';
+        });
+        return;
+      }
+    }
+
+    final project = _selectedProject;
+
+    if (_mode == _ProjectMode.existingProject && project == null) {
+      setState(() {
+        _projectError = 'Please select a project.';
+      });
+      return;
+    }
+
+    CustomerDetails? details;
+
+    if (_showDetailsForm) {
+      details = _detailsFormKey.currentState?.validate();
+
+      setState(() {
+        _detailsInvalid = details == null;
+      });
+
+      if (details == null) {
+        return;
+      }
+    }
+
+    switch (_mode) {
+      case _ProjectMode.standalone:
+        Navigator.of(context).pop(
+          _FinalizeChoice(
+            customerDetails: details,
+          ),
+        );
         return;
 
       case _ProjectMode.newProject:
-        final name = _projectNameController.text.trim();
-
-        if (name.isEmpty) {
-          setState(() {
-            _nameError = 'Project name is required.';
-          });
-          return;
-        }
-
         Navigator.of(context).pop(
           _FinalizeChoice(
             newProjectName: name,
+            customerDetails: details,
           ),
         );
         return;
 
       case _ProjectMode.existingProject:
-        final project = _selectedProject;
-
-        if (project == null) {
-          setState(() {
-            _projectError = 'Please select a project.';
-          });
-          return;
-        }
-
         Navigator.of(context).pop(
           _FinalizeChoice(
-            projectID: project.projectID,
+            projectID: project!.projectID,
             existingProjectName: project.projectName,
+            customerDetails: details,
           ),
         );
         return;
     }
+  }
+
+  Widget _customerDetailsSection() {
+    final project = _selectedProject;
+
+    if (_mode == _ProjectMode.existingProject && project == null) {
+      return const SizedBox.shrink();
+    }
+
+    final savedDetails = project?.customerDetails;
+
+    if (!_showDetailsForm && savedDetails != null) {
+      return Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(
+          top: 16,
+        ),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "These RFQs will use the project's saved details.",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CustomerDetailsSummary(
+              details: savedDetails,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(
+          height: 16,
+        ),
+        if (_mode == _ProjectMode.existingProject)
+          Container(
+            margin: const EdgeInsets.only(
+              bottom: 8,
+            ),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8E1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Text(
+              "This project has no customer details yet. Please fill them in. "
+                  "They will be saved to the project for next time.",
+            ),
+          ),
+        if (_mode == _ProjectMode.newProject)
+          const Padding(
+            padding: EdgeInsets.only(
+              bottom: 4,
+            ),
+            child: Text(
+              "Saved to the project, so you only enter them once.",
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+        CustomerDetailsForm(
+          key: _detailsFormKey,
+        ),
+      ],
+    );
   }
 
   String get _existingSubtitle {
@@ -1923,6 +2060,7 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
         setState(() {
           _selectedProject = project;
           _projectError = null;
+          _detailsInvalid = false;
         });
       },
       decoration: InputDecoration(
@@ -1947,7 +2085,10 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
       title: const Text(
         "Confirm Finalize?",
       ),
-      content: SingleChildScrollView(
+      content: SizedBox(
+        // Clamped to the screen width on phones.
+        width: 640,
+        child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1966,6 +2107,7 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
                   _mode = value ?? _ProjectMode.standalone;
                   _nameError = null;
                   _projectError = null;
+                  _detailsInvalid = false;
                 });
               },
               child: Column(
@@ -2015,10 +2157,24 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
               ),
             if (_mode == _ProjectMode.existingProject)
               _existingProjectPicker(),
+            _customerDetailsSection(),
           ],
         ),
       ),
+      ),
       actions: [
+        if (_detailsInvalid)
+          const Padding(
+            padding: EdgeInsets.only(
+              right: 8,
+            ),
+            child: Text(
+              "Please fill in the required fields.",
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text(

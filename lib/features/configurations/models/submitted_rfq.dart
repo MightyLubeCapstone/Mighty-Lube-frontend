@@ -1,5 +1,7 @@
 import '../../../core/utils/rfq_format.dart';
 
+import 'customer_details.dart';
+
 // =========================================================
 // SUBMITTED RFQ (user side)
 //
@@ -135,6 +137,7 @@ class UserProject {
     required this.projectID,
     required this.projectName,
     this.projectNumber,
+    this.customerDetails,
   });
 
   final String projectID;
@@ -143,6 +146,10 @@ class UserProject {
 
   final String? projectNumber;
 
+  // null for old projects: Finalize asks for the details
+  // and saves them to the project.
+  final CustomerDetails? customerDetails;
+
   factory UserProject.fromJson(
       Map<String, dynamic> json,
       ) {
@@ -150,6 +157,7 @@ class UserProject {
       projectID: _text(json['projectID']) ?? '',
       projectName: _text(json['projectName'] ?? json['name']) ?? '',
       projectNumber: _text(json['projectNumber']),
+      customerDetails: CustomerDetails.fromJson(json['customerDetails']),
     );
   }
 
