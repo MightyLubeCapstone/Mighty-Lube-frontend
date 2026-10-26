@@ -1,4 +1,5 @@
 import '../../../core/utils/rfq_format.dart';
+import '../../configurations/models/customer_details.dart';
 
 // =========================================================
 // ADMIN WORKFLOW STATUS VALUES
@@ -422,6 +423,7 @@ class AdminConfiguration {
     this.projectID,
     this.projectNumber,
     this.projectName,
+    this.customerDetails,
   });
 
   final String configurationID;
@@ -582,6 +584,10 @@ class AdminConfiguration {
 
   final String? projectName;
 
+  // Project RFQs: the project's current details (live).
+  // Standalone RFQs: their own. null for old records.
+  final CustomerDetails? customerDetails;
+
   factory AdminConfiguration.fromJson(
       Map<String, dynamic> json,
       ) {
@@ -727,6 +733,11 @@ class AdminConfiguration {
         json['projectName'] ??
             _projectField(json, 'projectName') ??
             _projectField(json, 'name'),
+      ),
+
+      customerDetails:
+      CustomerDetails.fromJson(
+        json['customerDetails'],
       ),
     );
   }
@@ -993,6 +1004,15 @@ class AdminProjectGroup {
 
   String get userID {
     return _first.userID;
+  }
+
+  String? get projectID {
+    return _first.projectID;
+  }
+
+  // Shared by every RFQ in the project.
+  CustomerDetails? get customerDetails {
+    return _first.customerDetails;
   }
 
   Map<String, dynamic>? get createdBy {

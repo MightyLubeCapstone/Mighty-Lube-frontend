@@ -42,4 +42,18 @@ class ConfigurationRepository {
   static Future<ApiResponse<List<UserProject>>> getProjects() async {
     return ConfigurationApiService.getProjects();
   }
+
+  // =========================================================
+  // UPDATE PROJECT CUSTOMER DETAILS
+  // =========================================================
+
+  static Future<ApiResponse<CustomerDetails>> updateProjectDetails({
+    required String projectID,
+    required CustomerDetails details,
+  }) async {
+    return ConfigurationApiService.updateProjectDetails(
+      projectID: projectID,
+      details: details,
+    );
+  }
 }

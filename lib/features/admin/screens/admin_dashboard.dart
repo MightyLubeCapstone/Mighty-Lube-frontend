@@ -896,6 +896,7 @@ class _AdminDashboardPageState
             items: freshItems,
           ),
           users: _users,
+          onDetailsSaved: _loadConfigurations,
         ),
       );
     } catch (error, stackTrace) {

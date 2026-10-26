@@ -1,5 +1,6 @@
 import '../../../core/network/api_response.dart';
 import '../../../core/network/services/admin_api_service.dart';
+import '../../configurations/models/customer_details.dart';
 import '../models/admin_models.dart';
 
 class AdminRepository {
@@ -132,6 +133,20 @@ class AdminRepository {
   }) {
     return AdminApiService.deleteConfiguration(
       configurationID: configurationID,
+    );
+  }
+
+  // =========================================================
+  // PROJECT CUSTOMER DETAILS
+  // =========================================================
+
+  static Future<ApiResponse<CustomerDetails>> updateProjectDetails({
+    required String projectID,
+    required CustomerDetails details,
+  }) {
+    return AdminApiService.updateProjectDetails(
+      projectID: projectID,
+      details: details,
     );
   }
 

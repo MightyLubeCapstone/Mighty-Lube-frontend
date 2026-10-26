@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:mighty_lube/core/network/api_response.dart';
 import 'package:mighty_lube/core/utils/customer_detail_options.dart';
 import 'package:mighty_lube/features/configurations/models/customer_details.dart';
 
@@ -733,6 +734,150 @@ class CustomerDetailsSummary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: sections,
+    );
+  }
+}
+
+// =========================================================
+// EDIT CUSTOMER DETAILS DIALOG
+//
+// Pre-filled form + Save. Used by the user's Configurations
+// screen and the admin's Project details dialog; each passes
+// its own save call.
+//
+// Returns the saved CustomerDetails, or null on Cancel.
+// =========================================================
+
+class EditCustomerDetailsDialog extends StatefulWidget {
+  const EditCustomerDetailsDialog({
+    super.key,
+    required this.title,
+    required this.initial,
+    required this.onSave,
+  });
+
+  final String title;
+
+  // null for old projects without details.
+  final CustomerDetails? initial;
+
+  final Future<ApiResponse<CustomerDetails>> Function(
+      CustomerDetails details,
+      ) onSave;
+
+  @override
+  State<EditCustomerDetailsDialog> createState() =>
+      _EditCustomerDetailsDialogState();
+}
+
+class _EditCustomerDetailsDialogState
+    extends State<EditCustomerDetailsDialog> {
+  final _formKey = GlobalKey<CustomerDetailsFormState>();
+
+  bool _saving = false;
+
+  String? _error;
+
+  Future<void> _save() async {
+    final details = _formKey.currentState?.validate();
+
+    if (details == null) {
+      setState(() {
+        _error = 'Please fill in the required fields.';
+      });
+      return;
+    }
+
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+
+    final response = await widget.onSave(details);
+
+    if (!mounted) {
+      return;
+    }
+
+    if (response.success) {
+      Navigator.of(context).pop(response.data ?? details);
+      return;
+    }
+
+    setState(() {
+      _saving = false;
+      _error = response.message ?? 'Unable to save the details.';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        widget.title,
+      ),
+      content: SizedBox(
+        // Clamped to the screen width on phones.
+        width: 640,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Changes show on every RFQ in this project.',
+                style: TextStyle(
+                  color: Colors.black54,
+                ),
+              ),
+              CustomerDetailsForm(
+                key: _formKey,
+                initial: widget.initial,
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        if (_error != null)
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 8,
+            ),
+            child: Text(
+              _error!,
+              style: const TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          ),
+        TextButton(
+          onPressed: _saving ? null : () => Navigator.of(context).pop(),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: _saving ? null : _save,
+          child: _saving
+              ? const SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          )
+              : const Text(
+            'Save',
+            style: TextStyle(
+              color: Color(0xFF579AF6),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

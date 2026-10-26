@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mighty_lube/core/widget/customer_details_form.dart';
 import 'package:mighty_lube/core/widget/helper_widgets.dart';
 import 'package:mighty_lube/features/application/screens/application_catalog_page.dart';
+import 'package:mighty_lube/features/configurations/models/customer_details.dart';
 import 'package:mighty_lube/features/configurations/models/submitted_rfq.dart';
 import 'package:mighty_lube/features/configurations/repositories/configuration_repository.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -11,9 +13,11 @@ import '../../cart/repositories/cart_repositories.dart';
 // =========================================================
 // USER CONFIGURATIONS (submitted RFQs)
 //
-// View-only. Projects show as purple groups that open to
-// their RFQs; standalone RFQs show as normal cards. Newest
-// first. Admin status is not shown to the user.
+// View-only, except a project's customer details, which the
+// owner can edit from the project card. Projects show as
+// purple groups that open to their RFQs; standalone RFQs
+// show as normal cards. Newest first. Admin status is not
+// shown to the user.
 // =========================================================
 
 class ConfigurationsPage extends StatefulWidget {
@@ -264,6 +268,111 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
     );
   }
 
+  // =========================================================
+  // EDIT PROJECT DETAILS
+  //
+  // Saves to the project, then reloads so every RFQ in it
+  // shows the new details.
+  // =========================================================
+
+  Future<void> _editProjectDetails(
+      SubmittedRfq projectRfq,
+      ) async {
+    final projectID = projectRfq.projectID;
+
+    if (projectID == null) {
+      return;
+    }
+
+    final saved = await showDialog<CustomerDetails>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => EditCustomerDetailsDialog(
+        title: 'Edit project details',
+        initial: projectRfq.customerDetails,
+        onSave: (details) => ConfigurationRepository.updateProjectDetails(
+          projectID: projectID,
+          details: details,
+        ),
+      ),
+    );
+
+    if (saved == null || !mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Project details updated.',
+        ),
+      ),
+    );
+
+    await getConfigurations();
+  }
+
+  // Fresaders · Fremont, Michigan
+  String? _customerLine(
+      CustomerDetails? details,
+      ) {
+    if (details == null) {
+      return null;
+    }
+
+    final customer = details.customer;
+
+    final place = [customer['city'], customer['state']]
+        .where((part) => (part ?? '').isNotEmpty)
+        .join(', ');
+
+    final line = [customer['name'], place, customer['email']]
+        .where((part) => (part ?? '').isNotEmpty)
+        .join(' · ');
+
+    return line.isEmpty ? null : line;
+  }
+
+  Widget _projectDetailsBar(
+      SubmittedRfq projectRfq,
+      ) {
+    final line = _customerLine(projectRfq.customerDetails);
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 4,
+        bottom: 4,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              line == null ? 'No customer details yet' : 'Customer: $line',
+              style: TextStyle(
+                color: line == null ? Colors.orange.shade800 : Colors.black87,
+              ),
+            ),
+          ),
+          if (projectRfq.projectID != null)
+            TextButton.icon(
+              onPressed: () => _editProjectDetails(projectRfq),
+              icon: const Icon(
+                Icons.edit_outlined,
+                size: 18,
+                color: _projectColor,
+              ),
+              label: Text(
+                line == null ? 'Add project details' : 'Edit project details',
+                style: const TextStyle(
+                  color: _projectColor,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _infoText(
       String label,
       String value,
@@ -399,6 +508,7 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
             12,
           ),
           children: [
+            _projectDetailsBar(first),
             for (final rfq in rfqs)
               Container(
                 margin: const EdgeInsets.only(

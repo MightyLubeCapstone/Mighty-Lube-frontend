@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widget/customer_details_form.dart';
+import '../../../configurations/models/customer_details.dart';
 import '../../models/admin_models.dart';
 import '../../repositories/admin_repository.dart';
 import '../../services/rfq_pdf_service.dart';
@@ -2134,23 +2136,74 @@ class _RfqPdfActionsState extends State<RfqPdfActions> {
 // ===========================================================
 // PROJECT DETAILS DIALOG
 //
-// Project info + every RFQ in it, with PDF/print for the
-// whole project.
+// Project info + customer details (editable) + every RFQ in
+// it, with PDF/print for the whole project.
 // ===========================================================
 
-class ProjectDetailsDialog extends StatelessWidget {
+class ProjectDetailsDialog extends StatefulWidget {
   const ProjectDetailsDialog({
     super.key,
     required this.project,
     this.users = const [],
+    this.onDetailsSaved,
   });
 
   final AdminProjectGroup project;
 
   final List<AdminUser> users;
 
+  // Lets the dashboard reload its list after an edit.
+  final VoidCallback? onDetailsSaved;
+
+  @override
+  State<ProjectDetailsDialog> createState() => _ProjectDetailsDialogState();
+}
+
+class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
+  late CustomerDetails? _details = widget.project.customerDetails;
+
+  Future<void> _editDetails() async {
+    final projectID = widget.project.projectID;
+
+    if (projectID == null) {
+      return;
+    }
+
+    final saved = await showDialog<CustomerDetails>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => EditCustomerDetailsDialog(
+        title: 'Edit customer details',
+        initial: _details,
+        onSave: (details) => AdminRepository.updateProjectDetails(
+          projectID: projectID,
+          details: details,
+        ),
+      ),
+    );
+
+    if (saved == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _details = saved;
+    });
+
+    widget.onDetailsSaved?.call();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Project details updated.'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final project = widget.project;
+    final users = widget.users;
+    final details = _details;
     final count = project.items.length;
 
     return _AdminDetailsDialog(
@@ -2159,10 +2212,22 @@ class ProjectDetailsDialog extends StatelessWidget {
       headerColor: AdminStatusStyle.projectBackground,
       title: project.title,
       subtitle: 'Project • $count RFQ${count == 1 ? '' : 's'}',
-      headerActions: RfqPdfActions(
-        configurations: project.items,
-        project: project,
-        users: users,
+      headerActions: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          RfqPdfActions(
+            configurations: project.items,
+            project: project,
+            users: users,
+          ),
+          if (project.projectID != null)
+            OutlinedButton.icon(
+              onPressed: _editDetails,
+              icon: const Icon(Icons.edit_outlined, size: 18),
+              label: const Text('Edit customer details'),
+            ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2186,6 +2251,23 @@ class ProjectDetailsDialog extends StatelessWidget {
                 group: project,
                 alignment: WrapAlignment.start,
               ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          _PlainSectionBox(
+            title: 'Customer details',
+            children: [
+              if (details == null)
+                Text(
+                  'No customer details yet.',
+                  style: TextStyle(
+                    color: Colors.orange.shade800,
+                  ),
+                )
+              else
+                CustomerDetailsSummary(
+                  details: details,
+                ),
             ],
           ),
           const SizedBox(height: 18),

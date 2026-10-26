@@ -1,4 +1,5 @@
 import '../../../features/admin/models/admin_models.dart';
+import '../../../features/configurations/models/customer_details.dart';
 import '../api_client.dart';
 import '../api_endpoints.dart';
 import '../api_response.dart';
@@ -290,6 +291,35 @@ class AdminApiService {
       url:
       '${ApiEndpoints.apiBaseUrl}/admin/configurations/${Uri.encodeComponent(configurationID)}',
       parser: _mapParser,
+    );
+  }
+
+  // =========================================================
+  // UPDATE PROJECT CUSTOMER DETAILS
+  //
+  // PATCH /api/admin/projects/:projectID/details
+  //
+  // Admin can edit any project. Every RFQ in the project
+  // shows the new details.
+  // =========================================================
+
+  static Future<ApiResponse<CustomerDetails>> updateProjectDetails({
+    required String projectID,
+    required CustomerDetails details,
+  }) {
+    return ApiClient.patch<CustomerDetails>(
+      url: ApiEndpoints.adminProjectDetails(projectID),
+      body: {
+        'customerDetails': details.toJson(),
+      },
+      parser: (data) {
+        final project = data is Map ? data['project'] : null;
+
+        return CustomerDetails.fromJson(
+          project is Map ? project['customerDetails'] : null,
+        ) ??
+            details;
+      },
     );
   }
 

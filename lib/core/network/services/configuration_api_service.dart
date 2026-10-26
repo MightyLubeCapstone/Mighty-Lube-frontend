@@ -73,6 +73,35 @@ class ConfigurationApiService {
   }
 
   // =========================================================
+  // UPDATE PROJECT CUSTOMER DETAILS (project owner)
+  //
+  // PATCH /api/configurations/projects/:projectID/details
+  //
+  // Every RFQ in the project shows the new details.
+  // =========================================================
+
+  static Future<ApiResponse<CustomerDetails>> updateProjectDetails({
+    required String projectID,
+    required CustomerDetails details,
+  }) async {
+    return ApiClient.patch<CustomerDetails>(
+      url: ApiEndpoints.configurationProjectDetails(projectID),
+      requiresAuth: true,
+      body: {
+        'customerDetails': details.toJson(),
+      },
+      parser: (data) {
+        final project = data is Map ? data['project'] : null;
+
+        return CustomerDetails.fromJson(
+          project is Map ? project['customerDetails'] : null,
+        ) ??
+            details;
+      },
+    );
+  }
+
+  // =========================================================
   // FINALIZE CONFIGURATION
   //
   // OLD:

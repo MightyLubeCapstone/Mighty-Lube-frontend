@@ -82,6 +82,11 @@ static String get configurationProjects {
 return '$apiBaseUrl/configurations/projects';
 }
 
+// PATCH /api/configurations/projects/:projectID/details
+static String configurationProjectDetails(String projectID) {
+return '$apiBaseUrl/configurations/projects/${Uri.encodeComponent(projectID)}/details';
+}
+
 // =========================================================
 // ORDERS
 // =========================================================
@@ -954,6 +959,16 @@ return '$apiBaseUrl/admin/configurations/$configurationID/image-url';
 
 static String get adminActivityLogs {
 return '$apiBaseUrl/admin/activity-logs';
+}
+
+// ============================================================
+// ADMIN - PROJECT CUSTOMER DETAILS
+//
+// PATCH /api/admin/projects/:projectID/details
+// ============================================================
+
+static String adminProjectDetails(String projectID) {
+return '$apiBaseUrl/admin/projects/${Uri.encodeComponent(projectID)}/details';
 }
 
 

@@ -28,6 +28,7 @@ class SubmittedRfq {
     this.projectID,
     this.projectNumber,
     this.projectName,
+    this.customerDetails,
     this.submittedAt,
   });
 
@@ -51,6 +52,10 @@ class SubmittedRfq {
   final String? projectNumber;
 
   final String? projectName;
+
+  // Project RFQs: the project's current details.
+  // Standalone RFQs: their own. null for old records.
+  final CustomerDetails? customerDetails;
 
   final DateTime? submittedAt;
 
@@ -80,6 +85,7 @@ class SubmittedRfq {
       projectName: _text(
         json['projectName'] ?? project['projectName'] ?? project['name'],
       ),
+      customerDetails: CustomerDetails.fromJson(json['customerDetails']),
       submittedAt: _date(
         json['submittedAt'] ?? json['dateOrdered'] ?? json['updatedAt'],
       ),
