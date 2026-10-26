@@ -54,6 +54,74 @@ Admin route:
 
 ---
 
+# Branches
+
+| Branch | Purpose | Status |
+| --- | --- | --- |
+| `main` | Original capstone app | Old base, not used for new work |
+| `TechnicionNoteAdded` | Technician Note item in every configurator | Included in later branches |
+| `adminDashboard` | Role-based Admin Dashboard and user management | Included in later branches |
+| `clean_arch` | Clean / data-driven architecture migration | Separate line, see `V3.0.1` |
+| `V3.0.1` | Release on Play Store (build 11) and App Store (build 12) | Released |
+| `V3.0.1_BugFixed` | Auth improvements: forgot password / username, OTP email verification, remembered logins, update popup | Base of `v3.1.0-rfq-projects` |
+| `v3.1.0-rfq-projects` | RFQ numbers, projects, customer details, Awaiting Response, RFQ PDF, Activity Logs, admin filter redesign | **Current development branch** |
+
+`v3.1.0-rfq-projects` was previously named `v3.0.1_calude`.
+
+## Branch workflow
+
+```text
+1. Branch from the current development branch:
+   git checkout v3.1.0-rfq-projects
+   git pull
+   git checkout -b <version-or-feature>-<short-description>
+
+2. One feature per commit, with a clear message:
+   "Add option to finalize RFQs into an existing project"
+
+3. Run before pushing:
+   flutter analyze
+   flutter test
+
+4. Push and open a Pull Request into the release branch.
+```
+
+Branch name examples:
+
+```text
+v3.1.0-rfq-projects
+v3.1.1-bug-fixes
+feature/customer-details-export
+```
+
+## Frontend + backend must ship together
+
+Features in `v3.1.0-rfq-projects` need the matching backend
+(`MightyLubeBackend/Mighty-Lube-backend`). Deploy the backend first, then
+release the app. An older app build cannot Finalize against the new
+backend (customer details are required), and the new app cannot save
+customer details on an older backend.
+
+---
+
+# What's New in v3.1.0-rfq-projects
+
+| Area | Change |
+| --- | --- |
+| RFQ numbers | Every finalized configuration gets `RFQ-10001`, `RFQ-10002`, ... |
+| Projects | Finalize as Standalone, into a new project (`P-10001`), or into an existing project |
+| Customer details | Customer, Final Customer, Contact and Additional information, entered once per project |
+| Editing | Project owner and Admin can edit a project's customer details |
+| Admin workflow | New **Awaiting Response** status (emails the RFQ creator) |
+| RFQ PDF | Export / Print one RFQ or a whole project, including customer details |
+| Activity Logs | Admin drawer showing who did what and when |
+| Admin filters | Redesigned filter bar, Group by status as tabs |
+| Create Account | Email button shows **Verified** after OTP verification |
+
+Full details: [RFQs, Projects and Customer Details](#rfqs-projects-and-customer-details).
+
+---
+
 # Architecture Migration
 
 ## Previous Architecture
@@ -771,6 +839,200 @@ Saved Configuration
 
 ---
 
+# RFQs, Projects and Customer Details
+
+## RFQ numbers
+
+When configurations are finalized, each one becomes an RFQ with its own
+number:
+
+```text
+Finalize 3 items  →  RFQ-10001, RFQ-10002, RFQ-10003
+```
+
+RFQ numbers are shown in the user's Configurations screen, the admin
+table / cards / dialogs, search, the PDF and the emails.
+
+## Finalize options
+
+The Finalize dialog offers three choices:
+
+```text
+○ Standalone               → customer details form (required)
+○ Create new project       → project name + customer details form
+○ Add to existing project  → pick a project
+                              ├─ has details → read-only summary
+                              └─ no details  → form (saved to the project)
+```
+
+- A project gets a number like `P-10001`.
+- Project names are unique per user (case and extra spaces ignored).
+- Customer details are entered **once per project** and reused for
+  every later RFQ in it.
+- Standalone RFQs store their own customer details.
+
+## Customer details form
+
+Four sections, matching the original website checkout:
+
+| Section | Fields |
+| --- | --- |
+| Customer | Customer name, Country / Region\*, Street address\*, Apartment / suite, Town / City\*, State\*, ZIP Code\*, Phone\*, Email address\* |
+| Final Customer | Name, Address 1, Address 2, City, State, Postal, Country |
+| Contact | Type, Name, Email, Phone |
+| Additional information | Order notes, Consultation, Project Status, Install, Shipping, Preferred Shipping Date, plus the Domestic / International shipping instructions |
+
+`*` = required. Everything else is optional.
+
+Rules:
+
+- Country list defaults to United States. State is a dropdown for the
+  United States and Canada, free text for other countries.
+- Emails must be valid (Customer and Contact).
+- Every dropdown ends with **Other**. Choosing Other shows a text box and
+  the typed text is saved instead of "Other".
+- Preferred Shipping Date uses a date picker and is saved as `yyyy-MM-dd`.
+- The form starts empty (not pre-filled from the user's account).
+
+Dropdown options (`lib/core/utils/customer_detail_options.dart`):
+
+| Dropdown | Options |
+| --- | --- |
+| Contact Type | Purchasing, Engineering, Maintenance, Plant / Operations Manager, Project Manager, Other |
+| Consultation | Not Required, Phone Call, Video Call, On-site Visit, Other |
+| Project Status | Budgetary Quote, Planning, Approved / Ready to Order, On Hold, Other |
+| Install | Customer Install, Mighty Lube Install, Install Supervision Only, Not Required, Other |
+| Shipping | Prepaid & Add (PPD/ADD), Collect, Third-Party Billing, Customer Pickup, Other |
+
+## Editing customer details
+
+| Who | Where |
+| --- | --- |
+| Project owner | Configurations screen → open the project card → **Edit project details** (or **Add project details** for old projects) |
+| Admin | Admin Dashboard → open a project → **Edit customer details** |
+
+Edits are **live**: every RFQ in the project (old and new) shows the
+latest details. Standalone RFQ details are not editable.
+
+## Where customer details appear
+
+| Place | What is shown |
+| --- | --- |
+| Admin project dialog | Customer details in the Overview-style two-column grid, with Copy / Send email icons next to emails |
+| Admin RFQ dialog (eye icon) | Same grid; project RFQs show the project's details |
+| RFQ PDF (Export / Print) | Customer, Final Customer, Contact, Additional information tables. A project PDF shows them once on the summary page |
+| Team email on Finalize | "Submitted By" (logged-in user) followed by the customer details sections |
+| User RFQ view sheet | Read-only customer details |
+
+"Submitted by" always means the logged-in user who sent the RFQ.
+"Customer" means the customer entered in the form.
+
+## Main files
+
+```text
+lib/features/configurations/models/customer_details.dart
+    CustomerDetails model, JSON, section labels
+
+lib/core/utils/customer_detail_options.dart
+    Countries, US states, Canadian provinces, dropdown options,
+    shipping instructions text
+
+lib/core/widget/customer_details_form.dart
+    CustomerDetailsForm        (Finalize + edit dialogs)
+    CustomerDetailsSummary     (read-only view)
+    EditCustomerDetailsDialog  (shared by user and admin)
+
+lib/features/cart/screens/shopping_page.dart
+    Finalize dialog (Standalone / New / Existing project)
+
+lib/features/configurations/screens/configurations.dart
+    Project cards, Edit project details, RFQ view sheet
+
+lib/features/admin/widgets/configuration/configuration_dialogs.dart
+    Admin project / RFQ dialogs, customer details grid
+
+lib/features/admin/services/rfq_pdf_service.dart
+    RFQ / project PDF
+```
+
+## Backend API
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `PUT` | `/api/configurations` | Finalize. Body: `configurationIDs`, optional `projectID` **or** `projectName`, `customerDetails` |
+| `GET` | `/api/configurations` | User's RFQs, each with `customerDetails` |
+| `GET` | `/api/configurations/projects` | User's projects, each with `customerDetails` (null for old projects) |
+| `PATCH` | `/api/configurations/projects/:projectID/details` | Project owner edits customer details |
+| `GET` | `/api/admin/configurations` | All RFQs, each with `customerDetails` |
+| `GET` | `/api/admin/configurations/:configurationID` | One RFQ with `customerDetails` |
+| `PATCH` | `/api/admin/projects/:projectID/details` | Admin edits any project's customer details |
+
+`customerDetails` shape:
+
+```json
+{
+  "customer": {
+    "name": "", "country": "", "address1": "", "address2": "",
+    "city": "", "state": "", "postalCode": "", "phone": "", "email": ""
+  },
+  "finalCustomer": {
+    "name": "", "address1": "", "address2": "", "city": "",
+    "state": "", "postalCode": "", "country": ""
+  },
+  "contact": { "type": "", "name": "", "email": "", "phone": "" },
+  "additionalInfo": {
+    "orderNotes": "", "consultation": "", "projectStatus": "",
+    "install": "", "shipping": "", "preferredShippingDate": ""
+  }
+}
+```
+
+Finalize rules on the backend:
+
+- `customerDetails` is **required** for Standalone, a new project, and an
+  existing project that has no details yet.
+- It is ignored for an existing project that already has details.
+- Missing required fields or an invalid email → `400`
+  (`errorCode: CUSTOMER_DETAILS_INVALID`).
+- Duplicate project name → `409`. Unknown project → `404`.
+
+Where it is stored:
+
+```text
+Project RFQs     → projects.customerDetails (shared, live)
+Standalone RFQs  → product_configurations.customerDetails
+```
+
+Backend files changed:
+
+```text
+models/customer_details.js     schema + validation (new)
+models/project.js              customerDetails on Project, lookup helpers
+models/product_configuration.js customerDetails on standalone RFQs
+routes/configurations.js       Finalize, lists, owner edit endpoint
+routes/admin.js                admin lists, admin edit endpoint
+utils/activityLogger.js        "Edited project customer details" log
+utils/emailnotif.js            Submitted By + customer details in email
+```
+
+## Testing checklist
+
+| # | Steps | Expected |
+| --- | --- | --- |
+| 1 | Finalize Standalone with empty form | Errors under required fields, nothing sent |
+| 2 | Finalize Standalone with required fields | Success popup with RFQ numbers |
+| 3 | Create new project with details | Success with project number |
+| 4 | Add another item to the same project | Read-only summary, no form |
+| 5 | Add to an old project without details | Form shown, details saved to the project |
+| 6 | Pick **Other** in a dropdown | Text box appears, required while Other is selected |
+| 7 | Change Country to Canada / Germany | Province list / free-text state |
+| 8 | User edits project details | Project card and RFQ view show the new details |
+| 9 | Admin edits project details | Admin dialog, PDF and user view show the new details |
+| 10 | Export a project PDF | Summary page shows Submitted by + customer details |
+| 11 | Check the team email after Finalize | Submitted By + customer details |
+
+---
+
 # Admin Dashboard
 
 The application includes an Admin Dashboard for configuration and user
@@ -849,10 +1111,16 @@ Statuses:
 ```text
 Requested
 Pending
+Awaiting Response
 Done
 ```
 
 Admin can move configurations between these statuses.
+
+**Awaiting Response** is used when the team needs more information from
+the user. Setting it emails the user who submitted the RFQ (their account
+email; replies go to the team inbox). It does **not** email the
+customer entered in the customer details.
 
 This workflow is separate from the normal configuration lifecycle status.
 
