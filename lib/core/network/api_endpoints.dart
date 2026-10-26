@@ -77,6 +77,11 @@ static String get configurations {
 return '$apiBaseUrl/configurations';
 }
 
+// GET /api/configurations/projects
+static String get configurationProjects {
+return '$apiBaseUrl/configurations/projects';
+}
+
 // =========================================================
 // ORDERS
 // =========================================================

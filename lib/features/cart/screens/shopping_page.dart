@@ -359,14 +359,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
     }
 
     // =========================================================
-    // STANDALONE OR NEW PROJECT
+    // STANDALONE, NEW PROJECT OR EXISTING PROJECT
     //
-    // null  -> user cancelled
-    // ''    -> standalone RFQs
-    // 'abc' -> create project "abc"
+    // null -> user cancelled
     // =========================================================
 
-    final String? projectChoice = await showDialog<String>(
+    final _FinalizeChoice? projectChoice = await showDialog<_FinalizeChoice>(
       context: context,
       builder: (BuildContext context) {
         return _FinalizeDialog(
@@ -389,7 +387,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
     final response = await ConfigurationRepository.finalize(
       configurationIDs: configurationIDs,
-      projectName: projectChoice.isEmpty ? null : projectChoice,
+      projectID: projectChoice.projectID,
+      projectName: projectChoice.newProjectName,
     );
 
     if (!mounted) {
@@ -406,8 +405,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         builder: (BuildContext context) {
           return _FinalizeSuccessDialog(
             result: response.data ?? const FinalizeResult(),
-            requestedProjectName:
-            projectChoice.isEmpty ? null : projectChoice,
+            requestedProjectName: projectChoice.projectName,
           );
         },
       );
@@ -1710,10 +1708,46 @@ class _ShoppingPageState extends State<ShoppingPage> {
 }
 
 // ===========================================================
+// FINALIZE CHOICE
+//
+// What the Finalize dialog returns:
+//
+// Standalone       -> projectID null, newProjectName null
+// New project      -> newProjectName "Ford Plant Line 2"
+// Existing project -> projectID "uuid"
+// ===========================================================
+
+class _FinalizeChoice {
+  const _FinalizeChoice({
+    this.projectID,
+    this.newProjectName,
+    this.existingProjectName,
+  });
+
+  final String? projectID;
+
+  final String? newProjectName;
+
+  // Only for the success popup fallback.
+  final String? existingProjectName;
+
+  String? get projectName {
+    return newProjectName ?? existingProjectName;
+  }
+}
+
+enum _ProjectMode {
+  standalone,
+  newProject,
+  existingProject,
+}
+
+// ===========================================================
 // FINALIZE DIALOG
 //
 // ○ Standalone
-// ○ Create new project -> Project Name (required)
+// ○ Create new project      -> Project Name (required)
+// ○ Add to existing project -> pick one of the user's projects
 // ===========================================================
 
 class _FinalizeDialog extends StatefulWidget {
@@ -1728,12 +1762,29 @@ class _FinalizeDialog extends StatefulWidget {
 }
 
 class _FinalizeDialogState extends State<_FinalizeDialog> {
-  bool _createProject = false;
+  _ProjectMode _mode = _ProjectMode.standalone;
 
   String? _nameError;
 
+  String? _projectError;
+
   final TextEditingController _projectNameController =
   TextEditingController();
+
+  bool _projectsLoading = true;
+
+  String? _projectsLoadError;
+
+  List<UserProject> _projects = const [];
+
+  UserProject? _selectedProject;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadProjects();
+  }
 
   @override
   void dispose() {
@@ -1741,27 +1792,156 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
     super.dispose();
   }
 
+  Future<void> _loadProjects() async {
+    setState(() {
+      _projectsLoading = true;
+      _projectsLoadError = null;
+    });
+
+    final response = await ConfigurationRepository.getProjects();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _projectsLoading = false;
+
+      if (response.success) {
+        _projects = response.data ?? const [];
+      } else {
+        _projectsLoadError =
+            response.message ?? 'Unable to load your projects.';
+      }
+    });
+  }
+
   void _submit() {
-    if (!_createProject) {
-      Navigator.of(context).pop('');
-      return;
+    switch (_mode) {
+      case _ProjectMode.standalone:
+        Navigator.of(context).pop(const _FinalizeChoice());
+        return;
+
+      case _ProjectMode.newProject:
+        final name = _projectNameController.text.trim();
+
+        if (name.isEmpty) {
+          setState(() {
+            _nameError = 'Project name is required.';
+          });
+          return;
+        }
+
+        Navigator.of(context).pop(
+          _FinalizeChoice(
+            newProjectName: name,
+          ),
+        );
+        return;
+
+      case _ProjectMode.existingProject:
+        final project = _selectedProject;
+
+        if (project == null) {
+          setState(() {
+            _projectError = 'Please select a project.';
+          });
+          return;
+        }
+
+        Navigator.of(context).pop(
+          _FinalizeChoice(
+            projectID: project.projectID,
+            existingProjectName: project.projectName,
+          ),
+        );
+        return;
+    }
+  }
+
+  String get _existingSubtitle {
+    if (_projectsLoading) {
+      return "Loading your projects...";
     }
 
-    final name = _projectNameController.text.trim();
-
-    if (name.isEmpty) {
-      setState(() {
-        _nameError = 'Project name is required.';
-      });
-      return;
+    if (_projectsLoadError != null) {
+      return "Couldn't load your projects.";
     }
 
-    Navigator.of(context).pop(name);
+    if (_projects.isEmpty) {
+      return "You don't have any projects yet.";
+    }
+
+    return "Add these RFQs to one of your projects.";
+  }
+
+  Widget _existingProjectPicker() {
+    if (_projectsLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: 8,
+        ),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_projectsLoadError != null) {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              _projectsLoadError!,
+              style: const TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: _loadProjects,
+            child: const Text("Retry"),
+          ),
+        ],
+      );
+    }
+
+    return DropdownButtonFormField<UserProject>(
+      initialValue: _selectedProject,
+      isExpanded: true,
+      items: [
+        for (final project in _projects)
+          DropdownMenuItem<UserProject>(
+            value: project,
+            child: Text(
+              project.label,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+      ],
+      onChanged: (project) {
+        setState(() {
+          _selectedProject = project;
+          _projectError = null;
+        });
+      },
+      decoration: InputDecoration(
+        labelText: "Project",
+        errorText: _projectError,
+        border: const OutlineInputBorder(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final count = widget.itemCount;
+
+    // Existing option is selectable only once the projects
+    // have loaded and there is at least one.
+    final canPickExisting = !_projectsLoading &&
+        _projectsLoadError == null &&
+        _projects.isNotEmpty;
 
     return AlertDialog(
       title: const Text(
@@ -1779,32 +1959,41 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
             const SizedBox(
               height: 12,
             ),
-            RadioGroup<bool>(
-              groupValue: _createProject,
+            RadioGroup<_ProjectMode>(
+              groupValue: _mode,
               onChanged: (value) {
                 setState(() {
-                  _createProject = value ?? false;
+                  _mode = value ?? _ProjectMode.standalone;
                   _nameError = null;
+                  _projectError = null;
                 });
               },
-              child: const Column(
+              child: Column(
                 children: [
-                  RadioListTile<bool>(
-                    value: false,
+                  const RadioListTile<_ProjectMode>(
+                    value: _ProjectMode.standalone,
                     contentPadding: EdgeInsets.zero,
                     title: Text("Standalone"),
                     subtitle: Text("Submit without a project."),
                   ),
-                  RadioListTile<bool>(
-                    value: true,
+                  const RadioListTile<_ProjectMode>(
+                    value: _ProjectMode.newProject,
                     contentPadding: EdgeInsets.zero,
                     title: Text("Create new project"),
                     subtitle: Text("Group these RFQs under a project name."),
                   ),
+                  RadioListTile<_ProjectMode>(
+                    value: _ProjectMode.existingProject,
+                    enabled: canPickExisting ||
+                        _mode == _ProjectMode.existingProject,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text("Add to existing project"),
+                    subtitle: Text(_existingSubtitle),
+                  ),
                 ],
               ),
             ),
-            if (_createProject)
+            if (_mode == _ProjectMode.newProject)
               TextField(
                 controller: _projectNameController,
                 autofocus: true,
@@ -1824,6 +2013,8 @@ class _FinalizeDialogState extends State<_FinalizeDialog> {
                   border: const OutlineInputBorder(),
                 ),
               ),
+            if (_mode == _ProjectMode.existingProject)
+              _existingProjectPicker(),
           ],
         ),
       ),

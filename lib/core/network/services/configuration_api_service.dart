@@ -39,6 +39,39 @@ class ConfigurationApiService {
   }
 
   // =========================================================
+  // GET USER PROJECTS
+  //
+  // GET /api/configurations/projects
+  //
+  // Backend response:
+  // {
+  //   "data": [{ projectID, projectNumber, projectName }]
+  // }
+  // =========================================================
+
+  static Future<ApiResponse<List<UserProject>>> getProjects() async {
+    return ApiClient.get<List<UserProject>>(
+      url: ApiEndpoints.configurationProjects,
+      requiresAuth: true,
+      parser: (data) {
+        final items = data is Map ? data['data'] : data;
+
+        if (items is! List) {
+          return <UserProject>[];
+        }
+
+        return items
+            .whereType<Map>()
+            .map((item) => UserProject.fromJson(
+          Map<String, dynamic>.from(item),
+        ))
+            .where((project) => project.projectID.isNotEmpty)
+            .toList();
+      },
+    );
+  }
+
+  // =========================================================
   // FINALIZE CONFIGURATION
   //
   // OLD:
@@ -50,11 +83,17 @@ class ConfigurationApiService {
   // STEP 2:
   // POST /api/email/send-email
   //
+  // projectID:
+  // "uuid"     -> attach these RFQs to the user's existing
+  //               project (404 if it is not theirs).
+  //
   // projectName:
   // null       -> standalone RFQs
   // "Ford ..." -> backend creates a new project (name must be
   //               unique per user, otherwise 409) and groups
   //               these RFQs under it.
+  //
+  // Send only one of the two.
   //
   // Backend returns each RFQ with its rfqNumber, plus the
   // project (projectNumber, projectName) when one was created.
@@ -62,8 +101,10 @@ class ConfigurationApiService {
 
   static Future<ApiResponse<FinalizeResult>> finalize({
     required List<String> configurationIDs,
+    String? projectID,
     String? projectName,
   }) async {
+    final trimmedProjectID = projectID?.trim() ?? '';
     final trimmedProjectName = projectName?.trim() ?? '';
 
     final response = await ApiClient.put<dynamic>(
@@ -71,7 +112,9 @@ class ConfigurationApiService {
       requiresAuth: true,
       body: {
         'configurationIDs': configurationIDs,
-        if (trimmedProjectName.isNotEmpty)
+        if (trimmedProjectID.isNotEmpty)
+          'projectID': trimmedProjectID
+        else if (trimmedProjectName.isNotEmpty)
           'projectName': trimmedProjectName,
       },
     );
@@ -81,6 +124,8 @@ class ConfigurationApiService {
         message:
         response.statusCode == 409
             ? (response.message ?? 'Project name already exists.')
+            : response.statusCode == 404 && trimmedProjectID.isNotEmpty
+            ? (response.message ?? 'Project not found.')
             : response.message ??
             'Unable to finalize configuration.',
         statusCode: response.statusCode,

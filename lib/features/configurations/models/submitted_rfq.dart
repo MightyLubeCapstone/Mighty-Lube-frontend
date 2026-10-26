@@ -124,6 +124,44 @@ class SubmittedRfq {
 }
 
 // =========================================================
+// USER PROJECT
+//
+// One of the user's existing projects, shown in the
+// Finalize dialog's "Add to existing project" dropdown.
+// =========================================================
+
+class UserProject {
+  const UserProject({
+    required this.projectID,
+    required this.projectName,
+    this.projectNumber,
+  });
+
+  final String projectID;
+
+  final String projectName;
+
+  final String? projectNumber;
+
+  factory UserProject.fromJson(
+      Map<String, dynamic> json,
+      ) {
+    return UserProject(
+      projectID: _text(json['projectID']) ?? '',
+      projectName: _text(json['projectName'] ?? json['name']) ?? '',
+      projectNumber: _text(json['projectNumber']),
+    );
+  }
+
+  // P-10001 – Ford Plant Line 2
+  String get label {
+    return [formatProjectNumber(projectNumber), projectName]
+        .whereType<String>()
+        .join(' – ');
+  }
+}
+
+// =========================================================
 // FINALIZE RESULT
 //
 // What the backend returns after Finalize. Used by the

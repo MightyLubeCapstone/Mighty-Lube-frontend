@@ -17,14 +17,26 @@ class ConfigurationRepository {
   // FINALIZE CONFIGURATION
   // =========================================================
 
-  // projectName = null -> standalone RFQs.
+  // projectID   -> attach to an existing project.
+  // projectName -> create a new project.
+  // both null   -> standalone RFQs.
   static Future<ApiResponse<FinalizeResult>> finalize({
     required List<String> configurationIDs,
+    String? projectID,
     String? projectName,
   }) async {
     return ConfigurationApiService.finalize(
       configurationIDs: configurationIDs,
+      projectID: projectID,
       projectName: projectName,
     );
+  }
+
+  // =========================================================
+  // GET USER PROJECTS
+  // =========================================================
+
+  static Future<ApiResponse<List<UserProject>>> getProjects() async {
+    return ConfigurationApiService.getProjects();
   }
 }
