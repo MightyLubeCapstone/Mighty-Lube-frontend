@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/widget/customer_details_form.dart';
 import '../../../configurations/models/customer_details.dart';
@@ -75,6 +77,8 @@ class ConfigurationDetailsDialog extends StatelessWidget {
               ]),
             ],
           ),
+          const SizedBox(height: 18),
+          _customerDetailsBox(configuration.customerDetails),
           const SizedBox(height: 18),
 
           _PlainSectionBox(
@@ -1583,9 +1587,12 @@ class _PlainSubsection
 // ===========================================================
 
 class _PlainInfo {
-  const _PlainInfo(this.label, this.value,);
+  const _PlainInfo(this.label, this.value, {this.isEmail = false});
   final String label;
   final dynamic value;
+
+  // Adds Copy / Send email icons after the value.
+  final bool isEmail;
 }
 
 Widget _plainInfoGrid(
@@ -1632,7 +1639,36 @@ Widget _plainInfoGrid(
                   ),
                 ),
               ),
-              child: _plainInfoRow(
+              child: item.isEmail &&
+                  (item.value?.toString().trim() ?? '').isNotEmpty
+                  ? Row(
+                children: [
+                  Expanded(
+                    child: _plainInfoRow(
+                      item.label,
+                      item.value,
+                    ),
+                  ),
+                  _emailAction(
+                    tooltip: 'Copy email',
+                    icon: Icons.copy_rounded,
+                    onPressed: () => _copyEmail(
+                      context,
+                      item.value.toString().trim(),
+                    ),
+                  ),
+                  _emailAction(
+                    tooltip: 'Send email',
+                    icon: Icons.mail_outline_rounded,
+                    onPressed: () => _openEmail(
+                      context,
+                      item.value.toString().trim(),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+              )
+                  : _plainInfoRow(
                 item.label,
                 item.value,
               ),
@@ -1641,6 +1677,70 @@ Widget _plainInfoGrid(
         ),
       );
     },
+  );
+}
+
+// Same Copy / Send email actions as the Activity Log details.
+Widget _emailAction({
+  required String tooltip,
+  required IconData icon,
+  required VoidCallback onPressed,
+}) {
+  return IconButton(
+    tooltip: tooltip,
+    onPressed: onPressed,
+    icon: Icon(icon),
+    iconSize: 16,
+    color: const Color(0xFF475569),
+    visualDensity: VisualDensity.compact,
+    padding: EdgeInsets.zero,
+    constraints: const BoxConstraints(
+      minWidth: 28,
+      minHeight: 20,
+    ),
+  );
+}
+
+Future<void> _openEmail(
+    BuildContext context,
+    String email,
+    ) async {
+  final messenger = ScaffoldMessenger.of(context);
+
+  bool opened;
+
+  try {
+    opened = await launchUrl(
+      Uri(scheme: 'mailto', path: email),
+    );
+  } catch (_) {
+    opened = false;
+  }
+
+  if (!opened) {
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text('No email app found. Use Copy instead.'),
+      ),
+    );
+  }
+}
+
+Future<void> _copyEmail(
+    BuildContext context,
+    String email,
+    ) async {
+  final messenger = ScaffoldMessenger.of(context);
+
+  await Clipboard.setData(
+    ClipboardData(text: email),
+  );
+
+  messenger.showSnackBar(
+    const SnackBar(
+      content: Text('Email copied'),
+      duration: Duration(seconds: 2),
+    ),
   );
 }
 
@@ -2030,12 +2130,16 @@ class RfqPdfActions extends StatefulWidget {
     super.key,
     required this.configurations,
     this.project,
+    this.projectCustomerDetails,
     this.users = const [],
   });
 
   final List<AdminConfiguration> configurations;
 
   final AdminProjectGroup? project;
+
+  // Latest project details (after an edit in the dialog).
+  final CustomerDetails? projectCustomerDetails;
 
   final List<AdminUser> users;
 
@@ -2063,12 +2167,14 @@ class _RfqPdfActionsState extends State<RfqPdfActions> {
         await RfqPdfService.export(
           configurations: widget.configurations,
           project: widget.project,
+          projectCustomerDetails: widget.projectCustomerDetails,
           users: widget.users,
         );
       } else {
         await RfqPdfService.printDocument(
           configurations: widget.configurations,
           project: widget.project,
+          projectCustomerDetails: widget.projectCustomerDetails,
           users: widget.users,
         );
       }
@@ -2219,6 +2325,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
           RfqPdfActions(
             configurations: project.items,
             project: project,
+            projectCustomerDetails: details,
             users: users,
           ),
           if (project.projectID != null)
@@ -2238,9 +2345,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
               _plainInfoGrid([
                 _PlainInfo('Project #', project.projectNumberLabel ?? '—'),
                 _PlainInfo('Project name', project.projectName),
-                _PlainInfo(
-                  'Customer',
-                  adminConfigurationUserName(project.items.first, users),
+                _PlainInfo('Submitted by', adminConfigurationUserName(project.items.first, users),
                 ),
                 _PlainInfo('Submitted', _friendlyDate(project.submittedAt)),
                 _PlainInfo('RFQs', count),
@@ -2254,22 +2359,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
             ],
           ),
           const SizedBox(height: 18),
-          _PlainSectionBox(
-            title: 'Customer details',
-            children: [
-              if (details == null)
-                Text(
-                  'No customer details yet.',
-                  style: TextStyle(
-                    color: Colors.orange.shade800,
-                  ),
-                )
-              else
-                CustomerDetailsSummary(
-                  details: details,
-                ),
-            ],
-          ),
+          _customerDetailsBox(details),
           const SizedBox(height: 18),
           _PlainSectionBox(
             title: 'RFQs',
@@ -2285,6 +2375,53 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
       ),
     );
   }
+}
+
+// Customer / Final Customer / Contact / Additional info,
+// read-only, in the same two-column grid as Overview.
+// Project RFQs show the project's details.
+Widget _customerDetailsBox(
+    CustomerDetails? details,
+    ) {
+  final sections = details?.filledSections ?? const [];
+
+  return _PlainSectionBox(
+    title: 'Customer details',
+    children: [
+      if (sections.isEmpty)
+        Text(
+          'No customer details yet.',
+          style: TextStyle(
+            color: Colors.orange.shade800,
+          ),
+        )
+      else
+        for (var i = 0; i < sections.length; i++) ...[
+          if (i > 0) const SizedBox(height: 14),
+          // "Customer details" already titles the Customer
+          // section; the others keep their own heading.
+          if (sections[i].title != 'Customer')
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(
+                sections[i].title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          _plainInfoGrid([
+            for (final row in sections[i].rows)
+              _PlainInfo(
+                row.key,
+                row.value,
+                isEmail: row.key == 'Email',
+              ),
+          ]),
+        ],
+    ],
+  );
 }
 
 class _ProjectRfqTile extends StatelessWidget {

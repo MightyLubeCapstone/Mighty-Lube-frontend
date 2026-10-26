@@ -61,6 +61,75 @@ class CustomerDetails {
     };
   }
 
+  // Filled sections with readable labels, in display order.
+  // Empty fields and empty sections are left out. Used by
+  // the summary widget and the admin PDF.
+  //
+  // Customer
+  //   Customer: Fresaders
+  //   City: Fremont
+  List<CustomerDetailsSection> get filledSections {
+    CustomerDetailsSection section(
+        String title,
+        Map<String, String> values,
+        Map<String, String> labels,
+        ) {
+      return CustomerDetailsSection(
+        title: title,
+        rows: [
+          for (final entry in labels.entries)
+            if ((values[entry.key] ?? '').isNotEmpty)
+              MapEntry(entry.value, values[entry.key]!),
+        ],
+      );
+    }
+
+    return [
+      section('Customer', customer, _customerLabels),
+      section('Final Customer', finalCustomer, _finalCustomerLabels),
+      section('Contact', contact, _contactLabels),
+      section('Additional information', additionalInfo, _additionalLabels),
+    ].where((section) => section.rows.isNotEmpty).toList();
+  }
+
+  static const _customerLabels = {
+    'name': 'Customer',
+    'address1': 'Street address',
+    'address2': 'Apt / Suite',
+    'city': 'City',
+    'state': 'State',
+    'postalCode': 'ZIP Code',
+    'country': 'Country',
+    'phone': 'Phone',
+    'email': 'Email',
+  };
+
+  static const _finalCustomerLabels = {
+    'name': 'Name',
+    'address1': 'Address 1',
+    'address2': 'Address 2',
+    'city': 'City',
+    'state': 'State',
+    'postalCode': 'Postal',
+    'country': 'Country',
+  };
+
+  static const _contactLabels = {
+    'type': 'Type',
+    'name': 'Name',
+    'email': 'Email',
+    'phone': 'Phone',
+  };
+
+  static const _additionalLabels = {
+    'orderNotes': 'Order notes',
+    'consultation': 'Consultation',
+    'projectStatus': 'Project Status',
+    'install': 'Install',
+    'shipping': 'Shipping',
+    'preferredShippingDate': 'Preferred Shipping Date',
+  };
+
   // Same check as the backend's hasCustomerDetails.
   bool get isComplete {
     return (customer['email'] ?? '').isNotEmpty;
@@ -85,4 +154,16 @@ class CustomerDetails {
 
     return result;
   }
+}
+
+class CustomerDetailsSection {
+  const CustomerDetailsSection({
+    required this.title,
+    required this.rows,
+  });
+
+  final String title;
+
+  // label -> value
+  final List<MapEntry<String, String>> rows;
 }

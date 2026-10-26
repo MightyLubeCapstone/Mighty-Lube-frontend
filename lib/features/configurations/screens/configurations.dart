@@ -239,6 +239,14 @@ class _ConfigurationsPageState extends State<ConfigurationsPage> {
                   'Submitted',
                   _date(rfq.submittedAt),
                 ),
+                if (rfq.customerDetails != null) ...[
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  CustomerDetailsSummary(
+                    details: rfq.customerDetails!,
+                  ),
+                ],
                 if (details.isNotEmpty) ...[
                   const SizedBox(
                     height: 10,

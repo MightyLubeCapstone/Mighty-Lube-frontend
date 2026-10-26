@@ -626,59 +626,9 @@ class CustomerDetailsSummary extends StatelessWidget {
 
   final CustomerDetails details;
 
-  static const _customerLabels = {
-    'name': 'Customer',
-    'address1': 'Street address',
-    'address2': 'Apt / Suite',
-    'city': 'City',
-    'state': 'State',
-    'postalCode': 'ZIP Code',
-    'country': 'Country',
-    'phone': 'Phone',
-    'email': 'Email',
-  };
-
-  static const _finalCustomerLabels = {
-    'name': 'Name',
-    'address1': 'Address 1',
-    'address2': 'Address 2',
-    'city': 'City',
-    'state': 'State',
-    'postalCode': 'Postal',
-    'country': 'Country',
-  };
-
-  static const _contactLabels = {
-    'type': 'Type',
-    'name': 'Name',
-    'email': 'Email',
-    'phone': 'Phone',
-  };
-
-  static const _additionalLabels = {
-    'orderNotes': 'Order notes',
-    'consultation': 'Consultation',
-    'projectStatus': 'Project Status',
-    'install': 'Install',
-    'shipping': 'Shipping',
-    'preferredShippingDate': 'Preferred Shipping Date',
-  };
-
-  Widget? _section(
-      String title,
-      Map<String, String> values,
-      Map<String, String> labels,
+  Widget _section(
+      CustomerDetailsSection section,
       ) {
-    final rows = [
-      for (final entry in labels.entries)
-        if ((values[entry.key] ?? '').isNotEmpty)
-          MapEntry(entry.value, values[entry.key]!),
-    ];
-
-    if (rows.isEmpty) {
-      return null;
-    }
-
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 12,
@@ -687,7 +637,7 @@ class CustomerDetailsSummary extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            section.title,
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
@@ -696,7 +646,7 @@ class CustomerDetailsSummary extends StatelessWidget {
           const SizedBox(
             height: 4,
           ),
-          for (final row in rows)
+          for (final row in section.rows)
             Padding(
               padding: const EdgeInsets.only(
                 top: 2,
@@ -722,18 +672,12 @@ class CustomerDetailsSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sections = [
-      _section('Customer', details.customer, _customerLabels),
-      _section('Final Customer', details.finalCustomer, _finalCustomerLabels),
-      _section('Contact', details.contact, _contactLabels),
-      _section(
-          'Additional information', details.additionalInfo, _additionalLabels),
-    ].whereType<Widget>().toList();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: sections,
+      children: [
+        for (final section in details.filledSections) _section(section),
+      ],
     );
   }
 }

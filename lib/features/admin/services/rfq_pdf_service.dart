@@ -6,6 +6,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../configurations/models/customer_details.dart';
 import '../models/admin_models.dart';
 import '../repositories/admin_repository.dart';
 import '../widgets/common/admin_common_widgets.dart';
@@ -19,12 +20,14 @@ import '../widgets/common/admin_common_widgets.dart';
 //
 // [Mighty Lube logo]
 // RFQ-10002                Project: P-10001 - Name
-// Customer / Product / Qty / Submitted / Status
+// Submitted by / Product / Qty / Submitted / Status
+// Customer / Final Customer / Contact / Additional information
 // Configuration Details
 // Customer Images
 //
-// A project PDF starts with a project summary page and every
-// RFQ starts on a new page. Activity history is left out.
+// A project PDF starts with a project summary page (with the
+// project's customer details, shown once) and every RFQ
+// starts on a new page. Activity history is left out.
 //
 // Images are private, so each one is fetched through a
 // temporary signed URL first. An image that fails to load is
@@ -52,11 +55,13 @@ class RfqPdfService {
   static Future<void> export({
     required List<AdminConfiguration> configurations,
     AdminProjectGroup? project,
+    CustomerDetails? projectCustomerDetails,
     List<AdminUser> users = const [],
   }) async {
     final bytes = await build(
       configurations: configurations,
       project: project,
+      projectCustomerDetails: projectCustomerDetails,
       users: users,
     );
 
@@ -76,11 +81,13 @@ class RfqPdfService {
   static Future<void> printDocument({
     required List<AdminConfiguration> configurations,
     AdminProjectGroup? project,
+    CustomerDetails? projectCustomerDetails,
     List<AdminUser> users = const [],
   }) async {
     final bytes = await build(
       configurations: configurations,
       project: project,
+      projectCustomerDetails: projectCustomerDetails,
       users: users,
     );
 
@@ -110,9 +117,12 @@ class RfqPdfService {
   // BUILD
   // =========================================================
 
+  // projectCustomerDetails: newer details than the RFQs
+  // hold (admin just edited them); defaults to the project's.
   static Future<Uint8List> build({
     required List<AdminConfiguration> configurations,
     AdminProjectGroup? project,
+    CustomerDetails? projectCustomerDetails,
     List<AdminUser> users = const [],
   }) async {
     final document = pw.Document();
@@ -133,6 +143,7 @@ class RfqPdfService {
             pw.SizedBox(height: 16),
             _projectSummary(
               project,
+              projectCustomerDetails ?? project.customerDetails,
               users,
             ),
           ],
@@ -153,6 +164,8 @@ class RfqPdfService {
               configurations[i],
               users,
               imagesByConfiguration[i],
+              // Shown once on the project summary page.
+              showCustomerDetails: project == null,
             ),
           ],
         ),
@@ -233,6 +246,7 @@ class RfqPdfService {
 
   static pw.Widget _projectSummary(
       AdminProjectGroup project,
+      CustomerDetails? customerDetails,
       List<AdminUser> users,
       ) {
     final first = project.items.first;
@@ -250,7 +264,7 @@ class RfqPdfService {
         ),
         pw.SizedBox(height: 8),
         _infoLine(
-          'Customer',
+          'Submitted by',
           _customer(first, users),
         ),
         _infoLine(
@@ -261,6 +275,8 @@ class RfqPdfService {
           'RFQs',
           '${project.items.length}',
         ),
+        pw.SizedBox(height: 14),
+        ..._customerDetails(customerDetails),
         pw.SizedBox(height: 14),
         pw.TableHelper.fromTextArray(
           headers: [
@@ -309,8 +325,9 @@ class RfqPdfService {
   static List<pw.Widget> _rfqContent(
       AdminConfiguration configuration,
       List<AdminUser> users,
-      List<_PdfImage> images,
-      ) {
+      List<_PdfImage> images, {
+        bool showCustomerDetails = true,
+      }) {
     final projectNumber =
         configuration.projectNumberLabel;
 
@@ -347,7 +364,7 @@ class RfqPdfService {
       ),
       pw.SizedBox(height: 10),
       _infoLine(
-        'Customer',
+        'Submitted by',
         _customer(configuration, users),
       ),
       pw.Row(
@@ -384,6 +401,10 @@ class RfqPdfService {
           ),
         ],
       ),
+      if (showCustomerDetails) ...[
+        pw.SizedBox(height: 14),
+        ..._customerDetails(configuration.customerDetails),
+      ],
       pw.SizedBox(height: 14),
       _sectionTitle('Configuration Details'),
       if (details.isEmpty)
@@ -444,6 +465,79 @@ class RfqPdfService {
         ),
       ],
     ];
+  }
+
+  // =========================================================
+  // CUSTOMER DETAILS
+  //
+  // Customer / Final Customer / Contact / Additional info,
+  // one small table each. Empty sections are left out.
+  // =========================================================
+
+  static List<pw.Widget> _customerDetails(
+      CustomerDetails? details,
+      ) {
+    if (details == null) {
+      return [
+        _sectionTitle('Customer'),
+        pw.Text(
+          'No customer details.',
+          style: const pw.TextStyle(
+            color: _muted,
+            fontSize: 10,
+          ),
+        ),
+      ];
+    }
+
+    return [
+      for (final section in details.filledSections) ...[
+        _sectionTitle(section.title),
+        _labelValueTable(section.rows),
+        pw.SizedBox(height: 10),
+      ],
+    ];
+  }
+
+  static pw.Widget _labelValueTable(
+      List<MapEntry<String, String>> rows,
+      ) {
+    return pw.Table(
+      border: pw.TableBorder.all(
+        color: _line,
+      ),
+      columnWidths: {
+        0: const pw.FlexColumnWidth(2),
+        1: const pw.FlexColumnWidth(3),
+      },
+      children: [
+        for (final row in rows)
+          pw.TableRow(
+            children: [
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(5),
+                child: pw.Text(
+                  row.key,
+                  style: const pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.grey800,
+                  ),
+                ),
+              ),
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(5),
+                child: pw.Text(
+                  row.value,
+                  style: const pw.TextStyle(
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
   }
 
   static pw.Widget _imageTile(
