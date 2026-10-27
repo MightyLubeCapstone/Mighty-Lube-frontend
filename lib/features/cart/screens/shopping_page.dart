@@ -1367,8 +1367,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
   Widget build(
     BuildContext context,
   ) {
-    double left = MediaQuery.of(context).size.width * 0.23;
-
     return Scaffold(
       appBar: CustomAppBar(
         link: const ApplicationCatalogPage(),
@@ -1386,14 +1384,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                 Expanded(
                   child: cartItems.isEmpty
                       ? Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            left,
-                            0,
-                            0,
-                            100,
+                          padding: const EdgeInsets.only(
+                            bottom: 100,
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.shopping_cart_outlined,

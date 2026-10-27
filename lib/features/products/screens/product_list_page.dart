@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/widget/breadcrumb_bar.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../core/widget/custom_drawer.dart';
 import '../../../core/widget/searchable_product_list.dart';
 
 import '../../dashboard/screens/dashboard.dart';
@@ -100,6 +101,8 @@ class _ProductListPageState
         // Search query comes here
         onSearchChanged: _onSearchChanged,
       ),
+
+      drawer: const CustomDrawer(),
 
       body: SafeArea(
         child: Padding(

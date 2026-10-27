@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../features/auth/repositories/user_repository.dart';
-import '../../features/auth/screen/login_page.dart';
-
 import 'header_logo.dart';
+import 'logout_action.dart';
 
 // dashboard pages
 import '../../features/configurations/screens/configurations.dart';
@@ -20,76 +18,17 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer> {
   bool loading = false;
 
-  Future<void> logoutUser() async {
-    bool? confirmDelete = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Confirm logout"),
-          content: const Text("Are you sure you want to logout?"),
-          actions: [
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true),
-              child: const Text(
-                "Logout",
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
+  Future<void> logoutUser() {
+    return confirmAndLogout(
+      context,
+      onLoading: (value) {
+        if (mounted) {
+          setState(() {
+            loading = value;
+          });
+        }
       },
     );
-
-    if (confirmDelete != true) {
-      return;
-    }
-
-    setState(() {
-      loading = true;
-    });
-
-    final response = await UserRepository.logout();
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      loading = false;
-    });
-
-    if (response.success && response.data == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Successfully logged out!'),
-        ),
-      );
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-            (route) => false,
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            response.message ?? 'Error when logging out!',
-          ),
-        ),
-      );
-    }
   }
 
   @override

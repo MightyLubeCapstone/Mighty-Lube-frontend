@@ -3,7 +3,9 @@ import 'package:badges/badges.dart' as badges;
 
 import '../../features/cart/repositories/cart_repositories.dart';
 import '../../features/cart/screens/shopping_page.dart';
+import '../../features/dashboard/screens/dashboard.dart';
 import 'app_bar_icon_button.dart';
+import 'logout_action.dart';
 import '../../core/widget/header_logo.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -169,11 +171,30 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
 
           // ===================================================
+          // HOME
+          // ===================================================
+
+          AppBarIconButton(
+            icon: Icons.home_outlined,
+            tooltip: 'Home',
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const DashboardPage(),
+                ),
+                    (route) => false,
+              );
+            },
+          ),
+
+          // ===================================================
           // LOGO
           // ===================================================
 
+          // Kept narrow so Home + Logout still fit on small phones.
           const SizedBox(
-            width: 120,
+            width: 104,
             height: 44,
             child: Center(
               child: HeaderLogo(
@@ -219,7 +240,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
           Padding(
             padding: const EdgeInsets.only(
-              right: 6,
+              right: 2,
             ),
             child: badges.Badge(
               position: badges.BadgePosition.topEnd(
@@ -253,6 +274,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   );
                 },
               ),
+            ),
+          ),
+
+          // ===================================================
+          // LOGOUT
+          // ===================================================
+
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 6,
+            ),
+            child: AppBarIconButton(
+              icon: Icons.logout,
+              tooltip: 'Logout',
+              onPressed: () => confirmAndLogout(context),
             ),
           ),
         ],
