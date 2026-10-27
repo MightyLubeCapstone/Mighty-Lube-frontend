@@ -682,7 +682,6 @@ class _ConfigurationValueWithImage
                       true
                       ? '—'
                       : value.toString(),
-                  maxLines: 4,
                   style:
                   const TextStyle(
                     fontWeight:
@@ -1601,32 +1600,12 @@ Widget _plainInfoGrid(
   return LayoutBuilder(
     builder: (context, constraints) {
       final isMobile = constraints.maxWidth < 380;
+      final columns = isMobile ? 1 : 2;
 
-      return Container(
-        width: double.infinity,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: const Color(0xFFE2E8F0),
-          ),
-        ),
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: items.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: isMobile ? 1 : 2,
-            mainAxisExtent: 40,
-            crossAxisSpacing: 0,
-            mainAxisSpacing: 0,
-          ),
-          itemBuilder: (context, index) {
-            final item = items[index];
+      Widget cell(int index) {
+        final item = items[index];
 
-            return Container(
+        return Container(
               decoration: BoxDecoration(
                 border: Border(
                   right: !isMobile && index.isEven
@@ -1673,7 +1652,37 @@ Widget _plainInfoGrid(
                 item.value,
               ),
             );
-          },
+      }
+
+      // Rows grow with their tallest cell, so multi-line
+      // values (e.g. Technician Note) are never cut off.
+      return Container(
+        width: double.infinity,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color(0xFFE2E8F0),
+          ),
+        ),
+        child: Column(
+          children: [
+            for (var start = 0; start < items.length; start += columns)
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (var i = start; i < start + columns; i++)
+                      Expanded(
+                        child: i < items.length
+                            ? cell(i)
+                            : const SizedBox.shrink(),
+                      ),
+                  ],
+                ),
+              ),
+          ],
         ),
       );
     },
@@ -1800,8 +1809,6 @@ Widget _plainInfoRow(
           ),
         ],
       ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
     ),
   );
 }
