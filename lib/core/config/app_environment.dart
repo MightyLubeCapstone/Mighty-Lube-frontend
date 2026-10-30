@@ -12,7 +12,7 @@ class AppEnvironmentConfig {
   // Change only this value to switch API server.
   // =========================================================
 
-  static const AppEnvironment environment = AppEnvironment.development;
+  static const AppEnvironment environment = AppEnvironment.production;
 
   // =========================================================
   // TESTING / DEBUG LOGGING

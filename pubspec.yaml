@@ -5,7 +5,7 @@ publish_to: 'none'
   #Major application changes in this release.
   #Version updated from 2.0.1+9 to 3.0.1+12.
 
-version: 3.0.2+13
+version: 3.0.4+14
 environment:
   sdk: ^3.5.2
 

@@ -1382,30 +1382,26 @@ class _ShoppingPageState extends State<ShoppingPage> {
           : Column(
               children: [
                 Expanded(
-                  child: cartItems.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 100,
+                  child: cartItems.isEmpty ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 80,
+                        color: Colors.grey.shade400,
+                      ),
+                      const Center(
+                        child: Text(
+                          "No products in the cart.",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.shopping_cart_outlined,
-                                size: 80,
-                                color: Colors.grey.shade400,
-                              ),
-                              const Text(
-                                "No products in the cart.",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
+                        ),
+                      ),
+                    ],
+                  )
                       : ListView.builder(
                           itemCount: cartItems.length,
                           itemBuilder: (
